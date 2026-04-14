@@ -48,9 +48,33 @@
         <button class="settings-btn" disabled>coming soon</button>
       </div>
 
-      <div class="settings-card">
+     <div class="settings-card">
         <div class="settings-card-icon">⭐</div>
         <h2>favourites</h2>
-        <p>manage your favourite games.</p>
-        <button class="settings-btn" onclick="localStorage.removeItem('favourites'); alert('Favourites cleared!')">clear favourites</button> 
-        
+        <p>only show your favourited games.</p>
+        <button class="settings-btn fav-toggle-btn" id="favToggleBtn" onclick="toggleFavFilter()">show: off</button>
+        <br/><br/>
+        <button class="settings-btn" onclick="localStorage.removeItem('favourites'); alert('Favourites cleared!')">clear favourites</button>
+      </div>
+
+    </div> <!-- closes settings-grid -->
+
+    <script>
+      function updateFavBtn() {
+        const btn = document.getElementById("favToggleBtn");
+        const on = localStorage.getItem("favFilter") === "true";
+        btn.textContent = on ? "show: on ✅" : "show: off ❌";
+        btn.style.borderColor = on ? "#00cc66" : "rgba(45, 90, 227, 0.5)";
+        btn.style.boxShadow = on ? "0 8px 25px rgba(0, 204, 102, 0.4)" : "";
+      }
+
+      function toggleFavFilter() {
+        const current = localStorage.getItem("favFilter") === "true";
+        localStorage.setItem("favFilter", (!current).toString());
+        updateFavBtn();
+      }
+
+      updateFavBtn();
+    </script>
+  </body>
+</html>
