@@ -1,21 +1,21 @@
-<!DOCTYPE html>
-<html>
-<head>
-<style>
+/* Moving Background */
 body {
   margin: 0;
-  overflow: hidden;
+  overflow-x: hidden;
 }
 
-.background {
+.moving-bg {
   position: fixed;
-  width: 200%; /* smooth loop hhere */
+  top: 0;
+  left: 0;
+  width: 200%;
   height: 100%;
+  z-index: -1; /* stays behind everything */
   background: url('https://www.transparenttextures.com/patterns/stardust.png');
-  animation: moveBg 20s linear infinite;
+  animation: moveBackground 25s linear infinite;
 }
 
-@keyframes moveBg {
+@keyframes moveBackground {
   from {
     transform: translateX(0);
   }
@@ -23,11 +23,3 @@ body {
     transform: translateX(-50%);
   }
 }
-</style>
-</head>
-<body>
-
-<div class="background"></div>
-
-</body>
-</html>
