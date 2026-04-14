@@ -8,14 +8,44 @@
   --accent-color: #4b87f7 !important;
 }
 
-
 * {
   font-family: ubuntu;
   transition: all 0.3s ease;
 }
+
+/* Animated background */
+@keyframes gradientShift {
+  0% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+  100% {
+    background-position: 0% 50%;
+  }
+}
+
+@keyframes float {
+  0%, 100% {
+    transform: translateY(0px);
+  }
+  50% {
+    transform: translateY(-20px);
+  }
+}
+
 /* General styles */
 body {
-  background-color: var(--background-color);
+  background: linear-gradient(
+    -45deg,
+    #4b87f7,
+    #585e69,
+    #2d3748,
+    #4b87f7
+  );
+  background-size: 400% 400%;
+  animation: gradientShift 15s ease infinite;
   color: var(--text-color);
   font-family: "ubuntu", sans-serif;
   margin: 0;
@@ -24,6 +54,34 @@ body {
   -moz-user-select: none;
   -ms-user-select: none;
   user-select: none;
+  min-height: 100vh;
+  position: relative;
+  overflow-x: hidden;
+}
+
+/* Floating background elements */
+body::before {
+  content: '';
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background: 
+    radial-gradient(circle at 20% 50%, rgba(75, 135, 247, 0.1) 0%, transparent 50%),
+    radial-gradient(circle at 80% 80%, rgba(45, 55, 72, 0.1) 0%, transparent 50%);
+  animation: float 6s ease-in-out infinite;
+  pointer-events: none;
+  z-index: 0;
+}
+
+/* Make content appear above background */
+#gamesContainer,
+.center,
+.footer,
+#searchInput {
+  position: relative;
+  z-index: 1;
 }
 
 /* Search input styles */
@@ -41,9 +99,14 @@ body {
   outline: none;
   text-align: center;
   transition: all 0.3s ease-in-out;
+  background: rgba(255, 255, 255, 0.95);
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.2);
 }
+
 #searchInput:focus {
-border: 3px solid var(--accent-color);
+  border: 3px solid var(--accent-color);
+  box-shadow: 0 8px 32px rgba(75, 135, 247, 0.4);
+  transform: translateY(-2px);
 }
 
 /* Games container styles */
@@ -58,22 +121,21 @@ border: 3px solid var(--accent-color);
 /* Game card styles */
 .game {
   margin: 10px;
-  
   text-align: center;
   flex: 1 0 200px; /* Flexbox item properties */
   max-width: 200px; /* Limit maximum width */
   display: inline-block;
-  margin: 10px;
   transition: transform 0.3s ease;
   border: 2px;
   border-radius: 10px;
 }
+
 .game:hover {
-  transform: scale(0.95); /* Scale up on hover */
+  transform: scale(0.95) translateY(-5px);
   border: 2px solid var(--accent-color);
-  
-  
+  filter: drop-shadow(0 8px 16px rgba(75, 135, 247, 0.3));
 }
+
 /* Game image styles */
 .game img {
   width: 100%; /* Occupy full width of container */
@@ -84,6 +146,11 @@ border: 3px solid var(--accent-color);
   height: 200px;
   border-radius: 10px;
   box-shadow: 0 0 10px rgba(0, 0, 0, 0.5);
+  transition: all 0.3s ease;
+}
+
+.game img:hover {
+  box-shadow: 0 0 20px rgba(75, 135, 247, 0.6);
 }
 
 /* Game description styles */
@@ -104,26 +171,28 @@ border: 3px solid var(--accent-color);
     flex-basis: calc(100% - 20px); /* Single game per row */
   }
 }
+
 .center {
   justify-content: center;
   text-align: center;
   display: flex;
   flex-direction: column;
 }
+
 @media only screen and (max-width: 450px) {
   #searchInput {
     width: 200px;
   }
 }
+
 .footer {
   margin: 10px auto;
   bottom: 0;
   justify-content: center;
   text-align: center;
   align-items: center;
-
-
 }
+
 .link {
   color: var(--accent-color);
   text-decoration: none;
