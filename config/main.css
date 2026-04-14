@@ -181,9 +181,9 @@ body::after {
   box-shadow: 0 12px 40px rgba(45, 90, 227, 0.7);
 }
 
-/* Game text */
 .game p {
   margin-top: 10px;
+  margin-bottom: 2px;
   font-weight: 700;
   font-size: 16px;
 
