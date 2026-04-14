@@ -369,3 +369,7 @@ body::after {
   box-shadow: 6px 0 30px rgba(255, 215, 0, 0.8);
   text-shadow: 0 0 20px rgba(255, 215, 0, 1);
 }
+
+.game {
+  will-change: transform, opacity;
+}
