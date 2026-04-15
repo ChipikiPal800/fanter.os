@@ -35,3 +35,14 @@
 .theme-tab-card {
   background: var(--card-bg, rgba(20, 30, 50, 0.8)) !important;
 }
+/* Ensure games container is visible */
+
+#gamesContainer {
+  min-height: 200px;
+}
+
+/* Make sure games are properly displayed */
+.game {
+  display: inline-block !important;
+  visibility: visible !important;
+}
