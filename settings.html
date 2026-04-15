@@ -7,165 +7,6 @@
     <link rel="stylesheet" href="config/main.css" />
     <script src="config/theme-loader.js"></script>
     <script src="config/main.js"></script>
-    <style>
-      /* ===== LANGUAGE DROPDOWN ===== */
-      .lang-dropdown-wrap {
-        position: relative;
-      }
-
-      #langDropdown {
-        position: fixed;
-        top: 0; left: 0;
-        z-index: 2000;
-        background: rgba(10, 15, 35, 0.98);
-        border: 2px solid rgba(45, 90, 227, 0.5);
-        border-radius: 18px;
-        padding: 18px 10px 12px;
-        min-width: 220px;
-        box-shadow: 0 20px 60px rgba(45, 90, 227, 0.45);
-        backdrop-filter: blur(12px);
-        opacity: 0;
-        transform: scale(0.92) translateY(-8px);
-        pointer-events: none;
-        transition: opacity 0.22s cubic-bezier(0.22,1,0.36,1),
-                    transform 0.22s cubic-bezier(0.22,1,0.36,1);
-        transform-origin: top center;
-      }
-
-      #langDropdown.open {
-        opacity: 1;
-        transform: scale(1) translateY(0);
-        pointer-events: all;
-      }
-
-      .lang-search {
-        width: 100%;
-        padding: 8px 12px;
-        border-radius: 10px;
-        border: 2px solid rgba(45, 90, 227, 0.35);
-        background: rgba(20, 30, 50, 0.8);
-        color: #fff;
-        font-family: ubuntu, sans-serif;
-        font-size: 13px;
-        outline: none;
-        box-sizing: border-box;
-        margin-bottom: 8px;
-      }
-      .lang-search:focus {
-        border-color: var(--accent-color);
-      }
-
-      .lang-list {
-        max-height: 200px;
-        overflow-y: auto;
-        display: flex;
-        flex-direction: column;
-        gap: 3px;
-        scrollbar-width: thin;
-      }
-
-      .lang-option {
-        display: flex;
-        align-items: center;
-        gap: 10px;
-        padding: 9px 14px;
-        border-radius: 10px;
-        border: none;
-        background: transparent;
-        color: rgba(255,255,255,0.85);
-        font-family: ubuntu, sans-serif;
-        font-size: 14px;
-        cursor: pointer;
-        text-align: left;
-        transition: background 0.15s, color 0.15s;
-        width: 100%;
-      }
-      .lang-option:hover {
-        background: rgba(45, 90, 227, 0.18);
-        color: #fff;
-      }
-      .lang-option.active {
-        background: rgba(45, 90, 227, 0.3);
-        color: #fff;
-        font-weight: 700;
-      }
-      .lang-option .lang-flag {
-        font-size: 20px;
-        flex-shrink: 0;
-      }
-
-      .lang-current {
-        font-size: 12px;
-        color: rgba(255,255,255,0.35);
-        text-align: center;
-        margin-top: 10px;
-        padding-top: 8px;
-        border-top: 1px solid rgba(255,255,255,0.08);
-      }
-
-      /* ===== HIDE GOOGLE TRANSLATE BAR COMPLETELY ===== */
-      .goog-te-banner-frame,
-      .goog-te-banner,
-      .goog-te-banner-frame.skiptranslate,
-      iframe.skiptranslate,
-      div.skiptranslate,
-      .goog-te-balloon-frame,
-      .goog-te-menu-frame,
-      .goog-te-cta-bar,
-      .goog-te-banner-frame iframe,
-      body > .skiptranslate {
-        display: none !important;
-        visibility: hidden !important;
-        opacity: 0 !important;
-        height: 0 !important;
-        min-height: 0 !important;
-        max-height: 0 !important;
-        overflow: hidden !important;
-        pointer-events: none !important;
-        position: absolute !important;
-        top: -9999px !important;
-        left: -9999px !important;
-      }
-
-      body {
-        top: 0px !important;
-        position: static !important;
-      }
-
-      html {
-        margin-top: 0px !important;
-        overflow-x: hidden !important;
-      }
-
-      body {
-        padding-top: 0px !important;
-        margin-top: 0px !important;
-      }
-
-      /* Toast notification */
-      #translation-toast {
-        position: fixed;
-        bottom: 20px;
-        right: 20px;
-        background: rgba(45, 90, 227, 0.95);
-        color: white;
-        padding: 12px 20px;
-        border-radius: 10px;
-        font-family: ubuntu, sans-serif;
-        font-size: 14px;
-        z-index: 10000;
-        backdrop-filter: blur(10px);
-        pointer-events: none;
-        box-shadow: 0 4px 15px rgba(0,0,0,0.3);
-      }
-      
-      @keyframes fadeInOut {
-        0% { opacity: 0; transform: translateY(20px); }
-        15% { opacity: 1; transform: translateY(0); }
-        85% { opacity: 1; transform: translateY(0); }
-        100% { opacity: 0; transform: translateY(-20px); visibility: hidden; }
-      }
-    </style>
   </head>
   <body>
     <span id="title" style="display:none"></span>
@@ -189,10 +30,8 @@
       <div class="settings-card">
         <div class="settings-card-icon">🌐</div>
         <h2>language</h2>
-        <p>change the language of the site (no ugly bar!).</p>
-        <div class="lang-dropdown-wrap">
-          <button class="settings-btn" id="langTriggerBtn" onclick="toggleLangDropdown(event)">🌐 select language</button>
-        </div>
+        <p>use your browser's built-in translation!</p>
+        <button class="settings-btn" onclick="showTranslateTip()">🌐 how to translate</button>
       </div>
 
       <div class="settings-card">
@@ -218,13 +57,6 @@
         <button class="settings-btn" onclick="localStorage.removeItem('favourites'); alert('Favourites cleared!')">clear favourites</button>
       </div>
 
-    </div>
-
-    <!-- Language dropdown -->
-    <div id="langDropdown">
-      <input class="lang-search" id="langSearch" placeholder="🔍 search languages..." oninput="filterLangs()" />
-      <div class="lang-list" id="langList"></div>
-      <div class="lang-current" id="langCurrentLabel">current: english</div>
     </div>
 
     <!-- Theme Menu -->
@@ -329,197 +161,58 @@
     </div>
 
     <script>
-      // ========== GOOGLE TRANSLATE WITH HIDDEN BAR ==========
-      const LANGUAGES = [
-        { code: "en", name: "English", flag: "🇬🇧" },
-        { code: "es", name: "Spanish", flag: "🇪🇸" },
-        { code: "fr", name: "French", flag: "🇫🇷" },
-        { code: "de", name: "German", flag: "🇩🇪" },
-        { code: "it", name: "Italian", flag: "🇮🇹" },
-        { code: "pt", name: "Portuguese", flag: "🇧🇷" },
-        { code: "ru", name: "Russian", flag: "🇷🇺" },
-        { code: "zh-CN", name: "Chinese", flag: "🇨🇳" },
-        { code: "ja", name: "Japanese", flag: "🇯🇵" },
-        { code: "ko", name: "Korean", flag: "🇰🇷" },
-        { code: "ar", name: "Arabic", flag: "🇸🇦" },
-        { code: "hi", name: "Hindi", flag: "🇮🇳" },
-        { code: "nl", name: "Dutch", flag: "🇳🇱" },
-        { code: "pl", name: "Polish", flag: "🇵🇱" },
-        { code: "tr", name: "Turkish", flag: "🇹🇷" },
-        { code: "sv", name: "Swedish", flag: "🇸🇪" },
-        { code: "no", name: "Norwegian", flag: "🇳🇴" },
-        { code: "da", name: "Danish", flag: "🇩🇰" },
-        { code: "fi", name: "Finnish", flag: "🇫🇮" },
-        { code: "uk", name: "Ukrainian", flag: "🇺🇦" },
-        { code: "vi", name: "Vietnamese", flag: "🇻🇳" },
-        { code: "th", name: "Thai", flag: "🇹🇭" },
-        { code: "el", name: "Greek", flag: "🇬🇷" },
-        { code: "he", name: "Hebrew", flag: "🇮🇱" },
-        { code: "hu", name: "Hungarian", flag: "🇭🇺" },
-        { code: "cs", name: "Czech", flag: "🇨🇿" },
-        { code: "ro", name: "Romanian", flag: "🇷🇴" },
-      ];
-
-      let currentLang = localStorage.getItem("siteLang") || "en";
-
+      // Simple toast notification
       function showToast(message) {
-        let toast = document.getElementById('translation-toast');
+        let toast = document.getElementById('custom-toast');
         if (toast) toast.remove();
         
         toast = document.createElement('div');
-        toast.id = 'translation-toast';
+        toast.id = 'custom-toast';
         toast.textContent = message;
-        toast.style.animation = 'fadeInOut 2s ease forwards';
+        toast.style.cssText = `
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          background: rgba(45, 90, 227, 0.95);
+          color: white;
+          padding: 12px 20px;
+          border-radius: 10px;
+          font-family: ubuntu, sans-serif;
+          font-size: 14px;
+          z-index: 10000;
+          backdrop-filter: blur(10px);
+          box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+          animation: fadeInOut 3s ease forwards;
+        `;
         document.body.appendChild(toast);
         
         setTimeout(() => {
           if (toast) toast.remove();
-        }, 2000);
+        }, 3000);
       }
 
-      function applyTranslation(langCode) {
-        if (langCode === 'en') {
-          // Remove translation
-          document.cookie = "googtrans=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/;";
-          localStorage.setItem("siteLang", "en");
-          showToast("🌐 English selected - refreshing...");
-          setTimeout(() => window.location.reload(), 500);
-          return;
-        }
+      // Show translation tip
+      window.showTranslateTip = function() {
+        const isChrome = navigator.userAgent.indexOf('Chrome') > -1;
+        const isFirefox = navigator.userAgent.indexOf('Firefox') > -1;
+        const isSafari = navigator.userAgent.indexOf('Safari') > -1 && !isChrome;
         
-        localStorage.setItem("siteLang", langCode);
-        
-        // Remove any existing translate elements
-        const existingScript = document.querySelector('script[src*="translate.google"]');
-        if (existingScript) existingScript.remove();
-        
-        // Set cookie for Google Translate
-        document.cookie = "googtrans=/en/" + langCode + "; path=/";
-        
-        // Load Google Translate
-        window.googleTranslateElementInit = function() {
-          new google.translate.TranslateElement({
-            pageLanguage: 'en',
-            includedLanguages: langCode,
-            layout: google.translate.TranslateElement.InlineLayout.SIMPLE,
-            autoDisplay: true
-          }, 'google_translate_element');
-          
-          // Aggressively hide the bar
-          setTimeout(() => {
-            const bars = document.querySelectorAll('.goog-te-banner-frame, .skiptranslate, iframe.skiptranslate');
-            bars.forEach(bar => {
-              if (bar) {
-                bar.style.display = 'none';
-                bar.style.visibility = 'hidden';
-                if (bar.remove) bar.remove();
-              }
-            });
-            document.body.style.top = '0px';
-            document.body.style.position = 'static';
-            document.documentElement.style.marginTop = '0px';
-          }, 100);
-        };
-        
-        // Add hidden container
-        let container = document.getElementById('google_translate_element');
-        if (!container) {
-          container = document.createElement('div');
-          container.id = 'google_translate_element';
-          container.style.display = 'none';
-          document.body.appendChild(container);
-        }
-        
-        // Add the script
-        const script = document.createElement('script');
-        script.src = '//translate.google.com/translate_a/element.js?cb=googleTranslateElementInit';
-        script.async = true;
-        document.head.appendChild(script);
-        
-        showToast(`🌐 Translating to ${LANGUAGES.find(l => l.code === langCode)?.name}...`);
-        
-        // Reload after translation loads
-        setTimeout(() => {
-          window.location.reload();
-        }, 800);
-      }
-
-      // ========== LANGUAGE DROPDOWN ==========
-      let langDropdownOpen = false;
-
-      function buildLangList(filter = "") {
-        const list = document.getElementById("langList");
-        list.innerHTML = "";
-        const filtered = LANGUAGES.filter(l =>
-          l.name.toLowerCase().includes(filter.toLowerCase()) ||
-          l.code.toLowerCase().includes(filter.toLowerCase())
-        );
-        filtered.forEach(lang => {
-          const btn = document.createElement("button");
-          btn.className = "lang-option" + (lang.code === currentLang ? " active" : "");
-          btn.innerHTML = `<span class="lang-flag">${lang.flag}</span><span>${lang.name}</span>`;
-          btn.onclick = () => {
-            currentLang = lang.code;
-            applyTranslation(lang.code);
-            closeLangDropdown();
-          };
-          list.appendChild(btn);
-        });
-      }
-
-      window.toggleLangDropdown = function(e) {
-        e.stopPropagation();
-        if (langDropdownOpen) {
-          closeLangDropdown();
+        let tip = "🌐 How to translate:\n\n";
+        if (isChrome) {
+          tip += "Chrome: Right-click → 'Translate to English'";
+        } else if (isFirefox) {
+          tip += "Firefox: Right-click → 'Translate Page'";
+        } else if (isSafari) {
+          tip += "Safari: Enable translation in address bar";
         } else {
-          openLangDropdown(e.currentTarget);
+          tip += "Right-click on the page and look for 'Translate' option";
         }
+        
+        tip += "\n\nOr use your browser's settings/address bar to translate!";
+        
+        alert(tip);
+        showToast("🌐 Right-click anywhere → Translate to your language!");
       };
-
-      function openLangDropdown(triggerBtn) {
-        const dropdown = document.getElementById("langDropdown");
-        const rect = triggerBtn.getBoundingClientRect();
-        dropdown.style.top = (rect.bottom + window.scrollY + 8) + "px";
-        dropdown.style.left = (rect.left + window.scrollX) + "px";
-        buildLangList();
-        document.getElementById("langSearch").value = "";
-        const cur = LANGUAGES.find(l => l.code === currentLang);
-        if (cur) {
-          document.getElementById("langCurrentLabel").textContent = `current: ${cur.name}`;
-          document.getElementById("langTriggerBtn").textContent = `${cur.flag} ${cur.name}`;
-        }
-        dropdown.classList.add("open");
-        langDropdownOpen = true;
-        setTimeout(() => document.getElementById("langSearch").focus(), 50);
-      }
-
-      function closeLangDropdown() {
-        const dropdown = document.getElementById("langDropdown");
-        dropdown.classList.remove("open");
-        langDropdownOpen = false;
-      }
-
-      window.filterLangs = function() {
-        buildLangList(document.getElementById("langSearch").value);
-      };
-
-      document.addEventListener("click", (e) => {
-        if (langDropdownOpen && !document.getElementById("langDropdown").contains(e.target)) {
-          closeLangDropdown();
-        }
-      });
-
-      // Initialize
-      (function init() {
-        const cur = LANGUAGES.find(l => l.code === currentLang);
-        if (cur) {
-          document.getElementById("langTriggerBtn").textContent = `${cur.flag} ${cur.name}`;
-        }
-        // If not English, apply translation on load
-        if (currentLang !== "en") {
-          setTimeout(() => applyTranslation(currentLang), 100);
-        }
-      })();
 
       // ========== FAVOURITES ==========
       function updateFavBtn() {
@@ -700,6 +393,18 @@
         lastKey = pressedKey;
         lastKeyTime = now;
       });
+
+      // Add fadeInOut animation
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes fadeInOut {
+          0% { opacity: 0; transform: translateY(20px); }
+          15% { opacity: 1; transform: translateY(0); }
+          85% { opacity: 1; transform: translateY(0); }
+          100% { opacity: 0; transform: translateY(-20px); visibility: hidden; }
+        }
+      `;
+      document.head.appendChild(style);
     </script>
 
   </body>
