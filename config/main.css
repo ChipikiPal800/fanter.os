@@ -887,8 +887,7 @@ html {
 
 /* ===== CUSTOM CURSOR WITH TRAIL ===== */
 
-/* IMPORTANT: Don't hide the default cursor yet - we'll replace it */
-/* We'll keep default cursor as fallback */
+
 
 /* Main cursor orb */
 .custom-cursor {
@@ -971,7 +970,6 @@ html {
     opacity: 0;
   }
 }
-
 /* ===== LOADING SCREEN ===== */
 #loadingScreen {
   position: fixed;
@@ -990,10 +988,9 @@ html {
   display: flex;
   align-items: center;
   justify-content: center;
-  transition: opacity 0.8s ease, visibility 0.8s ease;
+  transition: opacity 0.5s ease, visibility 0.5s ease;
 }
 
-/* Blocker to hide background content */
 .loading-blocker {
   position: absolute;
   top: 0;
@@ -1005,7 +1002,6 @@ html {
   pointer-events: all;
 }
 
-/* Animated background with brighter colors */
 @keyframes loadingBgShift {
   0% { background-position: 0% 50%; filter: brightness(1.3) saturate(1.4); }
   25% { background-position: 50% 50%; filter: brightness(1.5) saturate(1.6); }
@@ -1023,10 +1019,10 @@ html {
   height: 100%;
   pointer-events: none;
   z-index: 1;
-  opacity: 0.8;
+  opacity: 0.7;
 }
 
-/* Pure Matrix Hack Screen - Scanlines */
+/* Pure Matrix Hack Screen - ONLY HORIZONTAL scanlines */
 .matrix-scanlines {
   position: absolute;
   top: 0;
@@ -1037,47 +1033,20 @@ html {
   z-index: 3;
   background: repeating-linear-gradient(
     0deg,
-    rgba(0, 255, 0, 0.08) 0px,
-    rgba(0, 255, 0, 0.08) 1px,
-    transparent 1px,
-    transparent 3px,
-    rgba(0, 255, 0, 0.05) 3px,
-    rgba(0, 255, 0, 0.05) 4px,
-    transparent 4px,
-    transparent 6px
+    rgba(0, 255, 0, 0.06) 0px,
+    rgba(0, 255, 0, 0.06) 2px,
+    transparent 2px,
+    transparent 8px
   );
-  animation: matrixScanlinesMove 0.5s linear infinite;
+  animation: matrixScanlinesMove 0.8s linear infinite;
 }
 
 @keyframes matrixScanlinesMove {
   0% { transform: translateY(0); }
-  100% { transform: translateY(6px); }
+  100% { transform: translateY(8px); }
 }
 
-/* Additional matrix flicker */
-.matrix-scanlines::after {
-  content: '';
-  position: absolute;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: repeating-linear-gradient(
-    90deg,
-    rgba(0, 255, 0, 0.05) 0px,
-    rgba(0, 255, 0, 0.05) 2px,
-    transparent 2px,
-    transparent 8px
-  );
-  animation: matrixFlicker 0.3s steps(2) infinite;
-}
-
-@keyframes matrixFlicker {
-  0%, 100% { opacity: 0.3; }
-  50% { opacity: 0.6; }
-}
-
-/* Glitch overlay */
+/* Glitch overlay - reduced intensity */
 .glitch-overlay {
   position: absolute;
   top: 0;
@@ -1088,29 +1057,21 @@ html {
   z-index: 2;
   background: repeating-linear-gradient(
     0deg,
-    rgba(255, 0, 0, 0.08) 0px,
-    rgba(0, 255, 0, 0.08) 2px,
-    rgba(0, 0, 255, 0.08) 4px,
+    rgba(255, 0, 0, 0.04) 0px,
+    rgba(0, 255, 0, 0.04) 2px,
+    rgba(0, 0, 255, 0.04) 4px,
     transparent 6px
   );
-  animation: glitchFlicker 0.15s infinite;
+  animation: glitchFlicker 0.2s infinite;
 }
 
 @keyframes glitchFlicker {
-  0% { opacity: 0.4; transform: translateX(0); }
-  10% { opacity: 0.6; transform: translateX(2px); }
-  20% { opacity: 0.3; transform: translateX(-2px); }
-  30% { opacity: 0.7; transform: translateX(1px); }
-  40% { opacity: 0.4; transform: translateX(-1px); }
-  50% { opacity: 0.5; transform: translateX(0); }
-  60% { opacity: 0.3; transform: translateX(3px); }
-  70% { opacity: 0.6; transform: translateX(-3px); }
-  80% { opacity: 0.7; transform: translateX(1px); }
-  90% { opacity: 0.4; transform: translateX(-1px); }
-  100% { opacity: 0.5; transform: translateX(0); }
+  0%, 100% { opacity: 0.3; transform: translateX(0); }
+  25% { opacity: 0.5; transform: translateX(1px); }
+  75% { opacity: 0.4; transform: translateX(-1px); }
 }
 
-/* Loading content container */
+/* Loading content container - reduced glow */
 .loading-content {
   position: relative;
   z-index: 10;
@@ -1120,8 +1081,8 @@ html {
   padding: 40px;
   border-radius: 20px;
   backdrop-filter: blur(5px);
-  border: 1px solid rgba(0, 255, 0, 0.3);
-  box-shadow: 0 0 50px rgba(0, 255, 0, 0.1);
+  border: 1px solid rgba(0, 255, 0, 0.2);
+  box-shadow: 0 0 30px rgba(0, 255, 0, 0.05);
 }
 
 @keyframes fadeInUp {
@@ -1135,15 +1096,14 @@ html {
   }
 }
 
-/* Loading icon */
 .loading-icon {
   width: 80px;
   height: 80px;
   margin: 0 auto 20px;
-  border: 4px solid rgba(0, 255, 0, 0.3);
-  border-top: 4px solid #00ff88;
-  border-right: 4px solid #ffcc00;
-  border-bottom: 4px solid #00ff88;
+  border: 3px solid rgba(0, 255, 0, 0.2);
+  border-top: 3px solid #00ff88;
+  border-right: 3px solid #ffcc00;
+  border-bottom: 3px solid #00ff88;
   border-radius: 50%;
   animation: spin 1s linear infinite, iconGlow 2s ease-in-out infinite;
 }
@@ -1154,40 +1114,32 @@ html {
 }
 
 @keyframes iconGlow {
-  0% { box-shadow: 0 0 10px rgba(0, 255, 0, 0.5); }
-  50% { box-shadow: 0 0 30px rgba(0, 255, 0, 0.8), 0 0 20px rgba(255, 204, 0, 0.5); }
-  100% { box-shadow: 0 0 10px rgba(0, 255, 0, 0.5); }
+  0%, 100% { box-shadow: 0 0 5px rgba(0, 255, 0, 0.2); }
+  50% { box-shadow: 0 0 15px rgba(0, 255, 0, 0.4), 0 0 10px rgba(255, 204, 0, 0.2); }
 }
 
-/* Loading title */
 .loading-title {
   font-size: 32px;
   font-family: 'Orbitron', monospace;
   color: #00ff88;
-  text-shadow: 
-    0 0 10px #00ff88,
-    0 0 20px #00ff88,
-    0 0 30px #ffcc00;
+  text-shadow: 0 0 5px #00ff88;
   margin-bottom: 30px;
   letter-spacing: 4px;
   animation: titlePulse 2s ease-in-out infinite;
 }
 
 @keyframes titlePulse {
-  0%, 100% { opacity: 1; text-shadow: 0 0 10px #00ff88; }
-  50% { opacity: 0.9; text-shadow: 0 0 20px #ffcc00, 0 0 30px #00ff88; }
+  0%, 100% { opacity: 1; text-shadow: 0 0 5px #00ff88; }
+  50% { opacity: 0.9; text-shadow: 0 0 10px #ffcc00; }
 }
 
-/* Loading progress bar */
 .loading-progress {
   width: 350px;
-  height: 4px;
-  background: rgba(0, 255, 0, 0.2);
-  border-radius: 4px;
+  height: 3px;
+  background: rgba(0, 255, 0, 0.15);
+  border-radius: 3px;
   margin: 0 auto 15px;
   overflow: hidden;
-  position: relative;
-  box-shadow: 0 0 10px rgba(0, 255, 0, 0.3);
 }
 
 .loading-progress-bar {
@@ -1195,10 +1147,9 @@ html {
   height: 100%;
   background: linear-gradient(90deg, #00ff88, #ffcc00, #00ff88);
   background-size: 300% 100%;
-  border-radius: 4px;
+  border-radius: 3px;
   animation: progressMove 1.5s linear infinite;
   transition: width 0.3s ease;
-  box-shadow: 0 0 5px #00ff88;
 }
 
 @keyframes progressMove {
@@ -1206,14 +1157,13 @@ html {
   100% { background-position: 300% 50%; }
 }
 
-/* Loading status text */
 .loading-status {
   font-family: 'Courier New', monospace;
   color: #00ff88;
   font-size: 14px;
   letter-spacing: 2px;
   animation: blink 1.5s step-end infinite;
-  text-shadow: 0 0 5px #00ff88;
+  text-shadow: 0 0 2px #00ff88;
 }
 
 @keyframes blink {
@@ -1221,7 +1171,7 @@ html {
   50% { opacity: 0.5; }
 }
 
-/* ===== BROKEN WALL BREAKTHROUGHS ===== */
+/* Broken wall breakthroughs */
 .broken-wall {
   position: absolute;
   pointer-events: none;
@@ -1230,10 +1180,8 @@ html {
   background: linear-gradient(135deg, 
     rgba(0, 0, 0, 0.9),
     rgba(0, 10, 0, 0.85));
-  border: 2px solid rgba(0, 255, 0, 0.6);
-  box-shadow: 
-    0 0 20px rgba(0, 255, 0, 0.5),
-    inset 0 0 10px rgba(0, 255, 0, 0.3);
+  border: 1px solid rgba(0, 255, 0, 0.4);
+  box-shadow: 0 0 10px rgba(0, 255, 0, 0.2);
   animation: wallBreakthrough 0.8s ease-out forwards;
 }
 
@@ -1265,8 +1213,8 @@ html {
   height: 100%;
   background: repeating-linear-gradient(
     0deg,
-    rgba(0, 255, 0, 0.2) 0px,
-    rgba(0, 255, 0, 0.2) 2px,
+    rgba(0, 255, 0, 0.15) 0px,
+    rgba(0, 255, 0, 0.15) 2px,
     transparent 2px,
     transparent 6px
   );
@@ -1279,10 +1227,7 @@ html {
 }
 
 .broken-wall::after {
-  content: '█▓▒░' + 
-           '010011' +
-           '101001' +
-           '░▒▓█';
+  content: '█▓▒░010011101001░▒▓█';
   position: absolute;
   top: 0;
   left: 0;
@@ -1290,12 +1235,12 @@ html {
   height: 100%;
   color: #00ff88;
   font-family: 'Courier New', monospace;
-  font-size: 12px;
+  font-size: 10px;
   white-space: pre;
   overflow: hidden;
   text-align: center;
   line-height: 1.2;
-  opacity: 0.8;
+  opacity: 0.6;
   animation: wallCodeFall 2s linear infinite;
 }
 
@@ -1304,30 +1249,21 @@ html {
   100% { transform: translateY(100%); }
 }
 
-/* Broken crak effect */
 .broken-wall.cracked {
-  border-color: rgba(255, 0, 0, 0.8);
-  box-shadow: 0 0 30px rgba(255, 0, 0, 0.5);
-  background: linear-gradient(135deg, 
-    rgba(30, 0, 0, 0.9),
-    rgba(0, 30, 0, 0.85));
-}
-
-.broken-wall.cracked::before {
-  background: repeating-linear-gradient(
-    0deg,
-    rgba(255, 0, 0, 0.3) 0px,
-    rgba(255, 0, 0, 0.3) 2px,
-    transparent 2px,
-    transparent 6px
-  );
+  border-color: rgba(255, 0, 0, 0.5);
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
 }
 
 .broken-wall.cracked::after {
   color: #ff4444;
-  text-shadow: 0 0 5px #ff0000;
-  content: 'ERROR' + 
-           '!!CRITICAL!!' +
-           'SYS_FAIL' +
-           '>>OVERRIDE<<';
+  content: 'ERROR!!CRITICAL!!SYS_FAIL>>OVERRIDE<<';
+}
+
+/* Hide initial page content */
+body.loading .center,
+body.loading #gamesContainer,
+body.loading .footer,
+body.loading #searchInput,
+body.loading .fav-sidebar-btn {
+  visibility: hidden;
 }
