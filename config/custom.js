@@ -1,7 +1,7 @@
 // Initialize the homepage
 document.addEventListener('DOMContentLoaded', () => {
-  document.getElementById('title').textContent = 'Fanter - Unblocked Games';
-  document.getElementById('subtitle').textContent = '200+ Games to Play';
+  document.getElementById('title').textContent = 'fanter beta';
+  document.getElementById('subtitle').textContent = 'v0.25, some settings complete, more games added, bugfixes and more coming soon! :3';
   
   // Load your games
   loadGames();

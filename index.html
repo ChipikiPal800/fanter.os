@@ -5,22 +5,175 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>fanter v0.2</title>
     <link rel="stylesheet" href="config/main.css" />
-    <script src="config/main.js" type="module"></script>
+    <script src="config/theme-loader.js"></script>
+    <script src="config/main.js"></script>
   </head>
   <body>
-   <div class="center">
-  <h1 id="title"></h1>
-  <p id="subtitle"></p>
-  <button class="settings-btn" onclick="window.location.href='settings.html'">⚙ Settings</button>
-</div>
+    <button class="fav-sidebar-btn" id="favSidebarBtn" onclick="toggleFavSidebar()">★</button>
+    <div class="center">
+      <h1 id="title"></h1>
+      <p id="subtitle"></p>
+      <button class="settings-btn" onclick="window.location.href='settings.html'">⚙ Settings</button>
+    </div>
     <div class="center">
       <input type="text" id="searchInput" placeholder="search 4 games" />
     </div>
     <div id="gamesContainer"></div>
     <div class="footer">
-      <a style="font-weight: 700">a site by nathaniel oman 
+      <a style="font-weight: 700">a site created by abcatlmfao, / chipikipal800, / abcatlmfao69;
       </a><a style="font-weight: 700" class="link" href="https://dsc.gg/parcoil">parcoil network</a>
     </div>
+
+    <script>
+      let lastKeyTime = 0;
+      let lastKey = "";
+      document.addEventListener("keydown", (e) => {
+        const safetyKey = localStorage.getItem("safetyKey");
+        const safetyUrl = localStorage.getItem("safetyUrl");
+        if (!safetyKey || !safetyUrl) return;
+        const now = Date.now();
+        const pressedKey = e.key.toLowerCase();
+        const storedKey = safetyKey.toLowerCase();
+        if (pressedKey === storedKey && pressedKey === lastKey && now - lastKeyTime < 1000) {
+          e.preventDefault();
+          window.location.href = safetyUrl;
+        }
+        lastKey = pressedKey;
+        lastKeyTime = now;
+      });
+    </script>
+    
+    <script>
+      
+      // ===== CUSTOM CURSOR WITH TRAIL =====
+(function() {
+  // Create main cursor orb
+  const cursor = document.createElement('div');
+  cursor.className = 'custom-cursor';
+  document.body.appendChild(cursor);
+
+  let trailPositions = [];
+  const trailLength = 8;
+  let mouseX = window.innerWidth / 2;
+  let mouseY = window.innerHeight / 2;
+  let cursorX = mouseX;
+  let cursorY = mouseY;
+  
+  // Track mouse position
+  document.addEventListener('mousemove', (e) => {
+    mouseX = e.clientX;
+    mouseY = e.clientY;
+    
+    // Add position to trail array
+    trailPositions.unshift({ x: mouseX, y: mouseY });
+    if (trailPositions.length > trailLength) trailPositions.pop();
+  });
+
+  // Create trail dots
+  function createTrailDots() {
+    const existingTrails = document.querySelectorAll('.cursor-trail');
+    existingTrails.forEach(trail => trail.remove());
+    
+    trailPositions.forEach((pos, index) => {
+      if (index === 0) return; // Skip the first position (where main cursor is)
+      
+      const trail = document.createElement('div');
+      trail.className = 'cursor-trail';
+      
+      // Calculate size and opacity based on position in trail
+      const size = 10 - (index * 0.8);
+      const opacity = 0.5 - (index * 0.05);
+      
+      trail.style.cssText = `
+        left: ${pos.x}px;
+        top: ${pos.y}px;
+        width: ${Math.max(3, size)}px;
+        height: ${Math.max(3, size)}px;
+        background: ${index < 3 ? '#ffcc00' : '#2d5ae3'};
+        opacity: ${Math.max(0.1, opacity)};
+      `;
+      
+      document.body.appendChild(trail);
+    });
+  }
+
+  // Smooth animation for main cursor
+  function animateCursor() {
+    // Smooth follow with easing
+    cursorX += (mouseX - cursorX) * 0.25;
+    cursorY += (mouseY - cursorY) * 0.25;
+    cursor.style.left = cursorX + 'px';
+    cursor.style.top = cursorY + 'px';
+    
+    // Update trail dots
+    createTrailDots();
+    
+    requestAnimationFrame(animateCursor);
+  }
+  
+  animateCursor();
+
+  // Hover effect for all interactive elements
+  function addHoverEffects() {
+    const interactiveElements = document.querySelectorAll('a, button, .game, .settings-btn, .fav-btn, .theme-option-btn, .game img, #searchInput, .fav-sidebar-btn, .link');
+    
+    interactiveElements.forEach(el => {
+      el.addEventListener('mouseenter', () => {
+        cursor.classList.add('hover');
+      });
+      el.addEventListener('mouseleave', () => {
+        cursor.classList.remove('hover');
+      });
+    });
+  }
+  
+  // Initial hover effects
+  addHoverEffects();
+  
+  // Watch for dynamically added elements (like games)
+  const observer = new MutationObserver(function(mutations) {
+    addHoverEffects();
+  });
+  observer.observe(document.body, { childList: true, subtree: true });
+
+  // Click animation and ripple
+  document.addEventListener('click', (e) => {
+    // Add click animation to cursor
+    cursor.classList.add('click');
+    setTimeout(() => {
+      cursor.classList.remove('click');
+    }, 150);
+    
+    // Create ripple effect
+    const ripple = document.createElement('div');
+    ripple.className = 'cursor-ripple';
+    ripple.style.left = e.clientX + 'px';
+    ripple.style.top = e.clientY + 'px';
+    ripple.style.animation = 'rippleAnim 0.4s ease-out forwards';
+    document.body.appendChild(ripple);
+    setTimeout(() => ripple.remove(), 400);
+  });
+
+  // Hide cursor when leaving window
+  document.addEventListener('mouseleave', () => {
+    cursor.style.opacity = '0';
+    const trails = document.querySelectorAll('.cursor-trail');
+    trails.forEach(trail => trail.style.opacity = '0');
+  });
+  
+  document.addEventListener('mouseenter', () => {
+    cursor.style.opacity = '1';
+    const trails = document.querySelectorAll('.cursor-trail');
+    trails.forEach(trail => trail.style.opacity = '1');
+  });
+  
+  // Make sure cursor is visible on load
+  setTimeout(() => {
+    cursor.style.opacity = '1';
+  }, 100);
+  
+  console.log('Custom cursor initialized!');
+})();
+    </script>
   </body>
 </html>
-

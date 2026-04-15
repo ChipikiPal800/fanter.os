@@ -1,1 +1,37 @@
+/* aply theme text color to cards and all text elements */
+.game p,
+.settings-card h2,
+.settings-card p,
+.settings-btn,
+.fav-btn,
+.theme-tab-card,
+.theme-option-btn,
+.key-display,
+.key-capture,
+.safety-desc,
+#safetyKeyMenu h2,
+#themeMenu h2,
+#safetyKeyMenu label,
+#themeMenu label,
+.font-preview,
+.center h1,
+.center p,
+.footer,
+.link {
+  color: var(--text-color) !important;
+}
 
+/* apply teme text color to inputs */
+#searchInput,
+#safetyUrl {
+  color: var(--text-color) !important;
+}
+
+/* card bgs routed through --card-bg variable */
+.game,
+.settings-card,
+#safetyKeyMenu,
+#themeMenu,
+.theme-tab-card {
+  background: var(--card-bg, rgba(20, 30, 50, 0.8)) !important;
+}

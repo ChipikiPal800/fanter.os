@@ -4,9 +4,9 @@
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>fanter v0.2 | settings</title>
-    <link rel="stylesheet" href="config/custom.css" />
     <link rel="stylesheet" href="config/main.css" />
-    <script src="config/main.js" type="module"></script>
+    <script src="config/theme-loader.js"></script>
+    <script src="config/main.js"></script>
   </head>
   <body>
     <span id="title" style="display:none"></span>
@@ -14,7 +14,7 @@
 
     <div class="center">
       <h1>settings.</h1>
-      <p>customize your experience :3</p>
+      <p>customization for your experience</p>
       <button class="settings-btn" onclick="window.location.href='index.html'">← back</button>
     </div>
 
@@ -23,22 +23,15 @@
       <div class="settings-card">
         <div class="settings-card-icon">🎨</div>
         <h2>theme</h2>
-        <p>change the color theme of the site.</p>
-        <button class="settings-btn" disabled>coming soon</button>
-      </div>
-
-      <div class="settings-card">
-        <div class="settings-card-icon">🔤</div>
-        <h2>font size</h2>
-        <p>adjust the size of text across the site.</p>
-        <button class="settings-btn" disabled>coming soon</button>
+        <p>change the theme of the site.</p>
+        <button class="settings-btn" onclick="openThemeMenu()">customize</button>
       </div>
 
       <div class="settings-card">
         <div class="settings-card-icon">🌐</div>
         <h2>language</h2>
-        <p>change the language of the site.</p>
-        <button class="settings-btn" disabled>coming soon</button>
+        <p>use your browser's built-in translation!</p>
+        <button class="settings-btn" onclick="showTranslateTip()">🌐 how to translate</button>
       </div>
 
       <div class="settings-card">
@@ -49,7 +42,370 @@
       </div>
 
       <div class="settings-card">
+        <div class="settings-card-icon">🔑</div>
+        <h2>safety key</h2>
+        <p>press a key twice to instantly redirect to a safe url.</p>
+        <button class="settings-btn" onclick="openSafetyKeyMenu()">configure</button>
+      </div>
+
+      <div class="settings-card">
         <div class="settings-card-icon">⭐</div>
         <h2>favourites</h2>
-        <p>manage your favourite games.</p>
-        <button class="settings-
+        <p>only show your favourited games.</p>
+        <button class="settings-btn fav-toggle-btn" id="favToggleBtn" onclick="toggleFavFilter()">show: off</button>
+        <br/><br/>
+        <button class="settings-btn" onclick="localStorage.removeItem('favourites'); alert('Favourites cleared!')">clear favourites</button>
+      </div>
+
+    </div>
+
+    <!-- Theme Menu -->
+    <div id="themeOverlay" style="display:none;">
+      <div id="themeMenu">
+        <div id="themeTabSelector">
+          <h2>🎨 customize</h2>
+          <p class="safety-desc">pick a category to customize.</p>
+          <div class="theme-tab-grid">
+            <button class="theme-tab-card" onclick="showThemeTab('background')">
+              <div class="theme-tab-icon">🌅</div>
+              <div>background</div>
+            </button>
+            <button class="theme-tab-card" onclick="showThemeTab('text')">
+              <div class="theme-tab-icon">🔤</div>
+              <div>text styling</div>
+            </button>
+            <button class="theme-tab-card" onclick="showThemeTab('themes')">
+              <div class="theme-tab-icon">✨</div>
+              <div>themes</div>
+            </button>
+          </div>
+          <div class="safety-btn-row">
+            <button class="settings-btn" onclick="saveTheme()">💾 save changes</button>
+            <button class="settings-btn danger-btn" onclick="closeThemeMenu()">cancel</button>
+          </div>
+        </div>
+
+        <div id="themeTab-background" class="theme-tab-content" style="display:none;">
+          <button class="theme-back-btn" onclick="showThemeTabSelector()">← back</button>
+          <h2>🌅 background</h2>
+          <p class="safety-desc">choose how your background looks.</p>
+          <div class="theme-option-grid">
+            <button class="theme-option-btn" onclick="selectBg('chill')" id="bg-chill">🌈 chill cycle</button>
+            <button class="theme-option-btn" onclick="selectBg('parallax')" id="bg-parallax">🌌 parallax stars</button>
+            <button class="theme-option-btn" onclick="selectBg('solid')" id="bg-solid">🎨 solid color</button>
+            <button class="theme-option-btn" onclick="selectBg('aurora')" id="bg-aurora">🌊 aurora</button>
+            <button class="theme-option-btn" onclick="selectBg('void')" id="bg-void">🕳️ void</button>
+          </div>
+          <div id="colorPickerWrap" style="display:none; margin-top:18px;">
+            <label>pick your color</label>
+            <input type="color" id="solidColorPicker" value="#1a1a2e" style="width:100%; height:50px; border-radius:10px; border:none; cursor:pointer; margin-top:8px;" />
+          </div>
+        </div>
+
+        <div id="themeTab-text" class="theme-tab-content" style="display:none;">
+          <button class="theme-back-btn" onclick="showThemeTabSelector()">← back</button>
+          <h2>🔤 text styling</h2>
+          <p class="safety-desc">customize how text looks across the site.</p>
+          <label>font size</label>
+          <div class="theme-slider-row">
+            <span>small</span>
+            <input type="range" id="fontSizeSlider" min="12" max="24" value="16" oninput="updateFontPreview()" />
+            <span>large</span>
+          </div>
+          <label style="margin-top:18px;">font color</label>
+          <div style="display:flex; gap:10px; align-items:center; margin-top:8px;">
+            <input type="color" id="fontColorPicker" value="#ffffff" style="flex:1; height:45px; border-radius:10px; border:none; cursor:pointer;" oninput="updateFontPreview()" />
+            <button class="settings-btn" onclick="resetFontColor()" style="white-space:nowrap;">↺ reset</button>
+          </div>
+          <div id="fontPreview" class="font-preview">preview text 🎮</div>
+          <label style="margin-top:18px;">font style</label>
+          <div class="theme-option-grid">
+            <button class="theme-option-btn" onclick="selectFont('ubuntu')" id="font-ubuntu" style="font-family:ubuntu">Ubuntu</button>
+            <button class="theme-option-btn" onclick="selectFont('orbitron')" id="font-orbitron" style="font-family:orbitron">Orbitron</button>
+            <button class="theme-option-btn" onclick="selectFont('rajdhani')" id="font-rajdhani" style="font-family:rajdhani">Rajdhani</button>
+            <button class="theme-option-btn" onclick="selectFont('exo2')" id="font-exo2" style="font-family:'Exo 2'">Exo 2</button>
+            <button class="theme-option-btn" onclick="selectFont('spacegrotesk')" id="font-spacegrotesk" style="font-family:'Space Grotesk'">Space Grotesk</button>
+          </div>
+        </div>
+
+        <div id="themeTab-themes" class="theme-tab-content" style="display:none;">
+          <button class="theme-back-btn" onclick="showThemeTabSelector()">← back</button>
+          <h2>✨ themes</h2>
+          <p class="safety-desc">pick a full preset theme.</p>
+          <div class="theme-option-grid">
+            <button class="theme-option-btn theme-preset" onclick="selectTheme('chill')" id="theme-chill">chill (normal)</button>
+            <button class="theme-option-btn theme-preset" onclick="selectTheme('dark')" id="theme-dark">dark mode</button>
+            <button class="theme-option-btn theme-preset" onclick="selectTheme('light')" id="theme-light">light mode</button>
+            <button class="theme-option-btn theme-preset" onclick="selectTheme('rainbow')" id="theme-rainbow">rainbow</button>
+            <button class="theme-option-btn theme-preset" onclick="selectTheme('neon')" id="theme-neon">neon city</button>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Safety Key Menu -->
+    <div id="safetyKeyOverlay" style="display:none;">
+      <div id="safetyKeyMenu">
+        <h2>safety key 🔑</h2>
+        <p class="safety-desc">set a url and a key — press it twice quickly on any page to escape there instantly.</p>
+        <label>redirect url</label>
+        <input type="text" id="safetyUrl" placeholder="https://google.com" />
+        <label>escape key</label>
+        <div id="keyDisplay" class="key-display">press a key...</div>
+        <input type="text" id="safetyKeyInput" class="key-capture" placeholder="click here then press a key" readonly />
+        <div class="safety-btn-row">
+          <button class="settings-btn" onclick="saveSafetyKey()">save</button>
+          <button class="settings-btn danger-btn" onclick="closeSafetyKeyMenu()">cancel</button>
+        </div>
+      </div>
+    </div>
+
+    <script>
+      // Simple toast notification
+      function showToast(message) {
+        let toast = document.getElementById('custom-toast');
+        if (toast) toast.remove();
+        
+        toast = document.createElement('div');
+        toast.id = 'custom-toast';
+        toast.textContent = message;
+        toast.style.cssText = `
+          position: fixed;
+          bottom: 20px;
+          right: 20px;
+          background: rgba(45, 90, 227, 0.95);
+          color: white;
+          padding: 12px 20px;
+          border-radius: 10px;
+          font-family: ubuntu, sans-serif;
+          font-size: 14px;
+          z-index: 10000;
+          backdrop-filter: blur(10px);
+          box-shadow: 0 4px 15px rgba(0,0,0,0.3);
+          animation: fadeInOut 3s ease forwards;
+        `;
+        document.body.appendChild(toast);
+        
+        setTimeout(() => {
+          if (toast) toast.remove();
+        }, 3000);
+      }
+
+      // Show translation tip
+      window.showTranslateTip = function() {
+        const isChrome = navigator.userAgent.indexOf('Chrome') > -1;
+        const isFirefox = navigator.userAgent.indexOf('Firefox') > -1;
+        const isSafari = navigator.userAgent.indexOf('Safari') > -1 && !isChrome;
+        
+        let tip = "🌐 How to translate:\n\n";
+        if (isChrome) {
+          tip += "Chrome: Right-click → 'Translate to English'";
+        } else if (isFirefox) {
+          tip += "Firefox: Right-click → 'Translate Page'";
+        } else if (isSafari) {
+          tip += "Safari: Enable translation in address bar";
+        } else {
+          tip += "Right-click on the page and look for 'Translate' option";
+        }
+        
+        tip += "\n\nOr use your browser's settings/address bar to translate!";
+        
+        alert(tip);
+        showToast("🌐 Right-click anywhere → Translate to your language!");
+      };
+
+      // ========== FAVOURITES ==========
+      function updateFavBtn() {
+        const btn = document.getElementById("favToggleBtn");
+        const on = localStorage.getItem("favFilter") === "true";
+        btn.textContent = on ? "show: on ✅" : "show: off ❌";
+        btn.style.borderColor = on ? "#00cc66" : "rgba(45, 90, 227, 0.5)";
+        btn.style.boxShadow = on ? "0 8px 25px rgba(0, 204, 102, 0.4)" : "";
+      }
+      window.toggleFavFilter = function() {
+        const current = localStorage.getItem("favFilter") === "true";
+        localStorage.setItem("favFilter", (!current).toString());
+        updateFavBtn();
+      };
+      updateFavBtn();
+
+      // ========== SAFETY KEY ==========
+      window.openSafetyKeyMenu = function() {
+        const overlay = document.getElementById("safetyKeyOverlay");
+        const urlInput = document.getElementById("safetyUrl");
+        const keyDisplay = document.getElementById("keyDisplay");
+        overlay.style.display = "flex";
+        requestAnimationFrame(() => requestAnimationFrame(() => overlay.classList.add("visible")));
+        urlInput.value = localStorage.getItem("safetyUrl") || "";
+        const savedKey = localStorage.getItem("safetyKey") || "";
+        if (savedKey) {
+          keyDisplay.textContent = savedKey.toUpperCase();
+          keyDisplay.classList.add("set");
+        } else {
+          keyDisplay.textContent = "press a key...";
+          keyDisplay.classList.remove("set");
+        }
+      };
+      window.closeSafetyKeyMenu = function() {
+        const overlay = document.getElementById("safetyKeyOverlay");
+        overlay.classList.remove("visible");
+        setTimeout(() => overlay.style.display = "none", 400);
+      };
+      window.saveSafetyKey = function() {
+        const url = document.getElementById("safetyUrl").value.trim();
+        const key = localStorage.getItem("safetyKeyTemp") || localStorage.getItem("safetyKey");
+        if (!url) { alert("please enter a url!"); return; }
+        if (!key) { alert("please select a key!"); return; }
+        localStorage.setItem("safetyUrl", url);
+        localStorage.setItem("safetyKey", key);
+        closeSafetyKeyMenu();
+        alert("safety key saved! ✅");
+      };
+      document.getElementById("safetyKeyInput").addEventListener("keydown", (e) => {
+        e.preventDefault();
+        const key = e.key;
+        localStorage.setItem("safetyKeyTemp", key);
+        const display = document.getElementById("keyDisplay");
+        display.textContent = key.toUpperCase();
+        display.classList.add("set");
+      });
+      document.getElementById("safetyKeyOverlay").addEventListener("click", (e) => {
+        if (e.target.id === "safetyKeyOverlay") closeSafetyKeyMenu();
+      });
+
+      // ========== THEME MENU ==========
+      let themeSettings = JSON.parse(localStorage.getItem("themeSettings") || "{}");
+      let selectedBg = themeSettings.bg || "chill";
+      let selectedFontFamily = themeSettings.font || "ubuntu";
+      let selectedFontSize = themeSettings.fontSize || 16;
+      let selectedFontColor = themeSettings.fontColor || "#ffffff";
+      let selectedTheme = themeSettings.theme || "chill";
+
+      const fontMap = {
+        ubuntu: 'Ubuntu, sans-serif',
+        orbitron: 'Orbitron, monospace',
+        rajdhani: 'Rajdhani, sans-serif',
+        exo2: "'Exo 2', sans-serif",
+        spacegrotesk: "'Space Grotesk', sans-serif"
+      };
+
+      window.updateFontPreview = function() {
+        const preview = document.getElementById("fontPreview");
+        if (!preview) return;
+        const sizeVal = document.getElementById("fontSizeSlider").value;
+        const colorVal = document.getElementById("fontColorPicker").value;
+        selectedFontSize = parseInt(sizeVal);
+        selectedFontColor = colorVal;
+        preview.style.fontSize = sizeVal + "px";
+        preview.style.color = colorVal;
+        preview.style.fontFamily = fontMap[selectedFontFamily] || selectedFontFamily;
+        preview.textContent = `preview text 🎮  (${sizeVal}px)`;
+      };
+
+      window.openThemeMenu = function() {
+        const overlay = document.getElementById("themeOverlay");
+        overlay.style.display = "flex";
+        requestAnimationFrame(() => requestAnimationFrame(() => overlay.classList.add("visible")));
+        showThemeTabSelector();
+        syncSelections();
+      };
+      window.closeThemeMenu = function() {
+        const overlay = document.getElementById("themeOverlay");
+        overlay.classList.remove("visible");
+        setTimeout(() => overlay.style.display = "none", 400);
+      };
+      window.showThemeTabSelector = function() {
+        document.getElementById("themeTabSelector").style.display = "block";
+        document.querySelectorAll(".theme-tab-content").forEach(t => t.style.display = "none");
+      };
+      window.showThemeTab = function(tab) {
+        document.getElementById("themeTabSelector").style.display = "none";
+        document.querySelectorAll(".theme-tab-content").forEach(t => t.style.display = "none");
+        document.getElementById("themeTab-" + tab).style.display = "block";
+        if (tab === "text") updateFontPreview();
+      };
+      window.selectBg = function(type) {
+        selectedBg = type;
+        document.querySelectorAll("[id^='bg-']").forEach(b => b.classList.remove("selected"));
+        document.getElementById("bg-" + type).classList.add("selected");
+        document.getElementById("colorPickerWrap").style.display = type === "solid" ? "block" : "none";
+      };
+      window.selectFont = function(font) {
+        selectedFontFamily = font;
+        document.querySelectorAll("[id^='font-']").forEach(b => b.classList.remove("selected"));
+        document.getElementById("font-" + font).classList.add("selected");
+        updateFontPreview();
+      };
+      window.resetFontColor = function() {
+        document.getElementById("fontColorPicker").value = "#ffffff";
+        selectedFontColor = "#ffffff";
+        updateFontPreview();
+      };
+      window.selectTheme = function(theme) {
+        selectedTheme = theme;
+        document.querySelectorAll("[id^='theme-']").forEach(b => b.classList.remove("selected"));
+        document.getElementById("theme-" + theme).classList.add("selected");
+      };
+      function syncSelections() {
+        const fontSizeSlider = document.getElementById("fontSizeSlider");
+        const fontColorPicker = document.getElementById("fontColorPicker");
+        const solidPicker = document.getElementById("solidColorPicker");
+        if (fontSizeSlider) fontSizeSlider.value = selectedFontSize;
+        if (fontColorPicker) fontColorPicker.value = selectedFontColor;
+        selectBg(selectedBg);
+        selectFont(selectedFontFamily);
+        selectTheme(selectedTheme);
+        updateFontPreview();
+        if (themeSettings.solidColor && solidPicker) solidPicker.value = themeSettings.solidColor;
+      }
+      window.saveTheme = function() {
+        const themeToSave = {
+          bg: selectedBg,
+          solidColor: document.getElementById("solidColorPicker").value,
+          font: selectedFontFamily,
+          fontSize: parseInt(document.getElementById("fontSizeSlider").value),
+          fontColor: document.getElementById("fontColorPicker").value,
+          theme: selectedTheme
+        };
+        localStorage.setItem("themeSettings", JSON.stringify(themeToSave));
+        if (typeof window.loadAndApplyTheme === 'function') window.loadAndApplyTheme();
+        closeThemeMenu();
+        showToast("Theme saved! ✅");
+      };
+      document.getElementById("themeOverlay").addEventListener("click", (e) => {
+        if (e.target.id === "themeOverlay") closeThemeMenu();
+      });
+
+      // ========== SAFETY KEY DOUBLE-TAP ==========
+      let lastKeyTime = 0;
+      let lastKey = "";
+      document.addEventListener("keydown", (e) => {
+        const safetyKey = localStorage.getItem("safetyKey");
+        const safetyUrl = localStorage.getItem("safetyUrl");
+        if (!safetyKey || !safetyUrl) return;
+        const now = Date.now();
+        const pressedKey = e.key.toLowerCase();
+        const storedKey = safetyKey.toLowerCase();
+        if (pressedKey === storedKey && pressedKey === lastKey && now - lastKeyTime < 1000) {
+          e.preventDefault();
+          window.location.href = safetyUrl;
+        }
+        lastKey = pressedKey;
+        lastKeyTime = now;
+      });
+
+      // Add fadeInOut animation
+      const style = document.createElement('style');
+      style.textContent = `
+        @keyframes fadeInOut {
+          0% { opacity: 0; transform: translateY(20px); }
+          15% { opacity: 1; transform: translateY(0); }
+          85% { opacity: 1; transform: translateY(0); }
+          100% { opacity: 0; transform: translateY(-20px); visibility: hidden; }
+        }
+      `;
+      document.head.appendChild(style);
+    </script>
+
+  </body>
+</html>

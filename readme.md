@@ -28,4 +28,4 @@ hey :)
 
 
 
-  credits for games on site (sorry if i missed some i forgot, i made fanter 2 yrs ago): bog (aukak on github), breadbb, corbins98, 
+  credits for games on site (sorry if i missed some i forgot, i made fanter 2 yrs ago): bog (aukak on github), breadbb, corbins98,
