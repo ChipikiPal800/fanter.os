@@ -57,8 +57,13 @@ body {
   user-select: none;
   min-height: 100vh;
   position: relative;
-  overflow-x: hidden;
+  overflow-x: visible;  /* ← CHANGED from hidden to visible */
   text-shadow: 0 0 6px rgba(255, 255, 255, 0.08);
+}
+
+/* Allow chinchilla to show cmpletely */
+html {
+  overflow-x: visible !important;
 }
 
 /* Floating background elements */
