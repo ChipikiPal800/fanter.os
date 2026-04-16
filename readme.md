@@ -47,19 +47,35 @@ features so far:
 
 🔒 privacy settings - incognito mode, clear history, reset all settings
 what i'm working on next:
-more secret achievements (easter eggs, hidden stuff)
+
+more secret achievements (easter eggs, hidden stuff)  
+
 quick launch bar (ctrl+k to search and launch games)
+
 game categories / tags
+
 game details modal (click a game for more info)
+
 how to run:
+
 clone the repo
+
 put your games in config/games.json (there's an example structure in the code)
+
 host it anywhere (github pages works great)
+
 if you want global ratings to work, make a free jsonbin account and add your api key/bin id to main.js
+
 credits:
-built by abcatlmfao and chipikipal800
+
+built by abcatlmfao / chipikipal800 (same person but different accounts (me) )
+
 parcoil network for the game api (https://dsc.gg/parcoil)
+
 sir chinchilla (rip, he got removed but he lives in our hearts)
+
 more like game porters imma add later since fanter isnt in proper release yet
+
 known bugs:
+
 none that i know of rn but probably some lol
