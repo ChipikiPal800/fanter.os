@@ -1,91 +1,94 @@
 // ===== GAME CATEGORIES / TAGS WITH SORTING =====
 
-const GAME_CATEGORIES = {
-  'action': ['shooter', 'fighting', 'beat', 'combat', 'battle', 'war', 'gun', 'shoot', 'doom', 'quake'],
-  'puzzle': ['puzzle', 'match', 'brain', 'logic', 'memory', 'sudoku', 'tetris', 'blocks', 'merge'],
-  'racing': ['race', 'racing', 'drive', 'car', 'bike', 'motor', 'speed', 'drift', 'formula'],
-  'sports': ['sport', 'football', 'soccer', 'basketball', 'baseball', 'tennis', 'golf', 'bowling'],
-  'adventure': ['adventure', 'quest', 'explore', 'journey', 'rpg', 'story', 'platformer'],
-  'platformer': ['platform', 'jump', 'run', 'runner', 'mario', 'sonic', 'crash'],
-  'strategy': ['strategy', 'tower', 'defense', 'chess', 'simulation', 'sim', 'tycoon'],
-  'multiplayer': ['multiplayer', 'online', 'co-op', 'versus', 'pvp', '2 player', 'two player'],
-  'arcade': ['arcade', 'classic', 'retro', 'pixel', 'space', 'invader', 'pacman'],
-  'horror': ['horror', 'scary', 'creepy', 'haunted', 'ghost', 'zombie', 'survival']
-};
-
 let currentCategory = 'all';
 let currentSort = 'default';
-let currentGamesList = [];
 
-function detectGameCategory(gameName) {
-  const lowerName = gameName.toLowerCase();
-  for (const [category, keywords] of Object.entries(GAME_CATEGORIES)) {
-    for (const keyword of keywords) {
-      if (lowerName.includes(keyword)) {
-        return category;
-      }
-    }
-  }
-  return 'other';
-}
+const CATEGORY_ICONS = {
+  'action': '⚔️',
+  'puzzle': '🧩',
+  'racing': '🏎️',
+  'sports': '⚽',
+  'adventure': '🗺️',
+  'platformer': '🏃',
+  'strategy': '♟️',
+  'multiplayer': '👥',
+  'arcade': '🕹️',
+  'horror': '👻',
+  'other': '🎮'
+};
+
+const CATEGORY_COLORS = {
+  'action': '#ff4444',
+  'puzzle': '#44ff44',
+  'racing': '#ff8844',
+  'sports': '#44ff88',
+  'adventure': '#44aaff',
+  'platformer': '#ff44ff',
+  'strategy': '#88ff44',
+  'multiplayer': '#ffaa44',
+  'arcade': '#ff44aa',
+  'horror': '#aa44ff',
+  'other': '#aaaaaa'
+};
 
 function getCategoryIcon(category) {
-  const icons = {
-    'action': '⚔️',
-    'puzzle': '🧩',
-    'racing': '🏎️',
-    'sports': '⚽',
-    'adventure': '🗺️',
-    'platformer': '🏃',
-    'strategy': '♟️',
-    'multiplayer': '👥',
-    'arcade': '🕹️',
-    'horror': '👻',
-    'other': '🎮'
-  };
-  return icons[category] || '🎮';
+  return CATEGORY_ICONS[category] || '🎮';
 }
 
 function getCategoryColor(category) {
-  const colors = {
-    'action': '#ff4444',
-    'puzzle': '#44ff44',
-    'racing': '#ff8844',
-    'sports': '#44ff88',
-    'adventure': '#44aaff',
-    'platformer': '#ff44ff',
-    'strategy': '#88ff44',
-    'multiplayer': '#ffaa44',
-    'arcade': '#ff44aa',
-    'horror': '#aa44ff',
-    'other': '#aaaaaa'
-  };
-  return colors[category] || '#aaaaaa';
+  return CATEGORY_COLORS[category] || '#aaaaaa';
 }
 
-// Store games with their categories
-function storeGamesWithCategories() {
-  const games = document.querySelectorAll('.game');
-  currentGamesList = [];
-  games.forEach(game => {
-    const gameName = game.querySelector('p')?.textContent;
-    if (gameName) {
-      const category = detectGameCategory(gameName);
-      game.setAttribute('data-category', category);
-      currentGamesList.push({
-        element: game,
-        name: gameName,
-        category: category,
-        rating: parseFloat(game.querySelector('.rating-average')?.textContent?.match(/★ ([\d.]+)/)?.[1] || 0)
-      });
+// Add category tag to game cards using data from games.json
+function addCategoryTags() {
+  document.querySelectorAll('.game').forEach(gameCard => {
+    if (gameCard.hasAttribute('data-category-added')) return;
+    
+    const gameName = gameCard.querySelector('p')?.textContent;
+    if (gameName && typeof gamesData !== 'undefined') {
+      const gameData = gamesData.find(g => g.name === gameName);
+      const category = gameData?.category || 'other';
+      const categoryTag = document.createElement('div');
+      categoryTag.className = 'game-category';
+      categoryTag.style.cssText = `
+        display: inline-block;
+        font-size: 10px;
+        padding: 2px 8px;
+        border-radius: 20px;
+        background: ${getCategoryColor(category)}20;
+        color: ${getCategoryColor(category)};
+        margin-top: 5px;
+        font-family: monospace;
+      `;
+      categoryTag.innerHTML = `${getCategoryIcon(category)} ${category}`;
+      gameCard.appendChild(categoryTag);
+      gameCard.setAttribute('data-category', category);
+      gameCard.setAttribute('data-category-added', 'true');
     }
   });
 }
 
-// Sort games by different criteria
-function sortGames(sortType) {
-  currentSort = sortType;
+// Filter games by category
+function filterByCategory(category) {
+  const games = document.querySelectorAll('.game');
+  let visibleCount = 0;
   
+  games.forEach(game => {
+    const gameCategory = game.getAttribute('data-category');
+    if (category === 'all' || gameCategory === category) {
+      game.style.display = '';
+      visibleCount++;
+    } else {
+      game.style.display = 'none';
+    }
+  });
+  
+  updateCategoryCount(visibleCount);
+  return visibleCount;
+}
+
+// Sort games
+function sortGames(sortType) {
   const container = document.getElementById('gamesContainer');
   const games = Array.from(container.children);
   
@@ -111,32 +114,15 @@ function sortGames(sortType) {
     }
   });
   
-  // Re-append in sorted order
   sortedGames.forEach(game => container.appendChild(game));
 }
 
-// Filter and sort games
+// Combined filter and sort
 function filterAndSort() {
-  const games = document.querySelectorAll('.game');
-  let visibleCount = 0;
-  
-  games.forEach(game => {
-    const gameCategory = game.getAttribute('data-category');
-    if (currentCategory === 'all' || gameCategory === currentCategory) {
-      game.style.display = '';
-      visibleCount++;
-    } else {
-      game.style.display = 'none';
-    }
-  });
-  
-  // Apply sorting to visible games
+  filterByCategory(currentCategory);
   if (currentSort !== 'default') {
     sortGames(currentSort);
   }
-  
-  // Update count display
-  updateCategoryCount(visibleCount);
 }
 
 function updateCategoryCount(visibleCount) {
@@ -162,35 +148,7 @@ function updateCategoryCount(visibleCount) {
   }
 }
 
-// Add category tag to game cards
-function addCategoryTags() {
-  document.querySelectorAll('.game').forEach(gameCard => {
-    if (gameCard.hasAttribute('data-category-added')) return;
-    
-    const gameName = gameCard.querySelector('p')?.textContent;
-    if (gameName) {
-      const category = detectGameCategory(gameName);
-      const categoryTag = document.createElement('div');
-      categoryTag.className = 'game-category';
-      categoryTag.style.cssText = `
-        display: inline-block;
-        font-size: 10px;
-        padding: 2px 8px;
-        border-radius: 20px;
-        background: ${getCategoryColor(category)}20;
-        color: ${getCategoryColor(category)};
-        margin-top: 5px;
-        font-family: monospace;
-      `;
-      categoryTag.innerHTML = `${getCategoryIcon(category)} ${category}`;
-      gameCard.appendChild(categoryTag);
-      gameCard.setAttribute('data-category', category);
-      gameCard.setAttribute('data-category-added', 'true');
-    }
-  });
-}
-
-// Add category filter bar with sort options
+// Add category filter bar
 function addCategoryFilterBar() {
   const searchContainer = document.querySelector('.center');
   if (!searchContainer || document.getElementById('category-filter-bar')) return;
@@ -202,7 +160,14 @@ function addCategoryFilterBar() {
     max-width: 900px;
   `;
   
-  const categories = ['all', 'action', 'puzzle', 'racing', 'sports', 'adventure', 'platformer', 'strategy', 'multiplayer', 'arcade', 'horror'];
+  // Get unique categories from gamesData
+  let availableCategories = ['all'];
+  if (typeof gamesData !== 'undefined' && gamesData.length) {
+    const cats = new Set(gamesData.map(g => g.category || 'other'));
+    availableCategories.push(...Array.from(cats).sort());
+  } else {
+    availableCategories.push(...Object.keys(CATEGORY_ICONS));
+  }
   
   // Category buttons row
   const categoryRow = document.createElement('div');
@@ -214,7 +179,7 @@ function addCategoryFilterBar() {
     margin-bottom: 15px;
   `;
   
-  categories.forEach(cat => {
+  availableCategories.forEach(cat => {
     const btn = document.createElement('button');
     btn.className = 'category-btn';
     btn.setAttribute('data-category', cat);
@@ -315,13 +280,11 @@ function addCategoryFilterBar() {
     ">lowest rated</button>
   `;
   
-  // Add click handlers for sort buttons
   sortRow.querySelectorAll('.sort-btn').forEach(btn => {
     btn.onclick = () => {
       const sortType = btn.getAttribute('data-sort');
       currentSort = sortType;
       
-      // Update button styles
       sortRow.querySelectorAll('.sort-btn').forEach(b => {
         b.style.background = 'rgba(20,30,50,0.6)';
         b.style.borderColor = 'rgba(45,90,227,0.3)';
@@ -341,37 +304,33 @@ function addCategoryFilterBar() {
   searchContainer.parentNode.insertBefore(filterBar, searchContainer.nextSibling);
 }
 
-// Run when games load
+// Initialize categories
 function initCategories() {
-  addCategoryTags();
   if (!document.getElementById('category-filter-bar')) {
     addCategoryFilterBar();
   }
-  storeGamesWithCategories();
+  addCategoryTags();
+  filterAndSort();
 }
 
+// Run after games load
+if (typeof gamesData !== 'undefined') {
+  // If gamesData already exists
+  setTimeout(initCategories, 500);
+}
+
+// Watch for games container changes
 if (typeof MutationObserver !== 'undefined') {
   const observer = new MutationObserver(() => {
     addCategoryTags();
     if (!document.getElementById('category-filter-bar')) {
       addCategoryFilterBar();
-      storeGamesWithCategories();
     }
   });
-  observer.observe(document.getElementById('gamesContainer'), { childList: true, subtree: true });
-}
-
-// Also run after displayFilteredGames
-if (typeof displayFilteredGames === 'function') {
-  const originalDisplay = displayFilteredGames;
-  window.displayFilteredGames = function(filteredGames) {
-    originalDisplay(filteredGames);
-    setTimeout(() => {
-      addCategoryTags();
-      storeGamesWithCategories();
-      filterAndSort();
-    }, 100);
-  };
+  const gamesContainer = document.getElementById('gamesContainer');
+  if (gamesContainer) {
+    observer.observe(gamesContainer, { childList: true, subtree: true });
+  }
 }
 
 console.log('✅ Game Categories with Sorting ready!');
