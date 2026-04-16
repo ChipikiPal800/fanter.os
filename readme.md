@@ -6,6 +6,8 @@ a clean, customizable unblocked games hub
 has themes, favorites, ratings, accounts, achievements, and a bunch of other stuff i kept adding because it was fun ( not even finished yet :3 )
 features so far:
 
+by the way, this was made for people with common sense so if something doesnt make sense; ask an ai like claude if you dont understand something lol, sorry.
+
 🎮 game library - loads from a json file, searchable, filterable by favorites
 
 
