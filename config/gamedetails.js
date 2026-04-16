@@ -1,9 +1,47 @@
-// ===== GAME DETAILS MODAL =====
+// ===== GAME DETAILS MODAL (FIXED) =====
 
 let currentDetailGame = null;
 
+// Helper to get favourites (global fallback)
+function getFavouritesGlobal() {
+  return JSON.parse(localStorage.getItem("favourites") || "[]");
+}
+
+// Helper to toggle favourite
+function toggleFavouriteGlobal(gameName) {
+  let favs = getFavouritesGlobal();
+  let isAdding = false;
+  
+  if (favs.includes(gameName)) {
+    favs = favs.filter(f => f !== gameName);
+    isAdding = false;
+  } else {
+    favs.push(gameName);
+    isAdding = true;
+  }
+  localStorage.setItem("favourites", JSON.stringify(favs));
+  
+  // Try to call window.toggleFavourite if available
+  if (typeof window.toggleFavourite === 'function') {
+    window.toggleFavourite(gameName);
+  }
+  
+  return isAdding;
+}
+
 function showGameDetails(gameName, gameUrl, gameImage, gameRating) {
   currentDetailGame = { name: gameName, url: gameUrl, image: gameImage };
+  
+  // Get ratings from global if available
+  let userRating = 0;
+  let avgRating = gameRating || { average: 0, count: 0 };
+  
+  if (typeof userVotes !== 'undefined') {
+    userRating = userVotes[gameName] || 0;
+  } else {
+    const votes = JSON.parse(localStorage.getItem('userVotes') || '{}');
+    userRating = votes[gameName] || 0;
+  }
   
   // Create modal
   let modal = document.getElementById('gamedetails-modal');
@@ -28,8 +66,7 @@ function showGameDetails(gameName, gameUrl, gameImage, gameRating) {
     transition: all 0.3s ease;
   `;
   
-  const userRating = typeof userVotes !== 'undefined' ? (userVotes[gameName] || 0) : 0;
-  const avgRating = gameRating || { average: 0, count: 0 };
+  const isFavorited = getFavouritesGlobal().includes(gameName);
   
   modal.innerHTML = `
     <div class="gamedetails-container" style="
@@ -66,7 +103,7 @@ function showGameDetails(gameName, gameUrl, gameImage, gameRating) {
         ">
       </div>
       <div style="padding: 25px;">
-        <h2 style="font-size: 24px; margin-bottom: 10px;">${gameName}</h2>
+        <h2 style="font-size: 24px; margin-bottom: 10px;">${escapeHtml(gameName)}</h2>
         
         <div style="display: flex; gap: 15px; margin-bottom: 20px;">
           <div style="background: rgba(45,90,227,0.2); padding: 5px 12px; border-radius: 20px;">
@@ -92,7 +129,7 @@ function showGameDetails(gameName, gameUrl, gameImage, gameRating) {
         
         <div style="display: flex; gap: 15px; flex-wrap: wrap;">
           <button class="settings-btn" id="gamedetails-play" style="flex: 1;">🎮 play now</button>
-          <button class="settings-btn" id="gamedetails-favorite" style="flex: 1;">${getFavourites().includes(gameName) ? '★ favorited' : '☆ favorite'}</button>
+          <button class="settings-btn" id="gamedetails-favorite" style="flex: 1;">${isFavorited ? '★ favorited' : '☆ favorite'}</button>
         </div>
       </div>
     </div>
@@ -100,7 +137,7 @@ function showGameDetails(gameName, gameUrl, gameImage, gameRating) {
   
   document.body.appendChild(modal);
   
-  // Aniate in
+  // Animate in
   setTimeout(() => {
     modal.style.opacity = '1';
     modal.style.visibility = 'visible';
@@ -118,6 +155,12 @@ function showGameDetails(gameName, gameUrl, gameImage, gameRating) {
       const value = parseInt(star.dataset.value);
       if (typeof submitRating === 'function') {
         submitRating(gameName, value);
+      } else {
+        // Fallback rating
+        let votes = JSON.parse(localStorage.getItem('userVotes') || '{}');
+        votes[gameName] = value;
+        localStorage.setItem('userVotes', JSON.stringify(votes));
+        showRatingToastFallback(`You rated "${gameName}" ${value}★!`);
       }
       // Update star colors
       modal.querySelectorAll('.detail-star').forEach((s, idx) => {
@@ -136,9 +179,8 @@ function showGameDetails(gameName, gameUrl, gameImage, gameRating) {
       });
     };
     star.onmouseleave = () => {
-      const currentRating = typeof userVotes !== 'undefined' ? (userVotes[gameName] || 0) : 0;
       modal.querySelectorAll('.detail-star').forEach((s, idx) => {
-        s.style.color = idx < currentRating ? '#ffcc00' : 'rgba(255,255,255,0.2)';
+        s.style.color = idx < userRating ? '#ffcc00' : 'rgba(255,255,255,0.2)';
       });
     };
   });
@@ -146,16 +188,21 @@ function showGameDetails(gameName, gameUrl, gameImage, gameRating) {
   // Play button
   document.getElementById('gamedetails-play').onclick = () => {
     if (typeof trackPlayedGame === 'function') trackPlayedGame(gameName);
-    window.location.href = gameUrl.startsWith('http') ? gameUrl : `play.html?gameurl=${gameUrl}/`;
+    const finalUrl = gameUrl.startsWith('http') ? gameUrl : `play.html?gameurl=${encodeURIComponent(gameUrl)}/&game=${encodeURIComponent(gameName)}`;
+    window.open(finalUrl, '_blank');
+    closeGameDetails();
   };
   
   // Favorite button
   document.getElementById('gamedetails-favorite').onclick = () => {
-    if (typeof toggleFavourite === 'function') {
-      toggleFavourite(gameName);
-      const favBtn = document.getElementById('gamedetails-favorite');
-      const isFavorited = getFavourites().includes(gameName);
-      favBtn.textContent = isFavorited ? '★ favorited' : '☆ favorite';
+    const isNowFavorited = toggleFavouriteGlobal(gameName);
+    const favBtn = document.getElementById('gamedetails-favorite');
+    favBtn.textContent = isNowFavorited ? '★ favorited' : '☆ favorite';
+    
+    // Also update the game card button if it exists
+    const gameCardBtn = document.querySelector(`.fav-btn[data-game="${gameName.replace(/['"]/g, '\\"')}"]`);
+    if (gameCardBtn) {
+      gameCardBtn.textContent = isNowFavorited ? '★' : '☆';
     }
   };
 }
@@ -169,28 +216,57 @@ function closeGameDetails() {
   }
 }
 
-// Override game click to show details (optional)
+function showRatingToastFallback(message) {
+  let toast = document.querySelector('.rating-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.className = 'rating-toast';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = message;
+  toast.classList.add('show');
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 2000);
+}
+
+function escapeHtml(str) {
+  if (!str) return '';
+  return str.replace(/[&<>]/g, function(m) {
+    if (m === '&') return '&amp;';
+    if (m === '<') return '&lt;';
+    if (m === '>') return '&gt;';
+    return m;
+  });
+}
+
+// Setup game details on click
 function setupGameDetailsOnClick() {
   document.querySelectorAll('.game').forEach(gameCard => {
     if (gameCard.hasAttribute('data-details-setup')) return;
     
     const img = gameCard.querySelector('img');
     const gameName = gameCard.querySelector('p')?.textContent;
-    const gameUrl = img?.onclick?.toString().match(/play\.html\?gameurl=([^']+)/)?.[1];
     
-    if (img && gameName) {
+    if (img && gameName && window.gamesData) {
+      const gameData = window.gamesData.find(g => g.name === gameName);
+      const gameUrl = gameData?.url || '';
+      
+      // Get rating
+      let gameRating = { average: 0, count: 0 };
+      if (typeof globalRatings !== 'undefined' && globalRatings[gameName]) {
+        gameRating = globalRatings[gameName];
+      }
+      
       // Save original click
       const originalClick = img.onclick;
       
       // Create new click that shows details
       img.onclick = (e) => {
         e.stopPropagation();
-        // Get rating
-        let gameRating = { average: 0, count: 0 };
-        if (typeof globalRatings !== 'undefined' && globalRatings[gameName]) {
-          gameRating = globalRatings[gameName];
-        }
-        showGameDetails(gameName, gameUrl || '', img.src, gameRating);
+        e.preventDefault();
+        showGameDetails(gameName, gameUrl, img.src, gameRating);
+        return false;
       };
       
       gameCard.setAttribute('data-details-setup', 'true');
@@ -203,7 +279,13 @@ if (typeof MutationObserver !== 'undefined') {
   const observer = new MutationObserver(() => {
     setupGameDetailsOnClick();
   });
-  observer.observe(document.getElementById('gamesContainer'), { childList: true, subtree: true });
+  const gamesContainer = document.getElementById('gamesContainer');
+  if (gamesContainer) {
+    observer.observe(gamesContainer, { childList: true, subtree: true });
+  }
 }
+
+// Also run after games load
+setTimeout(setupGameDetailsOnClick, 1000);
 
 console.log('✅ Game Details Modal ready!');
