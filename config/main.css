@@ -57,12 +57,8 @@ body {
   user-select: none;
   min-height: 100vh;
   position: relative;
-  overflow-x: visible;
+  overflow-x: hidden;
   text-shadow: 0 0 6px rgba(255, 255, 255, 0.08);
-}
-
-html {
-  overflow-x: visible !important;
 }
 
 /* Floating background elements */
@@ -1487,96 +1483,4 @@ body.no-animations * {
   border-color: #ffcc00;
   box-shadow: 0 0 30px rgba(255,204,0,0.4);
   transform: translateY(-5px) scale(1.02);
-}
-
-/* ===== CHINCHILLA FIX - FORCE FULL VISIBILITY ===== */
-.chinchilla-container {
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
-  left: auto !important;
-  z-index: 999999;
-  cursor: pointer;
-  width: auto !important;
-  max-width: none !important;
-  height: auto !important;
-  overflow: visible !important;
-  background: transparent !important;
-}
-
-.chinchilla-container.hidden {
-  display: none !important;
-}
-
-.chinchilla-image {
-  width: 300px !important;
-  height: auto !important;
-  max-width: none !important;
-  min-width: 0 !important;
-  display: block !important;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-  filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
-  border-radius: 20px;
-  overflow: visible !important;
-  position: relative !important;
-  right: 0 !important;
-}
-
-.chinchilla-image:hover {
-  transform: scale(1.05);
-}
-
-.chinchilla-image:active {
-  transform: scale(0.95);
-}
-
-/* Speech bubble - repositioned to match */
-.speech-bubble {
-  position: absolute;
-  bottom: 320px;
-  right: 0;
-  background: rgba(15, 20, 40, 0.97);
-  border: 2px solid rgba(45, 90, 227, 0.5);
-  border-radius: 20px;
-  padding: 15px 20px;
-  max-width: 280px;
-  min-width: 200px;
-  opacity: 0;
-  transform: scale(0.8);
-  transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-  pointer-events: none;
-  backdrop-filter: blur(10px);
-  box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-  z-index: 1001;
-}
-
-/* Make sure no parent is cutting it off */
-body, html {
-  overflow-x: visible !important;
-  overflow-y: auto !important;
-}
-
-/* For mobile screens, make chinchilla smaller */
-@media (max-width: 768px) {
-  .chinchilla-image {
-    width: 200px !important;
-  }
-  .speech-bubble {
-    bottom: 220px;
-    max-width: 200px;
-    font-size: 11px;
-    padding: 10px 15px;
-  }
-}
-
-@media (max-width: 480px) {
-  .chinchilla-image {
-    width: 150px !important;
-  }
-  .speech-bubble {
-    bottom: 170px;
-    max-width: 160px;
-    right: -20px;
-  }
 }
