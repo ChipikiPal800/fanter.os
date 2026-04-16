@@ -1719,3 +1719,30 @@ body.no-animations * {
     max-width: 70px;
   }
 }
+
+
+/* Profile games sections */
+.profile-games-section {
+  margin-top: 25px;
+  text-align: left;
+}
+
+.profile-games-section h3 {
+  font-size: 16px;
+  margin-bottom: 10px;
+  color: #ffcc00;
+}
+
+.profile-game-tag {
+  display: inline-block;
+  background: rgba(45, 90, 227, 0.3);
+  padding: 4px 12px;
+  border-radius: 20px;
+  font-size: 12px;
+  margin: 3px;
+}
+
+.profile-game-tag.favorite {
+  background: rgba(255, 204, 0, 0.2);
+  color: #ffcc00;
+}
