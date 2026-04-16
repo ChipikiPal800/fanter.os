@@ -63,50 +63,46 @@ function displayFilteredGames(filteredGames) {
     gameImage.alt = game.name;
     gameImage.style.cursor = 'pointer';
     
-    // GAME CLICK HANDLER
-    gameImage.onclick = (e) => {
-      e.preventDefault();
-      e.stopPropagation();
-      
-      // Track game play count
-      if (typeof trackGamePlayCount === 'function') {
-        trackGamePlayCount(game.name);
-      }
-      
-      // Check for food game
-      if (typeof isFoodGame === 'function' && isFoodGame(game.name)) {
-        if (typeof checkAndUnlockAchievement === 'function') {
-          checkAndUnlockAchievement(57);
-        }
-      }
-      
-      // Track played game
-      if (typeof trackPlayedGame === 'function') {
-        trackPlayedGame(game.name);
-      }
-      
-      // Build URL
-      let gameUrl;
-      if (game.url.startsWith('http')) {
-        gameUrl = game.url;
-      } else {
-      play.html?gameurl=${game.url}/&game=${encodeURIComponent(game.name)}
-      }
-      
-      console.log('Launching game:', game.name, 'URL:', gameUrl);
-      
-      // Try to open in new tab
-      const newTab = window.open(gameUrl, '_blank');
-      
-      // If popup blocked, notify user
-      if (!newTab) {
-        alert('Popup blocked! Please allow popups for this site or hold Ctrl/Cmd while clicking.');
-      }
-      
-      return false;
-    };
+   gameImage.onclick = (e) => {
+  e.preventDefault();
+  e.stopPropagation();
+  
+  // Track game play count
+  if (typeof trackGamePlayCount === 'function') {
+    trackGamePlayCount(game.name);
+  }
+  
+  // Check for food game
+  if (typeof isFoodGame === 'function' && isFoodGame(game.name)) {
+    if (typeof checkAndUnlockAchievement === 'function') {
+      checkAndUnlockAchievement(57);
+    }
+  }
+  
+  // Track played game
+  if (typeof trackPlayedGame === 'function') {
+    trackPlayedGame(game.name);
+  }
+  
+  // Build URL - 
+  let gameUrl;
+  if (game.url.startsWith('http')) {
+    gameUrl = game.url;
+  } else {
+    // Remove trailing slash if exists, then add it back cleanly
+    let cleanUrl = game.url.replace(/\/$/, '');
+    gameUrl = `play.html?gameurl=${encodeURIComponent(cleanUrl)}/&game=${encodeURIComponent(game.name)}`;
+  }
+  
+  console.log('Launching game:', game.name, 'URL:', gameUrl);
+  
+  // Open in new tab
+  window.open(gameUrl, '_blank');
+  
+  return false;
+};
     
-    // CREATE GAME NAME ELEMENT FIRST (THIS WAS THE BUG)
+    // CREATE GAME NAME ELEMENT FIRST 
     const gameName = document.createElement("p");
     gameName.textContent = game.name;
     
