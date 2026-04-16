@@ -18,21 +18,6 @@
       flex-wrap: wrap;
     }
 
-    .helper-toggle {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      background: rgba(20, 30, 50, 0.8);
-      padding: 8px 15px;
-      border-radius: 30px;
-      border: 1px solid rgba(45, 90, 227, 0.4);
-    }
-
-    .helper-toggle span {
-      font-size: 14px;
-      color: white;
-    }
-
     .settings-toggle {
       width: 50px;
       height: 24px;
@@ -61,112 +46,6 @@
 
     .settings-toggle.active::after {
       left: 26px;
-    }
-
-   /* ========== CHINCHILLA HELPER - FIXED ========= */
-.chinchilla-container {
-  position: fixed;
-  bottom: 10px;
-  right: 10px;
-  z-index: 999999;
-  cursor: pointer;
-  width: auto;
-  height: auto;
-  overflow: visible;
-  background: transparent;
-}
-
-.chinchilla-container.hidden {
-  display: none;
-}
-
-.chinchilla-image {
-  width: 300px;
-  height: auto;
-  display: block;
-  cursor: pointer;
-  transition: transform 0.3s ease;
-  filter: drop-shadow(0 5px 10px rgba(0,0,0,0.3));
-  border-radius: 20px;
-  overflow: visible;
-}
-
-.chinchilla-image:hover {
-  transform: scale(1.05);
-}
-
-.chinchilla-image:active {
-  transform: scale(0.95);
-}
-
-.chinchilla-image.talking {
-  animation: chinchillaShake 0.4s ease-in-out;
-}
-
-@keyframes chinchillaShake {
-  0%, 100% { transform: scale(1); }
-  50% { transform: scale(0.96); }
-}
-
-    /* Speech Bubble */
-    .speech-bubble {
-      position: absolute;
-      bottom: 148px;
-      right: 190px;
-      background: rgba(15, 20, 40, 0.97);
-      border: 2px solid rgba(45, 90, 227, 0.5);
-      border-radius: 20px;
-      padding: 15px 20px;
-      max-width: 280px;
-      min-width: 200px;
-      opacity: 0;
-      transform: scale(0.8);
-      transition: all 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
-      pointer-events: none;
-      backdrop-filter: blur(10px);
-      box-shadow: 0 10px 30px rgba(0,0,0,0.3);
-      z-index: 1001;
-    }
-
-    .speech-bubble.visible {
-      opacity: 1;
-      transform: scale(1);
-    }
-
-    .speech-bubble::after {
-      content: '';
-      position: absolute;
-      bottom: -10px;
-      right: 30px;
-      border-width: 10px 10px 0 0;
-      border-style: solid;
-      border-color: rgba(45, 90, 227, 0.5) transparent transparent transparent;
-    }
-
-    .speech-text {
-      color: white;
-      font-family: 'Courier New', monospace;
-      font-size: 13px;
-      line-height: 1.4;
-      margin: 0;
-      font-style: italic;
-    }
-
-    .speech-author {
-      color: #ffcc00;
-      font-size: 10px;
-      margin-top: 8px;
-      text-align: right;
-      font-family: 'Orbitron', monospace;
-    }
-
-    .speech-bubble.pulse {
-      animation: bubblePulse 0.3s ease;
-    }
-
-    @keyframes bubblePulse {
-      0%, 100% { transform: scale(1); }
-      50% { transform: scale(1.02); }
     }
 
     /* ========== ALL MENU OVERLAYS ========== */
@@ -288,25 +167,9 @@
   <div class="center">
     <div class="settings-header">
       <h1>settings.</h1>
-      <div class="helper-toggle">
-        <span>🐹 settings helper</span>
-        <div id="helperToggleBtn" class="settings-toggle" onclick="toggleChinchilla()"></div>
-      </div>
     </div>
     <p>customization for your experience</p>
     <button class="settings-btn" onclick="window.location.href='index.html'">← back</button>
-  </div>
-
-  <!-- Chinchilla Helper (Image) -->
-  <div id="chinchillaContainer" class="chinchilla-container hidden">
-    <div class="speech-bubble" id="speechBubble">
-      <p class="speech-text" id="speechText">Hark! I am thy humble guide...</p>
-      <p class="speech-author">- Sir Chinchilla</p>
-    </div>
-    <img src="https://i.ibb.co/Gv30Lq4v/Gemini-Generated-Image-li9vupli9vupli9v-removebg-preview.png"
-         alt="Sir Chinchilla"
-         class="chinchilla-image"
-         id="chinchilla">
   </div>
 
   <!-- Settings Cards Grid -->
@@ -326,7 +189,7 @@
 
   <!-- ==================== ALL MENUS ==================== -->
 
-  <!-- Theme Menu (existing) -->
+  <!-- Theme Menu -->
   <div id="themeOverlay" style="display:none;"><div id="themeMenu"><div id="themeTabSelector"><h2>🎨 customize</h2><p class="safety-desc">pick a category to customize.</p><div class="theme-tab-grid"><button class="theme-tab-card" onclick="showThemeTab('background')"><div class="theme-tab-icon">🌅</div><div>background</div></button><button class="theme-tab-card" onclick="showThemeTab('text')"><div class="theme-tab-icon">🔤</div><div>text styling</div></button><button class="theme-tab-card" onclick="showThemeTab('themes')"><div class="theme-tab-icon">✨</div><div>themes</div></button></div><div class="safety-btn-row"><button class="settings-btn" onclick="saveTheme()">💾 save changes</button><button class="settings-btn danger-btn" onclick="closeThemeMenu()">cancel</button></div></div><div id="themeTab-background" class="theme-tab-content" style="display:none;"><button class="theme-back-btn" onclick="showThemeTabSelector()">← back</button><h2>🌅 background</h2><p class="safety-desc">choose how your background looks.</p><div class="theme-option-grid"><button class="theme-option-btn" onclick="selectBg('chill')" id="bg-chill">🌈 chill cycle</button><button class="theme-option-btn" onclick="selectBg('parallax')" id="bg-parallax">🌌 parallax stars</button><button class="theme-option-btn" onclick="selectBg('solid')" id="bg-solid">🎨 solid color</button><button class="theme-option-btn" onclick="selectBg('aurora')" id="bg-aurora">🌊 aurora</button><button class="theme-option-btn" onclick="selectBg('void')" id="bg-void">🕳️ void</button></div><div id="colorPickerWrap" style="display:none; margin-top:18px;"><label>pick your color</label><input type="color" id="solidColorPicker" value="#1a1a2e" style="width:100%; height:50px; border-radius:10px; border:none; cursor:pointer; margin-top:8px;" /></div></div><div id="themeTab-text" class="theme-tab-content" style="display:none;"><button class="theme-back-btn" onclick="showThemeTabSelector()">← back</button><h2>🔤 text styling</h2><p class="safety-desc">customize how text looks across the site.</p><label>font size</label><div class="theme-slider-row"><span>small</span><input type="range" id="fontSizeSlider" min="12" max="24" value="16" oninput="updateFontPreview()" /><span>large</span></div><label style="margin-top:18px;">font color</label><div style="display:flex; gap:10px; align-items:center; margin-top:8px;"><input type="color" id="fontColorPicker" value="#ffffff" style="flex:1; height:45px; border-radius:10px; border:none; cursor:pointer;" oninput="updateFontPreview()" /><button class="settings-btn" onclick="resetFontColor()" style="white-space:nowrap;">↺ reset</button></div><div id="fontPreview" class="font-preview">preview text 🎮</div><label style="margin-top:18px;">font style</label><div class="theme-option-grid"><button class="theme-option-btn" onclick="selectFont('ubuntu')" id="font-ubuntu" style="font-family:ubuntu">Ubuntu</button><button class="theme-option-btn" onclick="selectFont('orbitron')" id="font-orbitron" style="font-family:orbitron">Orbitron</button><button class="theme-option-btn" onclick="selectFont('rajdhani')" id="font-rajdhani" style="font-family:rajdhani">Rajdhani</button><button class="theme-option-btn" onclick="selectFont('exo2')" id="font-exo2" style="font-family:'Exo 2'">Exo 2</button><button class="theme-option-btn" onclick="selectFont('spacegrotesk')" id="font-spacegrotesk" style="font-family:'Space Grotesk'">Space Grotesk</button></div></div><div id="themeTab-themes" class="theme-tab-content" style="display:none;"><button class="theme-back-btn" onclick="showThemeTabSelector()">← back</button><h2>✨ themes</h2><p class="safety-desc">pick a full preset theme.</p><div class="theme-option-grid"><button class="theme-option-btn theme-preset" onclick="selectTheme('chill')" id="theme-chill">chill (normal)</button><button class="theme-option-btn theme-preset" onclick="selectTheme('dark')" id="theme-dark">dark mode</button><button class="theme-option-btn theme-preset" onclick="selectTheme('light')" id="theme-light">light mode</button><button class="theme-option-btn theme-preset" onclick="selectTheme('rainbow')" id="theme-rainbow">rainbow</button><button class="theme-option-btn theme-preset" onclick="selectTheme('neon')" id="theme-neon">neon city</button></div></div></div></div>
 
   <!-- Safety Key Menu -->
@@ -353,73 +216,6 @@
   <audio id="bgMusic" loop style="display:none;"><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg"></audio>
 
   <script>
-    // ========== CHINCHILLA HELPER ==========
-    let chinchillaEnabled = localStorage.getItem('chinchillaEnabled') === 'true';
-    let currentFactIndex = 0;
-    let chinchillaFacts = [
-      "The 'Theme' setting doth allow thee to change the very fabric of this realm's appearance!",
-      "Backgrounds of chill, parallax, aurora, and void await thy selection in the Theme menu.",
-      "Theme presets art ready-made colors and styles. Dark mode for night owls, Light for day dwellers!",
-      "The Safety Key is thy emergency escape! Press a chosen key twice and thou shalt be whisked to safety!",
-      "Set thy Safety Key to any letter or number. I recommend 'Q' or 'E' for quick escapes!",
-      "The Favourites setting alloweth thee to star thy beloved games.",
-      "Game Settings let thee change the very structure of thy game library!",
-      "Visual Settings allow thee to change the accent color! Make this realm shine in any hue!",
-      "Audio Settings bring sound to this silent world! Hover sounds and music await!",
-      "Low Performance Mode strips away fancy animations for speed. Perfect for school computers!",
-      "Incognito Mode hides thy recently played games. For when thou shouldst be working!",
-      "Reset all settings returns everything to default. A fresh start for a fresh adventurer!",
-      "I am Sir Chinchilla, thy humble guide. Click me for more wisdom!",
-      "Thy settings art saved in localStorage. They remain even if thou closest this tab!",
-      "The chinchilla helper cost many hours to create. Pet me gently, for I am delicate!"
-    ];
-
-    function toggleChinchilla() {
-      chinchillaEnabled = !chinchillaEnabled;
-      localStorage.setItem('chinchillaEnabled', chinchillaEnabled);
-      const container = document.getElementById('chinchillaContainer');
-      const toggleBtn = document.getElementById('helperToggleBtn');
-      if (chinchillaEnabled) {
-        container.classList.remove('hidden');
-        toggleBtn.classList.add('active');
-        showRandomFact();
-      } else {
-        container.classList.add('hidden');
-        toggleBtn.classList.remove('active');
-      }
-    }
-
-    function showRandomFact() {
-      if (!chinchillaEnabled) return;
-      let newIndex;
-      do { newIndex = Math.floor(Math.random() * chinchillaFacts.length); } while (newIndex === currentFactIndex && chinchillaFacts.length > 1);
-      currentFactIndex = newIndex;
-      updateSpeechBubble(chinchillaFacts[currentFactIndex]);
-    }
-
-    function updateSpeechBubble(text) {
-      const bubble = document.getElementById('speechBubble');
-      const speechText = document.getElementById('speechText');
-      const chinchilla = document.getElementById('chinchilla');
-      speechText.textContent = text;
-      bubble.classList.add('visible', 'pulse');
-      chinchilla.classList.add('talking');
-      setTimeout(() => { bubble.classList.remove('pulse'); chinchilla.classList.remove('talking'); }, 300);
-    }
-
-    function initChinchilla() {
-      const toggleBtn = document.getElementById('helperToggleBtn');
-      if (chinchillaEnabled) {
-        document.getElementById('chinchillaContainer').classList.remove('hidden');
-        toggleBtn.classList.add('active');
-        setTimeout(() => updateSpeechBubble("Hark! I am Sir Chinchilla, thy humble guide. Click me for wisdom!"), 500);
-      } else {
-        document.getElementById('chinchillaContainer').classList.add('hidden');
-        toggleBtn.classList.remove('active');
-      }
-      document.getElementById('chinchilla').addEventListener('click', () => showRandomFact());
-    }
-
     // ========== TOAST ==========
     function showToast(message) {
       let toast = document.getElementById('custom-toast');
@@ -436,7 +232,6 @@
     window.showTranslateTip = function() {
       alert("🌐 How to translate:\n\nRight-click on the page and look for 'Translate' option.");
       showToast("🌐 Right-click anywhere → Translate to your language!");
-      if (chinchillaEnabled) updateSpeechBubble("Translation! A noble quest to understand all tongues.");
     };
 
     // ========== FAVOURITES ==========
@@ -450,7 +245,6 @@
       const current = localStorage.getItem("favFilter") === "true";
       localStorage.setItem("favFilter", (!current).toString());
       updateFavBtn();
-      if (chinchillaEnabled) updateSpeechBubble("Thy favourites filter hath been toggled!");
     };
     updateFavBtn();
 
@@ -458,7 +252,6 @@
     window.openSafetyKeyMenu = function() {
       document.getElementById("safetyKeyOverlay").style.display = "flex";
       requestAnimationFrame(() => document.getElementById("safetyKeyOverlay").classList.add("visible"));
-      if (chinchillaEnabled) updateSpeechBubble("The Safety Key menu! Choose thy escape key wisely.");
     };
     window.closeSafetyKeyMenu = function() {
       const overlay = document.getElementById("safetyKeyOverlay");
@@ -474,7 +267,6 @@
       localStorage.setItem("safetyKey", key);
       closeSafetyKeyMenu();
       alert("Safety key saved! ✅");
-      if (chinchillaEnabled) updateSpeechBubble(`Thy safety key art now set to '${key.toUpperCase()}!'`);
     };
     document.getElementById("safetyKeyInput")?.addEventListener("keydown", (e) => {
       e.preventDefault();
@@ -485,7 +277,7 @@
     });
     document.getElementById("safetyKeyOverlay")?.addEventListener("click", (e) => { if (e.target.id === "safetyKeyOverlay") closeSafetyKeyMenu(); });
 
-    // ========== THEME MENU (existing) ==========
+    // ========== THEME MENU ==========
     let themeSettings = JSON.parse(localStorage.getItem("themeSettings") || "{}");
     let selectedBg = themeSettings.bg || "chill";
     let selectedFontFamily = themeSettings.font || "ubuntu";
@@ -510,7 +302,6 @@
       requestAnimationFrame(() => document.getElementById("themeOverlay").classList.add("visible"));
       showThemeTabSelector();
       syncSelections();
-      if (chinchillaEnabled) updateSpeechBubble("The Theme Studio! Change backgrounds, fonts, and colors.");
     };
     window.closeThemeMenu = function() {
       const overlay = document.getElementById("themeOverlay");
@@ -570,7 +361,7 @@
     };
     document.getElementById("themeOverlay")?.addEventListener("click", (e) => { if (e.target.id === "themeOverlay") closeThemeMenu(); });
 
-    // ========== HELPER FUNCTIONS FOR NEW MENUS (stubs to avoid errors) ==========
+    // ========== HELPER FUNCTIONS FOR NEW MENUS ==========
     function openGameMenu() { document.getElementById("gameOverlay").style.display = "flex"; requestAnimationFrame(() => document.getElementById("gameOverlay").classList.add("visible")); }
     function closeGameMenu() { const o = document.getElementById("gameOverlay"); o.classList.remove("visible"); setTimeout(() => o.style.display = "none", 400); }
     function saveGameSettings() { closeGameMenu(); showToast("Game settings saved!"); }
@@ -588,10 +379,10 @@
     function savePrivacySettings() { closePrivacyMenu(); showToast("Privacy settings saved!"); }
     function openPresetMenu() { document.getElementById("presetOverlay").style.display = "flex"; requestAnimationFrame(() => document.getElementById("presetOverlay").classList.add("visible")); }
     function closePresetMenu() { const o = document.getElementById("presetOverlay"); o.classList.remove("visible"); setTimeout(() => o.style.display = "none", 400); }
-    function toggleHideAnimations() { const t = document.getElementById("hideAnimationsToggle"); t.classList.toggle("active"); }
-    function toggleCompactMode() { const t = document.getElementById("compactModeToggle"); t.classList.toggle("active"); }
-    function toggleRecentlyPlayed() { const t = document.getElementById("recentlyPlayedToggle"); t.classList.toggle("active"); }
-    function togglePopularGames() { const t = document.getElementById("popularGamesToggle"); t.classList.toggle("active"); }
+    function toggleHideAnimations() { document.getElementById("hideAnimationsToggle").classList.toggle("active"); }
+    function toggleCompactMode() { document.getElementById("compactModeToggle").classList.toggle("active"); }
+    function toggleRecentlyPlayed() { document.getElementById("recentlyPlayedToggle").classList.toggle("active"); }
+    function togglePopularGames() { document.getElementById("popularGamesToggle").classList.toggle("active"); }
     function setGridLayout(v) { console.log("Grid layout:", v); }
     function setCardSize(v) { console.log("Card size:", v); }
     function setAccentColor(v) { document.documentElement.style.setProperty('--accent-color', v); document.getElementById('accentPreview').style.background = v; }
@@ -625,8 +416,7 @@
     function loadUserTheme(name) { if(name) alert(`Loading "${name}"...`); }
     function openRandomGame() { alert("Random game feature coming soon!"); }
 
-    initChinchilla();
-
+    // Safety key double-tap
     let lastKeyTime = 0, lastKey = "";
     document.addEventListener("keydown", (e) => {
       const safetyKey = localStorage.getItem("safetyKey");
