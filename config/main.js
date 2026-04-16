@@ -1,4 +1,4 @@
-// ===== MAIN.JS - COMPLETE REWRITE WITH ACHIEVEMENTS & NEW TAB =====
+
 
 // Wait for DOM to be fully loaded before running
 document.addEventListener('DOMContentLoaded', function() {
@@ -60,7 +60,10 @@ document.addEventListener('DOMContentLoaded', function() {
       gameImage.alt = game.name;
       
       // GAME CLICK HANDLER - OPENS IN NEW TAB
-      gameImage.onclick = () => {
+      gameImage.onclick = (e) => {
+        e.preventDefault();
+        e.stopPropagation();
+        
         // Track game play count for Addicted/Committed achievements
         if (typeof trackGamePlayCount === 'function') {
           trackGamePlayCount(game.name);
@@ -78,9 +81,11 @@ document.addEventListener('DOMContentLoaded', function() {
           trackPlayedGame(game.name);
         }
         
-        // OPEN IN NEW TAB INSTEAD OF REPLACING
+        // OPEN IN NEW TAB
         const gameUrl = game.url.startsWith('http') ? game.url : `play.html?gameurl=${game.url}/`;
         window.open(gameUrl, '_blank');
+        
+        return false;
       };
       
       const gameName = document.createElement("p");
@@ -247,7 +252,7 @@ document.addEventListener('DOMContentLoaded', function() {
     .then((response) => response.json())
     .then((data) => {
       gamesData = data;
-      window.gamesData = gamesData; // Make global for other scripts
+      window.gamesData = gamesData;
       handleSearchInput();
       const btn = document.getElementById("favSidebarBtn");
       if (btn && localStorage.getItem("favFilter") === "true") {
@@ -277,7 +282,7 @@ document.addEventListener('DOMContentLoaded', function() {
 });
 
 
-// ===== GAME RATINGS SYSTEM (Global) =====
+// ===== GAME RATINGS SYSTEM =====
 const RATINGS_BIN_ID = "69e045ec856a6821893bc134";
 const RATINGS_API_KEY = "$2a$10$2cPmKAGNYxPTRLV03OfVruvfhNpW/VHtJSzR.AVNHumZ7etLdT33.";
 
@@ -529,8 +534,6 @@ function syncFavoriteToAccount(gameName, isAdding) {
   updateUserInStorage(currentUser);
   
   localStorage.setItem("favourites", JSON.stringify(favorites));
-  
-  console.log(`✅ ${isAdding ? 'Added' : 'Removed'} ${gameName} from account favorites`);
 }
 
 function trackPlayedGame(gameName) {
@@ -552,8 +555,6 @@ function trackPlayedGame(gameName) {
   currentUser.playedGames = playedGames;
   currentUser.stats.gamesPlayed = playedGames.length;
   updateUserInStorage(currentUser);
-  
-  console.log(`✅ Tracked played game: ${gameName}`);
 }
 
 function loadUserFavorites() {
@@ -566,8 +567,6 @@ function loadUserFavorites() {
   if (typeof handleSearchInput === 'function') {
     handleSearchInput();
   }
-  
-  console.log(`✅ Loaded ${favorites.length} favorites from account`);
 }
 
 
@@ -597,7 +596,6 @@ function trackThemeChange() {
   }
 }
 
-let idleStartTime = null;
 let idleAchievementGranted = false;
 
 function startIdleTracking() {
@@ -666,10 +664,8 @@ function checkOGFanter() {
   const currentUser = getCurrentUser();
   if (currentUser && currentUser.createdAt) {
     const joinDate = new Date(currentUser.createdAt);
-    const oneMonthLater = new Date();
-    oneMonthLater.setMonth(oneMonthLater.getMonth() - 1);
-    
-    if (joinDate >= oneMonthLater) {
+    const cutoffDate = new Date('2025-04-01');
+    if (joinDate >= cutoffDate) {
       if (typeof checkAndUnlockAchievement === 'function') checkAndUnlockAchievement(58);
     }
   }
@@ -692,6 +688,56 @@ function checkTotalPlayTime() {
       if (typeof checkAndUnlockAchievement === 'function') checkAndUnlockAchievement(61);
     }
   }
+}
+
+function checkAndUnlockAchievement(achievementId) {
+  const currentUser = getCurrentUser();
+  if (!currentUser) return;
+  
+  let achievements = JSON.parse(localStorage.getItem('fanter_achievements') || '{}');
+  if (achievements[achievementId]) return;
+  
+  achievements[achievementId] = true;
+  localStorage.setItem('fanter_achievements', JSON.stringify(achievements));
+  
+  currentUser.achievements = achievements;
+  updateUserInStorage(currentUser);
+  
+  const achievementNames = {
+    53: "The Chosen One", 54: "Alt+F4", 55: "Mentally Insane", 56: "Indecisive",
+    57: "Big Back", 58: "OG Fanter", 59: "Addicted", 60: "Committed",
+    61: "Top 1 Unemployed", 62: "Loyal Customer", 63: "System Failure"
+  };
+  
+  const achievementIcons = {
+    53: "👑", 54: "💀", 55: "🤪", 56: "🎨", 57: "🍔", 58: "🦖",
+    59: "🎮", 60: "💪", 61: "🛋️", 62: "⭐", 63: "💻"
+  };
+  
+  showAchievementToastNotification(achievementNames[achievementId] || "Achievement Unlocked!", achievementIcons[achievementId] || "🏆");
+  console.log(`🏆 Achievement Unlocked: ${achievementNames[achievementId]}`);
+}
+
+function showAchievementToastNotification(name, icon) {
+  let toast = document.querySelector('.achievement-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.className = 'achievement-toast';
+    document.body.appendChild(toast);
+  }
+  
+  toast.innerHTML = `
+    <span class="achievement-icon">${icon}</span>
+    <div class="achievement-content">
+      <div class="achievement-title">ACHIEVEMENT UNLOCKED!</div>
+      <div class="achievement-name">${name}</div>
+    </div>
+  `;
+  
+  toast.classList.add('show');
+  setTimeout(() => {
+    toast.classList.remove('show');
+  }, 4000);
 }
 
 function triggerPageCrash() {
@@ -719,30 +765,21 @@ function triggerPageCrash() {
     <div style="background: white; color: black; padding: 20px; border: 2px solid silver; max-width: 500px; margin: 20px;">
       <pre style="font-size: 20px; margin: 0;">😵</pre>
       <h1 style="font-size: 24px; margin: 10px 0;">:(</h1>
-      <p style="font-size: 16px;">Your Fanter ran into a problem and needs to restart. We're just collecting some error info, then we'll restart for you.</p>
+      <p style="font-size: 16px;">Your Fanter ran into a problem and needs to restart.</p>
       <p style="font-size: 14px; margin-top: 20px;">*** STOP: 0x000000F4 (0x00000000, 0x00000000, 0x00000000, 0x00000000)</p>
-      <p style="font-size: 12px; margin-top: 30px;">*** fanter.sys - Address F4N73R base at F4N73R, DateStamp 4f75a7b3</p>
-      <p style="font-size: 12px;">*** CHINCHILLA.exe - Address F4N73R base at F4N73R, DateStamp 4f75a7b3</p>
       <div style="margin-top: 30px;">
         <div style="display: inline-block; width: 20px; height: 20px; background: white; margin: 0 5px; animation: blink 1s step-end infinite;"></div>
-        <span style="margin-left: 10px;">Contact your system admin or abcatlmfao for support</span>
+        <span style="margin-left: 10px;">Restarting in <span id="crash-countdown">5</span> seconds...</span>
       </div>
     </div>
-    <p style="margin-top: 20px; font-size: 12px;">Restarting in <span id="crash-countdown">5</span> seconds...</p>
   `;
   
   document.body.appendChild(crashOverlay);
   
   const style = document.createElement('style');
   style.textContent = `
-    @keyframes fadeIn {
-      from { opacity: 0; }
-      to { opacity: 1; }
-    }
-    @keyframes blink {
-      0%, 100% { opacity: 1; }
-      50% { opacity: 0; }
-    }
+    @keyframes fadeIn { from { opacity: 0; } to { opacity: 1; } }
+    @keyframes blink { 0%, 100% { opacity: 1; } 50% { opacity: 0; } }
   `;
   document.head.appendChild(style);
   
