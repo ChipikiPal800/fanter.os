@@ -183,7 +183,8 @@
   </div>
 
   <script>
-    // ===== SIMPLE ACCOUNT SYSTEM =====
+    // ===== account sys =+===
+    
     // Get logged in user from localStorage
     let currentUser = JSON.parse(localStorage.getItem('fanter_currentUser') || 'null');
     let users = JSON.parse(localStorage.getItem('fanter_users') || '[]');
@@ -221,18 +222,20 @@
       }
       
       const newUser = {
-        id: Date.now(),
-        username: username,
-        displayName: displayName || username,
-        password: password,
-        createdAt: new Date().toISOString(),
-        stats: {
-          ratingsGiven: 0,
-          favoritesCount: 0,
-          gamesPlayed: 0,
-          joinDate: new Date().toISOString()
-        }
-      };
+     id: Date.now(),
+     username: username,
+    displayName: displayName || username,
+       password: password,
+             createdAt: new Date().toISOString(),
+    favorites: [],           
+   playedGames: [],         // ← NEW: Array of game names played
+   stats: {
+    ratingsGiven: 0,
+      favoritesCount: 0,     // Wil be auto calculated
+    gamesPlayed: 0,        // Will be autocalculated
+    joinDate: new Date().toISOString()
+  }
+};
       
       users.push(newUser);
       saveUsers();
