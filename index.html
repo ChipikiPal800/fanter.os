@@ -194,7 +194,7 @@
     "Decrypting database...",
     "Loading games library...",
     "Applying themes...",
-    "Hacking mainframe...",
+    "your welcome :3...",
     "Almost there...",
     "Starting fanter.OS..."
   ];
@@ -231,22 +231,28 @@
     }
   }, 300);
   
-  function waitForGames() {
-    let attempts = 0;
-    const checkInterval = setInterval(() => {
-      attempts++;
-      const gamesContainer = document.getElementById('gamesContainer');
-      const hasGames = gamesContainer && gamesContainer.children.length > 0;
-      
-      if (hasGames) {
-        clearInterval(checkInterval);
-        setTimeout(() => startTransition(), 500);
-      } else if (attempts >= 60) {
-        clearInterval(checkInterval);
-        startTransition();
-      }
-    }, 100);
-  }
+ function waitForGames() {
+  let attempts = 0;
+  const maxAttempts = 150; // 15 seconds max
+  
+  const checkInterval = setInterval(() => {
+    attempts++;
+    const gamesContainer = document.getElementById('gamesContainer');
+    const hasGames = gamesContainer && gamesContainer.children.length > 0;
+    
+    console.log(`Waiting for games - Attempt ${attempts}: Has games: ${hasGames}`);
+    
+    if (hasGames) {
+      console.log("Games found! Starting transition...");
+      clearInterval(checkInterval);
+      setTimeout(() => startTransition(), 800);
+    } else if (attempts >= maxAttempts) {
+      console.log("Timeout reached, forcing transition...");
+      clearInterval(checkInterval);
+      startTransition();
+    }
+  }, 100);
+}
   
   function startTransition() {
     whiteFlash.style.opacity = '1';
