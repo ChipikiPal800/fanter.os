@@ -67,33 +67,27 @@ function displayFilteredGames(filteredGames) {
     gameImage.setAttribute('data-game-url', game.url);
     gameImage.setAttribute('data-game-name', game.name);
     
-    // GAME CLICK HANDLER
     gameImage.onclick = function(e) {
-      e.preventDefault();
-      e.stopPropagation();
-      
-      // Get the URL from the data attribute
-      const url = this.getAttribute('data-game-url');
-      const name = this.getAttribute('data-game-name');
-      
-      console.log("🎮 Game clicked:", name);
-      console.log("🔗 URL from attribute:", url);
-      
-      if (!url || url === 'undefined' || url === 'null' || url === '') {
-        console.error("❌ No valid URL for game:", name);
-        alert(`Game "${name}" has no valid URL. Please check the games.json file.`);
-        return;
-      }
-      
-      // Build the play.html URL
-      const playUrl = `play.html?gameurl=${encodeURIComponent(url)}&game=${encodeURIComponent(name)}`;
-      console.log("🚀 Opening:", playUrl);
-      
-      // Open in new tab
-      window.open(playUrl, '_blank');
-      
-      return false;
-    };
+  e.preventDefault();
+  e.stopPropagation();
+  
+  const url = this.getAttribute('data-game-url');
+  const name = this.getAttribute('data-game-name');
+  
+  console.log("🎮 Game clicked:", name);
+  console.log("🔗 Original URL:", url);
+  
+  if (!url || url === 'undefined' || url === 'null') {
+    alert(`Game "${name}" has no URL`);
+    return;
+  }
+  
+  // IMPORTANT: ALWAYS go through play.html, even for external games
+  const playUrl = `play.html?gameurl=${encodeURIComponent(url)}&game=${encodeURIComponent(name)}`;
+  console.log("🚀 Opening play.html:", playUrl);
+  
+  window.open(playUrl, '_blank');
+};
     
     const gameNameElem = document.createElement("p");
     gameNameElem.textContent = game.name;
