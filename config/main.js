@@ -62,6 +62,11 @@ function displayFilteredGames(filteredGames) {
     gameImage.src = imageSrc;
     gameImage.alt = game.name;
     gameImage.style.cursor = 'pointer';
+
+    
+ console.log("Game object:", game);
+   console.log("Game URL:", game.url);
+ console.log("Game name:", game.name);
     
  gameImage.onclick = (e) => {
   e.preventDefault();
