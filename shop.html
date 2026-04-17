@@ -111,7 +111,7 @@
 
     .shop-grid {
       display: grid;
-      grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
       gap: 20px;
       margin-top: 20px;
     }
@@ -145,7 +145,7 @@
 
     .item-preview {
       width: 100%;
-      height: 120px;
+      height: 100px;
       background: rgba(0,0,0,0.3);
       border-radius: 12px;
       display: flex;
@@ -186,8 +186,13 @@
       color: #ffcc00;
     }
 
+    .item-buttons {
+      display: flex;
+      gap: 10px;
+    }
+
     .shop-btn {
-      width: 100%;
+      flex: 1;
       background: rgba(45, 90, 227, 0.3);
       border: 1px solid rgba(45, 90, 227, 0.4);
       border-radius: 30px;
@@ -219,6 +224,23 @@
       background: rgba(0, 255, 0, 0.2);
       border-color: #00ff88;
       color: #00ff88;
+    }
+
+    .test-btn {
+      background: rgba(100, 100, 200, 0.3);
+      border: 1px solid rgba(100, 100, 200, 0.4);
+      border-radius: 30px;
+      padding: 10px;
+      color: white;
+      font-size: 12px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+      flex: 0.5;
+    }
+
+    .test-btn:hover {
+      background: rgba(100, 100, 200, 0.6);
+      transform: translateY(-2px);
     }
 
     .owned-badge {
@@ -271,6 +293,20 @@
       opacity: 1;
     }
 
+    /* Test mode indicator */
+    .test-mode-active {
+      position: fixed;
+      bottom: 20px;
+      left: 20px;
+      background: rgba(0,0,0,0.7);
+      padding: 5px 10px;
+      border-radius: 10px;
+      font-size: 11px;
+      color: #ffcc00;
+      z-index: 10001;
+      pointer-events: none;
+    }
+
     @media (max-width: 768px) {
       .shop-container {
         margin: 80px auto;
@@ -279,6 +315,9 @@
       .shop-header {
         flex-direction: column;
         text-align: center;
+      }
+      .item-buttons {
+        flex-direction: column;
       }
     }
   </style>
@@ -314,46 +353,144 @@
   </div>
 
   <div id="shopNotification" class="shop-notification"></div>
+  <div id="testModeIndicator" class="test-mode-active" style="display:none;">🔍 TEST MODE ACTIVE</div>
 
   <script>
+    // Store original background for test mode
+    let originalBackground = '';
+    let testTimeout = null;
+    
+    function showNotification(message) {
+      const notif = document.getElementById('shopNotification');
+      notif.textContent = message;
+      notif.classList.add('show');
+      setTimeout(() => {
+        notif.classList.remove('show');
+      }, 2000);
+    }
+    
+    function testItem(item) {
+      const indicator = document.getElementById('testModeIndicator');
+      indicator.style.display = 'block';
+      if (testTimeout) clearTimeout(testTimeout);
+      
+      // Store original if not already stored
+      if (!originalBackground) {
+        originalBackground = document.body.className;
+      }
+      
+      // Apply test effect
+      if (item.testApply) {
+        item.testApply();
+      } else if (item.apply) {
+        item.apply();
+      }
+      
+      showNotification(`🔍 Testing: ${item.name} for 10 seconds`);
+      
+      testTimeout = setTimeout(() => {
+        // Revert to original
+        document.body.className = originalBackground;
+        if (window.removeTestEffects) window.removeTestEffects();
+        indicator.style.display = 'none';
+        showNotification(`✨ Test ended. Purchase to keep this look!`);
+      }, 10000);
+    }
+
     const SHOP_ITEMS = {
       backgrounds: [
-        { id: "bg_chill", name: "Chill Cycle", desc: "Animated gradient cycle", icon: "🌈", price: 0, type: "background", value: "chill", apply: function() { document.body.classList.remove('theme-bg-parallax', 'theme-bg-solid', 'theme-bg-aurora', 'theme-bg-void', 'theme-bg-neon', 'theme-bg-rainbow'); document.body.classList.add('theme-bg-chill'); } },
-        { id: "bg_parallax", name: "Parallax Stars", desc: "Floating starfield", icon: "🌌", price: 200, type: "background", value: "parallax", apply: function() { document.body.classList.remove('theme-bg-chill', 'theme-bg-solid', 'theme-bg-aurora', 'theme-bg-void', 'theme-bg-neon', 'theme-bg-rainbow'); document.body.classList.add('theme-bg-parallax'); } },
-        { id: "bg_aurora", name: "Aurora Waves", desc: "Flowing northern lights", icon: "🌊", price: 300, type: "background", value: "aurora", apply: function() { document.body.classList.remove('theme-bg-chill', 'theme-bg-parallax', 'theme-bg-solid', 'theme-bg-void', 'theme-bg-neon', 'theme-bg-rainbow'); document.body.classList.add('theme-bg-aurora'); } },
-        { id: "bg_void", name: "The Void", desc: "Pure darkness", icon: "🕳️", price: 150, type: "background", value: "void", apply: function() { document.body.classList.remove('theme-bg-chill', 'theme-bg-parallax', 'theme-bg-solid', 'theme-bg-aurora', 'theme-bg-neon', 'theme-bg-rainbow'); document.body.classList.add('theme-bg-void'); } },
-        { id: "bg_neon", name: "Neon Grid", desc: "Cyberpunk city", icon: "💠", price: 500, type: "background", value: "neon", apply: function() { document.body.classList.remove('theme-bg-chill', 'theme-bg-parallax', 'theme-bg-solid', 'theme-bg-aurora', 'theme-bg-void', 'theme-bg-rainbow'); document.body.classList.add('theme-bg-neon'); } },
-        { id: "bg_rainbow", name: "Rainbow Road", desc: "Colorful spectrum", icon: "🌈", price: 400, type: "background", value: "rainbow", apply: function() { document.body.classList.remove('theme-bg-chill', 'theme-bg-parallax', 'theme-bg-solid', 'theme-bg-aurora', 'theme-bg-void', 'theme-bg-neon'); document.body.classList.add('theme-bg-rainbow'); } }
+        { id: "bg_default", name: "Default", desc: "Original chill cycle", icon: "🌀", price: 0, type: "background", value: "default", 
+          apply: function() { document.body.classList.remove('theme-bg-parallax', 'theme-bg-solid', 'theme-bg-aurora', 'theme-bg-void', 'theme-bg-neon', 'theme-bg-rainbow'); document.body.classList.add('theme-bg-chill'); },
+          testApply: function() { document.body.classList.remove('theme-bg-parallax', 'theme-bg-solid', 'theme-bg-aurora', 'theme-bg-void', 'theme-bg-neon', 'theme-bg-rainbow'); document.body.classList.add('theme-bg-chill'); } },
+        { id: "bg_parallax", name: "Parallax Stars", desc: "Floating starfield", icon: "🌌", price: 200, type: "background", value: "parallax", 
+          apply: function() { document.body.classList.remove('theme-bg-chill', 'theme-bg-solid', 'theme-bg-aurora', 'theme-bg-void', 'theme-bg-neon', 'theme-bg-rainbow'); document.body.classList.add('theme-bg-parallax'); },
+          testApply: function() { document.body.classList.remove('theme-bg-chill', 'theme-bg-solid', 'theme-bg-aurora', 'theme-bg-void', 'theme-bg-neon', 'theme-bg-rainbow'); document.body.classList.add('theme-bg-parallax'); } },
+        { id: "bg_aurora", name: "Aurora Waves", desc: "Flowing northern lights", icon: "🌊", price: 300, type: "background", value: "aurora", 
+          apply: function() { document.body.classList.remove('theme-bg-chill', 'theme-bg-parallax', 'theme-bg-solid', 'theme-bg-void', 'theme-bg-neon', 'theme-bg-rainbow'); document.body.classList.add('theme-bg-aurora'); },
+          testApply: function() { document.body.classList.remove('theme-bg-chill', 'theme-bg-parallax', 'theme-bg-solid', 'theme-bg-void', 'theme-bg-neon', 'theme-bg-rainbow'); document.body.classList.add('theme-bg-aurora'); } },
+        { id: "bg_void", name: "The Void", desc: "Pure darkness", icon: "🕳️", price: 150, type: "background", value: "void", 
+          apply: function() { document.body.classList.remove('theme-bg-chill', 'theme-bg-parallax', 'theme-bg-solid', 'theme-bg-aurora', 'theme-bg-neon', 'theme-bg-rainbow'); document.body.classList.add('theme-bg-void'); },
+          testApply: function() { document.body.classList.remove('theme-bg-chill', 'theme-bg-parallax', 'theme-bg-solid', 'theme-bg-aurora', 'theme-bg-neon', 'theme-bg-rainbow'); document.body.classList.add('theme-bg-void'); } },
+        { id: "bg_neon", name: "Neon Grid", desc: "Cyberpunk city", icon: "💠", price: 500, type: "background", value: "neon", 
+          apply: function() { document.body.classList.remove('theme-bg-chill', 'theme-bg-parallax', 'theme-bg-solid', 'theme-bg-aurora', 'theme-bg-void', 'theme-bg-rainbow'); document.body.classList.add('theme-bg-neon'); },
+          testApply: function() { document.body.classList.remove('theme-bg-chill', 'theme-bg-parallax', 'theme-bg-solid', 'theme-bg-aurora', 'theme-bg-void', 'theme-bg-rainbow'); document.body.classList.add('theme-bg-neon'); } },
+        { id: "bg_rainbow", name: "Rainbow Road", desc: "Colorful spectrum", icon: "🌈", price: 400, type: "background", value: "rainbow", 
+          apply: function() { document.body.classList.remove('theme-bg-chill', 'theme-bg-parallax', 'theme-bg-solid', 'theme-bg-aurora', 'theme-bg-void', 'theme-bg-neon'); document.body.classList.add('theme-bg-rainbow'); },
+          testApply: function() { document.body.classList.remove('theme-bg-chill', 'theme-bg-parallax', 'theme-bg-solid', 'theme-bg-aurora', 'theme-bg-void', 'theme-bg-neon'); document.body.classList.add('theme-bg-rainbow'); } }
       ],
       cursors: [
-        { id: "cur_default", name: "Default", desc: "Classic cursor", icon: "🖱️", price: 0, type: "cursor", value: "default", apply: function() { document.body.style.cursor = 'auto'; document.querySelectorAll('a, button, .game, .settings-btn, .fav-btn, .theme-option-btn, .game img, #searchInput, .fav-sidebar-btn, .link').forEach(el => el.style.cursor = 'auto'); } },
-        { id: "cur_glow", name: "Glow Orb", desc: "Glowing circle with trail", icon: "🔵", price: 150, type: "cursor", value: "glow", apply: function() { initGlowCursor(); } },
-        { id: "cur_gold", name: "Gold Star", desc: "Golden star cursor", icon: "⭐", price: 300, type: "cursor", value: "gold", apply: function() { document.body.style.cursor = "url('data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"%3E%3Cpolygon points=\"12,2 15,9 22,9 16,14 18,21 12,17 6,21 8,14 2,9 9,9\" fill=\"%23ffcc00\" stroke=\"%23ffffff\" stroke-width=\"1\"/%3E%3C/svg%3E'), auto"; } },
-        { id: "cur_pixel", name: "Pixel Sword", desc: "Retro pixel sword", icon: "⚔️", price: 600, type: "cursor", value: "pixel", apply: function() { document.body.style.cursor = "url('data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"%3E%3Crect x=\"10\" y=\"2\" width=\"4\" height=\"20\" fill=\"%23ff44ff\"/%3E%3Crect x=\"6\" y=\"4\" width=\"4\" height=\"4\" fill=\"%23ff44ff\"/%3E%3Crect x=\"14\" y=\"4\" width=\"4\" height=\"4\" fill=\"%23ff44ff\"/%3E%3C/svg%3E'), auto"; } },
-        { id: "cur_dragon", name: "Dragon Cursor", desc: "Chinese dragon with fiery trail", icon: "🐉", price: 800, type: "cursor", value: "dragon", apply: function() { initDragonCursor(); } },
-        { id: "cur_paperback", name: "Paperback", desc: "Folded paper cursor", icon: "📄", price: 200, type: "cursor", value: "paperback", apply: function() { document.body.style.cursor = "url('data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"%3E%3Crect x=\"4\" y=\"2\" width=\"16\" height=\"20\" fill=\"%23f5f5dc\" stroke=\"%23808080\" stroke-width=\"1\"/%3E%3Cline x1=\"8\" y1=\"6\" x2=\"16\" y2=\"6\" stroke=\"%23cccccc\" stroke-width=\"1\"/%3E%3Cline x1=\"8\" y1=\"10\" x2=\"16\" y2=\"10\" stroke=\"%23cccccc\" stroke-width=\"1\"/%3E%3Cline x1=\"8\" y1=\"14\" x2=\"16\" y2=\"14\" stroke=\"%23cccccc\" stroke-width=\"1\"/%3E%3C/svg%3E'), auto"; } }
+        { id: "cur_default", name: "Default", desc: "Classic cursor", icon: "🖱️", price: 0, type: "cursor", value: "default", 
+          apply: function() { removeCustomCursor(); document.body.style.cursor = 'auto'; },
+          testApply: function() { removeCustomCursor(); document.body.style.cursor = 'auto'; } },
+        { id: "cur_glow", name: "Glow Orb", desc: "Glowing circle that follows your mouse", icon: "🔵", price: 150, type: "cursor", value: "glow", 
+          apply: function() { initGlowCursor(); },
+          testApply: function() { initGlowCursor(); } },
+        { id: "cur_gold", name: "Gold Star", desc: "Golden star cursor", icon: "⭐", price: 300, type: "cursor", value: "gold", 
+          apply: function() { removeCustomCursor(); document.body.style.cursor = "url('data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"%3E%3Cpolygon points=\"12,2 15,9 22,9 16,14 18,21 12,17 6,21 8,14 2,9 9,9\" fill=\"%23ffcc00\" stroke=\"%23ffffff\" stroke-width=\"1\"/%3E%3C/svg%3E'), auto"; },
+          testApply: function() { removeCustomCursor(); document.body.style.cursor = "url('data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"%3E%3Cpolygon points=\"12,2 15,9 22,9 16,14 18,21 12,17 6,21 8,14 2,9 9,9\" fill=\"%23ffcc00\" stroke=\"%23ffffff\" stroke-width=\"1\"/%3E%3C/svg%3E'), auto"; } },
+        { id: "cur_pixel", name: "Pixel Sword", desc: "Retro pixel sword", icon: "⚔️", price: 600, type: "cursor", value: "pixel", 
+          apply: function() { removeCustomCursor(); document.body.style.cursor = "url('data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"%3E%3Crect x=\"10\" y=\"2\" width=\"4\" height=\"20\" fill=\"%23ff44ff\"/%3E%3Crect x=\"6\" y=\"4\" width=\"4\" height=\"4\" fill=\"%23ff44ff\"/%3E%3Crect x=\"14\" y=\"4\" width=\"4\" height=\"4\" fill=\"%23ff44ff\"/%3E%3C/svg%3E'), auto"; },
+          testApply: function() { removeCustomCursor(); document.body.style.cursor = "url('data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"%3E%3Crect x=\"10\" y=\"2\" width=\"4\" height=\"20\" fill=\"%23ff44ff\"/%3E%3Crect x=\"6\" y=\"4\" width=\"4\" height=\"4\" fill=\"%23ff44ff\"/%3E%3Crect x=\"14\" y=\"4\" width=\"4\" height=\"4\" fill=\"%23ff44ff\"/%3E%3C/svg%3E'), auto"; } },
+        { id: "cur_dragon", name: "Dragon Cursor", desc: "Chinese dragon that follows your mouse", icon: "🐉", price: 800, type: "cursor", value: "dragon", 
+          apply: function() { initDragonCursor(); },
+          testApply: function() { initDragonCursor(); } },
+        { id: "cur_paperback", name: "Paperback", desc: "Folded paper cursor", icon: "📄", price: 200, type: "cursor", value: "paperback", 
+          apply: function() { removeCustomCursor(); document.body.style.cursor = "url('data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"%3E%3Cpath d=\"M4,2 L20,2 L20,22 L4,22 Z\" fill=\"%23f5f5dc\" stroke=\"%23808080\" stroke-width=\"1\"/%3E%3Cpath d=\"M8,6 L16,6\" stroke=\"%23cccccc\" stroke-width=\"1\"/%3E%3Cpath d=\"M8,10 L16,10\" stroke=\"%23cccccc\" stroke-width=\"1\"/%3E%3Cpath d=\"M8,14 L14,14\" stroke=\"%23cccccc\" stroke-width=\"1\"/%3E%3Cpath d=\"M8,18 L12,18\" stroke=\"%23cccccc\" stroke-width=\"1\"/%3E%3C/svg%3E'), auto"; },
+          testApply: function() { removeCustomCursor(); document.body.style.cursor = "url('data:image/svg+xml,%3Csvg xmlns=\"http://www.w3.org/2000/svg\" width=\"24\" height=\"24\" viewBox=\"0 0 24 24\"%3E%3Cpath d=\"M4,2 L20,2 L20,22 L4,22 Z\" fill=\"%23f5f5dc\" stroke=\"%23808080\" stroke-width=\"1\"/%3E%3Cpath d=\"M8,6 L16,6\" stroke=\"%23cccccc\" stroke-width=\"1\"/%3E%3Cpath d=\"M8,10 L16,10\" stroke=\"%23cccccc\" stroke-width=\"1\"/%3E%3Cpath d=\"M8,14 L14,14\" stroke=\"%23cccccc\" stroke-width=\"1\"/%3E%3Cpath d=\"M8,18 L12,18\" stroke=\"%23cccccc\" stroke-width=\"1\"/%3E%3C/svg%3E'), auto"; } }
       ],
       themes: [
-        { id: "theme_dark", name: "Dark Mode", desc: "Sleek dark theme (lower brightness)", icon: "🌙", price: 200, type: "theme", value: "dark", apply: function() { document.body.classList.remove('theme-light', 'theme-neon-city', 'theme-color-blast', 'theme-forest-night', 'theme-deep-ocean'); document.body.classList.add('theme-dark'); removeOceanEffects(); } },
-        { id: "theme_light", name: "Light Mode", desc: "Clean bright theme", icon: "☀️", price: 200, type: "theme", value: "light", apply: function() { document.body.classList.remove('theme-dark', 'theme-neon-city', 'theme-color-blast', 'theme-forest-night', 'theme-deep-ocean'); document.body.classList.add('theme-light'); removeOceanEffects(); } },
-        { id: "theme_neon_city", name: "Neon City", desc: "Cyberpunk neon with buildings", icon: "💚", price: 500, type: "theme", value: "neon_city", apply: function() { document.body.classList.remove('theme-dark', 'theme-light', 'theme-color-blast', 'theme-forest-night', 'theme-deep-ocean'); document.body.classList.add('theme-neon-city'); initNeonBuildings(); removeOceanEffects(); } },
-        { id: "theme_color_blast", name: "Color Blast", desc: "Saturated rainbow explosion", icon: "🌈", price: 600, type: "theme", value: "color_blast", apply: function() { document.body.classList.remove('theme-dark', 'theme-light', 'theme-neon-city', 'theme-forest-night', 'theme-deep-ocean'); document.body.classList.add('theme-color-blast'); removeOceanEffects(); } },
-        { id: "theme_forest_night", name: "Forest Night", desc: "Dark green with wind effects", icon: "🌲", price: 350, type: "theme", value: "forest_night", apply: function() { document.body.classList.remove('theme-dark', 'theme-light', 'theme-neon-city', 'theme-color-blast', 'theme-deep-ocean'); document.body.classList.add('theme-forest-night'); removeOceanEffects(); } },
-        { id: "theme_deep_ocean", name: "Deep Ocean", desc: "Underwater realm with fish", icon: "🌊", price: 1000, type: "theme", value: "deep_ocean", apply: function() { document.body.classList.remove('theme-dark', 'theme-light', 'theme-neon-city', 'theme-color-blast', 'theme-forest-night'); document.body.classList.add('theme-deep-ocean'); initOceanTheme(); } }
+        { id: "theme_dark", name: "Dark Mode", desc: "Sleek dark theme", icon: "🌙", price: 200, type: "theme", value: "dark", 
+          apply: function() { removeAllThemes(); document.body.classList.add('theme-dark'); },
+          testApply: function() { removeAllThemes(); document.body.classList.add('theme-dark'); } },
+        { id: "theme_light", name: "Light Mode", desc: "Clean bright theme", icon: "☀️", price: 200, type: "theme", value: "light", 
+          apply: function() { removeAllThemes(); document.body.classList.add('theme-light'); },
+          testApply: function() { removeAllThemes(); document.body.classList.add('theme-light'); } },
+        { id: "theme_neon_city", name: "Neon City", desc: "Cyberpunk neon", icon: "💚", price: 500, type: "theme", value: "neon_city", 
+          apply: function() { removeAllThemes(); document.body.classList.add('theme-neon-city'); initNeonBuildings(); },
+          testApply: function() { removeAllThemes(); document.body.classList.add('theme-neon-city'); initNeonBuildings(); } },
+        { id: "theme_color_blast", name: "Color Blast", desc: "Gentle rainbow cycle (slow)", icon: "🌈", price: 600, type: "theme", value: "color_blast", 
+          apply: function() { removeAllThemes(); document.body.classList.add('theme-color-blast'); },
+          testApply: function() { removeAllThemes(); document.body.classList.add('theme-color-blast'); } },
+        { id: "theme_forest_night", name: "Forest Night", desc: "Dark green with wind", icon: "🌲", price: 350, type: "theme", value: "forest_night", 
+          apply: function() { removeAllThemes(); document.body.classList.add('theme-forest-night'); initForestEffects(); },
+          testApply: function() { removeAllThemes(); document.body.classList.add('theme-forest-night'); initForestEffects(); } },
+        { id: "theme_deep_ocean", name: "Deep Ocean", desc: "Underwater realm", icon: "🌊", price: 1000, type: "theme", value: "deep_ocean", 
+          apply: function() { removeAllThemes(); document.body.classList.add('theme-deep-ocean'); initOceanTheme(); },
+          testApply: function() { removeAllThemes(); document.body.classList.add('theme-deep-ocean'); initOceanTheme(); } }
       ],
       presets: [
-        { id: "preset_cool_blue", name: "Cool Blue", desc: "All blue everything", icon: "💙", price: 100, type: "preset", value: "cool_blue", apply: function() { document.body.classList.remove('preset-warm-sunset', 'preset-purple-haze', 'preset-rgb'); document.body.classList.add('preset-cool-blue'); } },
-        { id: "preset_warm_sunset", name: "Warm Sunset", desc: "Orange and gold", icon: "🧡", price: 100, type: "preset", value: "warm_sunset", apply: function() { document.body.classList.remove('preset-cool-blue', 'preset-purple-haze', 'preset-rgb'); document.body.classList.add('preset-warm-sunset'); } },
-        { id: "preset_purple_haze", name: "Purple Haze", desc: "Mystic purple", icon: "💜", price: 100, type: "preset", value: "purple_haze", apply: function() { document.body.classList.remove('preset-cool-blue', 'preset-warm-sunset', 'preset-rgb'); document.body.classList.add('preset-purple-haze'); } },
-        { id: "preset_rgb", name: "RGB Gamer", desc: "Slow rainbow cycle", icon: "🎮", price: 250, type: "preset", value: "rgb", apply: function() { document.body.classList.remove('preset-cool-blue', 'preset-warm-sunset', 'preset-purple-haze'); document.body.classList.add('preset-rgb'); } }
+        { id: "preset_cool_blue", name: "Cool Blue", desc: "All blue everything", icon: "💙", price: 100, type: "preset", value: "cool_blue", 
+          apply: function() { removeAllPresets(); document.body.classList.add('preset-cool-blue'); },
+          testApply: function() { removeAllPresets(); document.body.classList.add('preset-cool-blue'); } },
+        { id: "preset_warm_sunset", name: "Warm Sunset", desc: "Orange and gold", icon: "🧡", price: 100, type: "preset", value: "warm_sunset", 
+          apply: function() { removeAllPresets(); document.body.classList.add('preset-warm-sunset'); },
+          testApply: function() { removeAllPresets(); document.body.classList.add('preset-warm-sunset'); } },
+        { id: "preset_purple_haze", name: "Purple Haze", desc: "Mystic purple", icon: "💜", price: 100, type: "preset", value: "purple_haze", 
+          apply: function() { removeAllPresets(); document.body.classList.add('preset-purple-haze'); },
+          testApply: function() { removeAllPresets(); document.body.classList.add('preset-purple-haze'); } },
+        { id: "preset_rgb", name: "RGB Gamer", desc: "Slow rainbow cycle", icon: "🎮", price: 250, type: "preset", value: "rgb", 
+          apply: function() { removeAllPresets(); document.body.classList.add('preset-rgb'); },
+          testApply: function() { removeAllPresets(); document.body.classList.add('preset-rgb'); } }
       ],
       pets: [
-        { id: "pet_chinchilla", name: "Sir Chinchilla", desc: "Your loyal guide", icon: "🐹", price: 500, type: "pet", value: "chinchilla", apply: function() { showNotification("🐹 Sir Chinchilla will appear on your homepage soon!"); } },
-        { id: "pet_dragon", name: "Baby Dragon", desc: "Fiery companion", icon: "🐉", price: 1000, type: "pet", value: "dragon", apply: function() { showNotification("🐉 Your Baby Dragon will follow you around!"); } },
-        { id: "pet_cat", name: "Space Cat", desc: "Interstellar feline", icon: "🐱", price: 750, type: "pet", value: "cat", apply: function() { showNotification("🐱 Space Cat is now your companion!"); } },
-        { id: "pet_dog", name: "Cyber Dog", desc: "Robotic pup", icon: "🐶", price: 750, type: "pet", value: "dog", apply: function() { showNotification("🐶 Cyber Dog is ready to play!"); } },
-        { id: "pet_owl", name: "Wise Owl", desc: "Ancient knowledge", icon: "🦉", price: 800, type: "pet", value: "owl", apply: function() { showNotification("🦉 The Wise Owl shares ancient secrets!"); } },
-        { id: "pet_fox", name: "Fire Fox", desc: "Flame-tailed fox", icon: "🦊", price: 850, type: "pet", value: "fox", apply: function() { showNotification("🦊 Fire Fox leaves a trail of flames!"); } }
+        { id: "pet_chinchilla", name: "Sir Chinchilla", desc: "Your loyal guide", icon: "🐹", price: 500, type: "pet", value: "chinchilla", 
+          apply: function() { showNotification("🐹 Sir Chinchilla will appear on your homepage soon!"); },
+          testApply: function() { showNotification("🐹 Sir Chinchilla says hello!"); } },
+        { id: "pet_dragon", name: "Baby Dragon", desc: "Fiery companion", icon: "🐉", price: 1000, type: "pet", value: "dragon", 
+          apply: function() { showNotification("🐉 Your Baby Dragon will follow you around!"); },
+          testApply: function() { showNotification("🐉 The dragon breathes a small flame!"); } },
+        { id: "pet_cat", name: "Space Cat", desc: "Interstellar feline", icon: "🐱", price: 750, type: "pet", value: "cat", 
+          apply: function() { showNotification("🐱 Space Cat is now your companion!"); },
+          testApply: function() { showNotification("🐱 Space Cat purrs softly!"); } },
+        { id: "pet_dog", name: "Cyber Dog", desc: "Robotic pup", icon: "🐶", price: 750, type: "pet", value: "dog", 
+          apply: function() { showNotification("🐶 Cyber Dog is ready to play!"); },
+          testApply: function() { showNotification("🐶 Cyber Dog wags its tail!"); } },
+        { id: "pet_owl", name: "Wise Owl", desc: "Ancient knowledge", icon: "🦉", price: 800, type: "pet", value: "owl", 
+          apply: function() { showNotification("🦉 The Wise Owl shares ancient secrets!"); },
+          testApply: function() { showNotification("🦉 The owl hoots wisely!"); } },
+        { id: "pet_fox", name: "Fire Fox", desc: "Flame-tailed fox", icon: "🦊", price: 850, type: "pet", value: "fox", 
+          apply: function() { showNotification("🦊 Fire Fox leaves a trail of flames!"); },
+          testApply: function() { showNotification("🦊 The fox dashes by!"); } }
       ]
     };
 
@@ -361,17 +498,26 @@
     let userInventory = JSON.parse(localStorage.getItem('fanter_inventory') || '{}');
     let equippedItems = JSON.parse(localStorage.getItem('fanter_equipped') || '{}');
 
-    // Glow cursor with trail effect
-    let trailActive = false;
-    let trailPositions = [];
+    // ===== CURSOR FUNCTIONS =====
+    let cursorInterval = null;
+    let cursorElement = null;
+    let dragonElement = null;
+    
+    function removeCustomCursor() {
+      if (cursorElement) cursorElement.remove();
+      if (dragonElement) dragonElement.remove();
+      if (cursorInterval) clearInterval(cursorInterval);
+      cursorElement = null;
+      dragonElement = null;
+    }
     
     function initGlowCursor() {
+      removeCustomCursor();
       document.body.style.cursor = 'none';
-      if (document.querySelector('.glow-cursor')) return;
       
-      const cursor = document.createElement('div');
-      cursor.className = 'glow-cursor';
-      cursor.style.cssText = `
+      cursorElement = document.createElement('div');
+      cursorElement.className = 'glow-cursor';
+      cursorElement.style.cssText = `
         width: 20px;
         height: 20px;
         background: radial-gradient(circle, #2d5ae3, #00ffcc);
@@ -379,10 +525,10 @@
         position: fixed;
         pointer-events: none;
         z-index: 99999;
-        box-shadow: 0 0 15px #2d5ae3, 0 0 30px #00ffcc;
+        box-shadow: 0 0 15px #2d5ae3;
         transition: all 0.05s ease;
       `;
-      document.body.appendChild(cursor);
+      document.body.appendChild(cursorElement);
       
       let mouseX = 0, mouseY = 0;
       let cursorX = 0, cursorY = 0;
@@ -395,34 +541,29 @@
       function animate() {
         cursorX += (mouseX - cursorX) * 0.2;
         cursorY += (mouseY - cursorY) * 0.2;
-        cursor.style.left = cursorX + 'px';
-        cursor.style.top = cursorY + 'px';
+        cursorElement.style.left = (cursorX - 10) + 'px';
+        cursorElement.style.top = (cursorY - 10) + 'px';
         requestAnimationFrame(animate);
       }
       animate();
     }
     
-    // Dragon cursor with trail
-    let dragonActive = false;
-    let dragonX = 0, dragonY = 0;
-    let dragonTrail = [];
-    
     function initDragonCursor() {
+      removeCustomCursor();
       document.body.style.cursor = 'none';
-      if (document.querySelector('.dragon-cursor')) return;
       
-      const dragon = document.createElement('div');
-      dragon.className = 'dragon-cursor';
-      dragon.innerHTML = '🐉';
-      dragon.style.cssText = `
-        font-size: 32px;
+      dragonElement = document.createElement('div');
+      dragonElement.className = 'dragon-cursor';
+      dragonElement.innerHTML = '🐉';
+      dragonElement.style.cssText = `
+        font-size: 28px;
         position: fixed;
         pointer-events: none;
         z-index: 99999;
-        filter: drop-shadow(0 0 10px #ff4444);
+        filter: drop-shadow(0 0 5px #ff4444);
         transition: all 0.05s linear;
       `;
-      document.body.appendChild(dragon);
+      document.body.appendChild(dragonElement);
       
       let mouseX = 0, mouseY = 0;
       let dragonXPos = 0, dragonYPos = 0;
@@ -435,67 +576,116 @@
       function animate() {
         dragonXPos += (mouseX - dragonXPos) * 0.15;
         dragonYPos += (mouseY - dragonYPos) * 0.15;
-        dragon.style.left = dragonXPos + 'px';
-        dragon.style.top = dragonYPos + 'px';
+        dragonElement.style.left = (dragonXPos - 14) + 'px';
+        dragonElement.style.top = (dragonYPos - 14) + 'px';
         requestAnimationFrame(animate);
       }
       animate();
     }
     
-    // Neon buildings
+    // ===== THEME FUNCTIONS =====
+    function removeAllThemes() {
+      document.body.classList.remove('theme-dark', 'theme-light', 'theme-neon-city', 'theme-color-blast', 'theme-forest-night', 'theme-deep-ocean');
+      removeNeonBuildings();
+      removeForestEffects();
+      removeOceanEffects();
+    }
+    
+    function removeAllPresets() {
+      document.body.classList.remove('preset-cool-blue', 'preset-warm-sunset', 'preset-purple-haze', 'preset-rgb');
+    }
+    
+    // Neon buildings (subtle, not intrusive)
     function initNeonBuildings() {
       removeNeonBuildings();
-      for (let i = 0; i < 8; i++) {
-        const building = document.createElement('div');
-        building.className = 'neon-building';
-        building.style.left = Math.random() * 100 + '%';
-        building.style.height = Math.random() * 150 + 80 + 'px';
-        building.style.animationDelay = Math.random() * 2 + 's';
-        document.body.appendChild(building);
-      }
+      const buildings = document.querySelectorAll('.game, .settings-card, .sidebar-card');
+      buildings.forEach((building, index) => {
+        if (Math.random() > 0.7) {
+          building.style.boxShadow = '0 0 15px #00ffcc';
+          building.style.borderColor = '#00ffcc';
+        }
+      });
     }
     
     function removeNeonBuildings() {
-      document.querySelectorAll('.neon-building').forEach(b => b.remove());
+      const buildings = document.querySelectorAll('.game, .settings-card, .sidebar-card');
+      buildings.forEach(building => {
+        building.style.boxShadow = '';
+        building.style.borderColor = '';
+      });
     }
     
-    // Ocean theme
-    let oceanInterval;
+    // Forest effects
+    let windInterval = null;
+    function initForestEffects() {
+      removeForestEffects();
+      let angle = 0;
+      windInterval = setInterval(() => {
+        angle = (angle + 5) % 360;
+        const windX = Math.sin(angle * Math.PI / 180) * 5;
+        document.body.style.transform = `translateX(${windX}px)`;
+      }, 200);
+    }
+    
+    function removeForestEffects() {
+      if (windInterval) clearInterval(windInterval);
+      document.body.style.transform = '';
+    }
+    
+    // Ocean theme (improved quality)
+    let oceanIntervalFish = null;
+    let oceanIntervalBubbles = null;
     
     function initOceanTheme() {
       removeOceanEffects();
       
-      // Add fish
+      // High quality fish
       const fishTypes = ['🐟', '🐠', '🐡', '🐙', '🦑', '🐬', '🐳'];
-      for (let i = 0; i < 15; i++) {
-        const fish = document.createElement('div');
-        fish.className = 'ocean-fish';
-        fish.textContent = fishTypes[Math.floor(Math.random() * fishTypes.length)];
-        fish.style.top = Math.random() * 100 + '%';
-        fish.style.setProperty('--y-offset', (Math.random() * 100 - 50) + 'px');
-        fish.style.animationDuration = 15 + Math.random() * 20 + 's';
-        fish.style.animationDelay = Math.random() * 10 + 's';
-        fish.style.fontSize = 20 + Math.random() * 20 + 'px';
-        document.body.appendChild(fish);
+      for (let i = 0; i < 12; i++) {
+        setTimeout(() => {
+          const fish = document.createElement('div');
+          fish.className = 'ocean-fish';
+          fish.textContent = fishTypes[Math.floor(Math.random() * fishTypes.length)];
+          fish.style.cssText = `
+            position: fixed;
+            font-size: ${24 + Math.random() * 20}px;
+            pointer-events: none;
+            z-index: 0;
+            left: -50px;
+            top: ${Math.random() * 100}%;
+            opacity: 0.6;
+            animation: swimFish ${15 + Math.random() * 20}s linear forwards;
+          `;
+          document.body.appendChild(fish);
+          setTimeout(() => fish.remove(), 25000);
+        }, i * 800);
       }
       
-      // Add bubbles
-      oceanInterval = setInterval(() => {
+      // Bubbles
+      oceanIntervalBubbles = setInterval(() => {
         const bubble = document.createElement('div');
         bubble.className = 'ocean-bubble';
-        bubble.style.left = Math.random() * 100 + '%';
-        bubble.style.animationDuration = 4 + Math.random() * 6 + 's';
-        bubble.style.width = 4 + Math.random() * 8 + 'px';
-        bubble.style.height = bubble.style.width;
+        bubble.style.cssText = `
+          position: fixed;
+          width: ${4 + Math.random() * 8}px;
+          height: ${4 + Math.random() * 8}px;
+          background: rgba(100, 200, 255, 0.4);
+          border-radius: 50%;
+          pointer-events: none;
+          z-index: 0;
+          left: ${Math.random() * 100}%;
+          bottom: -20px;
+          animation: bubbleRise ${4 + Math.random() * 6}s linear forwards;
+        `;
         document.body.appendChild(bubble);
         setTimeout(() => bubble.remove(), 8000);
-      }, 500);
+      }, 400);
     }
     
     function removeOceanEffects() {
-      document.querySelectorAll('.ocean-fish').forEach(f => f.remove());
-      document.querySelectorAll('.ocean-bubble').forEach(b => b.remove());
-      if (oceanInterval) clearInterval(oceanInterval);
+      document.querySelectorAll('.ocean-fish, .ocean-bubble').forEach(el => el.remove());
+      if (oceanIntervalFish) clearInterval(oceanIntervalFish);
+      if (oceanIntervalBubbles) clearInterval(oceanIntervalBubbles);
     }
 
     function updateCoinDisplay() {
@@ -503,15 +693,6 @@
       if (coinEl && currentUser) {
         coinEl.textContent = Math.floor((currentUser.coins || 0) * 100) / 100;
       }
-    }
-
-    function showNotification(message) {
-      const notif = document.getElementById('shopNotification');
-      notif.textContent = message;
-      notif.classList.add('show');
-      setTimeout(() => {
-        notif.classList.remove('show');
-      }, 2000);
     }
 
     function purchaseItem(item) {
@@ -586,6 +767,8 @@
             <span class="price-icon">🪙</span>
             <span class="price-amount">${item.price}</span>
           </div>
+          <div class="item-buttons">
+            <button class="test-btn" data-test="true">🔍 TEST</button>
         `;
         
         const btn = document.createElement('button');
@@ -604,7 +787,12 @@
           btn.onclick = () => purchaseItem(item);
         }
         
-        itemDiv.appendChild(btn);
+        itemDiv.querySelector('.item-buttons').appendChild(btn);
+        itemDiv.querySelector('.test-btn').onclick = (e) => {
+          e.stopPropagation();
+          testItem(item);
+        };
+        
         grid.appendChild(itemDiv);
       });
     }
@@ -643,6 +831,37 @@
     updateAccountButton();
     loadEquippedItems();
     renderShopItems('backgrounds');
+    
+    // Add CSS animations
+    const style = document.createElement('style');
+    style.textContent = `
+      @keyframes swimFish {
+        0% { transform: translateX(-100px); }
+        100% { transform: translateX(calc(100vw + 100px)); }
+      }
+      @keyframes bubbleRise {
+        0% { transform: translateY(0) scale(1); opacity: 0.5; }
+        100% { transform: translateY(-100vh) scale(1.5); opacity: 0; }
+      }
+      @keyframes colorBlast {
+        0% { filter: hue-rotate(0deg) saturate(1.3); }
+        100% { filter: hue-rotate(360deg) saturate(1.3); }
+      }
+      body.theme-color-blast {
+        animation: colorBlast 8s linear infinite !important;
+      }
+      @keyframes rgbCycle {
+        0% { filter: hue-rotate(0deg); }
+        100% { filter: hue-rotate(360deg); }
+      }
+      body.preset-rgb {
+        animation: rgbCycle 6s linear infinite;
+      }
+      body.theme-forest-night {
+        background: linear-gradient(135deg, #0a1a0a, #0a2a0a, #0a3a0a) !important;
+      }
+    `;
+    document.head.appendChild(style);
   </script>
 </body>
 </html>
