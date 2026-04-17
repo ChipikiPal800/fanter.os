@@ -1,4 +1,4 @@
-
+// ===== MAIN.JS - COMPLETE REWRITE =====
 
 // Wait for DOM to be fully loaded before running
 document.addEventListener('DOMContentLoaded', function() {
@@ -41,113 +41,104 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   };
 
-function displayFilteredGames(filteredGames) {
-  const gamesContainer = document.getElementById("gamesContainer");
-  if (!gamesContainer) return;
-  gamesContainer.innerHTML = "";
-  
-  filteredGames.forEach((game) => {
-    const gameDiv = document.createElement("div");
-    gameDiv.classList.add("game");
+  function displayFilteredGames(filteredGames) {
+    const gamesContainer = document.getElementById("gamesContainer");
+    if (!gamesContainer) return;
+    gamesContainer.innerHTML = "";
     
-    const gameImage = document.createElement("img");
-    let imageSrc;
-    if (game.image && game.image.startsWith('http')) {
-      imageSrc = game.image;
-    } else if (game.image) {
-      imageSrc = `${serverUrl1}/${game.url}/${game.image}`;
-    } else {
-      imageSrc = 'https://via.placeholder.com/200x200?text=No+Image';
-    }
-    gameImage.src = imageSrc;
-    gameImage.alt = game.name;
-    gameImage.style.cursor = 'pointer';
-
-    
- console.log("Game object:", game);
-   console.log("Game URL:", game.url);
- console.log("Game name:", game.name);
-    
- gameImage.onclick = (e) => {
-  e.preventDefault();
-  e.stopPropagation();
-  
-  // Get the game URL - make sure it's not undefined
-  let gamePath = game.url;
-  let gameName = game.name;
-  
-  console.log("Game clicked:", gameName, "URL:", gamePath);
-  
-  // Check if gamePath exists
-  if (!gamePath) {
-    console.error("Game URL is missing for:", gameName);
-    alert("This game URL is missing. Please check the games.json file.");
-    return;
-  }
-  
-  // Build the play.html URL correctly - DON'T encode the entire URL string
-  // Just encode the values that might have special characters
-  let playUrl = `play.html?gameurl=${encodeURIComponent(gamePath)}&game=${encodeURIComponent(gameName)}`;
-  
-  console.log("Opening:", playUrl);
-  
-  // Open in new tab
-  window.open(playUrl, '_blank');
-  
-  return false;
-};
-    
-    // CREATE GAME NAME ELEMENT FIRST 
-    const gameName = document.createElement("p");
-    gameName.textContent = game.name;
-    
-    // FAVORITE BUTTON
-    const favBtn = document.createElement("button");
-    favBtn.classList.add("fav-btn");
-    favBtn.setAttribute("data-game", game.name);
-    favBtn.textContent = getFavourites().includes(game.name) ? "★" : "☆";
-    favBtn.title = "favourite";
-    favBtn.onclick = (e) => {
-      e.stopPropagation();
-      window.toggleFavourite(game.name);
-      favBtn.textContent = getFavourites().includes(game.name) ? "★" : "☆";
-    };
-    
-    gameDiv.appendChild(gameImage);
-    gameDiv.appendChild(gameName);  // Now gameName is defined!
-    gameDiv.appendChild(favBtn);
-    
-    // Add ratings if available
-    if (typeof createRatingHTML === 'function') {
-      try {
-        const userVotesGlobal = JSON.parse(localStorage.getItem('userVotes') || '{}');
-        gameDiv.insertAdjacentHTML('beforeend', createRatingHTML(game.name, userVotesGlobal[game.name] || 0));
-      } catch (err) {
-        console.error("Error adding rating:", err);
+    filteredGames.forEach((game, idx) => {
+      // Get game data - make a copy to avoid reference issues
+      const gameName = game.name;
+      const gameUrlValue = game.url;
+      const gameImageValue = game.image;
+      
+      console.log(`[${idx}] Game: "${gameName}", URL: "${gameUrlValue}"`);
+      
+      const gameDiv = document.createElement("div");
+      gameDiv.classList.add("game");
+      
+      const gameImage = document.createElement("img");
+      let imageSrc;
+      if (gameImageValue && gameImageValue.startsWith('http')) {
+        imageSrc = gameImageValue;
+      } else if (gameImageValue) {
+        imageSrc = `${serverUrl1}/${gameUrlValue}/${gameImageValue}`;
+      } else {
+        imageSrc = 'https://via.placeholder.com/200x200?text=No+Image';
       }
+      gameImage.src = imageSrc;
+      gameImage.alt = gameName;
+      gameImage.style.cursor = 'pointer';
+      
+      // Store URL directly on the image element
+      gameImage.setAttribute('data-game-url', gameUrlValue || '');
+      gameImage.setAttribute('data-game-name', gameName);
+      
+      gameImage.onclick = function(e) {
+        e.preventDefault();
+        e.stopPropagation();
+        
+        const url = this.getAttribute('data-game-url');
+        const name = this.getAttribute('data-game-name');
+        
+        console.log("🎮 Game clicked:", name);
+        console.log("🔗 URL from data attribute:", url);
+        
+        if (!url || url === 'undefined' || url === 'null' || url === '') {
+          console.error("❌ No valid URL for game:", name);
+          alert(`Game "${name}" has no valid URL. Please check the games.json file.`);
+          return;
+        }
+        
+        const playUrl = `play.html?gameurl=${encodeURIComponent(url)}&game=${encodeURIComponent(name)}`;
+        console.log("🚀 Opening:", playUrl);
+        window.open(playUrl, '_blank');
+        
+        return false;
+      };
+      
+      const gameNameElem = document.createElement("p");
+      gameNameElem.textContent = gameName;
+      
+      const favBtn = document.createElement("button");
+      favBtn.classList.add("fav-btn");
+      favBtn.setAttribute("data-game", gameName);
+      favBtn.textContent = getFavourites().includes(gameName) ? "★" : "☆";
+      favBtn.title = "favourite";
+      favBtn.onclick = (e) => {
+        e.stopPropagation();
+        window.toggleFavourite(gameName);
+        favBtn.textContent = getFavourites().includes(gameName) ? "★" : "☆";
+      };
+      
+      gameDiv.appendChild(gameImage);
+      gameDiv.appendChild(gameNameElem);
+      gameDiv.appendChild(favBtn);
+      
+      if (typeof createRatingHTML === 'function') {
+        try {
+          const userVotesGlobal = JSON.parse(localStorage.getItem('userVotes') || '{}');
+          gameDiv.insertAdjacentHTML('beforeend', createRatingHTML(gameName, userVotesGlobal[gameName] || 0));
+        } catch (err) {
+          console.error("Error adding rating:", err);
+        }
+      }
+      
+      gamesContainer.appendChild(gameDiv);
+    });
+    
+    if (typeof attachRatingListeners === 'function') {
+      attachRatingListeners();
     }
     
-    gamesContainer.appendChild(gameDiv);
-  });
-  
-  if (typeof attachRatingListeners === 'function') {
-    attachRatingListeners();
+    console.log(`✅ Displayed ${filteredGames.length} games`);
   }
-  
-  console.log(`✅ Displayed ${filteredGames.length} games`);
-}
-
-
-
-
-  
 
   function handleSearchInput() {
     const searchInput = document.getElementById("searchInput");
     if (!searchInput) return;
     const searchInputValue = searchInput.value.toLowerCase();
     
-    // Check for secret dev names achievement
     if (typeof checkSecretNames === 'function') {
       checkSecretNames(searchInputValue);
     }
