@@ -4,16 +4,27 @@ what is it?
 a customizable unblocked games hub with "not enough features"
 main features:
 🎮 games - search, filter by favorites, random game picker
+
 👤 accounts - register/login, display names, saves your stuff
+
 🏆 achievements - 60 achievements across 6 categories, each gives coins
+
 🛒 shop - buy backgrounds, cursors, themes, presets with coins
+
 🪙 coins - earn 0.01/sec while playing, bonus from achievements
+
 🎨 themes - dark mode, light mode, neon city, deep ocean (with fish!), forest night, color blast
+
 🖱️ cursors - glow orb, gold star, pixel sword, dragon cursor, paperback
+
 🔑 safety key - double tap any key to escape to a safe url
+
 ⏱️ session timer - tracks how long you've been active
+
 ⌨️ quick launch - ctrl+k to search and launch games
+
 📊 ratings - 1-5 stars, saves globally
+
 🏷️ categories - filter games by genre
 
 how to run:
