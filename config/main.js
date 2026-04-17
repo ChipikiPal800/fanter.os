@@ -63,7 +63,7 @@ function displayFilteredGames(filteredGames) {
     gameImage.alt = game.name;
     gameImage.style.cursor = 'pointer';
     
-  gameImage.onclick = (e) => {
+ gameImage.onclick = (e) => {
   e.preventDefault();
   e.stopPropagation();
   
@@ -73,7 +73,15 @@ function displayFilteredGames(filteredGames) {
   
   console.log("Game clicked:", gameName, "URL:", gamePath);
   
-  // Build the play.html URL correctly
+  // Check if gamePath exists
+  if (!gamePath) {
+    console.error("Game URL is missing for:", gameName);
+    alert("This game URL is missing. Please check the games.json file.");
+    return;
+  }
+  
+  // Build the play.html URL correctly - DON'T encode the entire URL string
+  // Just encode the values that might have special characters
   let playUrl = `play.html?gameurl=${encodeURIComponent(gamePath)}&game=${encodeURIComponent(gameName)}`;
   
   console.log("Opening:", playUrl);
