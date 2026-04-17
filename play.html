@@ -64,7 +64,7 @@
       text-align: center;
     }
     .sidebar-header h2 { color: #ffcc00; font-family: 'Orbitron', monospace; font-size: 18px; }
-    .game-sidebar.collapsed .sidebar-header h2 { fontSize: 0; }
+    .game-sidebar.collapsed .sidebar-header h2 { font-size: 0; }
     .game-sidebar.collapsed .sidebar-header h2::before { content: "🎮"; font-size: 24px; }
     
     .sidebar-card {
@@ -117,6 +117,16 @@
       border: 1px solid rgba(45, 90, 227, 0.3);
       overflow: hidden;
     }
+    .game-container.fullscreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      max-width: 100%;
+      border-radius: 0;
+      z-index: 1000;
+    }
     .game-header {
       background: rgba(10, 15, 30, 0.8);
       padding: 12px 20px;
@@ -128,6 +138,7 @@
       gap: 10px;
     }
     .game-name { font-size: 16px; font-weight: bold; color: #ffcc00; font-family: 'Orbitron', monospace; }
+    .game-controls { display: flex; gap: 10px; }
     .game-control-btn {
       background: rgba(20, 30, 50, 0.8);
       border: 1px solid rgba(45, 90, 227, 0.4);
@@ -140,28 +151,6 @@
     .game-control-btn:hover { border-color: #ffcc00; transform: translateY(-2px); }
     .game-wrapper { aspect-ratio: 16 / 9; width: 100%; background: #000; }
     .game-frame { width: 100%; height: 100%; border: none; }
-    
-    /* External Game Notice */
-    .external-notice {
-      background: rgba(0,0,0,0.8);
-      padding: 20px;
-      text-align: center;
-      border-radius: 16px;
-      margin: 20px;
-    }
-    .external-notice h3 { color: #ffcc00; margin-bottom: 10px; }
-    .external-notice p { color: rgba(255,255,255,0.7); margin-bottom: 15px; font-size: 14px; }
-    .external-play-btn {
-      background: #2d5ae3;
-      border: none;
-      border-radius: 30px;
-      padding: 12px 24px;
-      color: white;
-      font-size: 16px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-    }
-    .external-play-btn:hover { background: #ffcc00; color: #1a1a2e; transform: scale(1.05); }
     
     /* Loading Screen */
     .loading-overlay {
@@ -247,7 +236,19 @@
     </div>
     
     <div class="game-main">
-      <div id="gameContent"></div>
+      <div class="game-container" id="gameContainer">
+        <div class="game-header">
+          <span class="game-name" id="gameTitle">Loading game...</span>
+          <div class="game-controls">
+            <button class="game-control-btn" id="fullscreenBtn">🖥️ fullscreen</button>
+            <button class="game-control-btn" id="refreshBtn">🔄 refresh</button>
+            <button class="game-control-btn" onclick="window.location.href='index.html'">← back</button>
+          </div>
+        </div>
+        <div class="game-wrapper">
+          <iframe class="game-frame" id="gameFrame" src="about:blank" allowfullscreen></iframe>
+        </div>
+      </div>
     </div>
   </div>
 
@@ -261,144 +262,111 @@
     console.log("🔍 Raw gameUrl param:", gameUrl);
     console.log("📝 Game name:", decodedGameName);
     
-    const gameContent = document.getElementById('gameContent');
-    const loadingOverlay = document.getElementById('loadingOverlay');
-    const gameNameDisplay = document.getElementById('gameNameDisplay');
+    // Update UI
     const gameTitle = document.getElementById('gameTitle');
+    const gameNameDisplay = document.getElementById('gameNameDisplay');
+    const loadingGameNameEl = document.getElementById('loadingGameName');
     
+    if (gameTitle) gameTitle.textContent = decodedGameName;
     if (gameNameDisplay) gameNameDisplay.textContent = decodedGameName;
+    if (loadingGameNameEl) loadingGameNameEl.textContent = `Loading ${decodedGameName}...`;
     
     // Check if gameUrl is missing
     if (!gameUrl || gameUrl === 'undefined' || gameUrl === 'null' || gameUrl === '') {
-      gameContent.innerHTML = `
+      document.getElementById('gameContainer').innerHTML = `
+        <div class="game-header">
+          <span class="game-name">Error</span>
+          <div class="game-controls">
+            <button class="game-control-btn" onclick="window.location.href='index.html'">← back</button>
+          </div>
+        </div>
         <div style="text-align: center; padding: 60px 20px;">
           <div style="font-size: 64px; margin-bottom: 20px;">😵</div>
           <div style="font-size: 24px; color: #ff4444; margin-bottom: 10px;">Game URL Not Found</div>
-          <div style="color: rgba(255,255,255,0.7); margin-bottom: 30px;">No game URL was provided. Please go back and try again.</div>
-          <button class="sidebar-btn" onclick="window.location.href='index.html'" style="width: auto; padding: 10px 20px; margin: 0 auto;">← back to games</button>
+          <div style="color: rgba(255,255,255,0.7);">No game URL was provided. Please go back and try again.</div>
         </div>
       `;
-      if (loadingOverlay) loadingOverlay.classList.add('hide');
+      document.getElementById('loadingOverlay').classList.add('hide');
     } else {
-      // Determine if external or internal game
+      // Build the embed URL
+      let embedUrl;
       const isExternal = gameUrl.startsWith('http://') || gameUrl.startsWith('https://');
       
       if (isExternal) {
-        // EXTERNAL GAME - Show "Open in New Tab" button
-        console.log("🌐 External game detected - cannot embed due to security restrictions");
-        
-        gameContent.innerHTML = `
-          <div class="game-container">
-            <div class="game-header">
-              <span class="game-name">${decodedGameName}</span>
-              <div class="game-controls">
-                <button class="game-control-btn" onclick="window.location.href='index.html'">← back</button>
-              </div>
-            </div>
-            <div class="external-notice">
-              <h3>🔒 External Game</h3>
-              <p>This game cannot be played inside an iframe due to the website's security settings.</p>
-              <button class="external-play-btn" onclick="window.open('${gameUrl}', '_blank')">🎮 Play in New Tab</button>
-              <p style="margin-top: 15px; font-size: 12px;">The game will open in a new tab. Come back here to earn coins!</p>
-            </div>
-          </div>
-        `;
-        
-        // Still track that the game was "played" for achievements
-        if (typeof window.trackPlayedGame === 'function') window.trackPlayedGame(decodedGameName);
-        if (typeof window.trackGamePlayCount === 'function') window.trackGamePlayCount(decodedGameName);
-        
-        if (loadingOverlay) loadingOverlay.classList.add('hide');
-        
+        // External game - use directly
+        embedUrl = gameUrl;
+        console.log("🌐 External game - loading from:", embedUrl);
       } else {
-        // INTERNAL GAME - Load in iframe
+        // Internal game - use CDN
         let cleanUrl = gameUrl.replace(/\/$/, '');
-        let embedUrl = `https://gms.parcoil.com/${cleanUrl}`;
+        embedUrl = `https://gms.parcoil.com/${cleanUrl}`;
         console.log("🎮 Internal game - loading from CDN:", embedUrl);
-        
-        gameContent.innerHTML = `
-          <div class="game-container" id="gameContainer">
-            <div class="game-header">
-              <span class="game-name">${decodedGameName}</span>
-              <div class="game-controls">
-                <button class="game-control-btn" id="fullscreenBtn">🖥️ fullscreen</button>
-                <button class="game-control-btn" id="refreshBtn">🔄 refresh</button>
-                <button class="game-control-btn" onclick="window.location.href='index.html'">← back</button>
-              </div>
-            </div>
-            <div class="game-wrapper">
-              <iframe class="game-frame" id="gameFrame" src="about:blank" allowfullscreen sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals allow-top-navigation"></iframe>
-            </div>
-          </div>
-        `;
-        
-        const gameFrame = document.getElementById('gameFrame');
-        const fullscreenBtn = document.getElementById('fullscreenBtn');
-        const refreshBtn = document.getElementById('refreshBtn');
-        
-        function onGameLoad() {
-          console.log("✅ Game loaded successfully!");
-          if (loadingOverlay) loadingOverlay.classList.add('hide');
-        }
-        
-        if (gameFrame) {
-          gameFrame.onload = onGameLoad;
-          gameFrame.src = embedUrl;
-          
-          setTimeout(() => {
-            if (loadingOverlay && !loadingOverlay.classList.contains('hide')) {
-              console.log("⚠️ Game load timeout, forcing hide");
-              onGameLoad();
-            }
-          }, 8000);
-        }
-        
-        // Fullscreen toggle
-        let isFullscreen = false;
-        if (fullscreenBtn) {
-          fullscreenBtn.onclick = () => {
-            const gameContainerEl = document.getElementById('gameContainer');
-            if (!isFullscreen) {
-              gameContainerEl.classList.add('fullscreen');
-              fullscreenBtn.innerHTML = '⬛ exit';
-              isFullscreen = true;
-            } else {
-              gameContainerEl.classList.remove('fullscreen');
-              fullscreenBtn.innerHTML = '🖥️ fullscreen';
-              isFullscreen = false;
-            }
-          };
-        }
-        
-        // Refresh button
-        if (refreshBtn) {
-          refreshBtn.onclick = () => {
-            if (gameFrame) {
-              if (loadingOverlay) loadingOverlay.classList.remove('hide');
-              gameFrame.src = embedUrl;
-            }
-          };
-        }
-        
-        document.addEventListener('keydown', (e) => {
-          if (e.key === 'Escape' && isFullscreen) {
-            const gameContainerEl = document.getElementById('gameContainer');
-            gameContainerEl.classList.remove('fullscreen');
-            if (fullscreenBtn) fullscreenBtn.innerHTML = '🖥️ fullscreen';
-            isFullscreen = false;
-          }
-        });
-        
-        // Track game play for achievements
-        if (typeof window.trackPlayedGame === 'function') window.trackPlayedGame(decodedGameName);
-        if (typeof window.trackGamePlayCount === 'function') window.trackGamePlayCount(decodedGameName);
       }
       
-      // Update loading text
-      const loadingGameNameEl = document.getElementById('loadingGameName');
-      if (loadingGameNameEl) loadingGameNameEl.textContent = `Loading ${decodedGameName}...`;
+      const gameFrame = document.getElementById('gameFrame');
+      const loadingOverlay = document.getElementById('loadingOverlay');
       
-      // ===== COIN SYSTEM (works for both external and internal) =====
+      function onGameLoad() {
+        console.log("✅ Game loaded successfully!");
+        if (loadingOverlay) loadingOverlay.classList.add('hide');
+      }
+      
+      if (gameFrame) {
+        gameFrame.onload = onGameLoad;
+        gameFrame.src = embedUrl;
+        
+        // Fallback timeout
+        setTimeout(() => {
+          if (loadingOverlay && !loadingOverlay.classList.contains('hide')) {
+            console.log("⚠️ Game load timeout, forcing hide");
+            onGameLoad();
+          }
+        }, 8000);
+      }
+      
+      // ===== FULLSCREEN TOGGLE =====
+      const fullscreenBtn = document.getElementById('fullscreenBtn');
+      const refreshBtn = document.getElementById('refreshBtn');
+      const gameContainer = document.getElementById('gameContainer');
+      let isFullscreen = false;
+      
+      if (fullscreenBtn) {
+        fullscreenBtn.onclick = () => {
+          if (!isFullscreen) {
+            gameContainer.classList.add('fullscreen');
+            fullscreenBtn.innerHTML = '⬛ exit';
+            isFullscreen = true;
+          } else {
+            gameContainer.classList.remove('fullscreen');
+            fullscreenBtn.innerHTML = '🖥️ fullscreen';
+            isFullscreen = false;
+          }
+        };
+      }
+      
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && isFullscreen) {
+          gameContainer.classList.remove('fullscreen');
+          if (fullscreenBtn) fullscreenBtn.innerHTML = '🖥️ fullscreen';
+          isFullscreen = false;
+        }
+      });
+      
+      // Refresh button
+      if (refreshBtn) {
+        refreshBtn.onclick = () => {
+          if (gameFrame) {
+            if (loadingOverlay) loadingOverlay.classList.remove('hide');
+            gameFrame.src = embedUrl;
+          }
+        };
+      }
+      
+      // Track game play for achievements
+      if (typeof window.trackPlayedGame === 'function') window.trackPlayedGame(decodedGameName);
+      if (typeof window.trackGamePlayCount === 'function') window.trackGamePlayCount(decodedGameName);
+      
+      // ===== COIN SYSTEM =====
       let sessionStartTime = Date.now();
       let totalCoinsEarned = 0;
       let coinInterval = null;
