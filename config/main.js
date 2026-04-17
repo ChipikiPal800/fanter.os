@@ -35,7 +35,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   };
 
- window.displayFilteredGames = function(filteredGames) {
+window.displayFilteredGames = function(filteredGames) {
   const gamesContainer = document.getElementById("gamesContainer");
   if (!gamesContainer) return;
   gamesContainer.innerHTML = "";
@@ -59,22 +59,18 @@ document.addEventListener('DOMContentLoaded', function() {
     gameImage.style.cursor = 'pointer';
     gameImage.style.width = '100%';
     
-    // Create a wrapper div with the click handler instead
-    const gameLink = document.createElement("div");
-    gameLink.style.cursor = 'pointer';
-    gameLink.appendChild(gameImage);
+    // THIS IS THE WORKING CLICK HANDLER FROM YOUR CONSOLE TEST
+    gameImage.onclick = function() {
+      const gameUrl = this.getAttribute('data-game-url') || game.url;
+      const gameName = this.alt;
+      const playUrl = 'play.html?gameurl=' + encodeURIComponent(gameUrl) + '&game=' + encodeURIComponent(gameName);
+      console.log("🔴 IMAGE CLICKED:", gameName);
+      console.log("🚀 OPENING:", playUrl);
+      window.open(playUrl, '_blank');
+    };
     
-    // SIMPLE DIRECT CLICK - no closures, no data attributes
-    const gameUrl = game.url;
-    const gameName = game.name;
-    
-    gameLink.onclick = function(url, name) {
-      return function() {
-        const playUrl = 'play.html?gameurl=' + encodeURIComponent(url) + '&game=' + encodeURIComponent(name);
-        console.log("🎮 OPENING:", playUrl);
-        window.open(playUrl, '_blank');
-      };
-    }(gameUrl, gameName);
+    // Store the URL as a data attribute
+    gameImage.setAttribute('data-game-url', game.url);
     
     const gameNameElem = document.createElement("p");
     gameNameElem.textContent = game.name;
@@ -91,7 +87,7 @@ document.addEventListener('DOMContentLoaded', function() {
       this.textContent = nowFav ? "★" : "☆";
     };
     
-    gameDiv.appendChild(gameLink);
+    gameDiv.appendChild(gameImage);
     gameDiv.appendChild(gameNameElem);
     gameDiv.appendChild(favBtn);
     
