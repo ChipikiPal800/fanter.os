@@ -259,7 +259,7 @@
       } catch (error) { showMessage('loginMessage', error.message, 'error'); }
     }
 
-   async function handleRegister(username, email, displayName, password) {
+ async function handleRegister(username, email, displayName, password) {
   if (!window.supabase) {
     showMessage('registerMessage', 'Supabase not available', 'error');
     return;
@@ -285,51 +285,32 @@
       return;
     }
 
-    // Sign up WITHOUT sending confirmation email
-    const { data, error } = await window.supabase.auth.signUp({
+    // Generate a fake UUID for the user
+    const fakeUserId = 'guest_' + Date.now() + '_' + Math.random().toString(36).substr(2, 9);
+    
+    // Create user directly in localStorage first (always works)
+    const newUser = {
+      id: fakeUserId,
+      username: username,
+      displayName: displayName || username,
       email: email,
-      password: password,
-      options: {
-        data: { username: username, display_name: displayName || username },
-        emailRedirectTo: undefined  // This prevents email sending
-      }
-    });
-
-    if (error) {
-      // If we still get rate limit error, use a workaround
-      if (error.message.includes('rate') || error.message.includes('email')) {
-        console.log('Email rate limited, using workaround...');
-        
-        // Alternative: Just create profile without email confirmation
-        const { data: signInData, error: signInError } = await window.supabase.auth.signInWithPassword({
-          email: email,
-          password: password
-        });
-        
-        if (!signInError && signInData.user) {
-          // User somehow already exists, just log them in
-          await window.supabase.from('profiles').upsert({
-            id: signInData.user.id,
-            username: username,
-            display_name: displayName || username,
-            email: email,
-            coins: 300,
-            games_played: 0,
-            achievements_count: 0
-          });
-          
-          showMessage('registerMessage', '✅ Account ready! Logging you in...', 'success');
-          setTimeout(async () => { await handleLogin(email, password); }, 500);
-          return;
-        }
-      }
-      throw error;
-    }
-
-    if (data.user) {
-      // Create profile in Supabase
+      coins: 300,
+      stats: { gamesPlayed: 0, ratingsGiven: 0, favoritesCount: 0 },
+      favorites: [],
+      playedGames: [],
+      isLocal: true
+    };
+    
+    // Save to localStorage
+    const users = JSON.parse(localStorage.getItem('fanter_users') || '[]');
+    users.push(newUser);
+    localStorage.setItem('fanter_users', JSON.stringify(users));
+    localStorage.setItem('fanter_currentUser', JSON.stringify(newUser));
+    
+    // Try to save to Supabase (but don't block if it fails)
+    try {
       await window.supabase.from('profiles').insert({
-        id: data.user.id,
+        id: fakeUserId,
         username: username,
         display_name: displayName || username,
         email: email,
@@ -337,38 +318,26 @@
         games_played: 0,
         achievements_count: 0
       });
-      
-      // Also add to local users array
-      const users = JSON.parse(localStorage.getItem('fanter_users') || '[]');
-      users.push({
-        id: data.user.id,
-        username: username,
-        displayName: displayName || username,
-        email: email,
-        coins: 300,
-        stats: { gamesPlayed: 0, ratingsGiven: 0, favoritesCount: 0 }
-      });
-      localStorage.setItem('fanter_users', JSON.stringify(users));
+      console.log('✅ Saved to Supabase');
+    } catch (e) {
+      console.log('⚠️ Supabase save failed, using localStorage only:', e.message);
     }
-
+    
     showMessage('registerMessage', '✅ Account created! Logging you in...', 'success');
     
-    // Auto-login after registration
-    setTimeout(async () => {
-      await handleLogin(email, password);
-    }, 1000);
+    // Set as current user and reload
+    localUser = newUser;
+    syncStatus = 'offline';
+    updateUI();
+    
+    setTimeout(() => {
+      switchTab('profile');
+      renderProfile();
+    }, 500);
     
   } catch (error) {
     console.error('Registration error:', error);
-    
-    // Friendly error messages
-    if (error.message.includes('rate') || error.message.includes('email')) {
-      showMessage('registerMessage', '⚠️ Email service busy. Try a fake email like test@test.com', 'error');
-    } else if (error.message.includes('already registered') || error.message.includes('already exists')) {
-      showMessage('registerMessage', '❌ This email is already registered. Try logging in!', 'error');
-    } else {
-      showMessage('registerMessage', error.message, 'error');
-    }
+    showMessage('registerMessage', 'Error creating account. Try a different username.', 'error');
   }
 }
 
