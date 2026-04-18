@@ -524,12 +524,7 @@ const { data: { session } } = await supabase.auth.getSession();
     showMessage('registerMessage', error.message, 'error');
   }
 }
-        }
-        showMessage('registerMessage', 'Account created! Check your email.', 'success');
-      } catch (error) {
-        showMessage('registerMessage', error.message, 'error');
-      }
-    }
+    
 
     async function handleLogout() {
       await window.supabase.auth.signOut();
