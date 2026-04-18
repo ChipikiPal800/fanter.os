@@ -94,26 +94,9 @@
       <button class="account-tab" data-tab="register">register</button>
     </div>
 
-    <div id="profileTab" class="account-tab-content active">
-      <div id="profileContent"><div class="guest-message">loading profile...</div></div>
-    </div>
-
-    <div id="achievementsTab" class="account-tab-content">
-      <div id="achievementsContent"><div class="guest-message">loading achievements...</div></div>
-    </div>
-
-    <div id="leaderboardTab" class="account-tab-content">
-      <div id="leaderboardContent">
-        <div class="leaderboard-filters">
-          <button class="filter-btn active" data-filter="coins">💰 Coins</button>
-          <button class="filter-btn" data-filter="games_played">🎮 Games Played</button>
-          <button class="filter-btn" data-filter="achievements_count">🏆 Achievements</button>
-        </div>
-        <div id="leaderboardList" class="leaderboard-list">
-          <div class="guest-message">loading leaderboard...</div>
-        </div>
-      </div>
-    </div>
+    <div id="profileTab" class="account-tab-content active"><div id="profileContent"><div class="guest-message">loading profile...</div></div></div>
+    <div id="achievementsTab" class="account-tab-content"><div id="achievementsContent"><div class="guest-message">loading achievements...</div></div></div>
+    <div id="leaderboardTab" class="account-tab-content"><div id="leaderboardContent"><div class="leaderboard-filters"><button class="filter-btn active" data-filter="coins">💰 Coins</button><button class="filter-btn" data-filter="games_played">🎮 Games Played</button><button class="filter-btn" data-filter="achievements_count">🏆 Achievements</button></div><div id="leaderboardList" class="leaderboard-list"><div class="guest-message">loading leaderboard...</div></div></div></div>
 
     <div id="loginTab" class="account-tab-content">
       <form id="loginForm" class="account-form">
@@ -122,10 +105,7 @@
         <button type="submit" class="settings-btn">login</button>
         <div id="loginMessage" class="message"></div>
       </form>
-      <div style="text-align:center;margin-top:20px;">
-        <p style="opacity:0.7;font-size:14px;">or</p>
-        <button onclick="continueWithLocalStorage()" class="settings-btn" style="margin-top:10px;">continue with local save</button>
-      </div>
+      <div style="text-align:center;margin-top:20px;"><p style="opacity:0.7;font-size:14px;">or</p><button onclick="continueWithLocalStorage()" class="settings-btn" style="margin-top:10px;">continue with local save</button></div>
     </div>
 
     <div id="registerTab" class="account-tab-content">
@@ -141,13 +121,12 @@
     </div>
   </div>
 
-   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
- 
+    // ===== SUPABASE CLIENT =====
     window.supabase = supabase.createClient("https://gvzgnclowylrrpovdvtw.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd2emduY2xvd3lscnJwb3ZkdnR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NjM5ODEsImV4cCI6MjA5MjAzOTk4MX0.p7oeYBVX870iSK-TLDRj6pfW7wLj7HJsTHjNWaNpL7o");
     console.log('✅ Supabase ready!');
-    
- 
+
     // ===== ALL ACHIEVEMENTS (63 TOTAL) =====
     const ALL_ACHIEVEMENTS = [
       { id: 1, name: "Welcome Aboard", desc: "Create an account", icon: "🎉", coins: 3, req: "register", required: 1 },
@@ -226,21 +205,11 @@
     async function init() {
       console.log('Starting init...');
       
-      // Create guest user if none exists
       if (!localStorage.getItem('fanter_currentUser')) {
-        const guestUser = {
-          id: 'guest_' + Date.now(),
-          username: 'Guest',
-          displayName: 'Guest',
-          coins: 300,
-          stats: { gamesPlayed: 0, ratingsGiven: 0, favoritesCount: 0 },
-          favorites: [],
-          playedGames: []
-        };
+        const guestUser = { id: 'guest_' + Date.now(), username: 'Guest', displayName: 'Guest', coins: 300, stats: { gamesPlayed: 0, ratingsGiven: 0, favoritesCount: 0 }, favorites: [], playedGames: [] };
         localStorage.setItem('fanter_currentUser', JSON.stringify(guestUser));
       }
 
-      // Try to use Supabase if available
       if (window.supabase && typeof window.supabase.from === 'function') {
         try {
           console.log('Supabase found, checking session...');
@@ -249,17 +218,9 @@
             currentUser = session.user;
             syncStatus = 'online';
             await loadSupabaseData();
-          } else {
-            loadLocalData();
-          }
-        } catch (e) {
-          console.log('Supabase error, using localStorage:', e.message);
-          loadLocalData();
-        }
-      } else {
-        console.log('Supabase not available, using localStorage');
-        loadLocalData();
-      }
+          } else { loadLocalData(); }
+        } catch (e) { console.log('Supabase error, using localStorage:', e.message); loadLocalData(); }
+      } else { console.log('Supabase not available, using localStorage'); loadLocalData(); }
 
       setupTabs();
       setupLeaderboardFilters();
@@ -277,33 +238,16 @@
     async function loadSupabaseData() {
       try {
         const { data: profile } = await window.supabase.from('profiles').select('*').eq('id', currentUser.id).single();
-        if (profile) {
-          localUser = {
-            id: profile.id,
-            username: profile.username,
-            displayName: profile.display_name,
-            email: profile.email,
-            coins: profile.coins || 300,
-            stats: { gamesPlayed: profile.games_played || 0, ratingsGiven: 0, favoritesCount: 0 },
-            favorites: [],
-            playedGames: []
-          };
-        }
+        if (profile) { localUser = { id: profile.id, username: profile.username, displayName: profile.display_name, email: profile.email, coins: profile.coins || 300, stats: { gamesPlayed: profile.games_played || 0, ratingsGiven: 0, favoritesCount: 0 }, favorites: [], playedGames: [] }; }
         const { data: achievements } = await window.supabase.from('user_achievements').select('achievement_id').eq('user_id', currentUser.id);
         userAchievements = {};
         achievements?.forEach(a => { userAchievements[a.achievement_id] = true; });
-      } catch (error) {
-        console.error('Error loading Supabase data:', error);
-        loadLocalData();
-      }
+      } catch (error) { console.error('Error loading Supabase data:', error); loadLocalData(); }
     }
 
     // ===== AUTH =====
     async function handleLogin(email, password) {
-      if (!window.supabase) {
-        showMessage('loginMessage', 'Supabase not available', 'error');
-        return;
-      }
+      if (!window.supabase) { showMessage('loginMessage', 'Supabase not available', 'error'); return; }
       try {
         const { data, error } = await window.supabase.auth.signInWithPassword({ email, password });
         if (error) throw error;
@@ -311,105 +255,53 @@
         syncStatus = 'online';
         await loadSupabaseData();
         showMessage('loginMessage', 'Login successful!', 'success');
-        setTimeout(() => window.location.reload(), 1000);
-      } catch (error) {
-        showMessage('loginMessage', error.message, 'error');
-      }
+        setTimeout(() => window.location.reload(), 500);
+      } catch (error) { showMessage('loginMessage', error.message, 'error'); }
     }
 
     async function handleRegister(username, email, displayName, password) {
-      if (!window.supabase) {
-        showMessage('registerMessage', 'Supabase not available', 'error');
-        return;
-      }
+      if (!window.supabase) { showMessage('registerMessage', 'Supabase not available', 'error'); return; }
       try {
         const localUsers = JSON.parse(localStorage.getItem('fanter_users') || '[]');
-        if (localUsers.find(u => u.username && u.username.toLowerCase() === username.toLowerCase())) {
-          showMessage('registerMessage', '❌ Username already taken!', 'error');
-          return;
-        }
+        if (localUsers.find(u => u.username && u.username.toLowerCase() === username.toLowerCase())) { showMessage('registerMessage', '❌ Username already taken!', 'error'); return; }
 
         const { data: existingUser } = await window.supabase.from('profiles').select('username').ilike('username', username).single();
-        if (existingUser) {
-          showMessage('registerMessage', '❌ Username already taken!', 'error');
-          return;
-        }
+        if (existingUser) { showMessage('registerMessage', '❌ Username already taken!', 'error'); return; }
 
-        const { data, error } = await window.supabase.auth.signUp({
-          email, password,
-          options: { data: { username, display_name: displayName || username } }
-        });
-
+        const { data, error } = await window.supabase.auth.signUp({ email, password, options: { data: { username, display_name: displayName || username } } });
         if (error) throw error;
 
         if (data.user) {
-          await window.supabase.from('profiles').insert({
-            id: data.user.id,
-            username: username,
-            display_name: displayName || username,
-            email: email,
-            coins: 300,
-            games_played: 0,
-            achievements_count: 0
-          });
+          await window.supabase.from('profiles').insert({ id: data.user.id, username: username, display_name: displayName || username, email: email, coins: 300, games_played: 0, achievements_count: 0 });
         }
 
-        showMessage('registerMessage', '✅ Account created! Check your email.', 'success');
-      } catch (error) {
-        showMessage('registerMessage', error.message, 'error');
-      }
+        showMessage('registerMessage', '✅ Account created! Logging you in...', 'success');
+        setTimeout(async () => { await handleLogin(email, password); }, 1000);
+      } catch (error) { showMessage('registerMessage', error.message, 'error'); }
     }
 
     async function handleLogout() {
-  // Clear Supabase session if exists
-  if (window.supabase && window.supabase.auth) {
-    try {
-      await window.supabase.auth.signOut();
-    } catch (e) {
-      console.log('Supabase signout error:', e);
-    }
-  }
-  
-  // Clear local user data
-  currentUser = null;
-  localUser = null;
-  syncStatus = 'offline';
-  localStorage.removeItem('fanter_currentUser');
-  localStorage.removeItem('fanter_achievements');
-  
-  // Create fresh guest user
-  const guestUser = {
-    id: 'guest_' + Date.now(),
-    username: 'Guest',
-    displayName: 'Guest',
-    coins: 300,
-    stats: { gamesPlayed: 0, ratingsGiven: 0, favoritesCount: 0 },
-    favorites: [],
-    playedGames: []
-  };
-  localStorage.setItem('fanter_currentUser', JSON.stringify(guestUser));
-  localUser = guestUser;
-  
-  updateUI();
-  switchTab('profile');
-  console.log('✅ Cleared session - now browsing as Guest');
-}
-    function continueWithLocalStorage() {
-      loadLocalData();
+      if (window.supabase && window.supabase.auth) { try { await window.supabase.auth.signOut(); } catch (e) {} }
+      currentUser = null;
+      localUser = null;
+      syncStatus = 'offline';
+      localStorage.removeItem('fanter_currentUser');
+      localStorage.removeItem('fanter_achievements');
+      const guestUser = { id: 'guest_' + Date.now(), username: 'Guest', displayName: 'Guest', coins: 300, stats: { gamesPlayed: 0, ratingsGiven: 0, favoritesCount: 0 }, favorites: [], playedGames: [] };
+      localStorage.setItem('fanter_currentUser', JSON.stringify(guestUser));
+      localUser = guestUser;
       updateUI();
       switchTab('profile');
+      console.log('✅ Cleared session - now browsing as Guest');
     }
+
+    function continueWithLocalStorage() { loadLocalData(); updateUI(); switchTab('profile'); }
 
     // ===== RENDER PROFILE =====
     function renderProfile() {
       const container = document.getElementById('profileContent');
       const user = localUser;
-      
-      if (!user) {
-        container.innerHTML = `<div class="guest-message"><p>you're browsing as a guest</p><button onclick="switchTab('register')" class="settings-btn" style="width:auto;padding:10px 30px;margin-top:15px;">create account</button></div>`;
-        return;
-      }
-      
+      if (!user) { container.innerHTML = `<div class="guest-message"><p>you're browsing as a guest</p><button onclick="switchTab('register')" class="settings-btn" style="width:auto;padding:10px 30px;margin-top:15px;">create account</button></div>`; return; }
       const displayName = user.displayName || user.username || 'User';
       const username = user.username || displayName.toLowerCase();
       const coins = user.coins || 300;
@@ -419,42 +311,17 @@
       const unlockedCount = Object.keys(userAchievements).length;
       const statusDot = syncStatus === 'online' ? '🟢' : '🟠';
       const statusText = syncStatus === 'online' ? 'Supabase' : 'Local';
-
-      container.innerHTML = `
-        <div class="profile-info">
-          <div class="profile-avatar">${displayName[0].toUpperCase()}</div>
-          <h2>${displayName} <span class="sync-status ${syncStatus}">${statusDot} ${statusText}</span></h2>
-          <p style="opacity:0.7;">@${username}</p>
-          <div style="font-size:20px;font-weight:bold;color:#ffcc00;margin-top:8px;">🪙 ${Math.floor(coins * 100) / 100}</div>
-        </div>
-        <div class="profile-stats">
-          <div class="stat"><div class="stat-number">${stats.gamesPlayed || 0}</div><div class="stat-label">Games</div></div>
-          <div class="stat"><div class="stat-number">${stats.ratingsGiven || 0}</div><div class="stat-label">Ratings</div></div>
-          <div class="stat"><div class="stat-number">${favorites.length}</div><div class="stat-label">Favorites</div></div>
-          <div class="stat"><div class="stat-number">${unlockedCount}</div><div class="stat-label">Achievements</div></div>
-        </div>
-        ${playedGames.length > 0 ? `<div class="profile-games-section"><h3>🎮 Recently Played</h3><div>${playedGames.slice(0,6).map(g => `<span class="profile-game-tag">${g}</span>`).join('')}</div></div>` : ''}
-        ${favorites.length > 0 ? `<div class="profile-games-section"><h3>⭐ Favorites</h3><div>${favorites.slice(0,8).map(g => `<span class="profile-game-tag favorite">${g}</span>`).join('')}</div></div>` : ''}
-        <div class="divider"></div>
-        <div style="display:flex;gap:10px;flex-wrap:wrap;">
-          <button class="settings-btn" onclick="switchTab('achievements')">view achievements</button>
-          <button class="settings-btn logout-btn" onclick="handleLogout()">${currentUser ? 'Logout' : 'Clear'}</button>
-        </div>`;
+      container.innerHTML = `<div class="profile-info"><div class="profile-avatar">${displayName[0].toUpperCase()}</div><h2>${displayName} <span class="sync-status ${syncStatus}">${statusDot} ${statusText}</span></h2><p style="opacity:0.7;">@${username}</p><div style="font-size:20px;font-weight:bold;color:#ffcc00;margin-top:8px;">🪙 ${Math.floor(coins * 100) / 100}</div></div><div class="profile-stats"><div class="stat"><div class="stat-number">${stats.gamesPlayed || 0}</div><div class="stat-label">Games</div></div><div class="stat"><div class="stat-number">${stats.ratingsGiven || 0}</div><div class="stat-label">Ratings</div></div><div class="stat"><div class="stat-number">${favorites.length}</div><div class="stat-label">Favorites</div></div><div class="stat"><div class="stat-number">${unlockedCount}</div><div class="stat-label">Achievements</div></div></div>${playedGames.length > 0 ? `<div class="profile-games-section"><h3>🎮 Recently Played</h3><div>${playedGames.slice(0,6).map(g => `<span class="profile-game-tag">${g}</span>`).join('')}</div></div>` : ''}${favorites.length > 0 ? `<div class="profile-games-section"><h3>⭐ Favorites</h3><div>${favorites.slice(0,8).map(g => `<span class="profile-game-tag favorite">${g}</span>`).join('')}</div></div>` : ''}<div class="divider"></div><div style="display:flex;gap:10px;flex-wrap:wrap;"><button class="settings-btn" onclick="switchTab('achievements')">view achievements</button><button class="settings-btn logout-btn" onclick="handleLogout()">${currentUser ? 'Logout' : 'Clear'}</button></div>`;
     }
 
     // ===== RENDER ACHIEVEMENTS =====
     function renderAchievements() {
       const container = document.getElementById('achievementsContent');
-      if (!localUser) {
-        container.innerHTML = `<div class="guest-message"><p>please log in to view achievements</p><button onclick="switchTab('login')" class="settings-btn" style="width:auto;padding:10px 30px;margin-top:15px;">log in</button></div>`;
-        return;
-      }
-
+      if (!localUser) { container.innerHTML = `<div class="guest-message"><p>please log in to view achievements</p><button onclick="switchTab('login')" class="settings-btn" style="width:auto;padding:10px 30px;margin-top:15px;">log in</button></div>`; return; }
       const stats = localUser.stats || { gamesPlayed: 0, ratingsGiven: 0, favoritesCount: 0 };
       const unlockedCount = Object.keys(userAchievements).length;
       const totalCount = ALL_ACHIEVEMENTS.length;
       const pct = Math.round((unlockedCount / totalCount) * 100);
-
       const newbie = ALL_ACHIEVEMENTS.filter(a => a.id >= 1 && a.id <= 10);
       const beginner = ALL_ACHIEVEMENTS.filter(a => a.id >= 11 && a.id <= 20);
       const climbing = ALL_ACHIEVEMENTS.filter(a => a.id >= 21 && a.id <= 30);
@@ -473,48 +340,15 @@
         const groupUnlocked = achievements.filter(a => userAchievements[a.id]).length;
         const groupPct = Math.round((groupUnlocked / achievements.length) * 100);
         const groupId = 'ach-group-' + title.replace(/\s+/g, '-');
-
         const items = achievements.map(a => {
           const p = getProgress(a);
           const isHidden = a.req === 'secret' && !p.done;
-          return `
-            <div class="ach-item ${p.done ? 'unlocked' : ''}">
-              <div class="ach-item-icon" style="${!p.done ? 'filter:grayscale(0.6);opacity:0.7;' : ''}">${isHidden ? '❓' : a.icon}</div>
-              <div class="ach-item-info">
-                <div class="ach-item-name">${isHidden ? '???' : a.name}</div>
-                <div class="ach-item-desc">${isHidden ? 'hidden — keep playing to discover' : a.desc}</div>
-                ${p.done ? '<div style="font-size:10px;color:#ffcc00;margin-top:3px;">✓ unlocked</div>' : ''}
-                ${!p.done && !isHidden ? `<div class="ach-progress-bar-wrap"><div class="ach-progress-bar-fill" style="width:${p.pct}%;background:${color};"></div></div><div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:3px;">${p.current} / ${a.required}</div>` : ''}
-              </div>
-              <div class="ach-item-coins">+${a.coins} 🪙</div>
-            </div>`;
+          return `<div class="ach-item ${p.done ? 'unlocked' : ''}"><div class="ach-item-icon" style="${!p.done ? 'filter:grayscale(0.6);opacity:0.7;' : ''}">${isHidden ? '❓' : a.icon}</div><div class="ach-item-info"><div class="ach-item-name">${isHidden ? '???' : a.name}</div><div class="ach-item-desc">${isHidden ? 'hidden — keep playing to discover' : a.desc}</div>${p.done ? '<div style="font-size:10px;color:#ffcc00;margin-top:3px;">✓ unlocked</div>' : ''}${!p.done && !isHidden ? `<div class="ach-progress-bar-wrap"><div class="ach-progress-bar-fill" style="width:${p.pct}%;background:${color};"></div></div><div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:3px;">${p.current} / ${a.required}</div>` : ''}</div><div class="ach-item-coins">+${a.coins} 🪙</div></div>`;
         }).join('');
-
-        return `
-          <div class="ach-group">
-            <div class="ach-group-header" onclick="var b=document.getElementById('${groupId}');b.style.display=b.style.display==='none'?'flex':'none';this.querySelector('.ach-arrow').textContent=b.style.display==='none'?'▼':'▲';">
-              <div style="display:flex;align-items:center;gap:10px;"><span style="font-size:22px;">${icon}</span><span style="font-size:15px;font-weight:bold;color:white;font-family:'Orbitron',monospace;">${title}</span></div>
-              <div style="display:flex;align-items:center;gap:15px;">
-                <div style="text-align:right;"><div style="font-size:12px;color:${color};">${groupUnlocked}/${achievements.length}</div><div style="width:80px;height:4px;background:rgba(255,255,255,0.1);border-radius:2px;margin-top:4px;overflow:hidden;"><div style="height:100%;width:${groupPct}%;background:${color};border-radius:2px;"></div></div></div>
-                <span class="ach-arrow" style="color:rgba(255,255,255,0.5);font-size:12px;">${startOpen ? '▲' : '▼'}</span>
-              </div>
-            </div>
-            <div class="ach-group-body" id="${groupId}" style="display:${startOpen ? 'flex' : 'none'};flex-direction:column;gap:10px;">${items}</div>
-          </div>`;
+        return `<div class="ach-group"><div class="ach-group-header" onclick="var b=document.getElementById('${groupId}');b.style.display=b.style.display==='none'?'flex':'none';this.querySelector('.ach-arrow').textContent=b.style.display==='none'?'▼':'▲';"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:22px;">${icon}</span><span style="font-size:15px;font-weight:bold;color:white;font-family:'Orbitron',monospace;">${title}</span></div><div style="display:flex;align-items:center;gap:15px;"><div style="text-align:right;"><div style="font-size:12px;color:${color};">${groupUnlocked}/${achievements.length}</div><div style="width:80px;height:4px;background:rgba(255,255,255,0.1);border-radius:2px;margin-top:4px;overflow:hidden;"><div style="height:100%;width:${groupPct}%;background:${color};border-radius:2px;"></div></div></div><span class="ach-arrow" style="color:rgba(255,255,255,0.5);font-size:12px;">${startOpen ? '▲' : '▼'}</span></div></div><div class="ach-group-body" id="${groupId}" style="display:${startOpen ? 'flex' : 'none'};flex-direction:column;gap:10px;">${items}</div></div>`;
       }
 
-      container.innerHTML = `
-        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;margin-bottom:25px;">
-          <div><div style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:6px;">overall progress</div><div style="width:260px;height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#ffcc00,#ffaa00);border-radius:4px;transition:width 0.4s ease;"></div></div><div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:4px;">${unlockedCount} of ${totalCount} unlocked (${pct}%)</div></div>
-          <div style="background:rgba(255,204,0,0.15);border:1px solid rgba(255,204,0,0.3);border-radius:30px;padding:10px 20px;text-align:center;"><div style="font-size:28px;font-weight:bold;color:#ffcc00;font-family:'Orbitron',monospace;">${unlockedCount}</div><div style="font-size:11px;color:rgba(255,255,255,0.5);">achievements</div></div>
-        </div>
-        ${renderGroup('Newbie', '🌱', '#00ff88', newbie, true)}
-        ${renderGroup('Beginner', '📈', '#2d5ae3', beginner, false)}
-        ${renderGroup('Climbing', '⛰️', '#ff8800', climbing, false)}
-        ${renderGroup('Difficult', '💀', '#ff4444', difficult, false)}
-        ${renderGroup('Elite', '👑', '#ffcc00', elite, false)}
-        ${renderGroup('Secrets', '🔮', '#aa44ff', secrets, false)}
-      `;
+      container.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;margin-bottom:25px;"><div><div style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:6px;">overall progress</div><div style="width:260px;height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#ffcc00,#ffaa00);border-radius:4px;transition:width 0.4s ease;"></div></div><div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:4px;">${unlockedCount} of ${totalCount} unlocked (${pct}%)</div></div><div style="background:rgba(255,204,0,0.15);border:1px solid rgba(255,204,0,0.3);border-radius:30px;padding:10px 20px;text-align:center;"><div style="font-size:28px;font-weight:bold;color:#ffcc00;font-family:'Orbitron',monospace;">${unlockedCount}</div><div style="font-size:11px;color:rgba(255,255,255,0.5);">achievements</div></div></div>${renderGroup('Newbie', '🌱', '#00ff88', newbie, true)}${renderGroup('Beginner', '📈', '#2d5ae3', beginner, false)}${renderGroup('Climbing', '⛰️', '#ff8800', climbing, false)}${renderGroup('Difficult', '💀', '#ff4444', difficult, false)}${renderGroup('Elite', '👑', '#ffcc00', elite, false)}${renderGroup('Secrets', '🔮', '#aa44ff', secrets, false)}`;
     }
 
     // ===== RENDER LEADERBOARD =====
@@ -527,28 +361,18 @@
         try {
           const orderCol = currentFilter === 'coins' ? 'coins' : currentFilter === 'games_played' ? 'games_played' : 'achievements_count';
           const { data, error } = await window.supabase.from('profiles').select('id, username, display_name, coins, games_played, achievements_count').order(orderCol, { ascending: false }).limit(20);
-          if (!error && data) {
-            players = data.map(p => ({ id: p.id, displayName: p.display_name || p.username || 'Unknown', username: p.username || 'unknown', coins: p.coins || 0, gamesPlayed: p.games_played || 0, achievementsCount: p.achievements_count || 0, isLocal: false }));
-          }
-        } catch (e) {
-          console.warn('Using local fallback:', e);
-        }
+          if (!error && data) { players = data.map(p => ({ id: p.id, displayName: p.display_name || p.username || 'Unknown', username: p.username || 'unknown', coins: p.coins || 0, gamesPlayed: p.games_played || 0, achievementsCount: p.achievements_count || 0, isLocal: false })); }
+        } catch (e) { console.warn('Using local fallback:', e); }
       }
 
       if (players.length === 0) {
         const localUsers = JSON.parse(localStorage.getItem('fanter_users') || '[]');
         players = localUsers.map(u => ({ id: u.id, displayName: u.displayName || u.username || 'User', username: u.username || 'user', coins: u.coins || 0, gamesPlayed: u.stats?.gamesPlayed || 0, achievementsCount: Object.keys(JSON.parse(localStorage.getItem('fanter_achievements') || '{}')).length, isLocal: true }));
-        if (localUser && !players.find(p => p.id === localUser.id)) {
-          players.push({ id: localUser.id, displayName: localUser.displayName || localUser.username || 'You', username: localUser.username || 'you', coins: localUser.coins || 0, gamesPlayed: localUser.stats?.gamesPlayed || 0, achievementsCount: Object.keys(userAchievements).length, isLocal: true });
-        }
+        if (localUser && !players.find(p => p.id === localUser.id)) { players.push({ id: localUser.id, displayName: localUser.displayName || localUser.username || 'You', username: localUser.username || 'you', coins: localUser.coins || 0, gamesPlayed: localUser.stats?.gamesPlayed || 0, achievementsCount: Object.keys(userAchievements).length, isLocal: true }); }
         players.sort((a, b) => currentFilter === 'coins' ? b.coins - a.coins : currentFilter === 'games_played' ? b.gamesPlayed - a.gamesPlayed : b.achievementsCount - a.achievementsCount);
       }
 
-      if (players.length === 0) {
-        container.innerHTML = '<div class="guest-message">no players yet — be the first!</div>';
-        return;
-      }
-
+      if (players.length === 0) { container.innerHTML = '<div class="guest-message">no players yet — be the first!</div>'; return; }
       const rankIcons = ['🥇', '🥈', '🥉'];
       const currentUserId = localUser ? localUser.id : null;
 
@@ -557,7 +381,7 @@
         const rankDisplay = rank <= 3 ? rankIcons[rank - 1] : `#${rank}`;
         const isMe = player.id === currentUserId;
         const scoreValue = currentFilter === 'coins' ? `🪙 ${Math.floor(player.coins * 100) / 100}` : currentFilter === 'games_played' ? `🎮 ${player.gamesPlayed}` : `🏆 ${player.achievementsCount}`;
-        return `<div class="leaderboard-item ${isMe ? 'current-user' : ''}"><div class="rank ${rank===1?'top-1':rank===2?'top-2':rank===3?'top-3':''}">${rankDisplay}</div><div class="user-avatar">${player.displayName[0].toUpperCase()}</div><div class="user-info"><div class="user-name">${player.displayName} ${isMe ? '<span style="font-size:11px;color:#ffcc00;">(you)</span>' : ''}</div><div class="user-username">@${player.username}${player.isLocal ? ' · local save' : ''}</div></div><div class="user-score">${scoreValue}</div></div>`;
+        return `<div class="leaderboard-item ${isMe ? 'current-user' : ''}"><div class="rank ${rank===1?'top-1':rank===2?'top-2':rank===3?'top-3':''}">${rankDisplay}</div><div class="user-avatar">${player.displayName[0].toUpperCase()}</div><div class="user-info"><div class="user-name">${player.displayName} ${isMe ? '<span style="font-size:11px;color:#ffcc00;">(you)</span>' : ''}</div><div class="user-username">@${player.username}${player.isLocal && syncStatus === 'offline' ? ' · local save' : ''}</div></div><div class="user-score">${scoreValue}</div></div>`;
       }).join('');
     }
 
@@ -565,59 +389,23 @@
     function setupTabs() {
       document.querySelectorAll('.account-tab').forEach(tab => tab.addEventListener('click', () => switchTab(tab.getAttribute('data-tab'))));
       document.getElementById('loginForm')?.addEventListener('submit', async (e) => { e.preventDefault(); await handleLogin(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); });
-      document.getElementById('registerForm')?.addEventListener('submit', async (e) => {
-        e.preventDefault();
-        const pw = document.getElementById('regPassword').value;
-        if (pw !== document.getElementById('regConfirmPassword').value) { showMessage('registerMessage', 'Passwords do not match', 'error'); return; }
-        await handleRegister(document.getElementById('regUsername').value, document.getElementById('regEmail').value, document.getElementById('regDisplayName').value, pw);
-      });
+      document.getElementById('registerForm')?.addEventListener('submit', async (e) => { e.preventDefault(); const pw = document.getElementById('regPassword').value; if (pw !== document.getElementById('regConfirmPassword').value) { showMessage('registerMessage', 'Passwords do not match', 'error'); return; } await handleRegister(document.getElementById('regUsername').value, document.getElementById('regEmail').value, document.getElementById('regDisplayName').value, pw); });
     }
 
-    function setupLeaderboardFilters() {
-      document.querySelectorAll('.filter-btn').forEach(btn => btn.addEventListener('click', () => { document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); currentFilter = btn.getAttribute('data-filter'); renderLeaderboard(); }));
-    }
-
-    function switchTab(tabName) {
-      document.querySelectorAll('.account-tab').forEach(t => t.classList.toggle('active', t.getAttribute('data-tab') === tabName));
-      document.querySelectorAll('.account-tab-content').forEach(c => c.classList.toggle('active', c.id === `${tabName}Tab`));
-      renderCurrentTab();
-    }
-
-    function renderCurrentTab() {
-      const active = document.querySelector('.account-tab-content.active');
-      if (!active) return;
-      if (active.id === 'profileTab') renderProfile();
-      else if (active.id === 'achievementsTab') renderAchievements();
-      else if (active.id === 'leaderboardTab') renderLeaderboard();
-    }
+    function setupLeaderboardFilters() { document.querySelectorAll('.filter-btn').forEach(btn => btn.addEventListener('click', () => { document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); currentFilter = btn.getAttribute('data-filter'); renderLeaderboard(); })); }
+    function switchTab(tabName) { document.querySelectorAll('.account-tab').forEach(t => t.classList.toggle('active', t.getAttribute('data-tab') === tabName)); document.querySelectorAll('.account-tab-content').forEach(c => c.classList.toggle('active', c.id === `${tabName}Tab`)); renderCurrentTab(); }
+    function renderCurrentTab() { const active = document.querySelector('.account-tab-content.active'); if (!active) return; if (active.id === 'profileTab') renderProfile(); else if (active.id === 'achievementsTab') renderAchievements(); else if (active.id === 'leaderboardTab') renderLeaderboard(); }
 
     function updateUI() {
-  const nameEl = document.getElementById('accountName');
-  const user = localUser;
-  if (user) {
-    nameEl.textContent = user.displayName || user.username || 'User';
-    // Show login/register tabs for guest, hide for real users
-    document.querySelectorAll('.account-tab').forEach(t => {
-      const tabName = t.getAttribute('data-tab');
-      if (tabName === 'login' || tabName === 'register') {
-        // Only hide if user is NOT a guest
-        if (user.username !== 'Guest') {
-          t.style.display = 'none';
-        } else {
-          t.style.display = 'block';
-        }
-      }
-    });
-  } else {
-    nameEl.textContent = 'Guest';
-    document.querySelectorAll('.account-tab').forEach(t => t.style.display = 'block');
-  }
-}
-
-    function showMessage(elId, msg, type) {
-      const el = document.getElementById(elId);
-      if (el) { el.textContent = msg; el.className = `message ${type}`; }
+      const nameEl = document.getElementById('accountName');
+      const user = localUser;
+      if (user) {
+        nameEl.textContent = user.displayName || user.username || 'User';
+        document.querySelectorAll('.account-tab').forEach(t => { const tabName = t.getAttribute('data-tab'); if (tabName === 'login' || tabName === 'register') { t.style.display = (user.username === 'Guest') ? 'block' : 'none'; } });
+      } else { nameEl.textContent = 'Guest'; document.querySelectorAll('.account-tab').forEach(t => t.style.display = 'block'); }
     }
+
+    function showMessage(elId, msg, type) { const el = document.getElementById(elId); if (el) { el.textContent = msg; el.className = `message ${type}`; } }
 
     window.switchTab = switchTab;
     window.handleLogout = handleLogout;
