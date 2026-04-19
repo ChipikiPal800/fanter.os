@@ -5,20 +5,27 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>fanter v0.05</title>
   <link rel="stylesheet" href="config/main.css" />
-  
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script>
-  const SUPABASE_URL = "https://gvzgnclowylrrpovdvtw.supabase.co";
-  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd2emduY2xvd3lscnJwb3ZkdnR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NjM5ODEsImV4cCI6MjA5MjAzOTk4MX0.p7oeYBVX870iSK-TLDRj6pfW7wLj7HJsTHjNWaNpL7o";
-  window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-  console.log("✅ Supabase ready!");
-</script>
-  
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script>
+    const SUPABASE_URL = "https://gvzgnclowylrrpovdvtw.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd2emduY2xvd3lscnJwb3ZkdnR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NjM5ODEsImV4cCI6MjA5MjAzOTk4MX0.p7oeYBVX870iSK-TLDRj6pfW7wLj7HJsTHjNWaNpL7o";
+    window.supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    console.log("✅ Supabase ready!");
+  </script>
+  <style>
+    .ai-quick-toggle { position:fixed; bottom:20px; left:20px; background:rgba(20,30,50,0.8); backdrop-filter:blur(10px); border:1px solid rgba(45,90,227,0.4); border-radius:30px; padding:8px 15px; display:flex; gap:10px; z-index:100; cursor:pointer; transition:all 0.2s; color:white; }
+    .ai-quick-toggle:hover { border-color:#ffcc00; transform:translateY(-2px); box-shadow:0 4px 15px rgba(255,204,0,0.3); }
+    .ai-toggle-icon { font-size:18px; }
+    #aiOverlayBg { display:none; position:fixed; top:0; left:0; width:100%; height:100%; background:linear-gradient(270deg,#1a0000,#1a0a00,#0d0d00,#001a00,#001a1a,#00001a,#0d001a,#1a001a,#1a0000); background-size:800% 800%; animation:gradientShift 22.5s linear infinite; backdrop-filter:blur(8px); z-index:999; }
+    #aiChatOverlay { display:none; position:fixed; top:50%; left:50%; transform:translate(-50%,-50%); width:400px; height:550px; background:rgba(20,30,50,0.95); backdrop-filter:blur(12px); border:1px solid rgba(45,90,227,0.4); border-radius:20px; z-index:1000; box-shadow:0 20px 40px rgba(0,0,0,0.5); }
+    #aiChatOverlay iframe { width:100%; height:490px; border:none; border-radius:0 0 20px 20px; }
+    .chat-header { padding:15px; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center; }
+    .chat-header span { color:#ffcc00; font-family:Orbitron; font-size:16px; }
+    .chat-header button { background:none; border:none; color:white; cursor:pointer; font-size:20px; opacity:0.7; transition:opacity 0.2s; }
+    .chat-header button:hover { opacity:1; }
+  </style>
 </head>
-
-  
 <body>
-  <!-- Loading Screen -->
   <div id="loadingScreen">
     <canvas id="matrixCanvas"></canvas>
     <div class="matrix-scanlines"></div>
@@ -26,99 +33,47 @@
     <div class="loading-content">
       <div class="loading-icon"></div>
       <h1 class="loading-title">Loading fanter.OS</h1>
-      <div class="loading-progress">
-        <div class="loading-progress-bar"></div>
-      </div>
+      <div class="loading-progress"><div class="loading-progress-bar"></div></div>
       <p class="loading-status" id="loadingStatus">Initializing systems...</p>
       <div class="loading-commands" id="loadingCommands">
-        <p>>_ Loading kernel modules...</p>
-        <p>>_ Establishing secure connection...</p>
-        <p>>_ Decrypting game database...</p>
+        <p>>_ Loading kernel modules...</p><p>>_ Establishing secure connection...</p><p>>_ Decrypting game database...</p>
       </div>
     </div>
   </div>
-
   <div id="whiteFlash"></div>
   <div id="revealOverlay"></div>
 
-  <!-- Daily Login Bonus Overlay -->
   <div id="dailyBonusOverlay" class="daily-bonus-overlay">
     <div class="daily-bonus-card">
       <h2>🎁 DAILY REWARD!</h2>
       <div class="daily-reward" id="dailyRewardAmount">+0 🪙</div>
       <p>Come back tomorrow for more!</p>
       <div class="daily-streak" id="dailyStreakText">Streak: 0 days</div>
-      <button class="settings-btn" onclick="closeDailyBonus()" style="margin-top: 20px;">Claim</button>
+      <button class="settings-btn" onclick="closeDailyBonus()" style="margin-top:20px;">Claim</button>
     </div>
   </div>
 
-  <!-- Main Content -->
-  <div id="mainContent" style="opacity: 0; visibility: hidden;">
-    <!-- Session Timer (Top Left) -->
+  <div id="mainContent" style="opacity:0;visibility:hidden;">
     <div id="sessionTimer">
       <div class="timer-icon">⏱️</div>
-      <div class="timer-display">
-        <span id="timerHours">00</span>:<span id="timerMinutes">00</span>:<span id="timerSeconds">00</span>
-      </div>
+      <div class="timer-display"><span id="timerHours">00</span>:<span id="timerMinutes">00</span>:<span id="timerSeconds">00</span></div>
       <div class="timer-label">session time</div>
     </div>
 
-    <!-- Fanter AI Chat Button -->
-<div class="ai-quick-toggle" id="aiQuickToggle" onclick="toggleAIChat()">
-  <span class="ai-toggle-icon">🤖</span>
-  <span>ai chat:)</span>
-</div>
+    <div class="ai-quick-toggle" id="aiQuickToggle" onclick="toggleAIChat()">
+      <span class="ai-toggle-icon">💬</span>
+      <span>chat</span>
+    </div>
 
-<!-- AI Chat Overlay -->
-<div id="aiChatOverlay" style="display:none; position:fixed; bottom:80px; left:20px; width:380px; height:500px; background:rgba(20,30,50,0.95); backdrop-filter:blur(12px); border:1px solid rgba(45,90,227,0.4); border-radius:20px; z-index:1000; box-shadow:0 10px 30px rgba(0,0,0,0.3);">
-  <div style="padding:15px; border-bottom:1px solid rgba(255,255,255,0.1); display:flex; justify-content:space-between; align-items:center;">
-    <span style="color:#ffcc00; font-family:Orbitron;">💬 fanter chat</span>
-    <button onclick="toggleAIChat()" style="background:none; border:none; color:white; cursor:pointer; font-size:18px;">✕</button>
-  </div>
-  <iframe src="https://chipikipal800.github.io/fanter.ai" style="width:100%; maxwidth:700px; height:85vh; border:none; border-radius:0 0 20px 20px;"></iframe>
-</div>
+    <div id="aiOverlayBg" onclick="toggleAIChat()"></div>
+    <div id="aiChatOverlay">
+      <div class="chat-header">
+        <span>💬 fanter ai</span>
+        <button onclick="toggleAIChat()">✕</button>
+      </div>
+      <iframe src="https://chipikipal800.github.io/fanter-chat"></iframe>
+    </div>
 
-<script>
-  function toggleAIChat() {
-    const overlay = document.getElementById('aiChatOverlay');
-    if (overlay.style.display === 'none') {
-      overlay.style.display = 'block';
-    } else {
-      overlay.style.display = 'none';
-    }
-  }
-</script>
-
-<style>
-  .ai-quick-toggle {
-    position: fixed;
-    bottom: 20px;
-    left: 20px;
-    background: rgba(20, 30, 50, 0.8);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(45, 90, 227, 0.4);
-    border-radius: 30px;
-    padding: 8px 15px;
-    display: flex;
-    gap: 10px;
-    z-index: 100;
-    cursor: pointer;
-    transition: all 0.2s ease;
-    color: white;
-  }
-
-  .ai-quick-toggle:hover {
-    border-color: #ffcc00;
-    transform: translateY(-2px);
-    box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3);
-  }
-
-  .ai-toggle-icon {
-    font-size: 18px;
-  }
-</style>
-
-    <!-- Account Button (Top Right) -->
     <div class="account-btn-container">
       <button class="account-btn" id="accountBtn" onclick="window.location.href='fantaccount.html'">
         <span class="account-icon">👤</span>
@@ -126,7 +81,6 @@
       </button>
     </div>
 
-    <!-- Coin Display (Below Session Timer) -->
     <div class="coin-display-header">
       <span class="coin-icon">🪙</span>
       <span id="headerCoinAmount" class="coin-amount-header">0</span>
@@ -138,28 +92,22 @@
     <div class="center">
       <h1 id="title"></h1>
       <p id="subtitle"></p>
-      <div style="display: flex; gap: 10px; justify-content: center; flex-wrap: wrap;">
+      <div style="display:flex;gap:10px;justify-content:center;flex-wrap:wrap;">
         <button class="settings-btn" onclick="window.location.href='settings.html'">⚙ Settings</button>
         <button class="settings-btn" onclick="window.location.href='shop.html'">🛒 Shop</button>
       </div>
     </div>
     
-    <!-- Game of the Day -->
-    <div id="gameOfDay" class="game-of-day" style="display: none;">
-      <div class="game-of-day-label">
-        <span>🌟 GAME OF THE DAY</span>
-      </div>
+    <div id="gameOfDay" class="game-of-day" style="display:none;">
+      <div class="game-of-day-label"><span>🌟 GAME OF THE DAY</span></div>
       <div class="game-of-day-name" id="gameOfDayName">Loading...</div>
       <button class="game-of-day-play" id="gameOfDayPlay">Play Now →</button>
     </div>
     
-    <div class="center" style="position: relative;">
+    <div class="center" style="position:relative;">
       <input type="text" id="searchInput" placeholder="search 4 games" />
       <div id="searchHistory" class="search-history">
-        <div class="search-history-header">
-          <span>recent searches</span>
-          <span class="search-history-clear" onclick="clearSearchHistory()">clear all</span>
-        </div>
+        <div class="search-history-header"><span>recent searches</span><span class="search-history-clear" onclick="clearSearchHistory()">clear all</span></div>
         <div id="searchHistoryList"></div>
       </div>
     </div>
@@ -167,650 +115,168 @@
     <div id="gamesContainer"></div>
     
     <div class="footer">
-      <a style="font-weight: 700">a site created by abcatlmfao, / chipikipal800, / abcatlmfao69;</a>
-      <a style="font-weight: 700" class="link" href="https://dsc.gg/parcoil">parcoil network</a>
+      <a style="font-weight:700">a site created by abcatlmfao, / chipikipal800, / abcatlmfao69;</a>
+      <a style="font-weight:700" class="link" href="https://dsc.gg/parcoil">parcoil network</a>
     </div>
   </div>
 
-  <!-- Scripts -->
   <script src="config/theme-loader.js"></script>
   <script src="config/main.js"></script>
   <script src="config/quicklaunch.js"></script>
   <script src="config/categories.js"></script>
   <script src="config/gamedetails.js"></script>
 
-  <!-- Session Timer Script -->
   <script>
-    (function() {
-      let sessionStart = localStorage.getItem('sessionStart');
-      let totalPausedTime = 0;
-      let pausedStart = null;
-      let timerInterval = null;
-      let isTabActive = true;
-
-      if (!sessionStart) {
-        sessionStart = Date.now();
-        localStorage.setItem('sessionStart', sessionStart);
+    function toggleAIChat() {
+      const overlay = document.getElementById('aiChatOverlay');
+      const bg = document.getElementById('aiOverlayBg');
+      if (overlay.style.display === 'none' || !overlay.style.display) {
+        overlay.style.display = 'block';
+        bg.style.display = 'block';
       } else {
-        sessionStart = parseInt(sessionStart);
+        overlay.style.display = 'none';
+        bg.style.display = 'none';
       }
+    }
 
-      if (localStorage.getItem('totalPausedTime')) {
-        totalPausedTime = parseInt(localStorage.getItem('totalPausedTime'));
-      }
-
+    // Session Timer
+    (function() {
+      let sessionStart = localStorage.getItem('sessionStart') || Date.now();
+      if (!localStorage.getItem('sessionStart')) localStorage.setItem('sessionStart', sessionStart);
+      else sessionStart = parseInt(sessionStart);
+      let totalPausedTime = parseInt(localStorage.getItem('totalPausedTime') || '0');
+      let pausedStart = null, timerInterval = null;
+      
       function updateTimerDisplay() {
-        const now = Date.now();
-        const activeTime = now - sessionStart - totalPausedTime;
-        
-        const hours = Math.floor(activeTime / 3600000);
-        const minutes = Math.floor((activeTime % 3600000) / 60000);
-        const seconds = Math.floor((activeTime % 60000) / 1000);
-        
-        const timerHours = document.getElementById('timerHours');
-        const timerMinutes = document.getElementById('timerMinutes');
-        const timerSeconds = document.getElementById('timerSeconds');
-        
-        if (timerHours) timerHours.textContent = hours.toString().padStart(2, '0');
-        if (timerMinutes) timerMinutes.textContent = minutes.toString().padStart(2, '0');
-        if (timerSeconds) timerSeconds.textContent = seconds.toString().padStart(2, '0');
+        const activeTime = Date.now() - sessionStart - totalPausedTime;
+        const h = Math.floor(activeTime / 3600000), m = Math.floor((activeTime % 3600000) / 60000), s = Math.floor((activeTime % 60000) / 1000);
+        document.getElementById('timerHours').textContent = h.toString().padStart(2,'0');
+        document.getElementById('timerMinutes').textContent = m.toString().padStart(2,'0');
+        document.getElementById('timerSeconds').textContent = s.toString().padStart(2,'0');
       }
-
-      function startTimer() {
-        if (timerInterval) clearInterval(timerInterval);
-        updateTimerDisplay();
-        timerInterval = setInterval(updateTimerDisplay, 1000);
-      }
-
-      function pauseTimer() {
-        if (pausedStart === null) {
-          pausedStart = Date.now();
-          if (timerInterval) {
-            clearInterval(timerInterval);
-            timerInterval = null;
-          }
-        }
-      }
-
-      function resumeTimer() {
-        if (pausedStart !== null) {
-          totalPausedTime += (Date.now() - pausedStart);
-          localStorage.setItem('totalPausedTime', totalPausedTime);
-          pausedStart = null;
-          startTimer();
-        }
-      }
-
-      document.addEventListener('visibilitychange', () => {
-        if (document.hidden) pauseTimer();
-        else resumeTimer();
-      });
       
-      window.addEventListener('focus', () => {
-        isTabActive = true;
-        if (!document.hidden) resumeTimer();
-      });
+      function startTimer() { if(timerInterval) clearInterval(timerInterval); updateTimerDisplay(); timerInterval = setInterval(updateTimerDisplay, 1000); }
+      function pauseTimer() { if(pausedStart===null) { pausedStart = Date.now(); if(timerInterval) { clearInterval(timerInterval); timerInterval = null; } } }
+      function resumeTimer() { if(pausedStart!==null) { totalPausedTime += Date.now() - pausedStart; localStorage.setItem('totalPausedTime', totalPausedTime); pausedStart = null; startTimer(); } }
       
-      window.addEventListener('blur', () => {
-        isTabActive = false;
-        pauseTimer();
-      });
-      
+      document.addEventListener('visibilitychange', () => document.hidden ? pauseTimer() : resumeTimer());
+      window.addEventListener('focus', () => { if(!document.hidden) resumeTimer(); });
+      window.addEventListener('blur', pauseTimer);
       startTimer();
     })();
-  </script>
 
-  <!-- Quick Theme Toggle Script -->
-  <script>
-    function quickToggleTheme() {
-      const currentTheme = localStorage.getItem('quickTheme') || 'dark';
-      const newTheme = currentTheme === 'dark' ? 'light' : 'dark';
-      localStorage.setItem('quickTheme', newTheme);
-      
-      if (newTheme === 'dark') {
-        document.body.classList.add('theme-dark');
-        document.body.classList.remove('theme-light');
-        document.querySelector('#themeQuickToggle .theme-toggle-icon').textContent = '🌙';
-        document.querySelector('#themeQuickToggle span:last-child').textContent = 'dark';
-      } else {
-        document.body.classList.add('theme-light');
-        document.body.classList.remove('theme-dark');
-        document.querySelector('#themeQuickToggle .theme-toggle-icon').textContent = '☀️';
-        document.querySelector('#themeQuickToggle span:last-child').textContent = 'light';
-      }
-    }
-    
-    // Load saved theme
-    const savedQuickTheme = localStorage.getItem('quickTheme');
-    if (savedQuickTheme === 'light') {
-      document.body.classList.add('theme-light');
-      document.querySelector('#themeQuickToggle .theme-toggle-icon').textContent = '☀️';
-      document.querySelector('#themeQuickToggle span:last-child').textContent = 'light';
-    }
-  </script>
-
-  <!-- Daily Bonus Script -->
-  <script>
+    // Daily Bonus
     function checkDailyBonus() {
-      const lastClaim = localStorage.getItem('lastDailyClaim');
-      const today = new Date().toDateString();
+      const lastClaim = localStorage.getItem('lastDailyClaim'), today = new Date().toDateString();
       let streak = parseInt(localStorage.getItem('dailyStreak') || '0');
-      
       if (lastClaim !== today) {
-        const yesterday = new Date();
-        yesterday.setDate(yesterday.getDate() - 1);
-        const yesterdayStr = yesterday.toDateString();
-        
-        if (lastClaim === yesterdayStr) {
-          streak++;
-        } else {
-          streak = 1;
-        }
-        
-        const baseReward = 50;
-        const streakBonus = Math.min(streak, 7) * 10;
-        const totalReward = baseReward + streakBonus;
-        
-        document.getElementById('dailyRewardAmount').textContent = `+${totalReward} 🪙`;
-        document.getElementById('dailyStreakText').textContent = `Streak: ${streak} day${streak !== 1 ? 's' : ''}`;
-        
-        window.pendingDailyReward = totalReward;
-        window.pendingDailyStreak = streak;
-        
+        const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
+        streak = (lastClaim === yesterday.toDateString()) ? streak + 1 : 1;
+        const reward = 50 + Math.min(streak, 7) * 10;
+        document.getElementById('dailyRewardAmount').textContent = `+${reward} 🪙`;
+        document.getElementById('dailyStreakText').textContent = `Streak: ${streak} day${streak!==1?'s':''}`;
+        window.pendingDailyReward = reward; window.pendingDailyStreak = streak;
         document.getElementById('dailyBonusOverlay').classList.add('show');
       }
     }
-    
     function closeDailyBonus() {
       if (window.pendingDailyReward) {
-        let currentUser = JSON.parse(localStorage.getItem('fanter_currentUser') || 'null');
-        if (currentUser) {
-          currentUser.coins = (currentUser.coins || 0) + window.pendingDailyReward;
-          localStorage.setItem('fanter_currentUser', JSON.stringify(currentUser));
-          
+        let user = JSON.parse(localStorage.getItem('fanter_currentUser') || 'null');
+        if (user) {
+          user.coins = (user.coins || 0) + window.pendingDailyReward;
+          localStorage.setItem('fanter_currentUser', JSON.stringify(user));
           let users = JSON.parse(localStorage.getItem('fanter_users') || '[]');
-          const userIndex = users.findIndex(u => u.id === currentUser.id);
-          if (userIndex !== -1) {
-            users[userIndex].coins = currentUser.coins;
-            localStorage.setItem('fanter_users', JSON.stringify(users));
-          }
-          
+          let idx = users.findIndex(u => u.id === user.id);
+          if (idx!==-1) { users[idx].coins = user.coins; localStorage.setItem('fanter_users', JSON.stringify(users)); }
           localStorage.setItem('lastDailyClaim', new Date().toDateString());
           localStorage.setItem('dailyStreak', window.pendingDailyStreak);
-          
           updateHeaderCoins();
-          showToastMessage(`🎁 You earned ${window.pendingDailyReward} coins!`, 'gold');
         }
       }
       document.getElementById('dailyBonusOverlay').classList.remove('show');
       window.pendingDailyReward = null;
     }
-    
-    function showToastMessage(message, color = '#ffcc00') {
-      const toast = document.createElement('div');
-      toast.textContent = message;
-      toast.style.cssText = `
-        position: fixed;
-        bottom: 100px;
-        left: 50%;
-        transform: translateX(-50%);
-        background: rgba(0,0,0,0.9);
-        color: ${color};
-        padding: 10px 20px;
-        border-radius: 30px;
-        font-size: 14px;
-        z-index: 10001;
-        animation: fadeOut 3s ease forwards;
-        font-family: 'Orbitron', monospace;
-        border: 1px solid ${color};
-      `;
-      document.body.appendChild(toast);
-      setTimeout(() => toast.remove(), 3000);
-    }
-  </script>
 
-  <!-- Game of the Day Script -->
-  <script>
+    // Game of Day
     function updateGameOfDay() {
-      if (!window.gamesData || window.gamesData.length === 0) return;
-      
-      const lastGameOfDay = localStorage.getItem('gameOfDayDate');
+      if (!window.gamesData?.length) return;
       const today = new Date().toDateString();
-      let gameOfDay;
-      
-      if (lastGameOfDay === today) {
-        const savedGame = localStorage.getItem('gameOfDay');
-        gameOfDay = window.gamesData.find(g => g.name === savedGame);
-      }
-      
-      if (!gameOfDay) {
-        const randomIndex = Math.floor(Math.random() * window.gamesData.length);
-        gameOfDay = window.gamesData[randomIndex];
-        localStorage.setItem('gameOfDay', gameOfDay.name);
-        localStorage.setItem('gameOfDayDate', today);
-      }
-      
-      if (gameOfDay) {
-        document.getElementById('gameOfDayName').textContent = gameOfDay.name;
-        document.getElementById('gameOfDay').style.display = 'flex';
-        document.getElementById('gameOfDayPlay').onclick = () => {
-          const playUrl = `play.html?gameurl=${encodeURIComponent(gameOfDay.url)}&game=${encodeURIComponent(gameOfDay.name)}`;
-          window.open(playUrl, '_blank');
-        };
-      }
+      let game = (localStorage.getItem('gameOfDayDate') === today) ? window.gamesData.find(g => g.name === localStorage.getItem('gameOfDay')) : null;
+      if (!game) { game = window.gamesData[Math.floor(Math.random() * window.gamesData.length)]; localStorage.setItem('gameOfDay', game.name); localStorage.setItem('gameOfDayDate', today); }
+      document.getElementById('gameOfDayName').textContent = game.name;
+      document.getElementById('gameOfDay').style.display = 'flex';
+      document.getElementById('gameOfDayPlay').onclick = () => window.open(`play.html?gameurl=${encodeURIComponent(game.url)}&game=${encodeURIComponent(game.name)}`, '_blank');
     }
-  </script>
 
-  <!-- Search History Script -->
-  <script>
+    // Search History
     let searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
-    
-    function saveSearchHistory(term) {
-      if (!term.trim()) return;
-      searchHistory = searchHistory.filter(t => t !== term);
-      searchHistory.unshift(term);
-      if (searchHistory.length > 10) searchHistory.pop();
-      localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
-      updateSearchHistoryDisplay();
-    }
-    
     function updateSearchHistoryDisplay() {
       const list = document.getElementById('searchHistoryList');
       if (!list) return;
-      
-      if (searchHistory.length === 0) {
-        list.innerHTML = '<div style="padding: 10px 15px; color: rgba(255,255,255,0.4);">no recent searches</div>';
-        return;
-      }
-      
-      list.innerHTML = searchHistory.map(term => `
-        <div class="search-history-item" onclick="document.getElementById('searchInput').value='${term.replace(/'/g, "\\'")}'; document.getElementById('searchInput').dispatchEvent(new Event('input')); document.getElementById('searchHistory').classList.remove('show');">
-          🔍 ${term}
-        </div>
-      `).join('');
+      list.innerHTML = searchHistory.length ? searchHistory.map(t => `<div class="search-history-item" onclick="document.getElementById('searchInput').value='${t.replace(/'/g,"\\'")}';document.getElementById('searchInput').dispatchEvent(new Event('input'));document.getElementById('searchHistory').classList.remove('show');">🔍 ${t}</div>`).join('') : '<div style="padding:10px 15px;color:rgba(255,255,255,0.4);">no recent searches</div>';
     }
-    
-    function clearSearchHistory() {
-      searchHistory = [];
-      localStorage.setItem('searchHistory', JSON.stringify(searchHistory));
-      updateSearchHistoryDisplay();
-    }
-    
-    // Search input focus to show history
+    function clearSearchHistory() { searchHistory = []; localStorage.setItem('searchHistory', '[]'); updateSearchHistoryDisplay(); }
     document.addEventListener('DOMContentLoaded', () => {
-      const searchInput = document.getElementById('searchInput');
-      const searchHistoryDiv = document.getElementById('searchHistory');
-      
-      if (searchInput) {
-        searchInput.addEventListener('focus', () => {
-          updateSearchHistoryDisplay();
-          searchHistoryDiv.classList.add('show');
-        });
-        
-        searchInput.addEventListener('blur', () => {
-          setTimeout(() => searchHistoryDiv.classList.remove('show'), 200);
-        });
-        
-        // Override handleSearchInput to save history
-        const originalHandleSearch = window.handleSearchInput;
-        if (typeof originalHandleSearch === 'function') {
-          window.handleSearchInput = function() {
-            const value = searchInput.value;
-            if (value && value !== searchHistory[0]) {
-              saveSearchHistory(value);
-            }
-            originalHandleSearch();
-          };
-        }
-      }
+      const inp = document.getElementById('searchInput'), hist = document.getElementById('searchHistory');
+      if (inp) { inp.addEventListener('focus', () => { updateSearchHistoryDisplay(); hist.classList.add('show'); }); inp.addEventListener('blur', () => setTimeout(() => hist.classList.remove('show'), 200)); }
     });
-  </script>
 
-  <!-- Coin Display Update Script -->
-  <script>
+    // Coins
     function updateHeaderCoins() {
-      const currentUser = JSON.parse(localStorage.getItem('fanter_currentUser') || 'null');
-      const coinEl = document.getElementById('headerCoinAmount');
-      if (coinEl && currentUser) {
-        coinEl.textContent = Math.floor((currentUser.coins || 0) * 100) / 100;
-      }
+      const user = JSON.parse(localStorage.getItem('fanter_currentUser') || 'null');
+      const el = document.getElementById('headerCoinAmount');
+      if (el && user) el.textContent = Math.floor((user.coins || 0) * 100) / 100;
     }
-    
-    setInterval(updateHeaderCoins, 1000);
-    updateHeaderCoins();
-    
-    window.addEventListener('storage', function(e) {
-      if (e.key === 'fanter_currentUser') {
-        updateHeaderCoins();
-      }
+    setInterval(updateHeaderCoins, 1000); updateHeaderCoins();
+    window.addEventListener('storage', e => { if (e.key === 'fanter_currentUser') updateHeaderCoins(); });
+
+    // Safety Key
+    let lastKeyTime = 0, lastKey = "";
+    document.addEventListener("keydown", e => {
+      const key = localStorage.getItem("safetyKey"), url = localStorage.getItem("safetyUrl");
+      if (!key || !url) return;
+      const pressed = e.key.toLowerCase();
+      if (pressed === key.toLowerCase() && pressed === lastKey && Date.now() - lastKeyTime < 1000) window.location.href = url;
+      lastKey = pressed; lastKeyTime = Date.now();
     });
-  </script>
 
-  <!-- Fix Game Clicks Script -->
-  <script>
-  function fixGameClicks() {
-    setTimeout(function() {
-      var games = document.querySelectorAll('.game');
-      if (games.length === 0) return;
-      
-      for (var i = 0; i < games.length; i++) {
-        var game = games[i];
-        var playBtn = game.querySelector('.game-play-btn');
-        var favBtn = game.querySelector('.game-fav-btn');
-        var gameName = game.querySelector('.game-name')?.textContent;
-        
-        if (playBtn && gameName && window.gamesData) {
-          var gameData = window.gamesData.find(g => g.name === gameName);
-          if (gameData) {
-            playBtn.onclick = (function(url, name) {
-              return function() {
-                var playUrl = 'play.html?gameurl=' + encodeURIComponent(url) + '&game=' + encodeURIComponent(name);
-                window.open(playUrl, '_blank');
-              };
-            })(gameData.url, gameName);
-          }
-        }
-        
-        if (favBtn && gameName) {
-          favBtn.onclick = (function(name) {
-            return function(e) {
-              e.stopPropagation();
-              if (typeof window.toggleFavourite === 'function') {
-                window.toggleFavourite(name);
-                const isFav = JSON.parse(localStorage.getItem("favourites") || "[]").includes(name);
-                e.target.textContent = isFav ? '★' : '☆';
-                e.target.classList.toggle('active', isFav);
-              }
-            };
-          })(gameName);
-        }
-      }
-    }, 500);
-  }
-
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', fixGameClicks);
-  } else {
-    fixGameClicks();
-  }
-
-  var gamesObserver = new MutationObserver(function() {
-    fixGameClicks();
-  });
-  
-  var gamesContainer = document.getElementById('gamesContainer');
-  if (gamesContainer) {
-    gamesObserver.observe(gamesContainer, { childList: true, subtree: true });
-  }
-  </script>
-
-  <!-- Safety Key Script -->
-  <script>
-    let lastKeyTime = 0;
-    let lastKey = "";
-    document.addEventListener("keydown", (e) => {
-      const safetyKey = localStorage.getItem("safetyKey");
-      const safetyUrl = localStorage.getItem("safetyUrl");
-      if (!safetyKey || !safetyUrl) return;
-      const now = Date.now();
-      const pressedKey = e.key.toLowerCase();
-      const storedKey = safetyKey.toLowerCase();
-      if (pressedKey === storedKey && pressedKey === lastKey && now - lastKeyTime < 1000) {
-        e.preventDefault();
-        window.location.href = safetyUrl;
-      }
-      lastKey = pressedKey;
-      lastKeyTime = now;
-    });
-  </script>
-
-  <!-- Loading Screen Script -->
-  <script>
+    // Loading Screen
     (function() {
-      const hasLoadedBefore = sessionStorage.getItem('fanterLoaded');
-      
-      if (hasLoadedBefore === 'true') {
-        const mainContent = document.getElementById('mainContent');
-        const loadingScreen = document.getElementById('loadingScreen');
-        if (loadingScreen) loadingScreen.style.display = 'none';
-        if (mainContent) {
-          mainContent.style.opacity = '1';
-          mainContent.style.visibility = 'visible';
-        }
-        checkDailyBonus();
-        return;
+      if (sessionStorage.getItem('fanterLoaded') === 'true') {
+        document.getElementById('loadingScreen').style.display = 'none';
+        document.getElementById('mainContent').style.opacity = document.getElementById('mainContent').style.visibility = 'visible';
+        checkDailyBonus(); return;
       }
-      
       sessionStorage.setItem('fanterLoaded', 'true');
+      const ls = document.getElementById('loadingScreen'), pb = document.querySelector('.loading-progress-bar'), se = document.getElementById('loadingStatus');
+      const wf = document.getElementById('whiteFlash'), ro = document.getElementById('revealOverlay'), bw = document.getElementById('brokenWallContainer');
+      const mc = document.getElementById('mainContent'), lc = document.getElementById('loadingCommands');
+      const cmds = [">_ Loading kernel modules...", ">_ Establishing secure connection...", ">_ Decrypting game database...", ">_ Loading user preferences...", ">_ Initializing game engine...", ">_ Connecting to game servers...", ">_ Verifying achievements...", ">_ Loading shop inventory...", ">_ Syncing cloud saves...", ">_ Almost there...", ">_ Starting fanter.OS..."];
+      let ci = 0;
+      function uc() { if(ci < cmds.length && lc) { const p = document.createElement('p'); p.textContent = cmds[ci]; lc.appendChild(p); ci++; setTimeout(uc, 800); } }
+      uc(); mc.style.opacity = '0'; mc.style.visibility = 'hidden';
       
-      const loadingScreen = document.getElementById('loadingScreen');
-      const progressBar = document.querySelector('.loading-progress-bar');
-      const statusEl = document.getElementById('loadingStatus');
-      const whiteFlash = document.getElementById('whiteFlash');
-      const revealOverlay = document.getElementById('revealOverlay');
-      const brokenWallContainer = document.getElementById('brokenWallContainer');
-      const mainContent = document.getElementById('mainContent');
-      const loadingCommands = document.getElementById('loadingCommands');
+      const cv = document.getElementById('matrixCanvas'), ctx = cv.getContext('2d');
+      let w, h, drops = [], fs = 16, chars = "01";
+      function rc() { w = window.innerWidth; h = window.innerHeight; cv.width = w; cv.height = h; drops = Array(Math.floor(w/fs)).fill(0).map(() => Math.random() * -h); }
+      function dm() { ctx.fillStyle = 'rgba(0,0,0,0.05)'; ctx.fillRect(0,0,w,h); ctx.fillStyle = '#00ff88'; ctx.font = fs+'px monospace'; for(let i=0;i<drops.length;i++) { ctx.fillText(chars[Math.floor(Math.random()*chars.length)], i*fs, drops[i]*fs); if(drops[i]*fs > h && Math.random()>0.975) drops[i]=0; drops[i]++; } }
+      rc(); const mi = setInterval(dm, 50); window.addEventListener('resize', rc);
       
-      const commands = [
-        ">_ Loading kernel modules...",
-        ">_ Establishing secure connection...",
-        ">_ Decrypting game database...",
-        ">_ Loading user preferences...",
-        ">_ Initializing game engine...",
-        ">_ Connecting to game servers...",
-        ">_ Verifying achievements...",
-        ">_ Loading shop inventory...",
-        ">_ Syncing cloud saves...",
-        ">_ Almost there...",
-        ">_ Starting fanter.OS..."
-      ];
-      let cmdIndex = 0;
-      
-      function updateCommands() {
-        if (cmdIndex < commands.length && loadingCommands) {
-          const p = document.createElement('p');
-          p.textContent = commands[cmdIndex];
-          loadingCommands.appendChild(p);
-          cmdIndex++;
-          setTimeout(updateCommands, 800);
+      let progress = 0, msgIdx = 0;
+      const msgs = ["Initializing fanter.OS...","Loading core modules...","Bypassing firewalls...","Decrypting database...","Loading games library...","Applying themes...","Hacking mainframe...","Almost there...","Starting fanter.OS..."];
+      const pi = setInterval(() => {
+        if(progress < 100) {
+          progress += Math.random()*2+1;
+          if(progress >= 100) { progress=100; pb.style.width='100%'; se.textContent="Complete! Loading games..."; clearInterval(pi); clearInterval(mi);
+            let attempts=0; const ci2=setInterval(()=>{ attempts++; if((document.getElementById('gamesContainer')?.children.length>0)||attempts>=100){ clearInterval(ci2); setTimeout(()=>{
+              wf.style.opacity='1'; setTimeout(()=>{ ls.style.opacity='0'; setTimeout(()=>{ ls.style.display='none'; ro.style.transform='scaleX(1)'; setTimeout(()=>{ wf.style.opacity='0'; mc.style.opacity='1'; mc.style.visibility='visible';
+                setTimeout(()=>{ document.querySelectorAll('.game').forEach((g,i)=>{ g.style.opacity='0'; g.style.transform='scale(0)'; setTimeout(()=>{ g.style.opacity='1'; g.style.transform='scale(1)'; g.style.transition='all 0.4s'; }, i*30); });
+                },100); setTimeout(()=>{ ro.style.transform='scaleX(0)'; setTimeout(()=>{ ro.remove(); wf.remove(); },1200); },500); },300); },400); },300); },800); }},100);
+          } else { pb.style.width=progress+'%'; const ni=Math.floor(progress/12); if(ni>msgIdx&&ni<msgs.length){ msgIdx=ni; se.textContent=msgs[msgIdx]; } }
         }
-      }
-      updateCommands();
-      
-      if (mainContent) {
-        mainContent.style.opacity = '0';
-        mainContent.style.visibility = 'hidden';
-      }
-      
-      const canvas = document.getElementById('matrixCanvas');
-      const ctx = canvas.getContext('2d');
-      let width, height, drops = [];
-      const fontSize = 16;
-      const chars = "01";
-      
-      function resizeCanvas() {
-        width = window.innerWidth;
-        height = window.innerHeight;
-        canvas.width = width;
-        canvas.height = height;
-        const columns = Math.floor(width / fontSize);
-        drops = [];
-        for (let i = 0; i < columns; i++) {
-          drops.push(Math.random() * -height);
-        }
-      }
-      
-      function drawMatrix() {
-        ctx.fillStyle = 'rgba(0, 0, 0, 0.05)';
-        ctx.fillRect(0, 0, width, height);
-        ctx.fillStyle = '#00ff88';
-        ctx.font = fontSize + 'px monospace';
-        for (let i = 0; i < drops.length; i++) {
-          const text = chars[Math.floor(Math.random() * chars.length)];
-          const x = i * fontSize;
-          const y = drops[i] * fontSize;
-          ctx.fillText(text, x, y);
-          if (y > height && Math.random() > 0.975) drops[i] = 0;
-          drops[i]++;
-        }
-      }
-      
-      resizeCanvas();
-      const matrixInterval = setInterval(drawMatrix, 50);
-      window.addEventListener('resize', resizeCanvas);
-      
-      function createFallingCode() {
-        const el = document.createElement('div');
-        el.className = 'falling-matrix';
-        let code = '';
-        for (let i = 0; i < 15; i++) code += Math.random() > 0.5 ? '1' : '0';
-        el.textContent = code;
-        el.style.left = Math.random() * 100 + '%';
-        el.style.fontSize = (Math.random() * 10 + 10) + 'px';
-        el.style.animationDuration = (Math.random() * 2 + 1) + 's';
-        const colors = ['#00ff88', '#ff4444', '#ffcc00'];
-        el.style.color = colors[Math.floor(Math.random() * colors.length)];
-        document.body.appendChild(el);
-        setTimeout(() => el.remove(), 3000);
-      }
-      
-      function createBrokenWall() {
-        const wall = document.createElement('div');
-        wall.className = 'broken-wall';
-        wall.style.left = Math.random() * 100 + '%';
-        wall.style.top = Math.random() * 100 + '%';
-        wall.style.width = (Math.random() * 200 + 80) + 'px';
-        wall.style.height = (Math.random() * 120 + 60) + 'px';
-        if (Math.random() > 0.5) wall.classList.add('cracked');
-        brokenWallContainer.appendChild(wall);
-        setTimeout(() => wall.remove(), 800);
-      }
-      
-      let progress = 0;
-      const messages = [
-        "Initializing fanter.OS...",
-        "Loading core modules...",
-        "Bypassing firewalls...",
-        "Decrypting database...",
-        "Loading games library...",
-        "Applying themes...",
-        "Hacking mainframe...",
-        "Almost there...",
-        "Starting fanter.OS..."
-      ];
-      let msgIndex = 0;
-      
-      const effectsInterval = setInterval(() => {
-        if (progress < 100) {
-          if (Math.random() > 0.7) createBrokenWall();
-          if (Math.random() > 0.8) createFallingCode();
-        }
-      }, 500);
-      
-      const progressInterval = setInterval(() => {
-        if (progress < 100) {
-          progress += Math.random() * 2 + 1;
-          if (progress >= 100) {
-            progress = 100;
-            progressBar.style.width = '100%';
-            statusEl.textContent = "Complete! Loading games...";
-            clearInterval(progressInterval);
-            clearInterval(effectsInterval);
-            clearInterval(matrixInterval);
-            
-            let attempts = 0;
-            const checkInterval = setInterval(() => {
-              attempts++;
-              const gamesContainer = document.getElementById('gamesContainer');
-              const hasGames = gamesContainer && gamesContainer.children.length > 0;
-              if (hasGames || attempts >= 100) {
-                clearInterval(checkInterval);
-                setTimeout(() => startTransition(), 800);
-              }
-            }, 100);
-          } else {
-            progressBar.style.width = progress + '%';
-            const newIndex = Math.floor(progress / 12);
-            if (newIndex > msgIndex && newIndex < messages.length) {
-              msgIndex = newIndex;
-              statusEl.textContent = messages[msgIndex];
-            }
-          }
-        }
-      }, 350);
-      
-      function startTransition() {
-        whiteFlash.style.opacity = '1';
-        setTimeout(() => {
-          loadingScreen.style.opacity = '0';
-          setTimeout(() => {
-            loadingScreen.style.display = 'none';
-            revealOverlay.style.transform = 'scaleX(1)';
-            setTimeout(() => {
-              whiteFlash.style.opacity = '0';
-              if (mainContent) {
-                mainContent.style.opacity = '1';
-                mainContent.style.visibility = 'visible';
-              }
-              setTimeout(() => {
-                const games = document.querySelectorAll('.game');
-                const gameArray = Array.from(games);
-                gameArray.forEach(game => {
-                  game.style.opacity = '0';
-                  game.style.transform = 'scale(0)';
-                });
-                for (let i = gameArray.length - 1; i > 0; i--) {
-                  const j = Math.floor(Math.random() * (i + 1));
-                  [gameArray[i], gameArray[j]] = [gameArray[j], gameArray[i]];
-                }
-                gameArray.forEach((game, index) => {
-                  setTimeout(() => {
-                    game.style.opacity = '1';
-                    game.style.transform = 'scale(1)';
-                    game.style.transition = 'all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
-                  }, index * 30);
-                });
-                
-                const elements = [
-                  { el: document.getElementById('searchInput'), dir: 'left', delay: 50 },
-                  { el: document.querySelector('.center .settings-btn'), dir: 'right', delay: 100 },
-                  { el: document.querySelector('.center h1'), dir: 'up', delay: 80 },
-                  { el: document.querySelector('.center p'), dir: 'up', delay: 120 },
-                  { el: document.querySelector('.fav-sidebar-btn'), dir: 'left', delay: 150 },
-                  { el: document.querySelector('.account-btn'), dir: 'right', delay: 60 },
-                  { el: document.querySelector('.theme-quick-toggle'), dir: 'up', delay: 40 }
-                ];
-                elements.forEach(item => {
-                  if (!item.el) return;
-                  item.el.style.opacity = '0';
-                  if (item.dir === 'left') item.el.style.transform = 'translateX(-100px)';
-                  if (item.dir === 'right') item.el.style.transform = 'translateX(100px)';
-                  if (item.dir === 'up') item.el.style.transform = 'translateY(-30px)';
-                  item.el.style.transition = 'all 0.4s cubic-bezier(0.68, -0.55, 0.265, 1.55)';
-                  setTimeout(() => {
-                    item.el.style.opacity = '1';
-                    item.el.style.transform = 'translateX(0) translateY(0)';
-                  }, item.delay);
-                });
-              }, 100);
-              setTimeout(() => {
-                revealOverlay.style.transform = 'scaleX(0)';
-                setTimeout(() => {
-                  if (revealOverlay.parentNode) revealOverlay.remove();
-                  if (whiteFlash.parentNode) whiteFlash.remove();
-                }, 1200);
-              }, 500);
-            }, 300);
-          }, 400);
-        }, 300);
-      }
-      
-      loadingScreen.addEventListener('click', (e) => e.stopPropagation());
+      },350);
+      ls.addEventListener('click', e => e.stopPropagation());
     })();
   </script>
-
-
-
 </body>
 </html>
