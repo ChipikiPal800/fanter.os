@@ -408,30 +408,26 @@ document.addEventListener('DOMContentLoaded', function() {
     btn.textContent = !favFilterOn ? "✕" : "★";
   };
 
-  fetch("./config/games.json")
-    .then(function(response) { return response.json(); })
-    .then(function(data) {
-      window.gamesData = data;
-      handleSearchInput();
-      console.log("✅ Loaded " + window.gamesData.length + " games successfully!");
-      
-      // SYNC TO BIN
+ fetch("./config/games.json")
+  .then(function(response) { return response.json(); })
+  .then(function(data) {
+    window.gamesData = data;
+    handleSearchInput();
+    console.log("✅ Loaded " + window.gamesData.length + " games successfully!");
+    
+    // Only sync once per day
+    const lastSync = localStorage.getItem('lastGamesBinSync');
+    const today = new Date().toDateString();
+    if (lastSync !== today) {
       syncGamesToBin(data);
-      
-      if (typeof updateGameOfDay === 'function') updateGameOfDay();
-      if (typeof loadUserFavorites === 'function') loadUserFavorites();
-    })
-    .catch(function(error) { console.error("Error fetching games:", error); });
-
-  var searchInput = document.getElementById("searchInput");
-  if (searchInput) searchInput.addEventListener("input", handleSearchInput);
-  
-  var titleEl = document.getElementById("title");
-  if (titleEl) titleEl.innerHTML = sitename;
-  
-  var subtitleEl = document.getElementById("subtitle");
-  if (subtitleEl) subtitleEl.innerHTML = subtext;
-});
+      localStorage.setItem('lastGamesBinSync', today);
+    } else {
+      console.log('⏭️ Games already synced today, skipping');
+    }
+    
+    if (typeof updateGameOfDay === 'function') updateGameOfDay();
+    if (typeof loadUserFavorites === 'function') loadUserFavorites();
+  })
 
 // ===== HELPER FUNCTIONS =====
 function getCategoryColor(category) {
