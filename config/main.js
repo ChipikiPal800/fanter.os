@@ -97,7 +97,10 @@ document.addEventListener('DOMContentLoaded', function() {
     var favs = getFavourites();
     for (var i = 0; i < games.length; i++) {
       var g = games[i], earned = window.gameEarnings[g.name] || 0, plays = window.gamePlayCounts[g.name] || 0, isFav = favs.indexOf(g.name) !== -1;
-      var avg = globalRatings[g.name] ? globalRatings[g.name].average.toFixed(1) : '0.0';
+          var avg = '0.0';
+          if (globalRatings[g.name] && globalRatings[g.name].average != null) {
+          avg = globalRatings[g.name].average.toFixed(1);
+}
       var img = g.image; if (img && img.indexOf('http') !== 0) img = 'https://via.placeholder.com/200x113?text=No+Image';
       var color = getCategoryColor(g.category), icon = getCategoryIcon(g.category), short = g.name.length > 18 ? g.name.substring(0, 16) + '...' : g.name;
       var div = document.createElement("div"); div.className = "game"; div.setAttribute("data-game-name", g.name);
