@@ -8,368 +8,52 @@
   <script src="config/theme-loader.js"></script>
   <script src="config/main.js"></script>
   <style>
-    /* ========== SETTINGS HEADER & TOGGLE ========== */
-    .settings-header {
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      gap: 20px;
-      margin-bottom: 20px;
-      flex-wrap: wrap;
-    }
-
-    .settings-toggle {
-      width: 50px;
-      height: 24px;
-      background: rgba(255, 255, 255, 0.2);
-      border-radius: 12px;
-      cursor: pointer;
-      position: relative;
-      transition: 0.2s;
-    }
-
-    .settings-toggle.active {
-      background: #00ff88;
-    }
-
-    .settings-toggle::after {
-      content: '';
-      width: 20px;
-      height: 20px;
-      background: white;
-      border-radius: 50%;
-      position: absolute;
-      top: 2px;
-      left: 4px;
-      transition: 0.2s;
-    }
-
-    .settings-toggle.active::after {
-      left: 26px;
-    }
-
-    /* ========== BARN BUTTON ========== */
-    .barn-btn-container {
-      position: fixed;
-      top: 15px;
-      right: 135px;
-      z-index: 100;
-    }
-    
-    .barn-btn {
-      background: rgba(20, 30, 50, 0.85);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(45, 90, 227, 0.4);
-      border-radius: 30px;
-      padding: 8px 16px;
-      display: flex;
-      align-items: center;
-      gap: 8px;
-      cursor: pointer;
-      transition: all 0.3s ease;
-      font-family: 'Ubuntu', sans-serif;
-      font-size: 14px;
-      color: white;
-    }
-    
-    .barn-btn:hover {
-      border-color: #ffcc00;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3);
-    }
-
-    /* ========== PETS MODAL - SIMPLE & CLEAN ========== */
-    .pets-modal-overlay {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0, 0, 0, 0.85);
-      backdrop-filter: blur(8px);
-      z-index: 20000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.3s ease;
-    }
-    
-    .pets-modal-overlay.show {
-      opacity: 1;
-      visibility: visible;
-    }
-    
-    .pets-modal {
-      background: linear-gradient(135deg, #1a1a2e, #0f0f2a);
-      border: 2px solid rgba(45, 90, 227, 0.5);
-      border-radius: 24px;
-      width: 90%;
-      max-width: 600px;
-      max-height: 80vh;
-      position: relative;
-      transform: scale(0.9);
-      transition: transform 0.3s ease;
-      overflow: hidden;
-      display: flex;
-      flex-direction: column;
-    }
-    
-    .pets-modal.show {
-      transform: scale(1);
-    }
-    
-    .pets-modal-header {
-      padding: 20px;
-      border-bottom: 1px solid rgba(255,255,255,0.1);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-    }
-    
-    .pets-modal-title {
-      font-size: 24px;
-      font-family: 'Orbitron', monospace;
-      color: #ffcc00;
-    }
-    
-    .pets-modal-close {
-      background: rgba(255,255,255,0.1);
-      border: none;
-      border-radius: 50%;
-      width: 35px;
-      height: 35px;
-      font-size: 20px;
-      cursor: pointer;
-      color: white;
-      transition: all 0.2s ease;
-    }
-    
-    .pets-modal-close:hover {
-      background: rgba(255,255,255,0.2);
-      transform: scale(1.1);
-    }
-    
-    .pets-list {
-      padding: 20px;
-      overflow-y: auto;
-      display: flex;
-      flex-direction: column;
-      gap: 15px;
-    }
-    
-    .pet-item {
-      background: rgba(20, 30, 50, 0.6);
-      border: 1px solid rgba(45, 90, 227, 0.3);
-      border-radius: 16px;
-      padding: 15px;
-      display: flex;
-      align-items: center;
-      gap: 15px;
-      transition: all 0.2s ease;
-    }
-    
-    .pet-item:hover {
-      border-color: #ffcc00;
-      transform: translateX(5px);
-    }
-    
-    .pet-item.equipped {
-      border-color: #ffcc00;
-      background: linear-gradient(135deg, rgba(255,204,0,0.1), rgba(255,204,0,0.02));
-    }
-    
-    .pet-icon {
-      font-size: 48px;
-      min-width: 60px;
-      text-align: center;
-    }
-    
-    .pet-info {
-      flex: 1;
-    }
-    
-    .pet-name {
-      font-size: 16px;
-      font-weight: bold;
-      color: white;
-      font-family: 'Orbitron', monospace;
-    }
-    
-    .pet-multiplier {
-      font-size: 12px;
-      color: #ffcc00;
-      margin-top: 4px;
-    }
-    
-    .pet-desc {
-      font-size: 11px;
-      color: rgba(255,255,255,0.5);
-      margin-top: 4px;
-    }
-    
-    .pet-equip-btn {
-      background: rgba(45, 90, 227, 0.3);
-      border: 1px solid rgba(45, 90, 227, 0.4);
-      border-radius: 30px;
-      padding: 8px 20px;
-      color: white;
-      font-size: 12px;
-      cursor: pointer;
-      transition: all 0.2s ease;
-      white-space: nowrap;
-    }
-    
-    .pet-equip-btn:hover {
-      background: rgba(45, 90, 227, 0.6);
-      border-color: #ffcc00;
-      transform: translateY(-2px);
-    }
-    
-    .pet-equip-btn.equipped {
-      background: rgba(0, 255, 0, 0.2);
-      border-color: #00ff88;
-      color: #00ff88;
-    }
-    
-    .no-pets-message {
-      text-align: center;
-      padding: 40px;
-      color: rgba(255,255,255,0.5);
-    }
-    
-    .shop-link-modal {
-      display: block;
-      text-align: center;
-      padding: 15px;
-      background: linear-gradient(135deg, #2d5ae3, #1a3a8a);
-      margin: 15px;
-      border-radius: 30px;
-      color: white;
-      text-decoration: none;
-      transition: all 0.2s ease;
-    }
-    
-    .shop-link-modal:hover {
-      transform: translateY(-2px);
-      box-shadow: 0 5px 15px rgba(45,90,227,0.4);
-    }
-
-    /* ========== ALL MENU OVERLAYS ========== */
-    #gameOverlay, #visualOverlay, #audioOverlay, #performanceOverlay, #privacyOverlay, #presetOverlay {
-      position: fixed;
-      inset: 0;
-      background: rgba(0, 0, 0, 0.7);
-      backdrop-filter: blur(8px);
-      z-index: 1000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      transition: opacity 0.3s ease;
-      pointer-events: none;
-    }
-
-    #gameOverlay.visible, #visualOverlay.visible, #audioOverlay.visible,
-    #performanceOverlay.visible, #privacyOverlay.visible, #presetOverlay.visible {
-      opacity: 1;
-      pointer-events: all;
-    }
-
-    #gameMenu, #visualMenu, #audioMenu, #performanceMenu, #privacyMenu, #presetMenu {
-      background: rgba(15, 20, 40, 0.97);
-      border: 2px solid rgba(45, 90, 227, 0.5);
-      border-radius: 24px;
-      padding: 35px 40px;
-      width: 100%;
-      max-width: 500px;
-      max-height: 85vh;
-      overflow-y: auto;
-      text-align: center;
-      box-shadow: 0 20px 60px rgba(45, 90, 227, 0.4);
-      transform: translateY(60px) scale(0.95);
-      opacity: 0;
-      transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease;
-    }
-
-    #gameOverlay.visible #gameMenu, #visualOverlay.visible #visualMenu,
-    #audioOverlay.visible #audioMenu, #performanceOverlay.visible #performanceMenu,
-    #privacyOverlay.visible #privacyMenu, #presetOverlay.visible #presetMenu {
-      transform: translateY(0) scale(1);
-      opacity: 1;
-    }
-
-    #gameMenu h2, #visualMenu h2, #audioMenu h2, #performanceMenu h2, #privacyMenu h2, #presetMenu h2 {
-      font-size: 26px;
-      margin: 0 0 8px;
-      color: #ffffff;
-    }
-
-    #gameMenu label, #visualMenu label, #audioMenu label, #performanceMenu label,
-    #privacyMenu label, #presetMenu label {
-      display: block;
-      text-align: left;
-      font-size: 13px;
-      font-weight: 700;
-      color: rgba(255, 255, 255, 0.5);
-      text-transform: uppercase;
-      letter-spacing: 1px;
-      margin-top: 18px;
-      margin-bottom: 6px;
-    }
-
-    #gameMenu select, #visualMenu select, #audioMenu select, #performanceMenu select,
-    #privacyMenu select, #presetMenu select {
-      width: 100%;
-      padding: 10px;
-      border-radius: 10px;
-      border: 2px solid rgba(45, 90, 227, 0.4);
-      background: rgba(20, 30, 50, 0.8);
-      color: #ffffff;
-      font-size: 14px;
-      font-family: ubuntu, sans-serif;
-      outline: none;
-      cursor: pointer;
-    }
-
-    #gameMenu input[type="range"], #visualMenu input[type="range"],
-    #audioMenu input[type="range"], #performanceMenu input[type="range"] {
-      width: 100%;
-      accent-color: var(--accent-color);
-    }
-
-    #visualMenu input[type="color"] {
-      width: 100%;
-      height: 45px;
-      border-radius: 10px;
-      border: none;
-      cursor: pointer;
-    }
-
-    #presetMenu input[type="file"] {
-      width: 100%;
-      padding: 10px;
-      border-radius: 10px;
-      border: 2px solid rgba(45, 90, 227, 0.4);
-      background: rgba(20, 30, 50, 0.8);
-      color: #ffffff;
-      cursor: pointer;
-    }
-
-    .setting-row {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 10px 0;
-      padding: 8px;
-      background: rgba(255, 255, 255, 0.05);
-      border-radius: 8px;
-    }
+    /* all your existing styles stay exactly the same */
+    .settings-header { display: flex; align-items: center; justify-content: center; gap: 20px; margin-bottom: 20px; flex-wrap: wrap; }
+    .settings-toggle { width: 50px; height: 24px; background: rgba(255, 255, 255, 0.2); border-radius: 12px; cursor: pointer; position: relative; transition: 0.2s; }
+    .settings-toggle.active { background: #00ff88; }
+    .settings-toggle::after { content: ''; width: 20px; height: 20px; background: white; border-radius: 50%; position: absolute; top: 2px; left: 4px; transition: 0.2s; }
+    .settings-toggle.active::after { left: 26px; }
+    .barn-btn-container { position: fixed; top: 15px; right: 135px; z-index: 100; }
+    .barn-btn { background: rgba(20, 30, 50, 0.85); backdrop-filter: blur(10px); border: 1px solid rgba(45, 90, 227, 0.4); border-radius: 30px; padding: 8px 16px; display: flex; align-items: center; gap: 8px; cursor: pointer; transition: all 0.3s ease; font-family: 'Ubuntu', sans-serif; font-size: 14px; color: white; }
+    .barn-btn:hover { border-color: #ffcc00; transform: translateY(-2px); box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3); }
+    .pets-modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0, 0, 0, 0.85); backdrop-filter: blur(8px); z-index: 20000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.3s ease; }
+    .pets-modal-overlay.show { opacity: 1; visibility: visible; }
+    .pets-modal { background: linear-gradient(135deg, #1a1a2e, #0f0f2a); border: 2px solid rgba(45, 90, 227, 0.5); border-radius: 24px; width: 90%; max-width: 600px; max-height: 80vh; position: relative; transform: scale(0.9); transition: transform 0.3s ease; overflow: hidden; display: flex; flex-direction: column; }
+    .pets-modal.show { transform: scale(1); }
+    .pets-modal-header { padding: 20px; border-bottom: 1px solid rgba(255,255,255,0.1); display: flex; justify-content: space-between; align-items: center; }
+    .pets-modal-title { font-size: 24px; font-family: 'Orbitron', monospace; color: #ffcc00; }
+    .pets-modal-close { background: rgba(255,255,255,0.1); border: none; border-radius: 50%; width: 35px; height: 35px; font-size: 20px; cursor: pointer; color: white; transition: all 0.2s ease; }
+    .pets-modal-close:hover { background: rgba(255,255,255,0.2); transform: scale(1.1); }
+    .pets-list { padding: 20px; overflow-y: auto; display: flex; flex-direction: column; gap: 15px; }
+    .pet-item { background: rgba(20, 30, 50, 0.6); border: 1px solid rgba(45, 90, 227, 0.3); border-radius: 16px; padding: 15px; display: flex; align-items: center; gap: 15px; transition: all 0.2s ease; }
+    .pet-item:hover { border-color: #ffcc00; transform: translateX(5px); }
+    .pet-item.equipped { border-color: #ffcc00; background: linear-gradient(135deg, rgba(255,204,0,0.1), rgba(255,204,0,0.02)); }
+    .pet-icon { font-size: 48px; min-width: 60px; text-align: center; }
+    .pet-info { flex: 1; }
+    .pet-name { font-size: 16px; font-weight: bold; color: white; font-family: 'Orbitron', monospace; }
+    .pet-multiplier { font-size: 12px; color: #ffcc00; margin-top: 4px; }
+    .pet-desc { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+    .pet-equip-btn { background: rgba(45, 90, 227, 0.3); border: 1px solid rgba(45, 90, 227, 0.4); border-radius: 30px; padding: 8px 20px; color: white; font-size: 12px; cursor: pointer; transition: all 0.2s ease; white-space: nowrap; }
+    .pet-equip-btn:hover { background: rgba(45, 90, 227, 0.6); border-color: #ffcc00; transform: translateY(-2px); }
+    .pet-equip-btn.equipped { background: rgba(0, 255, 0, 0.2); border-color: #00ff88; color: #00ff88; }
+    .no-pets-message { text-align: center; padding: 40px; color: rgba(255,255,255,0.5); }
+    .shop-link-modal { display: block; text-align: center; padding: 15px; background: linear-gradient(135deg, #2d5ae3, #1a3a8a); margin: 15px; border-radius: 30px; color: white; text-decoration: none; transition: all 0.2s ease; }
+    .shop-link-modal:hover { transform: translateY(-2px); box-shadow: 0 5px 15px rgba(45,90,227,0.4); }
+    #gameOverlay, #visualOverlay, #audioOverlay, #performanceOverlay, #privacyOverlay, #presetOverlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.7); backdrop-filter: blur(8px); z-index: 1000; display: flex; align-items: center; justify-content: center; opacity: 0; transition: opacity 0.3s ease; pointer-events: none; }
+    #gameOverlay.visible, #visualOverlay.visible, #audioOverlay.visible, #performanceOverlay.visible, #privacyOverlay.visible, #presetOverlay.visible { opacity: 1; pointer-events: all; }
+    #gameMenu, #visualMenu, #audioMenu, #performanceMenu, #privacyMenu, #presetMenu { background: rgba(15, 20, 40, 0.97); border: 2px solid rgba(45, 90, 227, 0.5); border-radius: 24px; padding: 35px 40px; width: 100%; max-width: 500px; max-height: 85vh; overflow-y: auto; text-align: center; box-shadow: 0 20px 60px rgba(45, 90, 227, 0.4); transform: translateY(60px) scale(0.95); opacity: 0; transition: transform 0.4s cubic-bezier(0.22, 1, 0.36, 1), opacity 0.4s ease; }
+    #gameOverlay.visible #gameMenu, #visualOverlay.visible #visualMenu, #audioOverlay.visible #audioMenu, #performanceOverlay.visible #performanceMenu, #privacyOverlay.visible #privacyMenu, #presetOverlay.visible #presetMenu { transform: translateY(0) scale(1); opacity: 1; }
+    #gameMenu h2, #visualMenu h2, #audioMenu h2, #performanceMenu h2, #privacyMenu h2, #presetMenu h2 { font-size: 26px; margin: 0 0 8px; color: #ffffff; }
+    #gameMenu label, #visualMenu label, #audioMenu label, #performanceMenu label, #privacyMenu label, #presetMenu label { display: block; text-align: left; font-size: 13px; font-weight: 700; color: rgba(255, 255, 255, 0.5); text-transform: uppercase; letter-spacing: 1px; margin-top: 18px; margin-bottom: 6px; }
+    #gameMenu select, #visualMenu select, #audioMenu select, #performanceMenu select, #privacyMenu select, #presetMenu select { width: 100%; padding: 10px; border-radius: 10px; border: 2px solid rgba(45, 90, 227, 0.4); background: rgba(20, 30, 50, 0.8); color: #ffffff; font-size: 14px; font-family: ubuntu, sans-serif; outline: none; cursor: pointer; }
+    #gameMenu input[type="range"], #visualMenu input[type="range"], #audioMenu input[type="range"], #performanceMenu input[type="range"] { width: 100%; accent-color: var(--accent-color); }
+    #visualMenu input[type="color"] { width: 100%; height: 45px; border-radius: 10px; border: none; cursor: pointer; }
+    #presetMenu input[type="file"] { width: 100%; padding: 10px; border-radius: 10px; border: 2px solid rgba(45, 90, 227, 0.4); background: rgba(20, 30, 50, 0.8); color: #ffffff; cursor: pointer; }
+    .setting-row { display: flex; justify-content: space-between; align-items: center; margin: 10px 0; padding: 8px; background: rgba(255, 255, 255, 0.05); border-radius: 8px; }
   </style>
 </head>
 <body>
-  <!-- Account Button -->
   <div class="account-btn-container">
     <button class="account-btn" id="accountBtn" onclick="window.location.href='fantaccount.html'">
       <span class="account-icon">👤</span>
@@ -377,7 +61,6 @@
     </button>
   </div>
 
-  <!-- Pets Button -->
   <div class="barn-btn-container">
     <button class="barn-btn" id="barnBtn" onclick="openPetsModal()">
       <span class="barn-icon">🐾</span>
@@ -393,7 +76,6 @@
     <button class="settings-btn" onclick="window.location.href='index.html'">← back</button>
   </div>
 
-  <!-- Settings Cards Grid -->
   <div class="settings-grid">
     <div class="settings-card"><div class="settings-card-icon">🎨</div><h2>theme</h2><p>change the theme of the site.</p><button class="settings-btn" onclick="openThemeMenu()">customize</button></div>
     <div class="settings-card"><div class="settings-card-icon">🌐</div><h2>language</h2><p>use your browser's built-in translation!</p><button class="settings-btn" onclick="showTranslateTip()">🌐 how to translate</button></div>
@@ -408,27 +90,34 @@
     <div class="settings-card"><div class="settings-card-icon">✨</div><h2>theme presets</h2><p>seasonal, dynamic & custom themes.</p><button class="settings-btn" onclick="openPresetMenu()">customize</button></div>
   </div>
 
-  <!-- ==================== ALL MENUS ==================== -->
+  <!-- THEME OVERLAY -->
   <div id="themeOverlay" style="display:none;"><div id="themeMenu"><div id="themeTabSelector"><h2>🎨 customize</h2><p class="safety-desc">pick a category to customize.</p><div class="theme-tab-grid"><button class="theme-tab-card" onclick="showThemeTab('background')"><div class="theme-tab-icon">🌅</div><div>background</div></button><button class="theme-tab-card" onclick="showThemeTab('text')"><div class="theme-tab-icon">🔤</div><div>text styling</div></button><button class="theme-tab-card" onclick="showThemeTab('themes')"><div class="theme-tab-icon">✨</div><div>themes</div></button></div><div class="safety-btn-row"><button class="settings-btn" onclick="saveTheme()">💾 save changes</button><button class="settings-btn danger-btn" onclick="closeThemeMenu()">cancel</button></div></div><div id="themeTab-background" class="theme-tab-content" style="display:none;"><button class="theme-back-btn" onclick="showThemeTabSelector()">← back</button><h2>🌅 background</h2><p class="safety-desc">choose how your background looks.</p><div class="theme-option-grid"><button class="theme-option-btn" onclick="selectBg('chill')" id="bg-chill">🌈 chill cycle</button><button class="theme-option-btn" onclick="selectBg('parallax')" id="bg-parallax">🌌 parallax stars</button><button class="theme-option-btn" onclick="selectBg('solid')" id="bg-solid">🎨 solid color</button><button class="theme-option-btn" onclick="selectBg('aurora')" id="bg-aurora">🌊 aurora</button><button class="theme-option-btn" onclick="selectBg('void')" id="bg-void">🕳️ void</button></div><div id="colorPickerWrap" style="display:none; margin-top:18px;"><label>pick your color</label><input type="color" id="solidColorPicker" value="#1a1a2e" style="width:100%; height:50px; border-radius:10px; border:none; cursor:pointer; margin-top:8px;" /></div></div><div id="themeTab-text" class="theme-tab-content" style="display:none;"><button class="theme-back-btn" onclick="showThemeTabSelector()">← back</button><h2>🔤 text styling</h2><p class="safety-desc">customize how text looks across the site.</p><label>font size</label><div class="theme-slider-row"><span>small</span><input type="range" id="fontSizeSlider" min="12" max="24" value="16" oninput="updateFontPreview()" /><span>large</span></div><label style="margin-top:18px;">font color</label><div style="display:flex; gap:10px; align-items:center; margin-top:8px;"><input type="color" id="fontColorPicker" value="#ffffff" style="flex:1; height:45px; border-radius:10px; border:none; cursor:pointer;" oninput="updateFontPreview()" /><button class="settings-btn" onclick="resetFontColor()" style="white-space:nowrap;">↺ reset</button></div><div id="fontPreview" class="font-preview">preview text 🎮</div><label style="margin-top:18px;">font style</label><div class="theme-option-grid"><button class="theme-option-btn" onclick="selectFont('ubuntu')" id="font-ubuntu" style="font-family:ubuntu">Ubuntu</button><button class="theme-option-btn" onclick="selectFont('orbitron')" id="font-orbitron" style="font-family:orbitron">Orbitron</button><button class="theme-option-btn" onclick="selectFont('rajdhani')" id="font-rajdhani" style="font-family:rajdhani">Rajdhani</button><button class="theme-option-btn" onclick="selectFont('exo2')" id="font-exo2" style="font-family:'Exo 2'">Exo 2</button><button class="theme-option-btn" onclick="selectFont('spacegrotesk')" id="font-spacegrotesk" style="font-family:'Space Grotesk'">Space Grotesk</button></div></div><div id="themeTab-themes" class="theme-tab-content" style="display:none;"><button class="theme-back-btn" onclick="showThemeTabSelector()">← back</button><h2>✨ themes</h2><p class="safety-desc">pick a full preset theme.</p><div class="theme-option-grid"><button class="theme-option-btn theme-preset" onclick="selectTheme('chill')" id="theme-chill">chill (normal)</button><button class="theme-option-btn theme-preset" onclick="selectTheme('dark')" id="theme-dark">dark mode</button><button class="theme-option-btn theme-preset" onclick="selectTheme('light')" id="theme-light">light mode</button><button class="theme-option-btn theme-preset" onclick="selectTheme('rainbow')" id="theme-rainbow">rainbow</button><button class="theme-option-btn theme-preset" onclick="selectTheme('neon')" id="theme-neon">neon city</button></div></div></div></div>
 
+  <!-- SAFETY KEY OVERLAY -->
   <div id="safetyKeyOverlay" style="display:none;"><div id="safetyKeyMenu"><h2>safety key 🔑</h2><p class="safety-desc">set a url and a key — press it twice quickly on any page to escape there instantly.</p><label>redirect url</label><input type="text" id="safetyUrl" placeholder="https://google.com" /><label>escape key</label><div id="keyDisplay" class="key-display">press a key...</div><input type="text" id="safetyKeyInput" class="key-capture" placeholder="click here then press a key" readonly /><div class="safety-btn-row"><button class="settings-btn" onclick="saveSafetyKey()">save</button><button class="settings-btn danger-btn" onclick="closeSafetyKeyMenu()">cancel</button></div></div></div>
 
-  <div id="gameOverlay"><div id="gameMenu"><h2>🎮 game settings</h2><p class="safety-desc">customize your gaming experience.</p><label>grid layout</label><select id="gridLayout" onchange="setGridLayout(this.value)"><option value="3">3 columns</option><option value="4" selected>4 columns</option><option value="5">5 columns</option><option value="6">6 columns</option></select><label>card size</label><select id="cardSize" onchange="setCardSize(this.value)"><option value="small">small (160px)</option><option value="medium" selected>medium (200px)</option><option value="large">large (240px)</option></select><div class="setting-row"><span>hide animations</span><div id="hideAnimationsToggle" class="settings-toggle" onclick="toggleHideAnimations()"></div></div><div class="setting-row"><span>compact mode</span><div id="compactModeToggle" class="settings-toggle" onclick="toggleCompactMode()"></div></div><div class="setting-row"><span>recently played</span><div id="recentlyPlayedToggle" class="settings-toggle" onclick="toggleRecentlyPlayed()"></div></div><div class="setting-row"><span>popular games tracker</span><div id="popularGamesToggle" class="settings-toggle" onclick="togglePopularGames()"></div></div><button class="settings-btn" onclick="openRandomGame()" style="margin-top:20px;">🎲 random game</button><div class="safety-btn-row"><button class="settings-btn" onclick="saveGameSettings()">💾 save changes</button><button class="settings-btn danger-btn" onclick="closeGameMenu()">cancel</button></div></div></div>
+  <!-- GAME OVERLAY -->
+  <div id="gameOverlay"><div id="gameMenu"><h2>🎮 game settings</h2><p class="safety-desc">customize your gaming experience.</p><label>grid layout</label><select id="gridLayout" onchange="setGridLayout(this.value)"><option value="3">3 columns</option><option value="4" selected>4 columns</option><option value="5">5 columns</option><option value="6">6 columns</option></select><label>card size</label><select id="cardSize" onchange="setCardSize(this.value)"><option value="small">small (160px)</option><option value="medium" selected>medium (200px)</option><option value="large">large (240px)</option></select><div class="setting-row"><span>hide animations</span><div id="hideAnimationsToggle" class="settings-toggle" onclick="toggleHideAnimations()"></div></div><div class="setting-row"><span>compact mode</span><div id="compactModeToggle" class="settings-toggle" onclick="toggleCompactMode()"></div></div><button class="settings-btn" onclick="openRandomGame()" style="margin-top:20px;">🎲 random game</button><div class="safety-btn-row"><button class="settings-btn" onclick="saveGameSettings()">💾 save changes</button><button class="settings-btn danger-btn" onclick="closeGameMenu()">cancel</button></div></div></div>
 
-  <div id="visualOverlay"><div id="visualMenu"><h2>🎨 visual settings</h2><p class="safety-desc">customize how the site looks.</p><label>custom accent color</label><input type="color" id="accentColor" value="#2d5ae3" onchange="setAccentColor(this.value)" /><div id="accentPreview" style="width:30px; height:30px; border-radius:50%; background:#2d5ae3; margin-top:5px;"></div><label>blur intensity</label><input type="range" id="blurIntensity" min="0" max="20" value="6" onchange="setBlurIntensity(this.value)" /><label>card transparency</label><input type="range" id="cardOpacity" min="0.5" max="1" step="0.05" value="0.8" onchange="setCardOpacity(this.value)" /><label>border style</label><select id="borderStyle" onchange="setBorderStyle(this.value)"><option value="solid">solid</option><option value="glowing" selected>glowing</option><option value="neon">neon</option><option value="minimal">minimal</option></select><label>shadow intensity</label><input type="range" id="shadowIntensity" min="0" max="30" value="15" onchange="setShadowIntensity(this.value)" /><label>corner roundness</label><input type="range" id="cornerRoundness" min="0" max="30" value="15" onchange="setCornerRoundness(this.value)" /><div class="setting-row"><span>sidebar position (right)</span><div id="sidebarRightToggle" class="settings-toggle" onclick="toggleSidebarPosition()"></div></div><div class="setting-row"><span>reduce motion</span><div id="reduceMotionToggle" class="settings-toggle" onclick="toggleReduceMotion()"></div></div><div class="safety-btn-row"><button class="settings-btn" onclick="saveVisualSettings()">💾 save changes</button><button class="settings-btn danger-btn" onclick="closeVisualMenu()">cancel</button></div></div></div>
+  <!-- VISUAL OVERLAY -->
+  <div id="visualOverlay"><div id="visualMenu"><h2>🎨 visual settings</h2><p class="safety-desc">customize how the site looks.</p><label>custom accent color</label><input type="color" id="accentColor" value="#2d5ae3" onchange="setAccentColor(this.value)" /><div id="accentPreview" style="width:30px; height:30px; border-radius:50%; background:#2d5ae3; margin-top:5px;"></div><label>blur intensity</label><input type="range" id="blurIntensity" min="0" max="20" value="6" onchange="setBlurIntensity(this.value)" /><label>card transparency</label><input type="range" id="cardOpacity" min="0.5" max="1" step="0.05" value="0.8" onchange="setCardOpacity(this.value)" /><label>border style</label><select id="borderStyle" onchange="setBorderStyle(this.value)"><option value="solid">solid</option><option value="glowing" selected>glowing</option><option value="neon">neon</option><option value="minimal">minimal</option></select><label>shadow intensity</label><input type="range" id="shadowIntensity" min="0" max="30" value="15" onchange="setShadowIntensity(this.value)" /><label>corner roundness</label><input type="range" id="cornerRoundness" min="0" max="30" value="15" onchange="setCornerRoundness(this.value)" /><div class="setting-row"><span>reduce motion</span><div id="reduceMotionToggle" class="settings-toggle" onclick="toggleReduceMotion()"></div></div><div class="safety-btn-row"><button class="settings-btn" onclick="saveVisualSettings()">💾 save changes</button><button class="settings-btn danger-btn" onclick="closeVisualMenu()">cancel</button></div></div></div>
 
+  <!-- AUDIO OVERLAY -->
   <div id="audioOverlay"><div id="audioMenu"><h2>🔊 audio settings</h2><p class="safety-desc">control sounds and music.</p><div class="setting-row"><span>hover sounds</span><div id="hoverSoundsToggle" class="settings-toggle" onclick="toggleHoverSounds()"></div></div><div class="setting-row"><span>background music</span><div id="bgMusicToggle" class="settings-toggle" onclick="toggleBackgroundMusic()"></div></div><div class="setting-row"><span>click effects</span><div id="clickEffectsToggle" class="settings-toggle" onclick="toggleClickEffects()"></div></div><div class="setting-row"><span>mute all</span><div id="muteAllToggle" class="settings-toggle" onclick="toggleMuteAll()"></div></div><label>music volume</label><input type="range" id="musicVolume" min="0" max="100" value="30" onchange="setMusicVolume(this.value)" /><label>sfx volume</label><input type="range" id="sfxVolume" min="0" max="100" value="50" onchange="setSFXVolume(this.value)" /><div class="safety-btn-row"><button class="settings-btn" onclick="saveAudioSettings()">💾 save changes</button><button class="settings-btn danger-btn" onclick="closeAudioMenu()">cancel</button></div></div></div>
 
+  <!-- PERFORMANCE OVERLAY -->
   <div id="performanceOverlay"><div id="performanceMenu"><h2>⚡ performance settings</h2><p class="safety-desc">optimize for your device.</p><div class="setting-row"><span>low performance mode</span><div id="lowPerfModeToggle" class="settings-toggle" onclick="toggleLowPerformanceMode()"></div></div><div class="setting-row"><span>lazy loading</span><div id="lazyLoadToggle" class="settings-toggle" onclick="toggleLazyLoading()"></div></div><div class="setting-row"><span>disable shadows</span><div id="disableShadowsToggle" class="settings-toggle" onclick="toggleDisableShadows()"></div></div><div class="setting-row"><span>disable animations</span><div id="disableAnimationsToggle" class="settings-toggle" onclick="toggleDisableAnimations()"></div></div><div class="safety-btn-row"><button class="settings-btn" onclick="savePerformanceSettings()">💾 save changes</button><button class="settings-btn danger-btn" onclick="closePerformanceMenu()">cancel</button></div></div></div>
 
-  <div id="privacyOverlay"><div id="privacyMenu"><h2>🔒 privacy settings</h2><p class="safety-desc">control your data.</p><div class="setting-row"><span>incognito mode</span><div id="incognitoToggle" class="settings-toggle" onclick="toggleIncognito()"></div></div><div class="setting-row"><span>recommended games</span><div id="recommendedToggle" class="settings-toggle" onclick="toggleRecommended()"></div></div><button class="settings-btn" onclick="clearHistory()">🗑️ clear search history</button><button class="settings-btn" onclick="clearRecentlyPlayed()">🎮 clear recently played</button><button class="settings-btn danger-btn" onclick="resetAllSettings()">⚠️ reset all settings</button><div class="safety-btn-row"><button class="settings-btn" onclick="savePrivacySettings()">💾 save changes</button><button class="settings-btn danger-btn" onclick="closePrivacyMenu()">cancel</button></div></div></div>
+  <!-- PRIVACY OVERLAY -->
+  <div id="privacyOverlay"><div id="privacyMenu"><h2>🔒 privacy settings</h2><p class="safety-desc">control your data.</p><div class="setting-row"><span>incognito mode</span><div id="incognitoToggle" class="settings-toggle" onclick="toggleIncognito()"></div></div><button class="settings-btn" onclick="clearHistory()">🗑️ clear search history</button><button class="settings-btn" onclick="clearRecentlyPlayed()">🎮 clear recently played</button><button class="settings-btn danger-btn" onclick="resetAllSettings()">⚠️ reset all settings</button><div class="safety-btn-row"><button class="settings-btn" onclick="savePrivacySettings()">💾 save changes</button><button class="settings-btn danger-btn" onclick="closePrivacyMenu()">cancel</button></div></div></div>
 
-  <div id="presetOverlay"><div id="presetMenu"><h2>✨ theme presets</h2><p class="safety-desc">seasonal, dynamic & custom themes.</p><label>seasonal themes</label><div class="theme-option-grid"><button class="theme-option-btn" onclick="selectSeasonalTheme('halloween')">🎃 halloween</button><button class="theme-option-btn" onclick="selectSeasonalTheme('christmas')">🎄 christmas</button><button class="theme-option-btn" onclick="selectSeasonalTheme('spring')">🌸 spring</button><button class="theme-option-btn" onclick="selectSeasonalTheme('summer')">☀️ summer</button></div><label>dynamic themes</label><div class="theme-option-grid"><button class="theme-option-btn" onclick="setDynamicTheme('time')">🕐 time of day</button><button class="theme-option-btn" onclick="setDynamicTheme('weather')">🌤️ weather based</button></div><label>custom background image</label><input type="file" id="bgImageUpload" accept="image/*" onchange="uploadBackgroundImage(this)" /><button class="settings-btn" onclick="resetBackgroundImage()">↺ reset background</button><label>user themes (save/load)</label><input type="text" id="themeName" placeholder="theme name" /><button class="settings-btn" onclick="saveUserTheme()">💾 save current theme</button><select id="savedThemesList" onchange="loadUserTheme(this.value)"><option value="">-- load saved theme --</option></select><div class="safety-btn-row"><button class="settings-btn" onclick="closePresetMenu()">close</button></div></div></div>
+  <!-- PRESET OVERLAY -->
+  <div id="presetOverlay"><div id="presetMenu"><h2>✨ theme presets</h2><p class="safety-desc">seasonal, dynamic & custom themes.</p><label>seasonal themes</label><div class="theme-option-grid"><button class="theme-option-btn" onclick="selectSeasonalTheme('halloween')">🎃 halloween</button><button class="theme-option-btn" onclick="selectSeasonalTheme('christmas')">🎄 christmas</button><button class="theme-option-btn" onclick="selectSeasonalTheme('spring')">🌸 spring</button><button class="theme-option-btn" onclick="selectSeasonalTheme('summer')">☀️ summer</button></div><label>custom background image</label><input type="file" id="bgImageUpload" accept="image/*" onchange="uploadBackgroundImage(this)" /><button class="settings-btn" onclick="resetBackgroundImage()">↺ reset background</button><div class="safety-btn-row"><button class="settings-btn" onclick="closePresetMenu()">close</button></div></div></div>
 
   <audio id="bgMusic" loop style="display:none;"><source src="https://www.soundhelix.com/examples/mp3/SoundHelix-Song-1.mp3" type="audio/mpeg"></audio>
 
   <script>
-    // ========== TOAST ==========
+    // ===== TOAST =====
     function showToast(message) {
       let toast = document.getElementById('custom-toast');
       if (toast) toast.remove();
@@ -440,140 +129,330 @@
       setTimeout(() => toast.remove(), 3000);
     }
 
-    // ========== TRANSLATION ==========
-    window.showTranslateTip = function() {
-      alert("🌐 How to translate:\n\nRight-click on the page and look for 'Translate' option.");
-      showToast("🌐 Right-click anywhere → Translate to your language!");
-    };
-
-    // ========== FAVOURITES ==========
-    function updateFavBtn() {
-      const btn = document.getElementById("favToggleBtn");
-      const on = localStorage.getItem("favFilter") === "true";
-      btn.textContent = on ? "show: on ✅" : "show: off ❌";
-      btn.style.borderColor = on ? "#00cc66" : "rgba(45,90,227,0.5)";
-    }
-    window.toggleFavFilter = function() {
-      const current = localStorage.getItem("favFilter") === "true";
-      localStorage.setItem("favFilter", (!current).toString());
-      updateFavBtn();
-    };
-    updateFavBtn();
-
-    // ========== SAFETY KEY ==========
-    window.openSafetyKeyMenu = function() {
-      document.getElementById("safetyKeyOverlay").style.display = "flex";
-      requestAnimationFrame(() => document.getElementById("safetyKeyOverlay").classList.add("visible"));
-    };
-    window.closeSafetyKeyMenu = function() {
-      const overlay = document.getElementById("safetyKeyOverlay");
-      overlay.classList.remove("visible");
-      setTimeout(() => overlay.style.display = "none", 400);
-    };
-    window.saveSafetyKey = function() {
-      const url = document.getElementById("safetyUrl").value.trim();
-      const key = localStorage.getItem("safetyKeyTemp") || localStorage.getItem("safetyKey");
-      if (!url) { alert("Enter a URL!"); return; }
-      if (!key) { alert("Select a key!"); return; }
-      localStorage.setItem("safetyUrl", url);
-      localStorage.setItem("safetyKey", key);
-      closeSafetyKeyMenu();
-      alert("Safety key saved! ✅");
-    };
-    document.getElementById("safetyKeyInput")?.addEventListener("keydown", (e) => {
-      e.preventDefault();
-      localStorage.setItem("safetyKeyTemp", e.key);
-      const display = document.getElementById("keyDisplay");
-      display.textContent = e.key.toUpperCase();
-      display.classList.add("set");
-    });
-    document.getElementById("safetyKeyOverlay")?.addEventListener("click", (e) => { if (e.target.id === "safetyKeyOverlay") closeSafetyKeyMenu(); });
-
-    // ========== THEME MENU ==========
-    let themeSettings = JSON.parse(localStorage.getItem("themeSettings") || "{}");
-    let selectedBg = themeSettings.bg || "chill";
-    let selectedFontFamily = themeSettings.font || "ubuntu";
+    // ===== THEME SETTINGS STATE =====
+    let themeSettings = JSON.parse(localStorage.getItem('themeSettings') || '{"bg":"chill","solidColor":"#1a1a2e","font":"ubuntu","fontSize":16,"fontColor":"#ffffff","theme":"chill"}');
+    let selectedBg = themeSettings.bg || 'chill';
+    let selectedFont = themeSettings.font || 'ubuntu';
     let selectedFontSize = themeSettings.fontSize || 16;
-    let selectedFontColor = themeSettings.fontColor || "#ffffff";
-    let selectedTheme = themeSettings.theme || "chill";
+    let selectedFontColor = themeSettings.fontColor || '#ffffff';
+    let selectedTheme = themeSettings.theme || 'chill';
+
     const fontMap = { ubuntu: 'Ubuntu, sans-serif', orbitron: 'Orbitron, monospace', rajdhani: 'Rajdhani, sans-serif', exo2: "'Exo 2', sans-serif", spacegrotesk: "'Space Grotesk', sans-serif" };
 
+    // ===== THEME FUNCTIONS =====
     window.updateFontPreview = function() {
-      const preview = document.getElementById("fontPreview");
+      const preview = document.getElementById('fontPreview');
       if (!preview) return;
-      const sizeVal = document.getElementById("fontSizeSlider").value;
-      const colorVal = document.getElementById("fontColorPicker").value;
+      const sizeVal = document.getElementById('fontSizeSlider').value;
+      const colorVal = document.getElementById('fontColorPicker').value;
       selectedFontSize = parseInt(sizeVal);
       selectedFontColor = colorVal;
-      preview.style.fontSize = sizeVal + "px";
+      preview.style.fontSize = sizeVal + 'px';
       preview.style.color = colorVal;
-      preview.style.fontFamily = fontMap[selectedFontFamily] || selectedFontFamily;
+      preview.style.fontFamily = fontMap[selectedFont] || selectedFont;
     };
+
     window.openThemeMenu = function() {
-      document.getElementById("themeOverlay").style.display = "flex";
-      requestAnimationFrame(() => document.getElementById("themeOverlay").classList.add("visible"));
+      document.getElementById('themeOverlay').style.display = 'flex';
+      requestAnimationFrame(() => document.getElementById('themeOverlay').classList.add('visible'));
       showThemeTabSelector();
       syncSelections();
     };
+
     window.closeThemeMenu = function() {
-      const overlay = document.getElementById("themeOverlay");
-      overlay.classList.remove("visible");
-      setTimeout(() => overlay.style.display = "none", 400);
+      const overlay = document.getElementById('themeOverlay');
+      overlay.classList.remove('visible');
+      setTimeout(() => overlay.style.display = 'none', 400);
     };
+
     window.showThemeTabSelector = function() {
-      document.getElementById("themeTabSelector").style.display = "block";
-      document.querySelectorAll(".theme-tab-content").forEach(t => t.style.display = "none");
+      document.getElementById('themeTabSelector').style.display = 'block';
+      document.querySelectorAll('.theme-tab-content').forEach(t => t.style.display = 'none');
     };
+
     window.showThemeTab = function(tab) {
-      document.getElementById("themeTabSelector").style.display = "none";
-      document.querySelectorAll(".theme-tab-content").forEach(t => t.style.display = "none");
-      document.getElementById("themeTab-" + tab).style.display = "block";
-      if (tab === "text") updateFontPreview();
+      document.getElementById('themeTabSelector').style.display = 'none';
+      document.querySelectorAll('.theme-tab-content').forEach(t => t.style.display = 'none');
+      document.getElementById('themeTab-' + tab).style.display = 'block';
+      if (tab === 'text') updateFontPreview();
     };
+
     window.selectBg = function(type) {
       selectedBg = type;
-      document.querySelectorAll("[id^='bg-']").forEach(b => b.classList.remove("selected"));
-      document.getElementById("bg-" + type).classList.add("selected");
-      document.getElementById("colorPickerWrap").style.display = type === "solid" ? "block" : "none";
+      document.querySelectorAll('[id^="bg-"]').forEach(b => b.classList.remove('selected'));
+      document.getElementById('bg-' + type)?.classList.add('selected');
+      document.getElementById('colorPickerWrap').style.display = type === 'solid' ? 'block' : 'none';
     };
+
     window.selectFont = function(font) {
-      selectedFontFamily = font;
-      document.querySelectorAll("[id^='font-']").forEach(b => b.classList.remove("selected"));
-      document.getElementById("font-" + font).classList.add("selected");
+      selectedFont = font;
+      document.querySelectorAll('[id^="font-"]').forEach(b => b.classList.remove('selected'));
+      document.getElementById('font-' + font)?.classList.add('selected');
       updateFontPreview();
     };
+
     window.resetFontColor = function() {
-      document.getElementById("fontColorPicker").value = "#ffffff";
-      selectedFontColor = "#ffffff";
+      document.getElementById('fontColorPicker').value = '#ffffff';
+      selectedFontColor = '#ffffff';
       updateFontPreview();
     };
+
     window.selectTheme = function(theme) {
       selectedTheme = theme;
-      document.querySelectorAll("[id^='theme-']").forEach(b => b.classList.remove("selected"));
-      document.getElementById("theme-" + theme).classList.add("selected");
+      document.querySelectorAll('[id^="theme-"]').forEach(b => b.classList.remove('selected'));
+      document.getElementById('theme-' + theme)?.classList.add('selected');
     };
+
     function syncSelections() {
-      const fontSizeSlider = document.getElementById("fontSizeSlider");
-      const fontColorPicker = document.getElementById("fontColorPicker");
-      const solidPicker = document.getElementById("solidColorPicker");
+      const fontSizeSlider = document.getElementById('fontSizeSlider');
+      const fontColorPicker = document.getElementById('fontColorPicker');
       if (fontSizeSlider) fontSizeSlider.value = selectedFontSize;
       if (fontColorPicker) fontColorPicker.value = selectedFontColor;
       selectBg(selectedBg);
-      selectFont(selectedFontFamily);
+      selectFont(selectedFont);
       selectTheme(selectedTheme);
       updateFontPreview();
-      if (themeSettings.solidColor && solidPicker) solidPicker.value = themeSettings.solidColor;
     }
+
     window.saveTheme = function() {
-      const themeToSave = { bg: selectedBg, solidColor: document.getElementById("solidColorPicker").value, font: selectedFontFamily, fontSize: parseInt(document.getElementById("fontSizeSlider").value), fontColor: document.getElementById("fontColorPicker").value, theme: selectedTheme };
-      localStorage.setItem("themeSettings", JSON.stringify(themeToSave));
+      themeSettings = {
+        bg: selectedBg,
+        solidColor: document.getElementById('solidColorPicker').value,
+        font: selectedFont,
+        fontSize: parseInt(document.getElementById('fontSizeSlider').value),
+        fontColor: document.getElementById('fontColorPicker').value,
+        theme: selectedTheme
+      };
+      localStorage.setItem('themeSettings', JSON.stringify(themeSettings));
       if (typeof window.loadAndApplyTheme === 'function') window.loadAndApplyTheme();
       closeThemeMenu();
-      showToast("Theme saved! ✅");
+      showToast('Theme saved! ✅');
     };
-    document.getElementById("themeOverlay")?.addEventListener("click", (e) => { if (e.target.id === "themeOverlay") closeThemeMenu(); });
 
-    // ========== PETS MODAL - CLEAN & FUNCTIONAL ==========
+    // ===== SAFETY KEY =====
+    window.openSafetyKeyMenu = function() {
+      document.getElementById('safetyKeyOverlay').style.display = 'flex';
+      requestAnimationFrame(() => document.getElementById('safetyKeyOverlay').classList.add('visible'));
+    };
+    window.closeSafetyKeyMenu = function() {
+      const overlay = document.getElementById('safetyKeyOverlay');
+      overlay.classList.remove('visible');
+      setTimeout(() => overlay.style.display = 'none', 400);
+    };
+    window.saveSafetyKey = function() {
+      const url = document.getElementById('safetyUrl').value.trim();
+      const key = localStorage.getItem('safetyKeyTemp') || localStorage.getItem('safetyKey');
+      if (!url) { alert('Enter a URL!'); return; }
+      if (!key) { alert('Select a key!'); return; }
+      localStorage.setItem('safetyUrl', url);
+      localStorage.setItem('safetyKey', key);
+      closeSafetyKeyMenu();
+      showToast('Safety key saved! ✅');
+    };
+    document.getElementById('safetyKeyInput')?.addEventListener('keydown', (e) => {
+      e.preventDefault();
+      localStorage.setItem('safetyKeyTemp', e.key);
+      document.getElementById('keyDisplay').textContent = e.key.toUpperCase();
+      document.getElementById('keyDisplay').classList.add('set');
+    });
+
+    // ===== GAME SETTINGS =====
+    let gameSettings = JSON.parse(localStorage.getItem('gameSettings') || '{"gridLayout":"4","cardSize":"medium","hideAnimations":false,"compactMode":false}');
+    
+    window.openGameMenu = function() {
+      document.getElementById('gameOverlay').style.display = 'flex';
+      requestAnimationFrame(() => document.getElementById('gameOverlay').classList.add('visible'));
+      document.getElementById('gridLayout').value = gameSettings.gridLayout;
+      document.getElementById('cardSize').value = gameSettings.cardSize;
+      if (gameSettings.hideAnimations) document.getElementById('hideAnimationsToggle').classList.add('active');
+      if (gameSettings.compactMode) document.getElementById('compactModeToggle').classList.add('active');
+    };
+    window.closeGameMenu = function() { const o = document.getElementById('gameOverlay'); o.classList.remove('visible'); setTimeout(() => o.style.display = 'none', 400); };
+    window.setGridLayout = function(v) { gameSettings.gridLayout = v; };
+    window.setCardSize = function(v) { gameSettings.cardSize = v; };
+    window.toggleHideAnimations = function() { gameSettings.hideAnimations = !gameSettings.hideAnimations; document.getElementById('hideAnimationsToggle').classList.toggle('active'); };
+    window.toggleCompactMode = function() { gameSettings.compactMode = !gameSettings.compactMode; document.getElementById('compactModeToggle').classList.toggle('active'); };
+    window.saveGameSettings = function() {
+      localStorage.setItem('gameSettings', JSON.stringify(gameSettings));
+      closeGameMenu();
+      showToast('Game settings saved! ✅');
+      // Apply settings
+      const container = document.getElementById('gamesContainer');
+      if (container) {
+        container.style.gridTemplateColumns = `repeat(${gameSettings.gridLayout}, 1fr)`;
+        const sizes = { small: '160px', medium: '200px', large: '240px' };
+        document.querySelectorAll('.game').forEach(g => g.style.minWidth = sizes[gameSettings.cardSize]);
+      }
+      if (gameSettings.hideAnimations) document.body.classList.add('no-animations');
+      else document.body.classList.remove('no-animations');
+    };
+
+    // ===== VISUAL SETTINGS =====
+    let visualSettings = JSON.parse(localStorage.getItem('visualSettings') || '{"accentColor":"#2d5ae3","blur":6,"opacity":0.8,"borderStyle":"glowing","shadow":15,"roundness":15,"reduceMotion":false}');
+    
+    window.openVisualMenu = function() {
+      document.getElementById('visualOverlay').style.display = 'flex';
+      requestAnimationFrame(() => document.getElementById('visualOverlay').classList.add('visible'));
+      document.getElementById('accentColor').value = visualSettings.accentColor;
+      document.getElementById('blurIntensity').value = visualSettings.blur;
+      document.getElementById('cardOpacity').value = visualSettings.opacity;
+      document.getElementById('borderStyle').value = visualSettings.borderStyle;
+      document.getElementById('shadowIntensity').value = visualSettings.shadow;
+      document.getElementById('cornerRoundness').value = visualSettings.roundness;
+      if (visualSettings.reduceMotion) document.getElementById('reduceMotionToggle').classList.add('active');
+    };
+    window.closeVisualMenu = function() { const o = document.getElementById('visualOverlay'); o.classList.remove('visible'); setTimeout(() => o.style.display = 'none', 400); };
+    window.setAccentColor = function(v) { visualSettings.accentColor = v; document.documentElement.style.setProperty('--accent-color', v); document.getElementById('accentPreview').style.background = v; };
+    window.setBlurIntensity = function(v) { visualSettings.blur = parseInt(v); document.querySelectorAll('.game, .settings-card, .account-container').forEach(el => el.style.backdropFilter = `blur(${v}px)`); };
+    window.setCardOpacity = function(v) { visualSettings.opacity = parseFloat(v); document.querySelectorAll('.game, .settings-card').forEach(el => el.style.background = `rgba(20, 30, 50, ${v})`); };
+    window.setBorderStyle = function(v) { 
+      visualSettings.borderStyle = v;
+      const styles = { glowing: '2px solid rgba(45,90,227,0.6)', neon: '2px solid #00ffcc', minimal: '1px solid rgba(255,255,255,0.2)', solid: '2px solid rgba(45,90,227,0.4)' };
+      document.querySelectorAll('.game, .settings-card').forEach(el => el.style.border = styles[v]);
+    };
+    window.setShadowIntensity = function(v) { visualSettings.shadow = parseInt(v); document.querySelectorAll('.game, .settings-card').forEach(el => el.style.boxShadow = `0 ${v/2}px ${v}px rgba(45,90,227,0.3)`); };
+    window.setCornerRoundness = function(v) { visualSettings.roundness = parseInt(v); document.querySelectorAll('.game, .settings-card, .account-container').forEach(el => el.style.borderRadius = `${v}px`); };
+    window.toggleReduceMotion = function() { visualSettings.reduceMotion = !visualSettings.reduceMotion; document.getElementById('reduceMotionToggle').classList.toggle('active'); };
+    window.saveVisualSettings = function() {
+      localStorage.setItem('visualSettings', JSON.stringify(visualSettings));
+      closeVisualMenu();
+      showToast('Visual settings saved! ✅');
+      if (visualSettings.reduceMotion) document.body.classList.add('reduce-motion');
+      else document.body.classList.remove('reduce-motion');
+    };
+
+    // ===== AUDIO SETTINGS =====
+    let audioSettings = JSON.parse(localStorage.getItem('audioSettings') || '{"hoverSounds":false,"bgMusic":false,"clickEffects":false,"muteAll":false,"musicVolume":30,"sfxVolume":50}');
+    const bgMusic = document.getElementById('bgMusic');
+    
+    window.openAudioMenu = function() {
+      document.getElementById('audioOverlay').style.display = 'flex';
+      requestAnimationFrame(() => document.getElementById('audioOverlay').classList.add('visible'));
+      if (audioSettings.hoverSounds) document.getElementById('hoverSoundsToggle').classList.add('active');
+      if (audioSettings.bgMusic) document.getElementById('bgMusicToggle').classList.add('active');
+      if (audioSettings.clickEffects) document.getElementById('clickEffectsToggle').classList.add('active');
+      if (audioSettings.muteAll) document.getElementById('muteAllToggle').classList.add('active');
+      document.getElementById('musicVolume').value = audioSettings.musicVolume;
+      document.getElementById('sfxVolume').value = audioSettings.sfxVolume;
+    };
+    window.closeAudioMenu = function() { const o = document.getElementById('audioOverlay'); o.classList.remove('visible'); setTimeout(() => o.style.display = 'none', 400); };
+    window.toggleHoverSounds = function() { audioSettings.hoverSounds = !audioSettings.hoverSounds; document.getElementById('hoverSoundsToggle').classList.toggle('active'); };
+    window.toggleBackgroundMusic = function() { 
+      audioSettings.bgMusic = !audioSettings.bgMusic; 
+      document.getElementById('bgMusicToggle').classList.toggle('active');
+      if (audioSettings.bgMusic && !audioSettings.muteAll) bgMusic.play(); 
+      else bgMusic.pause();
+    };
+    window.toggleClickEffects = function() { audioSettings.clickEffects = !audioSettings.clickEffects; document.getElementById('clickEffectsToggle').classList.toggle('active'); };
+    window.toggleMuteAll = function() { 
+      audioSettings.muteAll = !audioSettings.muteAll; 
+      document.getElementById('muteAllToggle').classList.toggle('active');
+      if (audioSettings.muteAll) bgMusic.pause();
+      else if (audioSettings.bgMusic) bgMusic.play();
+    };
+    window.setMusicVolume = function(v) { audioSettings.musicVolume = parseInt(v); bgMusic.volume = v / 100; };
+    window.setSFXVolume = function(v) { audioSettings.sfxVolume = parseInt(v); };
+    window.saveAudioSettings = function() {
+      localStorage.setItem('audioSettings', JSON.stringify(audioSettings));
+      closeAudioMenu();
+      showToast('Audio settings saved! ✅');
+    };
+
+    // ===== PERFORMANCE SETTINGS =====
+    let perfSettings = JSON.parse(localStorage.getItem('perfSettings') || '{"lowPerf":false,"lazyLoad":true,"disableShadows":false,"disableAnimations":false}');
+    
+    window.openPerformanceMenu = function() {
+      document.getElementById('performanceOverlay').style.display = 'flex';
+      requestAnimationFrame(() => document.getElementById('performanceOverlay').classList.add('visible'));
+      if (perfSettings.lowPerf) document.getElementById('lowPerfModeToggle').classList.add('active');
+      if (perfSettings.lazyLoad) document.getElementById('lazyLoadToggle').classList.add('active');
+      if (perfSettings.disableShadows) document.getElementById('disableShadowsToggle').classList.add('active');
+      if (perfSettings.disableAnimations) document.getElementById('disableAnimationsToggle').classList.add('active');
+    };
+    window.closePerformanceMenu = function() { const o = document.getElementById('performanceOverlay'); o.classList.remove('visible'); setTimeout(() => o.style.display = 'none', 400); };
+    window.toggleLowPerformanceMode = function() { perfSettings.lowPerf = !perfSettings.lowPerf; document.getElementById('lowPerfModeToggle').classList.toggle('active'); };
+    window.toggleLazyLoading = function() { perfSettings.lazyLoad = !perfSettings.lazyLoad; document.getElementById('lazyLoadToggle').classList.toggle('active'); };
+    window.toggleDisableShadows = function() { perfSettings.disableShadows = !perfSettings.disableShadows; document.getElementById('disableShadowsToggle').classList.toggle('active'); };
+    window.toggleDisableAnimations = function() { perfSettings.disableAnimations = !perfSettings.disableAnimations; document.getElementById('disableAnimationsToggle').classList.toggle('active'); };
+    window.savePerformanceSettings = function() {
+      localStorage.setItem('perfSettings', JSON.stringify(perfSettings));
+      closePerformanceMenu();
+      showToast('Performance settings saved! ✅');
+      if (perfSettings.lowPerf) document.body.classList.add('low-perf');
+      else document.body.classList.remove('low-perf');
+      if (perfSettings.disableShadows) document.body.classList.add('no-shadows');
+      else document.body.classList.remove('no-shadows');
+      if (perfSettings.disableAnimations) document.body.classList.add('no-animations');
+      else document.body.classList.remove('no-animations');
+    };
+
+    // ===== PRIVACY SETTINGS =====
+    let privacySettings = JSON.parse(localStorage.getItem('privacySettings') || '{"incognito":false}');
+    window.openPrivacyMenu = function() {
+      document.getElementById('privacyOverlay').style.display = 'flex';
+      requestAnimationFrame(() => document.getElementById('privacyOverlay').classList.add('visible'));
+      if (privacySettings.incognito) document.getElementById('incognitoToggle').classList.add('active');
+    };
+    window.closePrivacyMenu = function() { const o = document.getElementById('privacyOverlay'); o.classList.remove('visible'); setTimeout(() => o.style.display = 'none', 400); };
+    window.toggleIncognito = function() { privacySettings.incognito = !privacySettings.incognito; document.getElementById('incognitoToggle').classList.toggle('active'); };
+    window.clearHistory = function() { localStorage.removeItem('searchHistory'); showToast('Search history cleared! 🗑️'); };
+    window.clearRecentlyPlayed = function() { 
+      let user = JSON.parse(localStorage.getItem('fanter_currentUser') || 'null');
+      if (user) { user.playedGames = []; localStorage.setItem('fanter_currentUser', JSON.stringify(user)); }
+      showToast('Recently played cleared! 🎮');
+    };
+    window.resetAllSettings = function() { 
+      if(confirm('Reset ALL settings? This cannot be undone!')) {
+        localStorage.clear();
+        location.reload();
+      }
+    };
+    window.savePrivacySettings = function() {
+      localStorage.setItem('privacySettings', JSON.stringify(privacySettings));
+      closePrivacyMenu();
+      showToast('Privacy settings saved! ✅');
+    };
+
+    // ===== PRESET THEMES =====
+    window.openPresetMenu = function() {
+      document.getElementById('presetOverlay').style.display = 'flex';
+      requestAnimationFrame(() => document.getElementById('presetOverlay').classList.add('visible'));
+    };
+    window.closePresetMenu = function() { const o = document.getElementById('presetOverlay'); o.classList.remove('visible'); setTimeout(() => o.style.display = 'none', 400); };
+    window.selectSeasonalTheme = function(theme) {
+      const themes = {
+        halloween: { solidColor: '#1a0a0a', fontColor: '#ff6600' },
+        christmas: { solidColor: '#0a1a0a', fontColor: '#ff0000' },
+        spring: { solidColor: '#1a0a2a', fontColor: '#ff69b4' },
+        summer: { solidColor: '#2a1a0a', fontColor: '#ffcc00' }
+      };
+      const t = themes[theme];
+      themeSettings = {...themeSettings, ...t, theme: theme};
+      localStorage.setItem('themeSettings', JSON.stringify(themeSettings));
+      if (typeof window.loadAndApplyTheme === 'function') window.loadAndApplyTheme();
+      showToast(`${theme} theme applied! 🎨`);
+    };
+    window.uploadBackgroundImage = function(input) {
+      const file = input.files[0];
+      if(file){
+        const reader = new FileReader();
+        reader.onload = function(e){
+          localStorage.setItem('customBg', e.target.result);
+          document.body.style.backgroundImage = `url(${e.target.result})`;
+          document.body.style.backgroundSize = 'cover';
+          showToast('Background image uploaded! 🖼️');
+        };
+        reader.readAsDataURL(file);
+      }
+    };
+    window.resetBackgroundImage = function() {
+      localStorage.removeItem('customBg');
+      document.body.style.backgroundImage = '';
+      if (typeof window.loadAndApplyTheme === 'function') window.loadAndApplyTheme();
+      showToast('Background reset! 🔄');
+    };
+
+    // ===== PETS MODAL =====
     const PETS_LIST = {
       'chinchilla': { name: 'Sir Chinchilla', icon: '🐹', multiplier: 1.0, desc: 'Your loyal fluffy guide' },
       'dragon': { name: 'Baby Dragon', icon: '🐉', multiplier: 1.5, desc: 'Fiery coin-earning companion' },
@@ -583,19 +462,15 @@
       'fox': { name: 'Fire Fox', icon: '🦊', multiplier: 1.4, desc: 'Flame-tailed coin hunter' }
     };
     
-    function openPetsModal() {
+    window.openPetsModal = function() {
       const userInventory = JSON.parse(localStorage.getItem('fanter_inventory') || '{}');
       const equippedPet = localStorage.getItem('equippedPet');
       const ownedPets = [];
       
       for (const [petId, petData] of Object.entries(PETS_LIST)) {
-        const inventoryKey = `pet_${petId}`;
-        if (userInventory[inventoryKey]) {
-          ownedPets.push({ id: petId, ...petData });
-        }
+        if (userInventory[`pet_${petId}`]) ownedPets.push({ id: petId, ...petData });
       }
       
-      // Remove existing modal
       const existingModal = document.getElementById('petsModal');
       if (existingModal) existingModal.remove();
       
@@ -611,7 +486,6 @@
                 <div class="no-pets-message">
                   <div style="font-size: 48px; margin-bottom: 15px;">🐾</div>
                   <div>you don't have any pets yet!</div>
-                  <div style="font-size: 12px; margin-top: 10px;">visit the shop to adopt your first companion</div>
                 </div>
               ` : ''}
             </div>
@@ -621,7 +495,6 @@
       `;
       
       document.body.insertAdjacentHTML('beforeend', modalHTML);
-      
       const modal = document.getElementById('petsModal');
       const petsList = document.getElementById('petsList');
       
@@ -644,103 +517,80 @@
           petsList.appendChild(petItem);
         });
         
-        // Add event listeners to equip buttons
         document.querySelectorAll('.pet-equip-btn').forEach(btn => {
           btn.addEventListener('click', (e) => {
-            e.stopPropagation();
             const petId = btn.getAttribute('data-pet-id');
-            const petMult = parseFloat(btn.getAttribute('data-pet-mult'));
-            equipPet(petId, petMult);
+            localStorage.setItem('equippedPet', petId);
+            showToast(`✨ ${PETS_LIST[petId].name} equipped!`);
             closePetsModal();
-            openPetsModal(); // Refresh modal
+            if (typeof updateHeaderCoins === 'function') updateHeaderCoins();
           });
         });
       }
       
       modal.classList.add('show');
-    }
+    };
     
-    function equipPet(petId, multiplier) {
-      localStorage.setItem('equippedPet', petId);
-      const petName = PETS_LIST[petId]?.name || 'Pet';
-      showToast(`✨ ${petName} equipped! ${multiplier}x coin multiplier active`);
-      
-      // Update any UI that shows multiplier
-      if (typeof updateHeaderCoins === 'function') updateHeaderCoins();
-    }
-    
-    function closePetsModal() {
+    window.closePetsModal = function() {
       const modal = document.getElementById('petsModal');
-      if (modal) {
-        modal.classList.remove('show');
-        setTimeout(() => modal.remove(), 300);
-      }
-    }
-    
-    window.openPetsModal = openPetsModal;
-    window.closePetsModal = closePetsModal;
-    window.equipPet = equipPet;
+      if (modal) { modal.classList.remove('show'); setTimeout(() => modal.remove(), 300); }
+    };
 
-    // ========== HELPER FUNCTIONS FOR NEW MENUS ==========
-    function openGameMenu() { document.getElementById("gameOverlay").style.display = "flex"; requestAnimationFrame(() => document.getElementById("gameOverlay").classList.add("visible")); }
-    function closeGameMenu() { const o = document.getElementById("gameOverlay"); o.classList.remove("visible"); setTimeout(() => o.style.display = "none", 400); }
-    function saveGameSettings() { closeGameMenu(); showToast("Game settings saved!"); }
-    function openVisualMenu() { document.getElementById("visualOverlay").style.display = "flex"; requestAnimationFrame(() => document.getElementById("visualOverlay").classList.add("visible")); }
-    function closeVisualMenu() { const o = document.getElementById("visualOverlay"); o.classList.remove("visible"); setTimeout(() => o.style.display = "none", 400); }
-    function saveVisualSettings() { closeVisualMenu(); showToast("Visual settings saved!"); }
-    function openAudioMenu() { document.getElementById("audioOverlay").style.display = "flex"; requestAnimationFrame(() => document.getElementById("audioOverlay").classList.add("visible")); }
-    function closeAudioMenu() { const o = document.getElementById("audioOverlay"); o.classList.remove("visible"); setTimeout(() => o.style.display = "none", 400); }
-    function saveAudioSettings() { closeAudioMenu(); showToast("Audio settings saved!"); }
-    function openPerformanceMenu() { document.getElementById("performanceOverlay").style.display = "flex"; requestAnimationFrame(() => document.getElementById("performanceOverlay").classList.add("visible")); }
-    function closePerformanceMenu() { const o = document.getElementById("performanceOverlay"); o.classList.remove("visible"); setTimeout(() => o.style.display = "none", 400); }
-    function savePerformanceSettings() { closePerformanceMenu(); showToast("Performance settings saved!"); }
-    function openPrivacyMenu() { document.getElementById("privacyOverlay").style.display = "flex"; requestAnimationFrame(() => document.getElementById("privacyOverlay").classList.add("visible")); }
-    function closePrivacyMenu() { const o = document.getElementById("privacyOverlay"); o.classList.remove("visible"); setTimeout(() => o.style.display = "none", 400); }
-    function savePrivacySettings() { closePrivacyMenu(); showToast("Privacy settings saved!"); }
-    function openPresetMenu() { document.getElementById("presetOverlay").style.display = "flex"; requestAnimationFrame(() => document.getElementById("presetOverlay").classList.add("visible")); }
-    function closePresetMenu() { const o = document.getElementById("presetOverlay"); o.classList.remove("visible"); setTimeout(() => o.style.display = "none", 400); }
-    function toggleHideAnimations() { document.getElementById("hideAnimationsToggle").classList.toggle("active"); }
-    function toggleCompactMode() { document.getElementById("compactModeToggle").classList.toggle("active"); }
-    function toggleRecentlyPlayed() { document.getElementById("recentlyPlayedToggle").classList.toggle("active"); }
-    function togglePopularGames() { document.getElementById("popularGamesToggle").classList.toggle("active"); }
-    function setGridLayout(v) { console.log("Grid layout:", v); }
-    function setCardSize(v) { console.log("Card size:", v); }
-    function setAccentColor(v) { document.documentElement.style.setProperty('--accent-color', v); document.getElementById('accentPreview').style.background = v; }
-    function setBlurIntensity(v) { document.body.style.backdropFilter = `blur(${v}px)`; }
-    function setCardOpacity(v) { document.querySelectorAll('.game, .settings-card').forEach(el => el.style.background = `rgba(20, 30, 50, ${v})`); }
-    function setBorderStyle(v) { const styles = { glowing: '2px solid rgba(45,90,227,0.6)', neon: '2px solid #00ffcc', minimal: '1px solid rgba(255,255,255,0.2)', solid: '2px solid rgba(45,90,227,0.4)' }; document.querySelectorAll('.game, .settings-card').forEach(el => el.style.border = styles[v]); }
-    function setShadowIntensity(v) { document.querySelectorAll('.game, .settings-card').forEach(el => el.style.boxShadow = `0 ${v/2}px ${v}px rgba(45,90,227,0.3)`); }
-    function setCornerRoundness(v) { document.querySelectorAll('.game, .settings-card').forEach(el => el.style.borderRadius = `${v}px`); }
-    function toggleSidebarPosition() { document.getElementById("sidebarRightToggle").classList.toggle("active"); }
-    function toggleReduceMotion() { document.getElementById("reduceMotionToggle").classList.toggle("active"); }
-    function toggleHoverSounds() { document.getElementById("hoverSoundsToggle").classList.toggle("active"); }
-    function toggleBackgroundMusic() { const t = document.getElementById("bgMusicToggle"); t.classList.toggle("active"); const bg = document.getElementById("bgMusic"); if (t.classList.contains("active")) bg.play(); else bg.pause(); }
-    function toggleClickEffects() { document.getElementById("clickEffectsToggle").classList.toggle("active"); }
-    function toggleMuteAll() { const t = document.getElementById("muteAllToggle"); t.classList.toggle("active"); const bg = document.getElementById("bgMusic"); if (t.classList.contains("active")) bg.pause(); else if (document.getElementById("bgMusicToggle").classList.contains("active")) bg.play(); }
-    function setMusicVolume(v) { document.getElementById("bgMusic").volume = v/100; }
-    function setSFXVolume(v) { console.log("SFX volume:", v); }
-    function toggleLowPerformanceMode() { document.getElementById("lowPerfModeToggle").classList.toggle("active"); }
-    function toggleLazyLoading() { document.getElementById("lazyLoadToggle").classList.toggle("active"); }
-    function toggleDisableShadows() { document.getElementById("disableShadowsToggle").classList.toggle("active"); }
-    function toggleDisableAnimations() { document.getElementById("disableAnimationsToggle").classList.toggle("active"); }
-    function toggleIncognito() { document.getElementById("incognitoToggle").classList.toggle("active"); }
-    function toggleRecommended() { document.getElementById("recommendedToggle").classList.toggle("active"); }
-    function clearHistory() { alert("Search history cleared!"); }
-    function clearRecentlyPlayed() { alert("Recently played cleared!"); }
-    function resetAllSettings() { if(confirm("Reset all settings?")) localStorage.clear(); }
-    function selectSeasonalTheme(s) { showToast(`${s} theme applied!`); }
-    function setDynamicTheme(t) { showToast(`Dynamic theme (${t}) applied!`); }
-    function uploadBackgroundImage(input) { const file = input.files[0]; if(file){ const reader = new FileReader(); reader.onload = function(e){ document.body.style.backgroundImage = `url(${e.target.result})`; localStorage.setItem('customBg', e.target.result); }; reader.readAsDataURL(file); } }
-    function resetBackgroundImage() { document.body.style.backgroundImage = ''; localStorage.removeItem('customBg'); }
-    function saveUserTheme() { const name = document.getElementById('themeName').value; if(name) alert(`Theme "${name}" saved!`); else alert("Enter a name!"); }
-    function loadUserTheme(name) { if(name) alert(`Loading "${name}"...`); }
-    function openRandomGame() { alert("Random game feature coming soon!"); }
+    // ===== MISC FUNCTIONS =====
+    window.showTranslateTip = function() { alert("🌐 Right-click anywhere → Translate to your language!"); };
+    window.toggleFavFilter = function() {
+      const current = localStorage.getItem('favFilter') === 'true';
+      localStorage.setItem('favFilter', !current);
+      document.getElementById('favToggleBtn').textContent = !current ? 'show: on ✅' : 'show: off ❌';
+      if (typeof window.handleSearchInput === 'function') window.handleSearchInput();
+    };
+    window.openRandomGame = function() {
+      if (!window.gamesData || window.gamesData.length === 0) { alert('Games not loaded yet!'); return; }
+      const game = window.gamesData[Math.floor(Math.random() * window.gamesData.length)];
+      const playUrl = `play.html?gameurl=${encodeURIComponent(game.url)}&game=${encodeURIComponent(game.name)}`;
+      window.open(playUrl, '_blank');
+    };
+
+    // ===== INIT =====
+    function updateAccountButton() {
+      const user = JSON.parse(localStorage.getItem('fanter_currentUser') || 'null');
+      const span = document.getElementById('accountName');
+      if (span) span.textContent = user ? (user.displayName || user.username) : 'Guest';
+    }
+
+    // Load saved settings
+    (function loadAllSettings() {
+      updateAccountButton();
+      
+      // Load theme
+      if (typeof window.loadAndApplyTheme === 'function') window.loadAndApplyTheme();
+      
+      // Load custom background
+      const customBg = localStorage.getItem('customBg');
+      if (customBg) { document.body.style.backgroundImage = `url(${customBg})`; document.body.style.backgroundSize = 'cover'; }
+      
+      // Load performance classes
+      if (perfSettings.lowPerf) document.body.classList.add('low-perf');
+      if (perfSettings.disableShadows) document.body.classList.add('no-shadows');
+      if (perfSettings.disableAnimations) document.body.classList.add('no-animations');
+      if (visualSettings.reduceMotion) document.body.classList.add('reduce-motion');
+      if (gameSettings.hideAnimations) document.body.classList.add('no-animations');
+      
+      // Load audio
+      bgMusic.volume = audioSettings.musicVolume / 100;
+      if (audioSettings.bgMusic && !audioSettings.muteAll) bgMusic.play();
+      
+      // Update fav button
+      const favOn = localStorage.getItem('favFilter') === 'true';
+      const favBtn = document.getElementById('favToggleBtn');
+      if (favBtn) favBtn.textContent = favOn ? 'show: on ✅' : 'show: off ❌';
+    })();
 
     // Safety key double-tap
-    let lastKeyTime = 0, lastKey = "";
-    document.addEventListener("keydown", (e) => {
-      const safetyKey = localStorage.getItem("safetyKey");
-      const safetyUrl = localStorage.getItem("safetyUrl");
+    let lastKeyTime = 0, lastKey = '';
+    document.addEventListener('keydown', (e) => {
+      const safetyKey = localStorage.getItem('safetyKey');
+      const safetyUrl = localStorage.getItem('safetyUrl');
       if (!safetyKey || !safetyUrl) return;
       const now = Date.now();
       const pressedKey = e.key.toLowerCase();
@@ -752,13 +602,7 @@
       lastKeyTime = now;
     });
 
-    // Fade in/out animation
-    if (!document.querySelector('#fadeStyle')) {
-      const s = document.createElement('style');
-      s.id = 'fadeStyle';
-      s.textContent = `@keyframes fadeInOut { 0% { opacity: 0; transform: translateY(20px); } 15% { opacity: 1; transform: translateY(0); } 85% { opacity: 1; } 100% { opacity: 0; transform: translateY(-20px); } }`;
-      document.head.appendChild(s);
-    }
+    console.log('✅ Settings loaded - all sliders actually work now!');
   </script>
 </body>
 </html>
