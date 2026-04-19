@@ -68,10 +68,11 @@
     .member-avatar { width: 32px; height: 32px; background: linear-gradient(135deg, #2d5ae3, #ffcc00); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; }
     
     /* Modal */
-    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 1000; display: flex; align-items: center; justify-content: center; }
+    .modal-overlay { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.8); backdrop-filter: blur(5px); z-index: 1000; display: none; align-items: center; justify-content: center; }
+    .modal-overlay.show { display: flex; }
     .modal { background: rgba(20,30,50,0.98); border: 1px solid rgba(45,90,227,0.4); border-radius: 20px; padding: 25px; max-width: 400px; width: 90%; }
     .modal h3 { color: #ffcc00; margin-bottom: 20px; }
-    .modal input { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid rgba(45,90,227,0.4); background: rgba(0,0,0,0.3); color: white; margin-bottom: 15px; }
+    .modal input { width: 100%; padding: 14px; border-radius: 10px; border: 1px solid rgba(45,90,227,0.4); background: rgba(0,0,0,0.3); color: white; margin-bottom: 15px; font-family: 'Inter', sans-serif; }
     .modal-buttons { display: flex; gap: 10px; justify-content: flex-end; }
   </style>
 </head>
@@ -83,16 +84,16 @@
         <h2>🏟️ FANTARENA</h2>
       </div>
       <div class="server-list">
-        <div class="server-item active" data-channel="general" data-type="channel">
+        <div class="server-item active" data-channel="general">
           <span>💬</span> general
         </div>
-        <div class="server-item" data-channel="game-recs" data-type="channel">
+        <div class="server-item" data-channel="game-recs">
           <span>🎮</span> game-recs
         </div>
-        <div class="server-item" data-channel="lfg" data-type="channel">
+        <div class="server-item" data-channel="lfg">
           <span>👥</span> looking-for-group
         </div>
-        <div class="server-item" data-channel="flex" data-type="channel">
+        <div class="server-item" data-channel="flex">
           <span>🏆</span> achievement-flex
         </div>
       </div>
@@ -117,7 +118,7 @@
       </div>
       <div class="typing-indicator" id="typingIndicator"></div>
       <div class="message-input-container">
-        <input type="text" id="messageInput" placeholder="send a message..." onkeypress="handleKeyPress(event)">
+        <input type="text" id="messageInput" placeholder="send a message..." onkeypress="if(event.key==='Enter')sendMessage()">
         <button class="send-btn" onclick="sendMessage()">send</button>
       </div>
     </div>
@@ -132,15 +133,25 @@
     </div>
   </div>
 
+  <!-- Add Friend Modal -->
+  <div class="modal-overlay" id="addFriendModal" onclick="if(event.target===this)closeAddFriendModal()">
+    <div class="modal">
+      <h3>add friend</h3>
+      <input type="text" id="friendUsernameInput" placeholder="enter username">
+      <div class="modal-buttons">
+        <button class="send-btn" onclick="sendFriendRequest()" style="padding:10px 20px;">send request</button>
+        <button class="send-btn" onclick="closeAddFriendModal()" style="padding:10px 20px; background:rgba(255,255,255,0.1);">cancel</button>
+      </div>
+    </div>
+  </div>
+
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
-    // ===== SUPABASE SETUP (FIXED - CREATE FRESH CLIENT) =====
-const SUPABASE_URL = "https://gvzgnclowylrrpovdvtw.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd2emduY2xvd3lscnJwb3ZkdnR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NjM5ODEsImV4cCI6MjA5MjAzOTk4MX0.p7oeYBVX870iSK-TLDRj6pfW7wLj7HJsTHjNWaNpL7o";
-
-// Create a FRESH supabase client - don't rely on window.supabase
-const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
-console.log('✅ Fantarena Supabase ready!', supabaseClient);
+    // ===== SUPABASE SETUP - FRESH CLIENT =====
+    const SUPABASE_URL = "https://gvzgnclowylrrpovdvtw.supabase.co";
+    const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd2emduY2xvd3lscnJwb3ZkdnR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NjM5ODEsImV4cCI6MjA5MjAzOTk4MX0.p7oeYBVX870iSK-TLDRj6pfW7wLj7HJsTHjNWaNpL7o";
+    const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+    console.log('✅ Fantarena Supabase ready!');
     
     // ===== STATE =====
     let currentUser = JSON.parse(localStorage.getItem('fanter_currentUser') || 'null');
@@ -148,37 +159,39 @@ console.log('✅ Fantarena Supabase ready!', supabaseClient);
     let currentDM = null;
     let messages = [];
     let friends = [];
-    let typingTimeout = null;
+    let channelSubscription = null;
     
     if (!currentUser || currentUser.username === 'Guest') {
       alert('please log in to use fantarena!');
       window.location.href = 'fantaccount.html';
     }
     
-    // Update presence (online status)
+    // ===== UPDATE PRESENCE =====
     async function updatePresence() {
-      await supabaseClient.from('fantarena_presence').upsert({
-        user_id: currentUser.id,
-        username: currentUser.displayName || currentUser.username,
-        status: 'online',
-        last_seen: new Date()
-      });
+      try {
+        await supabaseClient.from('fanter_presence').upsert({
+          user_id: currentUser.id,
+          username: currentUser.displayName || currentUser.username,
+          status: 'online',
+          last_seen: new Date()
+        });
+      } catch (e) { console.error('Presence error:', e); }
     }
     updatePresence();
-    setInterval(updatePresence, 30000); // every 30 seconds
+    setInterval(updatePresence, 30000);
     
     // ===== LOAD MESSAGES =====
     async function loadMessages() {
       console.log('📥 Loading messages for:', currentDM ? `DM:${currentDM}` : currentChannel);
       
       let query = supabaseClient
-        .from('fantarena_messages')
+        .from('fanter_chat')
         .select('*')
         .order('created_at', { ascending: true })
         .limit(100);
       
       if (currentDM) {
-        query = query.or(`(user_id.eq.${currentUser.id},user_id.eq.${currentDM})`);
+        query = query.or(`user_id.eq.${currentUser.id},user_id.eq.${currentDM}`);
       } else {
         query = query.eq('channel_id', currentChannel);
       }
@@ -205,7 +218,7 @@ console.log('✅ Fantarena Supabase ready!', supabaseClient);
       }
       
       container.innerHTML = messages.map(msg => `
-        <div class="message" data-message-id="${msg.id}">
+        <div class="message">
           <div class="message-avatar" onclick="showProfile('${msg.user_id}')">${msg.username[0].toUpperCase()}</div>
           <div class="message-content">
             <div class="message-header">
@@ -213,7 +226,6 @@ console.log('✅ Fantarena Supabase ready!', supabaseClient);
               <span class="message-time">${new Date(msg.created_at).toLocaleTimeString()}</span>
             </div>
             <div class="message-text">${escapeHtml(msg.message)}</div>
-            <div class="message-reactions" id="reactions-${msg.id}"></div>
           </div>
         </div>
       `).join('');
@@ -248,7 +260,7 @@ console.log('✅ Fantarena Supabase ready!', supabaseClient);
       console.log('📤 Sending message:', messageData);
       
       const { error } = await supabaseClient
-        .from('fantarena_messages')
+        .from('fanter_chat')
         .insert(messageData);
       
       if (error) {
@@ -259,10 +271,12 @@ console.log('✅ Fantarena Supabase ready!', supabaseClient);
       }
     }
     
-    function handleKeyPress(e) { if (e.key === 'Enter') sendMessage(); }
-    
     // ===== REALTIME =====
     function setupRealtime() {
+      if (channelSubscription) {
+        supabaseClient.removeChannel(channelSubscription);
+      }
+      
       let filter;
       if (currentDM) {
         filter = `channel_id=eq.dm_${[currentUser.id, currentDM].sort().join('_')}`;
@@ -270,9 +284,14 @@ console.log('✅ Fantarena Supabase ready!', supabaseClient);
         filter = `channel_id=eq.${currentChannel}`;
       }
       
-      supabaseClient
-        .channel('fantarena')
-        .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'fantarena_messages', filter: filter }, payload => {
+      channelSubscription = supabaseClient
+        .channel('fanter-chat')
+        .on('postgres_changes', { 
+          event: 'INSERT', 
+          schema: 'public', 
+          table: 'fanter_chat', 
+          filter: filter 
+        }, payload => {
           console.log('📨 New message!');
           messages.push(payload.new);
           if (messages.length > 100) messages.shift();
@@ -285,22 +304,23 @@ console.log('✅ Fantarena Supabase ready!', supabaseClient);
     
     // ===== FRIENDS =====
     async function loadFriends() {
-      const { data, error } = await supabaseClient
-        .from('fantarena_friends')
+      const { data } = await supabaseClient
+        .from('fanter_friends')
         .select('friend_id')
         .eq('user_id', currentUser.id);
       
-      if (data) {
-        // Get friend details from presence table
+      if (data && data.length > 0) {
         const friendIds = data.map(f => f.friend_id);
         const { data: friendsData } = await supabaseClient
-          .from('fantarena_presence')
+          .from('fanter_presence')
           .select('*')
           .in('user_id', friendIds);
         
         friends = friendsData || [];
-        renderFriendsList();
+      } else {
+        friends = [];
       }
+      renderFriendsList();
     }
     
     function renderFriendsList() {
@@ -324,7 +344,6 @@ console.log('✅ Fantarena Supabase ready!', supabaseClient);
       `).join('');
     }
     
-    // ===== DM =====
     function openDM(userId, username) {
       currentDM = userId;
       currentChannel = null;
@@ -354,7 +373,7 @@ console.log('✅ Fantarena Supabase ready!', supabaseClient);
     // ===== MEMBERS LIST =====
     async function loadMembers() {
       const { data } = await supabaseClient
-        .from('fantarena_presence')
+        .from('fanter_presence')
         .select('*')
         .order('status', { ascending: false });
       
@@ -382,16 +401,52 @@ console.log('✅ Fantarena Supabase ready!', supabaseClient);
       }
     }
     
-    // ===== PROFILE MODAL =====
-    function showProfile(userId) {
-      alert('Profile feature coming soon! User ID: ' + userId);
+    // ===== FRIEND REQUESTS =====
+    function showAddFriendModal() {
+      document.getElementById('addFriendModal').classList.add('show');
     }
     
-    function showAddFriendModal() {
-      const username = prompt('Enter username to add friend:');
-      if (username) {
-        alert('Friend request sent to ' + username + '! (feature coming soon)');
+    function closeAddFriendModal() {
+      document.getElementById('addFriendModal').classList.remove('show');
+      document.getElementById('friendUsernameInput').value = '';
+    }
+    
+    async function sendFriendRequest() {
+      const username = document.getElementById('friendUsernameInput').value.trim();
+      if (!username) return alert('enter a username');
+      
+      // Find user by username
+      const { data: users } = await supabaseClient
+        .from('fanter_presence')
+        .select('user_id, username')
+        .ilike('username', username);
+      
+      if (!users || users.length === 0) {
+        alert('user not found');
+        return;
       }
+      
+      const friend = users[0];
+      
+      // Send friend request
+      const { error } = await supabaseClient
+        .from('fanter_friend_requests')
+        .insert({
+          sender_id: currentUser.id,
+          receiver_id: friend.user_id,
+          status: 'pending'
+        });
+      
+      if (error) {
+        alert('failed to send request: ' + error.message);
+      } else {
+        alert(`friend request sent to ${friend.username}!`);
+        closeAddFriendModal();
+      }
+    }
+    
+    function showProfile(userId) {
+      alert('Profile feature coming soon! User ID: ' + userId);
     }
     
     // ===== INIT =====
@@ -399,9 +454,17 @@ console.log('✅ Fantarena Supabase ready!', supabaseClient);
     setupRealtime();
     loadFriends();
     loadMembers();
-    setInterval(loadMembers, 10000); // refresh members every 10s
+    setInterval(loadMembers, 10000);
     
-    console.log('🏟️ Fantarena loaded! Friends, DMs, Statuses, Members list - all ready!');
+    // Make functions global
+    window.sendMessage = sendMessage;
+    window.showAddFriendModal = showAddFriendModal;
+    window.closeAddFriendModal = closeAddFriendModal;
+    window.sendFriendRequest = sendFriendRequest;
+    window.showProfile = showProfile;
+    window.openDM = openDM;
+    
+    console.log('🏟️ Fantarena loaded!');
   </script>
 </body>
 </html>
