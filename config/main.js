@@ -375,7 +375,7 @@ function escapeHtml(str) {
   });
 }
 
-// ===== GAME DETAILS MODAL =====
+// ===== GAME DETAILS MODAL WITH REVIEWS =====
 function showGameDetailsModal(gameName, gameUrl, gameImage, gameDescription, gameCategory, gameLoadTime, gameDeveloper, gameReleaseDate) {
   var existingModal = document.getElementById('gameModal');
   if (existingModal) existingModal.remove();
@@ -400,6 +400,10 @@ function showGameDetailsModal(gameName, gameUrl, gameImage, gameDescription, gam
   var categoryColor = getCategoryColor(gameCategory);
   var categoryIcon = getCategoryIcon(gameCategory);
   
+  // Get reviews for this game
+  var gameReviews = JSON.parse(localStorage.getItem('gameReviews_' + gameName) || '[]');
+  var currentUser = JSON.parse(localStorage.getItem('fanter_currentUser') || 'null');
+  
   var modal = document.createElement('div');
   modal.id = 'gameModal';
   modal.style.cssText = 'position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(8px);z-index:20000;display:flex;align-items:center;justify-content:center;';
@@ -414,38 +418,91 @@ function showGameDetailsModal(gameName, gameUrl, gameImage, gameDescription, gam
           <div style="display:inline-block;font-size:12px;padding:4px 12px;border-radius:20px;margin-top:10px;background:${categoryColor}20;color:${categoryColor}">${categoryIcon} ${gameCategory || 'other'}</div>
         </div>
       </div>
-      <div style="display:flex;flex-wrap:wrap;padding:20px;gap:20px;">
-        <div style="width:200px;flex-shrink:0;">
-          <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:15px;text-align:center;margin-bottom:15px;">
-            <div style="font-size:11px;color:rgba(255,255,255,0.5);">TIME PLAYED</div>
-            <div style="font-size:28px;font-weight:bold;color:#00ff88;">${playtimeHours}h</div>
-          </div>
-          <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:15px;">
-            <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:12px;color:rgba(255,255,255,0.6);">🎮 PLAYS</span><span style="font-size:12px;font-weight:bold;color:#ffcc00;">${gamePlayCount}</span></div>
-            <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:12px;color:rgba(255,255,255,0.6);">🪙 EARNED</span><span style="font-size:12px;font-weight:bold;color:#ffcc00;">${Math.floor(gameEarned * 100) / 100}</span></div>
-            <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:12px;color:rgba(255,255,255,0.6);">⭐ RATING</span><span style="font-size:12px;font-weight:bold;color:#ffcc00;">${avgRating}/5</span></div>
-            <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:12px;color:rgba(255,255,255,0.6);">⏱️ LOAD TIME</span><span style="font-size:12px;font-weight:bold;color:#ffcc00;">${gameLoadTime || '1-3 sec'}</span></div>
-            ${gameDeveloper ? `<div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:12px;color:rgba(255,255,255,0.6);">👨‍💻 DEV</span><span style="font-size:12px;font-weight:bold;color:#ffcc00;">${escapeHtml(gameDeveloper)}</span></div>` : ''}
-          </div>
-        </div>
-        <div style="flex:1;">
-          <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:15px;margin-bottom:15px;">
-            <p style="font-size:13px;line-height:1.5;color:rgba(255,255,255,0.8);">${escapeHtml(gameDescription)}</p>
-          </div>
-          <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:15px;margin-bottom:15px;">
-            <div style="margin-bottom:15px;">
-              <div style="display:flex;gap:5px;">
-                ${[1,2,3,4,5].map(function(s) {
-                  return '<span class="modal-star" data-value="' + s + '" style="font-size:24px;cursor:pointer;color:' + (userRating >= s ? '#ffcc00' : 'rgba(255,255,255,0.2)') + ';">★</span>';
-                }).join('')}
-              </div>
-              <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:5px;">your rating: ${userRating > 0 ? '★'.repeat(userRating) + '☆'.repeat(5-userRating) : 'not rated'}</div>
+      
+      <!-- Tabs -->
+      <div style="display:flex;gap:5px;padding:15px 20px 0 20px;border-bottom:1px solid rgba(255,255,255,0.1);">
+        <button class="modal-tab active" data-tab="details" style="background:none;border:none;color:white;padding:10px 20px;cursor:pointer;font-size:14px;border-bottom:2px solid #ffcc00;margin-bottom:-1px;">📋 details</button>
+        <button class="modal-tab" data-tab="reviews" style="background:none;border:none;color:rgba(255,255,255,0.5);padding:10px 20px;cursor:pointer;font-size:14px;border-bottom:2px solid transparent;margin-bottom:-1px;">💬 reviews (${gameReviews.length})</button>
+      </div>
+      
+      <!-- Details Tab Content -->
+      <div id="modalTab-details" class="modal-tab-content" style="display:block;">
+        <div style="display:flex;flex-wrap:wrap;padding:20px;gap:20px;">
+          <div style="width:200px;flex-shrink:0;">
+            <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:15px;text-align:center;margin-bottom:15px;">
+              <div style="font-size:11px;color:rgba(255,255,255,0.5);">TIME PLAYED</div>
+              <div style="font-size:28px;font-weight:bold;color:#00ff88;">${playtimeHours}h</div>
+            </div>
+            <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:15px;">
+              <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:12px;color:rgba(255,255,255,0.6);">🎮 PLAYS</span><span style="font-size:12px;font-weight:bold;color:#ffcc00;">${gamePlayCount}</span></div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:12px;color:rgba(255,255,255,0.6);">🪙 EARNED</span><span style="font-size:12px;font-weight:bold;color:#ffcc00;">${Math.floor(gameEarned * 100) / 100}</span></div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:12px;color:rgba(255,255,255,0.6);">⭐ RATING</span><span style="font-size:12px;font-weight:bold;color:#ffcc00;">${avgRating}/5 (${ratingCount})</span></div>
+              <div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:12px;color:rgba(255,255,255,0.6);">⏱️ LOAD TIME</span><span style="font-size:12px;font-weight:bold;color:#ffcc00;">${gameLoadTime || '1-3 sec'}</span></div>
+              ${gameDeveloper ? `<div style="display:flex;justify-content:space-between;padding:8px 0;"><span style="font-size:12px;color:rgba(255,255,255,0.6);">👨‍💻 DEV</span><span style="font-size:12px;font-weight:bold;color:#ffcc00;">${escapeHtml(gameDeveloper)}</span></div>` : ''}
             </div>
           </div>
-          <div style="display:flex;gap:15px;">
-            <button id="modalPlayBtn" style="flex:1;background:linear-gradient(135deg,#2d5ae3,#1a3a8a);border:none;border-radius:30px;padding:12px;color:white;font-size:14px;font-weight:bold;cursor:pointer;">🎮 PLAY NOW</button>
-            <button id="modalFavBtn" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:30px;padding:12px 20px;color:white;cursor:pointer;">${isFavorited ? '★ FAVORITED' : '☆ FAVORITE'}</button>
+          <div style="flex:1;">
+            <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:15px;margin-bottom:15px;">
+              <p style="font-size:13px;line-height:1.5;color:rgba(255,255,255,0.8);">${escapeHtml(gameDescription)}</p>
+            </div>
+            <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:15px;margin-bottom:15px;">
+              <div style="margin-bottom:15px;">
+                <div style="display:flex;gap:5px;">
+                  ${[1,2,3,4,5].map(function(s) {
+                    return '<span class="modal-star" data-value="' + s + '" style="font-size:24px;cursor:pointer;color:' + (userRating >= s ? '#ffcc00' : 'rgba(255,255,255,0.2)') + ';">★</span>';
+                  }).join('')}
+                </div>
+                <div style="font-size:11px;color:rgba(255,255,255,0.5);margin-top:5px;">your rating: ${userRating > 0 ? '★'.repeat(userRating) + '☆'.repeat(5-userRating) : 'not rated'}</div>
+              </div>
+            </div>
+            <div style="display:flex;gap:15px;">
+              <button id="modalPlayBtn" style="flex:1;background:linear-gradient(135deg,#2d5ae3,#1a3a8a);border:none;border-radius:30px;padding:12px;color:white;font-size:14px;font-weight:bold;cursor:pointer;">🎮 PLAY NOW</button>
+              <button id="modalFavBtn" style="background:rgba(255,255,255,0.1);border:1px solid rgba(255,255,255,0.2);border-radius:30px;padding:12px 20px;color:white;cursor:pointer;">${isFavorited ? '★ FAVORITED' : '☆ FAVORITE'}</button>
+            </div>
           </div>
+        </div>
+      </div>
+      
+      <!-- Reviews Tab Content -->
+      <div id="modalTab-reviews" class="modal-tab-content" style="display:none;padding:20px;">
+        <!-- Write Review Section -->
+        ${currentUser && currentUser.username !== 'Guest' ? `
+          <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:15px;margin-bottom:20px;">
+            <div style="font-size:14px;color:white;margin-bottom:10px;">write a review</div>
+            <textarea id="reviewText" placeholder="share your thoughts about this game..." style="width:100%;padding:12px;border-radius:10px;border:1px solid rgba(45,90,227,0.4);background:rgba(0,0,0,0.3);color:white;font-size:13px;resize:vertical;min-height:80px;margin-bottom:10px;"></textarea>
+            <div style="display:flex;gap:10px;align-items:center;">
+              <div style="display:flex;gap:5px;" id="reviewStars">
+                ${[1,2,3,4,5].map(s => `<span class="review-star" data-value="${s}" style="font-size:20px;cursor:pointer;color:rgba(255,255,255,0.2);">★</span>`).join('')}
+              </div>
+              <button id="submitReviewBtn" style="background:linear-gradient(135deg,#2d5ae3,#1a3a8a);border:none;border-radius:20px;padding:8px 20px;color:white;font-size:13px;cursor:pointer;margin-left:auto;">post review</button>
+            </div>
+          </div>
+        ` : `
+          <div style="background:rgba(255,255,255,0.05);border-radius:12px;padding:20px;text-align:center;margin-bottom:20px;">
+            <p style="color:rgba(255,255,255,0.5);">please log in to write a review</p>
+          </div>
+        `}
+        
+        <!-- Reviews List -->
+        <div id="reviewsList">
+          ${gameReviews.length === 0 ? `
+            <div style="text-align:center;padding:40px;color:rgba(255,255,255,0.5);">
+              <div style="font-size:48px;margin-bottom:10px;">💬</div>
+              <div>no reviews yet. be the first!</div>
+            </div>
+          ` : gameReviews.slice().reverse().map(review => `
+            <div style="background:rgba(255,255,255,0.03);border-radius:12px;padding:15px;margin-bottom:10px;border-left:3px solid ${review.rating >= 4 ? '#00ff88' : review.rating >= 2 ? '#ffcc00' : '#ff4444'};">
+              <div style="display:flex;align-items:center;gap:10px;margin-bottom:8px;">
+                <div style="width:30px;height:30px;background:linear-gradient(135deg,#2d5ae3,#ffcc00);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:bold;font-size:12px;">${review.username[0].toUpperCase()}</div>
+                <div>
+                  <div style="font-size:13px;font-weight:bold;color:white;">${escapeHtml(review.username)}</div>
+                  <div style="font-size:10px;color:rgba(255,255,255,0.4);">${review.date}</div>
+                </div>
+                <div style="margin-left:auto;color:#ffcc00;">${'★'.repeat(review.rating)}${'☆'.repeat(5-review.rating)}</div>
+              </div>
+              <div style="font-size:12px;color:rgba(255,255,255,0.8);padding-left:40px;">${escapeHtml(review.text)}</div>
+            </div>
+          `).join('')}
         </div>
       </div>
     </div>
@@ -453,6 +510,64 @@ function showGameDetailsModal(gameName, gameUrl, gameImage, gameDescription, gam
   
   document.body.appendChild(modal);
   
+  // Tab switching
+  modal.querySelectorAll('.modal-tab').forEach(tab => {
+    tab.onclick = () => {
+      modal.querySelectorAll('.modal-tab').forEach(t => {
+        t.style.color = 'rgba(255,255,255,0.5)';
+        t.style.borderBottom = '2px solid transparent';
+      });
+      tab.style.color = 'white';
+      tab.style.borderBottom = '2px solid #ffcc00';
+      
+      modal.querySelectorAll('.modal-tab-content').forEach(c => c.style.display = 'none');
+      document.getElementById('modalTab-' + tab.dataset.tab).style.display = 'block';
+    };
+  });
+  
+  // Star rating for review
+  let selectedReviewRating = 0;
+  modal.querySelectorAll('.review-star').forEach(star => {
+    star.onmouseenter = () => {
+      const val = parseInt(star.dataset.value);
+      modal.querySelectorAll('.review-star').forEach((s, i) => {
+        s.style.color = i < val ? '#ffcc00' : 'rgba(255,255,255,0.2)';
+      });
+    };
+    star.onmouseleave = () => {
+      modal.querySelectorAll('.review-star').forEach((s, i) => {
+        s.style.color = i < selectedReviewRating ? '#ffcc00' : 'rgba(255,255,255,0.2)';
+      });
+    };
+    star.onclick = () => {
+      selectedReviewRating = parseInt(star.dataset.value);
+      modal.querySelectorAll('.review-star').forEach((s, i) => {
+        s.style.color = i < selectedReviewRating ? '#ffcc00' : 'rgba(255,255,255,0.2)';
+      });
+    };
+  });
+  
+  // Submit review
+  document.getElementById('submitReviewBtn')?.addEventListener('click', () => {
+    const reviewText = document.getElementById('reviewText').value.trim();
+    if (!reviewText) { alert('please write something!'); return; }
+    if (selectedReviewRating === 0) { alert('please select a rating!'); return; }
+    
+    const reviews = JSON.parse(localStorage.getItem('gameReviews_' + gameName) || '[]');
+    reviews.push({
+      username: currentUser.username,
+      text: reviewText,
+      rating: selectedReviewRating,
+      date: new Date().toLocaleDateString()
+    });
+    localStorage.setItem('gameReviews_' + gameName, JSON.stringify(reviews));
+    
+    // Refresh modal
+    showGameDetailsModal(gameName, gameUrl, gameImage, gameDescription, gameCategory, gameLoadTime, gameDeveloper, gameReleaseDate);
+    showToast('✅ Review posted!');
+  });
+  
+  // Play button
   document.getElementById('modalPlayBtn').onclick = function() {
     if (typeof trackPlayedGame === 'function') trackPlayedGame(gameName);
     var playUrl = 'play.html?gameurl=' + encodeURIComponent(gameUrl) + '&game=' + encodeURIComponent(gameName);
@@ -460,6 +575,7 @@ function showGameDetailsModal(gameName, gameUrl, gameImage, gameDescription, gam
     modal.remove();
   };
   
+  // Favorite button
   document.getElementById('modalFavBtn').onclick = function() {
     if (typeof window.toggleFavourite === 'function') {
       window.toggleFavourite(gameName);
@@ -468,6 +584,7 @@ function showGameDetailsModal(gameName, gameUrl, gameImage, gameDescription, gam
     }
   };
   
+  // Star rating for game
   document.querySelectorAll('.modal-star').forEach(function(star) {
     star.onclick = function() {
       var value = parseInt(this.getAttribute('data-value'));
@@ -480,6 +597,19 @@ function showGameDetailsModal(gameName, gameUrl, gameImage, gameDescription, gam
       }
     };
   });
+}
+
+// Toast helper
+function showToast(message) {
+  let toast = document.querySelector('.rating-toast');
+  if (!toast) {
+    toast = document.createElement('div');
+    toast.className = 'rating-toast';
+    document.body.appendChild(toast);
+  }
+  toast.textContent = message;
+  toast.classList.add('show');
+  setTimeout(() => toast.classList.remove('show'), 2000);
 }
 
 // ===== GAME RATINGS SYSTEM =====
