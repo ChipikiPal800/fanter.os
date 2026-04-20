@@ -14,9 +14,9 @@ body.theme-light .message-text{color:#1a1a2e}
 body.theme-light .sidebar{background:rgba(255,255,255,.95)}
 body.theme-light .server-item{color:#333}
 
-/* ===== EPIC WELCOME SCREEN - FIXED FOR ALL SCREENS ===== */
+/* ===== EPIC WELCOME SCREEN ===== */
 .welcome-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at 50% 50%,#0a0a2a,#050510);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
-.welcome-card{max-width:min(90vw, 1200px);width:100%;max-height:90vh;overflow-y:auto;background:linear-gradient(135deg,rgba(20,30,50,.95),rgba(10,15,30,.98));border:2px solid rgba(255,204,0,.4);border-radius:40px;padding:clamp(20px, 5vh, 50px);text-align:center;box-shadow:0 30px 60px rgba(0,0,0,.5),0 0 50px rgba(255,204,0,.2);animation:glowPulse 3s infinite,floatIn .6s cubic-bezier(0.34,1.2,0.64,1);position:relative;z-index:1}
+.welcome-card{max-width:min(90vw, 1200px);width:100%;max-height:90vh;overflow-y:auto;background:linear-gradient(135deg,rgba(20,30,50,.95),rgba(10,15,30,.98));border:2px solid rgba(255,204,0,.4);border-radius:40px;padding:clamp(20px, 5vh, 50px);text-align:center;box-shadow:0 30px 60px rgba(0,0,0,.5),0 0 50px rgba(255,204,0,.2);animation:glowPulse 3s infinite,floatIn .6s cubic-bezier(0.34,1.2,0.64,1)}
 @keyframes glowPulse{0%,100%{box-shadow:0 30px 60px rgba(0,0,0,.5),0 0 30px rgba(255,204,0,.3)}50%{box-shadow:0 30px 60px rgba(0,0,0,.5),0 0 60px rgba(255,204,0,.6)}}
 @keyframes floatIn{0%{opacity:0;transform:translateY(60px) scale(.95)}100%{opacity:1;transform:translateY(0) scale(1)}}
 .welcome-card h1{font-size:clamp(36px, 8vw, 64px);background:linear-gradient(135deg,#ffcc00,#ffaa00,#ff8800);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px;animation:titleGlow 2s infinite}
@@ -39,7 +39,7 @@ body.theme-light .server-item{color:#333}
 .skip-welcome{background:0 0;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.6);padding:clamp(10px, 1.5vh, 12px) clamp(20px, 3vw, 30px);border-radius:40px;margin-top:20px;cursor:pointer;font-size:clamp(12px, 1.5vw, 14px);transition:all .2s}
 .skip-welcome:hover{border-color:#ffcc00;color:#ffcc00}
 
-/* ===== MAIN CHAT - SMOOTH ANIMATIONS ===== */
+/* ===== MAIN CHAT ===== */
 .fantarena-container{display:none;height:100vh;width:100%}.fantarena-container.show{display:flex}
 .sidebar{width:280px;background:rgba(10,15,30,.95);backdrop-filter:blur(10px);border-right:1px solid rgba(45,90,227,.3);display:flex;flex-direction:column;overflow-y:auto}
 .sidebar-header{padding:15px;border-bottom:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between}
@@ -269,273 +269,827 @@ body.theme-light .server-item{color:#333}
 <div class="modal-overlay" id="dailyModal"><div class="modal"><div style="text-align:center;padding:20px"><h3>🎁 DAILY REWARD</h3><div id="dailyAmount" style="font-size:48px;color:#ffcc00;margin:20px 0">+0 🪙</div><div id="dailyStreak" style="color:#ffcc00;margin-bottom:20px">streak: 0 days</div><button id="claimDailyBtn" class="send-btn">claim</button><button id="closeDailyModalBtn" class="send-btn" style="margin-top:10px;background:rgba(255,255,255,.1)">close</button></div></div></div>
 
 <script>
-// ===== CLEAN, WORKING SCRIPT =====
+// ===== FULL FANTARENA IGNITE SCRIPT =====
 (function() {
   console.log('🔥 FANTARENA IGNITE - INITIALIZING');
   
-  // Wait for DOM to be fully ready
-  if (document.readyState === 'loading') {
-    document.addEventListener('DOMContentLoaded', init);
-  } else {
-    init();
+  // Supabase config
+  const SUPABASE_URL = "https://luxutkabqgitoteosctr.supabase.co";
+  const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imx1eHV0a2FicWdpdG90ZW9zY3RyIiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY2Mjc5NjAsImV4cCI6MjA5MjIwMzk2MH0.7GjvQMZaujg0YFmTBr2wotGWCIUoBWCBplGocMo6TDM";
+  const GIPHY_API_KEY = "9a6B8zN3vLSqn6mqk9P1s9jGmJIVqXUz";
+  const supabaseClient = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+  
+  // Mods
+  const MOD_USERNAMES = ['abcatlmfao1', 'Creamy_peanut'];
+  function isMod(username) { return MOD_USERNAMES.includes(username); }
+  
+  // Badges
+  const BADGES = {
+    first_message: { name: 'First Message', icon: '🎮' }, chatterbox: { name: 'Chatterbox', icon: '💬' },
+    group_host: { name: 'Group Host', icon: '👑' }, moderator: { name: 'Moderator', icon: '🛡️' },
+    og: { name: 'OG', icon: '⭐' }, on_fire: { name: 'On Fire', icon: '🔥' },
+    lucky: { name: 'Lucky', icon: '🎲' }, blessed: { name: 'Blessed', icon: '💰' },
+    achiever: { name: 'Achiever', icon: '🏆' }, pin_master: { name: 'Pin Master', icon: '📌' },
+    popular: { name: 'Popular', icon: '🌟' }, social: { name: 'Social', icon: '🤝' },
+    party_animal: { name: 'Party Animal', icon: '🎪' }, level10: { name: 'Level 10', icon: '🔟' }, level25: { name: 'Level 25', icon: '💎' }
+  };
+  
+  // Level system
+  const LEVELS = {1:0,2:100,3:250,4:450,5:700,6:1000,7:1350,8:1750,9:2200,10:2700,11:3300,12:4000,13:4800,14:5700,15:6700,16:7800,17:9000,18:10300,19:11700,20:13200};
+  function getLevel(xp) { let lvl = 1; for (let l in LEVELS) if (xp >= LEVELS[l]) lvl = parseInt(l); return lvl; }
+  
+  // State
+  let currentUser = JSON.parse(localStorage.getItem('fanter_currentUser') || 'null');
+  let currentChannel = 'general', currentDM = null, currentGroup = null, currentGroupData = null;
+  let messages = [], friends = [], groups = [], dmConversations = [], channelSubscription = null, replyingTo = null;
+  let nameColor = localStorage.getItem('fanter_nameColor') || '#ffcc00';
+  let profilePic = localStorage.getItem('fanter_profilePic') || null;
+  let customActivity = localStorage.getItem('fanter_activity') || '🎮 gaming';
+  let userBio = localStorage.getItem('fanter_bio') || 'Just a gamer';
+  let messageSounds = localStorage.getItem('messageSounds') === 'true';
+  let selectedEffect = localStorage.getItem('messageEffect') || 'none';
+  let slowModeSeconds = 0, lastMessageTime = 0;
+  let channelTopics = JSON.parse(localStorage.getItem('channelTopics') || '{"general":"welcome!","game-recs":"share games","lfg":"find players","flex":"show off","memes":"funny memes","offtopic":"anything goes"}');
+  let userBadges = JSON.parse(localStorage.getItem('userBadges') || '{}');
+  let userWarnings = JSON.parse(localStorage.getItem('userWarnings') || '{}');
+  let userTimeouts = JSON.parse(localStorage.getItem('userTimeouts') || '{}');
+  let messageCounts = JSON.parse(localStorage.getItem('messageCounts') || '{}');
+  let userXP = JSON.parse(localStorage.getItem('userXP') || '{}');
+  let pinnedMessages = JSON.parse(localStorage.getItem('pinnedMessages') || '{}');
+  let favoriteMessages = JSON.parse(localStorage.getItem('favoriteMessages') || '{}');
+  let scheduledMessages = JSON.parse(localStorage.getItem('scheduledMessages') || '[]');
+  let customEmojis = JSON.parse(localStorage.getItem('customEmojis') || '{}');
+  let activeThread = null, threadMessages = JSON.parse(localStorage.getItem('threadMessages') || '{}');
+  let soundUsage = JSON.parse(localStorage.getItem('soundUsage') || '{}');
+  let selectedProfileUser = null;
+  let dailyStreak = parseInt(localStorage.getItem('dailyStreak') || 0);
+  let lastDailyClaim = localStorage.getItem('lastDailyClaim') || null;
+  
+  if (!currentUser || currentUser.username === 'Guest') { 
+    alert('please log in first!'); 
+    window.location.href = 'index.html'; 
+    return; 
+  }
+  if (!userXP[currentUser.id]) userXP[currentUser.id] = 0;
+  if (!messageCounts[currentUser.id]) messageCounts[currentUser.id] = 0;
+  if (!userBadges[currentUser.id]) userBadges[currentUser.id] = [];
+  
+  // Helper functions
+  function escapeHtml(s) { if (!s) return ''; return s.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[m]); }
+  
+  function playSound(s) {
+    try {
+      const a = new (window.AudioContext || window.webkitAudioContext)();
+      const o = a.createOscillator();
+      const g = a.createGain();
+      o.connect(g); g.connect(a.destination);
+      let f = 440, d = 0.2;
+      switch(s) {
+        case 'bruh': f = 220; d = 0.15; break;
+        case 'oof': f = 110; d = 0.3; break;
+        case 'letsgo': f = 880; d = 0.1; break;
+        case 'laugh': f = 330; d = 0.2; break;
+        case 'sadge': f = 165; d = 0.4; break;
+        case 'hype': 
+          for(let i=0;i<3;i++) setTimeout(() => { const o2 = a.createOscillator(); o2.connect(g); o2.frequency.value = 660 + i*110; o2.start(); o2.stop(a.currentTime + 0.1); }, i*100); 
+          return;
+      }
+      o.frequency.value = f; o.start(); o.stop(a.currentTime + d);
+      g.gain.exponentialRampToValueAtTime(0.00001, a.currentTime + d);
+    } catch(e) {}
   }
   
-  function init() {
-    console.log('DOM ready, setting up...');
-    
-    // Get elements
-    const welcomeScreen = document.getElementById('welcomeScreen');
-    const fantarenaContainer = document.getElementById('fantarenaContainer');
-    const enterBtn = document.getElementById('enterBtn');
-    const skipBtn = document.getElementById('skipBtn');
-    
-    // Check if elements exist
-    if (!enterBtn || !skipBtn) {
-      console.error('Buttons not found!');
-      return;
-    }
-    
-    // Enter function
-    function enterFantarena() {
-      console.log('Entering Fantarena...');
-      if (welcomeScreen) welcomeScreen.style.display = 'none';
-      if (fantarenaContainer) fantarenaContainer.classList.add('show');
-      localStorage.setItem('fantarena_welcomed', 'true');
-      // Initialize chat after entering
-      setTimeout(initChat, 100);
-    }
-    
-    // Skip function
-    function skipWelcome() {
-      console.log('Skipping welcome...');
-      localStorage.setItem('fantarena_welcomed', 'true');
-      enterFantarena();
-    }
-    
-    // Add event listeners
-    enterBtn.addEventListener('click', enterFantarena);
-    skipBtn.addEventListener('click', skipWelcome);
-    
-    // Check if already welcomed
-    if (localStorage.getItem('fantarena_welcomed') === 'true') {
-      if (welcomeScreen) welcomeScreen.style.display = 'none';
-      if (fantarenaContainer) fantarenaContainer.classList.add('show');
-      initChat();
-    }
-    
-    // Simple chat initialization
-    function initChat() {
-      console.log('Chat initializing...');
-      const sendBtn = document.getElementById('sendBtn');
-      const messageInput = document.getElementById('messageInput');
-      const messagesContainer = document.getElementById('messagesContainer');
-      
-      if (sendBtn && messageInput) {
-        sendBtn.addEventListener('click', function() {
-          const msg = messageInput.value.trim();
-          if (msg) {
-            if (messagesContainer) {
-              messagesContainer.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,.4)">✅ Fantarena Ignite is ready! Messages will appear here once connected to Supabase.</div>';
-            }
-            messageInput.value = '';
-            console.log('Message ready to send:', msg);
-          }
-        });
-        
-        messageInput.addEventListener('keypress', function(e) {
-          if (e.key === 'Enter') sendBtn.click();
-        });
+  function triggerEffect() {
+    if (selectedEffect === 'confetti') {
+      for (let i = 0; i < 50; i++) {
+        let c = document.createElement('div'); c.className = 'effect-confetti';
+        c.style.left = Math.random() * 100 + '%';
+        c.style.backgroundColor = `hsl(${Math.random() * 360}, 100%, 50%)`;
+        c.style.width = Math.random() * 8 + 4 + 'px';
+        c.style.height = Math.random() * 8 + 4 + 'px';
+        document.body.appendChild(c);
+        setTimeout(() => c.remove(), 3000);
       }
-      
-      // Theme selector
-      const themeSelector = document.getElementById('themeSelector');
-      if (themeSelector) {
-        themeSelector.addEventListener('change', function(e) {
-          document.body.className = 'theme-' + e.target.value;
-          localStorage.setItem('fantarena_theme', e.target.value);
-        });
-        
-        const savedTheme = localStorage.getItem('fantarena_theme') || 'dark';
-        themeSelector.value = savedTheme;
-        document.body.className = 'theme-' + savedTheme;
-      }
-      
-      // Settings button
-      const settingsBtn = document.getElementById('settingsBtn');
-      const settingsPanel = document.getElementById('settingsPanel');
-      const closeSettingsBtn = document.getElementById('closeSettingsBtn');
-      const editProfileBtn = document.getElementById('editProfileBtn');
-      
-      if (settingsBtn && settingsPanel) {
-        settingsBtn.addEventListener('click', () => settingsPanel.classList.add('show'));
-        editProfileBtn?.addEventListener('click', () => settingsPanel.classList.add('show'));
-        closeSettingsBtn?.addEventListener('click', () => settingsPanel.classList.remove('show'));
-      }
-      
-      // Daily button
-      const dailyBtn = document.getElementById('dailyBtn');
-      const dailyModal = document.getElementById('dailyModal');
-      const closeDailyModalBtn = document.getElementById('closeDailyModalBtn');
-      
-      if (dailyBtn && dailyModal) {
-        dailyBtn.addEventListener('click', () => {
-          document.getElementById('dailyAmount').innerHTML = '+50 🪙';
-          document.getElementById('dailyStreak').innerHTML = 'streak: 1 day';
-          dailyModal.classList.add('show');
-        });
-        closeDailyModalBtn?.addEventListener('click', () => dailyModal.classList.remove('show'));
-      }
-      
-      // Help button
-      const helpBtn = document.getElementById('helpBtn');
-      if (helpBtn && welcomeScreen) {
-        helpBtn.addEventListener('click', () => {
-          fantarenaContainer?.classList.remove('show');
-          welcomeScreen.style.display = 'flex';
-        });
-      }
-      
-      // Add friend button
-      const addFriendBtn = document.getElementById('addFriendBtn');
-      const addFriendModal = document.getElementById('addFriendModal');
-      const closeAddFriendModalBtn = document.getElementById('closeAddFriendModalBtn');
-      
-      if (addFriendBtn && addFriendModal) {
-        addFriendBtn.addEventListener('click', () => addFriendModal.classList.add('show'));
-        closeAddFriendModalBtn?.addEventListener('click', () => addFriendModal.classList.remove('show'));
-      }
-      
-      // Create group button
-      const createGroupBtn = document.getElementById('createGroupBtn');
-      const createGroupModal = document.getElementById('createGroupModal');
-      const closeCreateGroupModalBtn = document.getElementById('closeCreateGroupModalBtn');
-      
-      if (createGroupBtn && createGroupModal) {
-        createGroupBtn.addEventListener('click', () => createGroupModal.classList.add('show'));
-        closeCreateGroupModalBtn?.addEventListener('click', () => createGroupModal.classList.remove('show'));
-      }
-      
-      // Emoji picker
-      const emojiBtn = document.getElementById('emojiBtnToolbar');
-      const emojiPicker = document.getElementById('emojiPicker');
-      if (emojiBtn && emojiPicker) {
-        emojiBtn.addEventListener('click', () => {
-          emojiPicker.classList.toggle('show');
-        });
-        // Close emoji picker when clicking outside
-        document.addEventListener('click', (e) => {
-          if (!emojiPicker.contains(e.target) && e.target !== emojiBtn) {
-            emojiPicker.classList.remove('show');
-          }
-        });
-      }
-      
-      // Sound button
-      const soundBtn = document.getElementById('soundBtn');
-      const soundPicker = document.getElementById('soundPicker');
-      if (soundBtn && soundPicker) {
-        soundBtn.addEventListener('click', () => {
-          soundPicker.classList.toggle('show');
-        });
-        document.querySelectorAll('.sound-item').forEach(item => {
-          item.addEventListener('click', () => {
-            console.log('Sound played:', item.dataset.sound);
-            soundPicker.classList.remove('show');
-          });
-        });
-      }
-      
-      // Status preset button
-      const statusPresetBtn = document.getElementById('statusPresetBtn');
-      const statusPresetPicker = document.getElementById('statusPresetPicker');
-      if (statusPresetBtn && statusPresetPicker) {
-        statusPresetBtn.addEventListener('click', () => {
-          statusPresetPicker.classList.toggle('show');
-        });
-        document.querySelectorAll('.preset-item').forEach(item => {
-          item.addEventListener('click', () => {
-            const status = item.dataset.status;
-            const activityInput = document.getElementById('activityInput');
-            if (activityInput) activityInput.value = status;
-            statusPresetPicker.classList.remove('show');
-            alert(`Status set to: ${status}`);
-          });
-        });
-      }
-      
-      // Format toolbar buttons
-      document.querySelectorAll('.format-toolbar button[data-format]').forEach(btn => {
-        btn.addEventListener('click', () => {
-          const format = btn.dataset.format;
-          const input = document.getElementById('messageInput');
-          if (input) {
-            const start = input.selectionStart;
-            const end = input.selectionEnd;
-            const text = input.value;
-            input.value = text.slice(0, start) + format + text.slice(start, end) + format + text.slice(end);
-            input.focus();
-          }
-        });
-      });
-      
-      // Channel switching
-      document.querySelectorAll('.server-item').forEach(item => {
-        item.addEventListener('click', () => {
-          document.querySelectorAll('.server-item').forEach(i => i.classList.remove('active'));
-          item.classList.add('active');
-          const channelName = item.dataset.display || item.textContent;
-          const header = document.getElementById('chatHeaderTitle');
-          if (header) header.textContent = channelName;
-          
-          // Update channel indicator
-          const indicator = document.getElementById('channelIndicator');
-          if (indicator) {
-            indicator.style.top = item.offsetTop + 'px';
-            indicator.style.height = item.offsetHeight + 'px';
-          }
-        });
-      });
-      
-      // Category headers
-      document.querySelectorAll('.category-header').forEach(header => {
-        header.addEventListener('click', () => {
-          const category = header.dataset.category;
-          const channels = document.querySelector(`.category-channels[data-category="${category}"]`);
-          if (channels) {
-            channels.classList.toggle('collapsed');
-            const arrow = header.querySelector('span:last-child');
-            if (arrow) arrow.textContent = channels.classList.contains('collapsed') ? '▶' : '▼';
-          }
-        });
-      });
-      
-      // Channel topic click (mod only)
-      const channelTopic = document.getElementById('channelTopicText');
-      if (channelTopic) {
-        channelTopic.addEventListener('click', () => {
-          alert('Only mods can change channel topics');
-        });
-      }
-      
-      // Slow mode button
-      const slowModeBtn = document.getElementById('slowModeBtn');
-      const slowModeModal = document.getElementById('slowModeModal');
-      const closeSlowModeModalBtn = document.getElementById('closeSlowModeModalBtn');
-      const setSlowModeBtn = document.getElementById('setSlowModeBtn');
-      
-      if (slowModeBtn && slowModeModal) {
-        slowModeBtn.addEventListener('click', () => slowModeModal.classList.add('show'));
-        closeSlowModeModalBtn?.addEventListener('click', () => slowModeModal.classList.remove('show'));
-        setSlowModeBtn?.addEventListener('click', () => {
-          const seconds = document.getElementById('slowModeSecondsInput')?.value;
-          alert(`Slow mode set to ${seconds} seconds`);
-          slowModeModal.classList.remove('show');
-        });
-      }
-      
-      console.log('✅ Fantarena Ignite ready!');
     }
   }
+  
+  function addActivity(icon, text) {
+    let acts = JSON.parse(localStorage.getItem('activities') || '[]');
+    acts.unshift({ icon, text, time: Date.now() });
+    acts = acts.slice(0, 20);
+    localStorage.setItem('activities', JSON.stringify(acts));
+  }
+  
+  function addXP(amount) {
+    userXP[currentUser.id] = (userXP[currentUser.id] || 0) + amount;
+    localStorage.setItem('userXP', JSON.stringify(userXP));
+    let oldLevel = getLevel(userXP[currentUser.id] - amount);
+    let newLevel = getLevel(userXP[currentUser.id]);
+    if (newLevel > oldLevel) {
+      addActivity('⬆️', `reached level ${newLevel}!`);
+      triggerEffect();
+      let badges = userBadges[currentUser.id] || [];
+      if (newLevel >= 10 && !badges.includes('level10')) { 
+        badges.push('level10'); 
+        userBadges[currentUser.id] = badges; 
+        localStorage.setItem('userBadges', JSON.stringify(userBadges)); 
+        addActivity('🔟', 'unlocked Level 10 badge!'); 
+      }
+      if (newLevel >= 25 && !badges.includes('level25')) { 
+        badges.push('level25'); 
+        userBadges[currentUser.id] = badges; 
+        localStorage.setItem('userBadges', JSON.stringify(userBadges)); 
+        addActivity('💎', 'unlocked Level 25 badge!'); 
+      }
+    }
+  }
+  
+  function checkBadges() {
+    let badges = userBadges[currentUser.id] || [];
+    if (messageCounts[currentUser.id] >= 1 && !badges.includes('first_message')) { 
+      badges.push('first_message'); 
+      addActivity('🎮', 'unlocked First Message badge!'); 
+      triggerEffect(); 
+    }
+    if (messageCounts[currentUser.id] >= 100 && !badges.includes('chatterbox')) { 
+      badges.push('chatterbox'); 
+      addActivity('💬', 'unlocked Chatterbox badge!'); 
+      triggerEffect(); 
+    }
+    if (soundUsage[currentUser.id] >= 5 && !badges.includes('party_animal')) { 
+      badges.push('party_animal'); 
+      addActivity('🎪', 'unlocked Party Animal badge!'); 
+      triggerEffect(); 
+    }
+    if (Object.keys(favoriteMessages).length >= 5 && !badges.includes('popular')) { 
+      badges.push('popular'); 
+      addActivity('🌟', 'unlocked Popular badge!'); 
+      triggerEffect(); 
+    }
+    userBadges[currentUser.id] = badges;
+    localStorage.setItem('userBadges', JSON.stringify(userBadges));
+  }
+  
+  function updateChannelIndicator() {
+    let a = document.querySelector('.server-item.active');
+    if (!a) return;
+    let i = document.getElementById('channelIndicator');
+    i.style.top = a.offsetTop + 'px';
+    i.style.height = a.offsetHeight + 'px';
+  }
+  
+  function formatMessage(text) {
+    if (!text) return '';
+    let t = text.replace(/\*\*(.*?)\*\*/g, '<b>$1</b>').replace(/\*(.*?)\*/g, '<i>$1</i>').replace(/~~(.*?)~~/g, '<s>$1</s>').replace(/`(.*?)`/g, '<code>$1</code>');
+    Object.keys(customEmojis).forEach(e => { t = t.replace(new RegExp(`:${e}:`, 'g'), `<span style="font-size:20px;">${customEmojis[e]}</span>`); });
+    if (text.match(/\.(jpg|jpeg|png|gif|webp)/i)) t = `<img src="${text}" onclick="window.open('${text}')">`;
+    return t;
+  }
+  
+  // Load messages
+  async function loadMessages() {
+    try {
+      let q = supabaseClient.from('fanter_chat').select('*').order('created_at', { ascending: true }).limit(200);
+      if (currentDM) q = q.eq('channel_id', `dm_${[currentUser.id, currentDM].sort().join('_')}`);
+      else if (currentGroup) q = q.eq('channel_id', `group_${currentGroup}`);
+      else q = q.eq('channel_id', currentChannel);
+      let { data, error } = await q;
+      if (error) throw error;
+      messages = data || [];
+      renderMessages();
+    } catch(e) { console.error(e); }
+  }
+  
+  function renderMessages() {
+    let c = document.getElementById('messagesContainer');
+    if (!c) return;
+    if (messages.length === 0) { 
+      c.innerHTML = '<div style="text-align:center;color:rgba(255,255,255,.4)">no messages yet</div>'; 
+      return; 
+    }
+    c.innerHTML = messages.map(msg => {
+      let isMe = msg.user_id === currentUser.id, reactions = {};
+      try { reactions = msg.reactions ? JSON.parse(msg.reactions) : {}; } catch(e) {}
+      let userPic = msg.profile_pic, badges = userBadges[msg.user_id] || [], badgeIcons = badges.slice(0, 3).map(b => `<span class="badge-icon" title="${BADGES[b]?.name}">${BADGES[b]?.icon}</span>`).join('');
+      let userLvl = getLevel(userXP[msg.user_id] || 0), isTimedOut = userTimeouts[msg.user_id] && userTimeouts[msg.user_id] > Date.now();
+      if (isTimedOut) return '';
+      let isFaved = favoriteMessages[msg.id];
+      return `<div class="message" data-message-id="${msg.id}"><div class="message-avatar" onclick="window.showProfileCard('${msg.user_id}')">${userPic ? `<img src="${userPic}">` : (msg.username?.[0]?.toUpperCase() || '👤')}</div><div class="message-content"><div class="message-header"><span class="message-name" style="color:${msg.nameColor || '#ffcc00'}">${escapeHtml(msg.username)} <span class="level-badge">Lv${userLvl}</span> ${badgeIcons} ${isMod(msg.username) ? '<span class="mod-badge">MOD</span>' : ''}</span><span class="message-time">${new Date(msg.created_at).toLocaleTimeString()}</span>${msg.edited ? '<span class="message-edited">(edited)</span>' : ''}<span class="favorite-msg" onclick="window.toggleFavorite('${msg.id}')">${isFaved ? '⭐' : '☆'}</span></div><div class="message-text">${formatMessage(msg.message)}</div><div class="message-reactions">${Object.entries(reactions).map(([emoji, users]) => `<span class="reaction" onclick="window.toggleReaction('${msg.id}', '${emoji}')">${emoji}<span class="reaction-count">${users.length}</span></span>`).join('')}<span class="reaction" onclick="window.showReactionPicker('${msg.id}')">➕</span></div><div class="thread-indicator" onclick="window.openThread('${msg.id}')">💬 ${threadMessages[msg.id]?.length || 0} replies</div><div class="message-actions"><button class="message-action-btn" onclick="window.replyToMessage('${msg.id}', '${escapeHtml(msg.username)}')">↩️</button>${isMe ? `<button class="message-action-btn" onclick="window.editMessage('${msg.id}')">✏️</button>` : ''}${isMe ? `<button class="message-action-btn" onclick="window.deleteMessage('${msg.id}')">🗑️</button>` : ''}${isMod(currentUser.displayName || currentUser.username) ? `<button class="message-action-btn" onclick="window.pinMessage('${msg.id}', '${escapeHtml(msg.message.slice(0, 50))}', '${escapeHtml(msg.username)}')">📌</button>` : ''}</div></div></div>`;
+    }).join('');
+    c.scrollTop = c.scrollHeight;
+  }
+  
+  async function sendMessage() {
+    let msg = document.getElementById('messageInput').value.trim();
+    if (!msg) return;
+    let lower = msg.toLowerCase();
+    for (let w of ['fuck', 'shit', 'ass', 'bitch', 'cunt', 'dick', 'porn']) {
+      if (lower.includes(w)) { 
+        alert('blocked by auto-mod'); 
+        document.getElementById('messageInput').value = ''; 
+        return; 
+      }
+    }
+    if (slowModeSeconds > 0 && !currentDM && !currentGroup) {
+      let now = Date.now();
+      if (now - lastMessageTime < slowModeSeconds * 1000) { 
+        alert(`slow mode: wait ${slowModeSeconds}s`); 
+        return; 
+      }
+      lastMessageTime = now;
+    }
+    if (msg.startsWith('/')) { 
+      handleCommand(msg); 
+      document.getElementById('messageInput').value = ''; 
+      return; 
+    }
+    let channelId = currentDM ? `dm_${[currentUser.id, currentDM].sort().join('_')}` : currentGroup ? `group_${currentGroup}` : currentChannel;
+    if (replyingTo) { 
+      msg = `> **Replying to ${replyingTo.username}:**\n${msg}`; 
+      replyingTo = null; 
+      document.getElementById('replyBar').style.display = 'none'; 
+    }
+    try {
+      let { error } = await supabaseClient.from('fanter_chat').insert({ 
+        user_id: currentUser.id, 
+        username: currentUser.displayName || currentUser.username, 
+        message: msg, 
+        channel_id: channelId, 
+        nameColor: nameColor, 
+        profile_pic: profilePic 
+      });
+      if (error) throw error;
+      messageCounts[currentUser.id]++; 
+      localStorage.setItem('messageCounts', JSON.stringify(messageCounts));
+      addXP(5); 
+      document.getElementById('messageInput').value = ''; 
+      checkBadges();
+      if (messageSounds) playSound('letsgo'); 
+      triggerEffect();
+      if (currentDM) {
+        await supabaseClient.from('fanter_dm_conversations').upsert({ 
+          user1_id: [currentUser.id, currentDM].sort()[0], 
+          user2_id: [currentUser.id, currentDM].sort()[1], 
+          last_message: msg, 
+          last_message_time: new Date() 
+        });
+        loadDMConversations();
+      }
+    } catch(e) { console.error(e); alert('failed to send'); }
+  }
+  
+  function handleCommand(cmd) {
+    let p = cmd.slice(1).split(' '), c = p[0].toLowerCase(), a = p.slice(1), inp = document.getElementById('messageInput');
+    switch(c) {
+      case 'help': alert('/roll, /8ball, /flip, /spoiler, /nick, /game, /meme, /weather, /invite, /emoji, /timeout (mods), /warn (mods), /pin (mods)'); break;
+      case 'roll': inp.value = `🎲 rolled ${Math.floor(Math.random() * 100) + 1}`; sendMessage(); break;
+      case '8ball': let ans = ['yes', 'no', 'maybe', 'definitely', 'never', 'probably', 'ask again']; inp.value = `🎱 ${ans[Math.floor(Math.random() * ans.length)]}`; sendMessage(); break;
+      case 'flip': inp.value = `🪙 ${Math.random() > .5 ? 'heads' : 'tails'}`; sendMessage(); break;
+      case 'spoiler': inp.value = `||${a.join(' ')}||`; sendMessage(); break;
+      case 'nick': if (a[0]) { currentUser.displayName = a.join(' '); localStorage.setItem('fanter_currentUser', JSON.stringify(currentUser)); updatePresence(); alert('nick changed!'); } break;
+      case 'game': document.getElementById('gameInviteModal').classList.add('show'); break;
+      case 'meme': fetch('https://meme-api.com/gimme').then(r => r.json()).then(d => { inp.value = d.url; sendMessage(); }); break;
+      case 'weather': if (a[0]) { inp.value = `🌤️ weather for ${a[0]}: check weather.com`; sendMessage(); } break;
+      case 'invite': document.getElementById('gameInviteModal').classList.add('show'); break;
+      case 'emoji': document.getElementById('customEmojiModal').classList.add('show'); break;
+      case 'timeout': if (isMod(currentUser.displayName)) document.getElementById('timeoutModal').classList.add('show'); break;
+      case 'warn': if (isMod(currentUser.displayName)) document.getElementById('warnModal').classList.add('show'); break;
+      case 'pin': if (isMod(currentUser.displayName)) alert('click the 📌 button on any message to pin'); break;
+      default: alert('unknown command');
+    }
+  }
+  
+  window.toggleReaction = async function(mid, emoji) {
+    let msg = messages.find(m => m.id == mid);
+    if (!msg) return;
+    let reactions = {};
+    try { reactions = msg.reactions ? JSON.parse(msg.reactions) : {}; } catch(e) {}
+    if (!reactions[emoji]) reactions[emoji] = [];
+    let idx = reactions[emoji].indexOf(currentUser.id);
+    if (idx === -1) reactions[emoji].push(currentUser.id);
+    else reactions[emoji].splice(idx, 1);
+    if (reactions[emoji].length === 0) delete reactions[emoji];
+    await supabaseClient.from('fanter_chat').update({ reactions: JSON.stringify(reactions) }).eq('id', mid);
+    await loadMessages();
+  };
+  
+  window.showReactionPicker = function(mid) {
+    let emojis = ['👍', '❤️', '😂', '😮', '😢', '🔥', '💀', '🎮', '🏆', '⭐', '👑'], p = document.createElement('div');
+    p.style.cssText = 'position:fixed;background:rgba(20,30,50,.98);border:1px solid #fc0;border-radius:12px;padding:8px;display:flex;gap:8px;z-index:1000';
+    emojis.forEach(e => { let b = document.createElement('span'); b.textContent = e; b.style.cssText = 'font-size:24px;cursor:pointer;padding:5px'; b.onclick = () => { window.toggleReaction(mid, e); p.remove(); }; p.appendChild(b); });
+    document.body.appendChild(p); p.style.left = (event.clientX - 100) + 'px'; p.style.top = (event.clientY - 50) + 'px';
+    setTimeout(() => document.addEventListener('click', () => p.remove(), { once: true }), 100);
+  };
+  
+  window.toggleFavorite = function(mid) {
+    if (favoriteMessages[mid]) delete favoriteMessages[mid];
+    else favoriteMessages[mid] = true;
+    localStorage.setItem('favoriteMessages', JSON.stringify(favoriteMessages));
+    renderMessages(); checkBadges();
+  };
+  
+  window.pinMessage = function(mid, content, uname) {
+    if (!pinnedMessages[currentChannel]) pinnedMessages[currentChannel] = [];
+    if (pinnedMessages[currentChannel].length >= 5) { alert('max 5 pinned messages'); return; }
+    pinnedMessages[currentChannel].push({ mid, content, uname, time: Date.now() });
+    localStorage.setItem('pinnedMessages', JSON.stringify(pinnedMessages));
+    loadPinnedMessages(); addActivity('📌', `${uname}'s message pinned`);
+  };
+  
+  function loadPinnedMessages() {
+    let pins = pinnedMessages[currentChannel] || [], bar = document.getElementById('pinnedBar'), list = document.getElementById('pinnedList');
+    if (pins.length === 0) { bar.style.display = 'none'; return; }
+    bar.style.display = 'flex';
+    list.innerHTML = pins.map(p => `<span class="pinned-item" onclick="window.jumpToMessage('${p.mid}')">📌 ${escapeHtml(p.content.slice(0, 30))} — ${p.uname}</span>`).join('');
+  }
+  
+  window.jumpToMessage = function(mid) {
+    let el = document.querySelector(`.message[data-message-id="${mid}"]`);
+    if (el) { el.scrollIntoView({ behavior: 'smooth', block: 'center' }); el.style.background = 'rgba(255,204,0,.2)'; setTimeout(() => el.style.background = '', 2000); }
+  };
+  
+  window.replyToMessage = function(id, un) { 
+    replyingTo = { id, username: un }; 
+    document.getElementById('replyBar').style.display = 'flex'; 
+    document.getElementById('replyText').textContent = `Replying to ${un}`; 
+    document.getElementById('messageInput').focus(); 
+  };
+  document.getElementById('cancelReplyBtn').onclick = () => { replyingTo = null; document.getElementById('replyBar').style.display = 'none'; };
+  
+  window.editMessage = async function(mid) { 
+    let nt = prompt('Edit message:'); 
+    if (nt) { 
+      await supabaseClient.from('fanter_chat').update({ message: nt, edited: true }).eq('id', mid); 
+      loadMessages(); 
+    } 
+  };
+  window.deleteMessage = async function(mid) { 
+    if (confirm('Delete?')) { 
+      await supabaseClient.from('fanter_chat').delete().eq('id', mid); 
+      loadMessages(); 
+    } 
+  };
+  
+  window.openThread = function(pid) {
+    activeThread = pid;
+    if (!threadMessages[activeThread]) threadMessages[activeThread] = [];
+    let div = document.getElementById('threadMessages');
+    div.innerHTML = threadMessages[activeThread].map(m => `<div style="padding:8px;border-bottom:1px solid rgba(255,255,255,.1)"><span style="color:#fc0">${escapeHtml(m.username)}</span>: ${escapeHtml(m.message)}</div>`).join('') || '<div style="text-align:center;color:rgba(255,255,255,.4)">no replies</div>';
+    document.getElementById('threadView').classList.add('show');
+  };
+  
+  document.getElementById('sendThreadBtn').onclick = () => {
+    let m = document.getElementById('threadInput').value.trim();
+    if (m && activeThread) {
+      if (!threadMessages[activeThread]) threadMessages[activeThread] = [];
+      threadMessages[activeThread].push({ username: currentUser.displayName || currentUser.username, message: m, time: Date.now() });
+      localStorage.setItem('threadMessages', JSON.stringify(threadMessages));
+      document.getElementById('threadInput').value = '';
+      let div = document.getElementById('threadMessages');
+      div.innerHTML = threadMessages[activeThread].map(m2 => `<div style="padding:8px;border-bottom:1px solid rgba(255,255,255,.1)"><span style="color:#fc0">${escapeHtml(m2.username)}</span>: ${escapeHtml(m2.message)}</div>`).join('');
+    }
+  };
+  document.getElementById('closeThreadBtn').onclick = () => { document.getElementById('threadView').classList.remove('show'); activeThread = null; };
+  
+  // User profile functions
+  async function loadUserProfile() {
+    try {
+      let { data } = await supabaseClient.from('fanter_presence').select('*').eq('user_id', currentUser.id).single();
+      if (data) { 
+        if (data.profile_pic) profilePic = data.profile_pic; 
+        if (data.custom_activity) customActivity = data.custom_activity; 
+        if (data.bio) userBio = data.bio; 
+      } else { 
+        await supabaseClient.from('fanter_presence').insert({ 
+          user_id: currentUser.id, 
+          username: currentUser.displayName || currentUser.username, 
+          display_name: currentUser.displayName || currentUser.username, 
+          custom_activity: customActivity, 
+          bio: userBio, 
+          profile_pic: profilePic 
+        }); 
+      }
+    } catch(e) {}
+    updatePresence();
+  }
+  
+  async function updatePresence() {
+    try {
+      await supabaseClient.from('fanter_presence').upsert({ 
+        user_id: currentUser.id, 
+        username: currentUser.displayName || currentUser.username, 
+        display_name: currentUser.displayName || currentUser.username, 
+        status: 'online', 
+        custom_activity: customActivity, 
+        bio: userBio, 
+        profile_pic: profilePic, 
+        last_seen: new Date() 
+      });
+    } catch(e) {}
+  }
+  
+  async function loadFriends() {
+    try {
+      let { data } = await supabaseClient.from('fanter_friends').select('friend_id').eq('user_id', currentUser.id);
+      if (data?.length) { 
+        let { data: f } = await supabaseClient.from('fanter_presence').select('*').in('user_id', data.map(d => d.friend_id)); 
+        friends = f || []; 
+      } else { friends = []; }
+      let c = document.getElementById('friendsList');
+      if (c) {
+        if (friends.length === 0) c.innerHTML = '<div style="padding:8px 15px;color:rgba(255,255,255,.3)">no friends</div>';
+        else c.innerHTML = friends.map(f => `<div class="friend-item" onclick="window.showProfileCard('${f.user_id}')"><div class="friend-avatar">${f.profile_pic ? `<img src="${f.profile_pic}">` : f.username[0]}</div><div class="friend-info"><div class="friend-name">${escapeHtml(f.display_name || f.username)}</div><div class="friend-status"><span class="status-dot ${f.status || 'offline'}"></span>${f.custom_activity || 'offline'}</div></div></div>`).join('');
+      }
+    } catch(e) {}
+  }
+  
+  async function loadGroups() {
+    try {
+      let { data } = await supabaseClient.from('fanter_groups').select('*');
+      groups = (data || []).filter(g => g.members.includes(currentUser.id));
+      let c = document.getElementById('groupsList');
+      if (c) {
+        if (groups.length === 0) c.innerHTML = '<div style="padding:8px 15px;color:rgba(255,255,255,.3)">no groups</div>';
+        else c.innerHTML = groups.map(g => `<div class="group-item" onclick="window.openGroup('${g.id}', '${g.name}')"><span class="group-icon">${g.settings?.icon || '👥'}</span><div class="group-info"><div class="group-name">${escapeHtml(g.name)} ${g.owner_id === currentUser.id ? '<span class="host-badge">HOST</span>' : ''}</div><div class="group-meta">${g.members.length} members</div></div></div>`).join('');
+      }
+    } catch(e) {}
+  }
+  
+  window.openGroup = async function(id, name) {
+    currentGroup = id; currentDM = null; currentChannel = null;
+    currentGroupData = groups.find(g => g.id == id);
+    document.getElementById('chatHeaderTitle').textContent = `${currentGroupData?.settings?.icon || '👥'} ${name}`;
+    document.getElementById('slowModeBtn').style.display = currentGroupData?.owner_id === currentUser.id ? 'inline-block' : 'none';
+    slowModeSeconds = currentGroupData?.settings?.slowMode || 0;
+    let ind = document.getElementById('slowModeIndicator');
+    if (slowModeSeconds > 0) { ind.textContent = `🐢 ${slowModeSeconds}s slow mode`; ind.style.display = 'inline-block'; } else ind.style.display = 'none';
+    messages = []; await loadMessages(); setupRealtime();
+  };
+  
+  async function loadDMConversations() {
+    try {
+      let { data } = await supabaseClient.from('fanter_dm_conversations').select('*').or(`user1_id.eq.${currentUser.id},user2_id.eq.${currentUser.id}`).order('last_message_time', { ascending: false });
+      dmConversations = data || [];
+      let c = document.getElementById('dmList');
+      if (c) {
+        if (dmConversations.length === 0) c.innerHTML = '<div style="padding:8px 15px;color:rgba(255,255,255,.3)">no DMs</div>';
+        else c.innerHTML = dmConversations.map(conv => { let o = conv.user1_id === currentUser.id ? conv.user2_id : conv.user1_id; return `<div class="dm-item" onclick="window.openDM('${o}')"><div class="dm-avatar">👤</div><div class="dm-info"><div class="dm-name">${o.slice(0, 8)}...</div><div class="friend-status">${(conv.last_message || '...').slice(0, 30)}</div></div></div>`; }).join('');
+      }
+    } catch(e) {}
+  }
+  
+  window.openDM = async function(id) {
+    currentDM = id; currentChannel = null; currentGroup = null;
+    document.getElementById('chatHeaderTitle').textContent = `@${id.slice(0, 8)}...`;
+    document.getElementById('slowModeBtn').style.display = 'none';
+    document.getElementById('slowModeIndicator').style.display = 'none';
+    messages = []; await loadMessages(); setupRealtime();
+  };
+  
+  function setupRealtime() {
+    if (channelSubscription) supabaseClient.removeChannel(channelSubscription);
+    let filter = currentDM ? `channel_id=eq.dm_${[currentUser.id, currentDM].sort().join('_')}` : currentGroup ? `channel_id=eq.group_${currentGroup}` : `channel_id=eq.${currentChannel}`;
+    channelSubscription = supabaseClient.channel('fantarena-live')
+      .on('postgres_changes', { event: 'INSERT', schema: 'public', table: 'fanter_chat', filter }, payload => { 
+        messages.push(payload.new); 
+        renderMessages(); 
+        if (messageSounds) playSound('bruh'); 
+      })
+      .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'fanter_chat', filter }, () => loadMessages())
+      .on('postgres_changes', { event: 'DELETE', schema: 'public', table: 'fanter_chat', filter }, () => loadMessages())
+      .subscribe();
+  }
+  
+  async function loadMembers() {
+    try {
+      let { data } = await supabaseClient.from('fanter_presence').select('*').order('status', { ascending: false });
+      if (data) {
+        let online = data.filter(m => m.status === 'online').length;
+        document.getElementById('onlineCount').textContent = `${online} online`;
+        let c = document.getElementById('membersList');
+        if (c) {
+          c.innerHTML = `<div class="member-category">online — ${online}</div>` + 
+            data.filter(m => m.status === 'online').map(m => `<div class="member-item" onclick="window.showProfileCard('${m.user_id}')"><div class="member-avatar">${m.profile_pic ? `<img src="${m.profile_pic}">` : m.username[0]}</div><span>${escapeHtml(m.display_name || m.username)}</span></div>`).join('') + 
+            `<div class="member-category">offline</div>` + 
+            data.filter(m => m.status !== 'online').map(m => `<div class="member-item" onclick="window.showProfileCard('${m.user_id}')"><div class="member-avatar">${m.profile_pic ? `<img src="${m.profile_pic}">` : m.username[0]}</div><span>${escapeHtml(m.display_name || m.username)}</span></div>`).join('');
+        }
+      }
+    } catch(e) {}
+  }
+  
+  window.showProfileCard = async function(uid) {
+    try {
+      let { data } = await supabaseClient.from('fanter_presence').select('*').eq('user_id', uid).single();
+      if (!data) return;
+      selectedProfileUser = data;
+      document.getElementById('profileCardAvatar').innerHTML = data.profile_pic ? `<img src="${data.profile_pic}">` : (data.username?.[0]?.toUpperCase() || '👤');
+      document.getElementById('profileCardName').textContent = data.display_name || data.username;
+      document.getElementById('profileCardUsername').textContent = `@${data.username}`;
+      document.getElementById('profileCardBio').textContent = data.bio || 'Just a gamer';
+      let lvl = getLevel(userXP[uid] || 0);
+      document.getElementById('profileCardLevel').textContent = lvl;
+      document.getElementById('profileCardXP').textContent = userXP[uid] || 0;
+      document.getElementById('profileCardWarnings').textContent = userWarnings[uid]?.length || 0;
+      let badges = userBadges[uid] || [];
+      document.getElementById('profileBadges').innerHTML = badges.map(b => `<div class="badge" title="${BADGES[b]?.name}">${BADGES[b]?.icon} ${BADGES[b]?.name}</div>`).join('') || '<div style="font-size:11px;opacity:.5">no badges</div>';
+      document.getElementById('profileCardWarnBtn').style.display = isMod(currentUser.displayName || currentUser.username) ? 'block' : 'none';
+      document.getElementById('profileCardTimeoutBtn').style.display = isMod(currentUser.displayName || currentUser.username) ? 'block' : 'none';
+      document.getElementById('profileCardModal').classList.add('show');
+    } catch(e) {}
+  };
+  
+  function closeProfileCard() { 
+    document.getElementById('profileCardModal').classList.remove('show'); 
+    selectedProfileUser = null; 
+  }
+  document.getElementById('profileCardDMBtn').onclick = () => { if (selectedProfileUser) { closeProfileCard(); window.openDM(selectedProfileUser.user_id); } };
+  document.getElementById('profileCardCoinBtn').onclick = () => { if (selectedProfileUser) document.getElementById('giveCoinsModal').classList.add('show'); };
+  document.getElementById('profileCardWarnBtn').onclick = () => { if (selectedProfileUser) document.getElementById('warnModal').classList.add('show'); };
+  document.getElementById('profileCardTimeoutBtn').onclick = () => { if (selectedProfileUser) document.getElementById('timeoutModal').classList.add('show'); };
+  document.getElementById('closeProfileCardBtn').onclick = closeProfileCard;
+  
+  document.getElementById('confirmGiveCoinsBtn').onclick = () => {
+    let amt = parseInt(document.getElementById('coinAmountInput').value);
+    if (!amt || amt <= 0) return alert('enter amount');
+    let user = JSON.parse(localStorage.getItem('fanter_currentUser') || 'null');
+    if ((user.coins || 0) < amt) return alert('not enough coins');
+    user.coins = (user.coins || 0) - amt;
+    localStorage.setItem('fanter_currentUser', JSON.stringify(user));
+    let users = JSON.parse(localStorage.getItem('fanter_users') || '[]');
+    let idx = users.findIndex(u => u.id === selectedProfileUser.user_id);
+    if (idx !== -1) users[idx].coins = (users[idx].coins || 0) + amt;
+    localStorage.setItem('fanter_users', JSON.stringify(users));
+    if (isMod(currentUser.displayName)) {
+      let badges = userBadges[selectedProfileUser.user_id] || [];
+      if (!badges.includes('blessed')) { 
+        badges.push('blessed'); 
+        userBadges[selectedProfileUser.user_id] = badges; 
+        localStorage.setItem('userBadges', JSON.stringify(userBadges)); 
+      }
+    }
+    alert(`gave ${amt} coins!`);
+    document.getElementById('giveCoinsModal').classList.remove('show');
+    if (typeof updateHeaderCoins === 'function') updateHeaderCoins();
+  };
+  document.getElementById('closeGiveCoinsModalBtn').onclick = () => document.getElementById('giveCoinsModal').classList.remove('show');
+  
+  document.getElementById('confirmWarnBtn').onclick = () => {
+    let reason = document.getElementById('warnReason').value;
+    if (!reason) return;
+    if (!userWarnings[selectedProfileUser.user_id]) userWarnings[selectedProfileUser.user_id] = [];
+    userWarnings[selectedProfileUser.user_id].push({ reason, by: currentUser.displayName || currentUser.username, time: Date.now() });
+    localStorage.setItem('userWarnings', JSON.stringify(userWarnings));
+    addActivity('⚠️', `${selectedProfileUser.display_name} was warned`);
+    if (userWarnings[selectedProfileUser.user_id].length >= 3) {
+      userTimeouts[selectedProfileUser.user_id] = Date.now() + 60 * 60 * 1000;
+      localStorage.setItem('userTimeouts', JSON.stringify(userTimeouts));
+      addActivity('⏱️', `${selectedProfileUser.display_name} was auto-timed out for 1 hour`);
+    }
+    alert(`warned ${selectedProfileUser.display_name}`);
+    document.getElementById('warnModal').classList.remove('show');
+    document.getElementById('warnReason').value = '';
+  };
+  document.getElementById('closeWarnModalBtn').onclick = () => document.getElementById('warnModal').classList.remove('show');
+  
+  document.getElementById('confirmTimeoutBtn').onclick = () => {
+    let mins = parseInt(document.getElementById('timeoutMinutes').value);
+    if (!mins) return;
+    userTimeouts[selectedProfileUser.user_id] = Date.now() + mins * 60 * 1000;
+    localStorage.setItem('userTimeouts', JSON.stringify(userTimeouts));
+    alert(`⏱️ ${selectedProfileUser.display_name} timed out for ${mins} minutes`);
+    document.getElementById('timeoutModal').classList.remove('show');
+  };
+  document.getElementById('closeTimeoutModalBtn').onclick = () => document.getElementById('timeoutModal').classList.remove('show');
+  
+  document.getElementById('sendGameInviteBtn').onclick = () => {
+    let game = document.getElementById('gameSelect').value;
+    let inviteMsg = `🎮 **${currentUser.displayName || currentUser.username} invited you to play ${game}!**\nPlay here: ${window.location.origin}/play.html?gameurl=${encodeURIComponent(game)}&game=${encodeURIComponent(game)}`;
+    document.getElementById('messageInput').value = inviteMsg;
+    sendMessage();
+    document.getElementById('gameInviteModal').classList.remove('show');
+  };
+  document.getElementById('closeGameInviteModalBtn').onclick = () => document.getElementById('gameInviteModal').classList.remove('show');
+  
+  document.getElementById('addCustomEmojiBtn').onclick = () => {
+    let name = document.getElementById('emojiName').value.trim().toLowerCase();
+    let char = document.getElementById('emojiChar').value.trim();
+    if (!name || !char) return;
+    customEmojis[name] = char;
+    localStorage.setItem('customEmojis', JSON.stringify(customEmojis));
+    alert(`✅ :${name}: added!`);
+    document.getElementById('customEmojiModal').classList.remove('show');
+    document.getElementById('emojiName').value = '';
+    document.getElementById('emojiChar').value = '';
+  };
+  document.getElementById('closeEmojiModalBtn').onclick = () => document.getElementById('customEmojiModal').classList.remove('show');
+  
+  document.getElementById('scheduleBtn').onclick = () => document.getElementById('scheduleModal').classList.add('show');
+  document.getElementById('confirmScheduleBtn').onclick = () => {
+    let msg = document.getElementById('scheduleMessage').value.trim();
+    let time = new Date(document.getElementById('scheduleTime').value).getTime();
+    if (!msg || !time) return;
+    if (time <= Date.now()) { alert('time must be in future'); return; }
+    scheduledMessages.push({ msg, time, channel: currentChannel, userId: currentUser.id, username: currentUser.displayName || currentUser.username });
+    localStorage.setItem('scheduledMessages', JSON.stringify(scheduledMessages));
+    alert(`📅 message scheduled for ${new Date(time).toLocaleString()}`);
+    document.getElementById('scheduleModal').classList.remove('show');
+    document.getElementById('scheduleMessage').value = '';
+    document.getElementById('scheduleTime').value = '';
+  };
+  document.getElementById('closeScheduleModalBtn').onclick = () => document.getElementById('scheduleModal').classList.remove('show');
+  
+  function checkScheduledMessages() {
+    let now = Date.now(), remaining = [];
+    for (let s of scheduledMessages) {
+      if (s.time <= now) {
+        document.getElementById('messageInput').value = s.msg;
+        if (s.channel === currentChannel) sendMessage();
+        else { let oldChan = currentChannel; currentChannel = s.channel; sendMessage(); currentChannel = oldChan; }
+      } else remaining.push(s);
+    }
+    scheduledMessages = remaining;
+    localStorage.setItem('scheduledMessages', JSON.stringify(scheduledMessages));
+  }
+  setInterval(checkScheduledMessages, 60000);
+  
+  document.getElementById('dailyBtn').onclick = () => {
+    let today = new Date().toDateString();
+    if (lastDailyClaim === today) { alert('already claimed today! come back tomorrow'); return; }
+    let streak = 0;
+    if (lastDailyClaim) {
+      let yesterday = new Date(); yesterday.setDate(yesterday.getDate() - 1);
+      if (lastDailyClaim === yesterday.toDateString()) streak = dailyStreak + 1;
+      else streak = 1;
+    } else streak = 1;
+    let reward = 50 + Math.min(streak, 7) * 10;
+    document.getElementById('dailyAmount').innerHTML = `+${reward} 🪙`;
+    document.getElementById('dailyStreak').innerHTML = `streak: ${streak} days`;
+    document.getElementById('dailyModal').classList.add('show');
+    document.getElementById('claimDailyBtn').onclick = () => {
+      let user = JSON.parse(localStorage.getItem('fanter_currentUser') || 'null');
+      user.coins = (user.coins || 0) + reward;
+      localStorage.setItem('fanter_currentUser', JSON.stringify(user));
+      let users = JSON.parse(localStorage.getItem('fanter_users') || '[]');
+      let idx = users.findIndex(u => u.id === user.id);
+      if (idx !== -1) users[idx].coins = user.coins;
+      localStorage.setItem('fanter_users', JSON.stringify(users));
+      localStorage.setItem('lastDailyClaim', today);
+      localStorage.setItem('dailyStreak', streak);
+      addActivity('🎁', `claimed daily reward of ${reward} coins!`);
+      if (streak >= 7 && !userBadges[currentUser.id].includes('on_fire')) {
+        userBadges[currentUser.id].push('on_fire');
+        localStorage.setItem('userBadges', JSON.stringify(userBadges));
+        addActivity('🔥', 'unlocked On Fire badge!');
+      }
+      alert(`claimed ${reward} coins!`);
+      document.getElementById('dailyModal').classList.remove('show');
+    };
+  };
+  document.getElementById('closeDailyModalBtn').onclick = () => document.getElementById('dailyModal').classList.remove('show');
+  
+  function openSettings() { document.getElementById('settingsPanel').classList.add('show'); }
+  function closeSettings() { document.getElementById('settingsPanel').classList.remove('show'); }
+  document.getElementById('settingsBtn').onclick = openSettings;
+  document.getElementById('editProfileBtn').onclick = openSettings;
+  document.getElementById('closeSettingsBtn').onclick = closeSettings;
+  document.getElementById('nameColorPicker').onchange = e => { nameColor = e.target.value; localStorage.setItem('fanter_nameColor', nameColor); };
+  document.getElementById('activityInput').onchange = e => { customActivity = e.target.value; localStorage.setItem('fanter_activity', customActivity); updatePresence(); };
+  document.getElementById('bioInput').onchange = e => { userBio = e.target.value; localStorage.setItem('fanter_bio', userBio); updatePresence(); };
+  document.getElementById('profileThemeSelect').onchange = e => { let theme = e.target.value; if (theme !== 'default') document.getElementById('profileCardModal').style.background = theme === 'ocean' ? 'linear-gradient(135deg,#0a2a4a,#0a1a2a)' : theme === 'sunset' ? 'linear-gradient(135deg,#4a1a0a,#2a0a0a)' : theme === 'forest' ? 'linear-gradient(135deg,#0a4a0a,#0a2a0a)' : 'rgba(20,30,50,.98)'; };
+  document.getElementById('toggleSoundsBtn').onclick = () => { messageSounds = !messageSounds; localStorage.setItem('messageSounds', messageSounds); document.getElementById('toggleSoundsBtn').textContent = messageSounds ? 'disable' : 'enable'; };
+  document.getElementById('effectSelect').onchange = e => { selectedEffect = e.target.value; localStorage.setItem('messageEffect', selectedEffect); };
+  document.getElementById('profilePicUpload').onchange = e => { let f = e.target.files[0]; if (f) { let r = new FileReader(); r.onload = ev => { profilePic = ev.target.result; localStorage.setItem('fanter_profilePic', profilePic); updatePresence(); alert('profile pic updated!'); }; r.readAsDataURL(f); } };
+  
+  document.getElementById('addFriendBtn').onclick = () => document.getElementById('addFriendModal').classList.add('show');
+  document.getElementById('createGroupBtn').onclick = () => document.getElementById('createGroupModal').classList.add('show');
+  document.getElementById('sendFriendReqBtn').onclick = async () => {
+    let u = document.getElementById('friendUsernameInput').value.trim();
+    if (!u) return;
+    let { data: users } = await supabaseClient.from('fanter_presence').select('user_id').ilike('username', `%${u}%`);
+    if (!users?.length) return alert('not found');
+    await supabaseClient.from('fanter_friend_requests').insert({ sender_id: currentUser.id, receiver_id: users[0].user_id });
+    alert('sent!');
+    document.getElementById('addFriendModal').classList.remove('show');
+  };
+  document.getElementById('createGroupConfirmBtn').onclick = async () => {
+    let n = document.getElementById('groupNameInput').value.trim();
+    if (!n) return;
+    await supabaseClient.from('fanter_groups').insert({ name: n, owner_id: currentUser.id, members: [currentUser.id], settings: { icon: document.getElementById('groupIconSelect').value, slowMode: 0 } });
+    document.getElementById('createGroupModal').classList.remove('show');
+    loadGroups();
+    alert(`group "${n}" created!`);
+  };
+  document.getElementById('closeAddFriendModalBtn').onclick = () => document.getElementById('addFriendModal').classList.remove('show');
+  document.getElementById('closeCreateGroupModalBtn').onclick = () => document.getElementById('createGroupModal').classList.remove('show');
+  
+  let emojis = ['😀', '😂', '😊', '😍', '🔥', '💀', '🎮', '🏆', '⭐', '👑', '❤️', '👻', '🐉', '🍕', '⚡'];
+  document.getElementById('emojiPicker').innerHTML = emojis.map(e => `<span onclick="insertEmoji('${e}')">${e}</span>`).join('');
+  function insertEmoji(e) { let inp = document.getElementById('messageInput'); inp.value += e; document.getElementById('emojiPicker').classList.remove('show'); }
+  document.getElementById('emojiBtnToolbar').onclick = () => { document.getElementById('emojiPicker').classList.toggle('show'); document.getElementById('gifPicker').classList.remove('show'); };
+  document.getElementById('gifBtnToolbar').onclick = () => { document.getElementById('gifPicker').classList.toggle('show'); document.getElementById('emojiPicker').classList.remove('show'); searchGifs('trending'); };
+  document.querySelectorAll('.format-toolbar button').forEach(btn => { btn.onclick = () => { let w = btn.dataset.format, inp = document.getElementById('messageInput'), s = inp.selectionStart, e = inp.selectionEnd, t = inp.value; inp.value = t.slice(0, s) + w + t.slice(s, e) + w + t.slice(e); }; });
+  
+  async function searchGifs(q) { if (!q) q = 'trending'; let res = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${q}&limit=12`); let data = await res.json(); document.getElementById('gifGrid').innerHTML = data.data.map(g => `<div class="gif-item" onclick="sendGif('${g.images.fixed_height.url}')"><img src="${g.images.fixed_height_small.url}"></div>`).join(''); }
+  function sendGif(u) { let inp = document.getElementById('messageInput'); inp.value = u; sendMessage(); document.getElementById('gifPicker').classList.remove('show'); }
+  document.getElementById('gifBtn').onclick = () => { document.getElementById('gifPicker').classList.toggle('show'); document.getElementById('emojiPicker').classList.remove('show'); searchGifs('trending'); };
+  document.getElementById('gifSearch').oninput = e => searchGifs(e.target.value);
+  
+  document.getElementById('soundBtn').onclick = () => { document.getElementById('soundPicker').classList.toggle('show'); };
+  document.querySelectorAll('.sound-item').forEach(s => { s.onclick = () => { let sound = s.dataset.sound; playSound(sound); soundUsage[currentUser.id] = (soundUsage[currentUser.id] || 0) + 1; localStorage.setItem('soundUsage', JSON.stringify(soundUsage)); checkBadges(); document.getElementById('soundPicker').classList.remove('show'); }; });
+  
+  document.getElementById('imageBtn').onclick = () => document.getElementById('imageUpload').click();
+  document.getElementById('imageUpload').onchange = e => { if (e.target.files[0]) { let f = e.target.files[0]; if (f.type.startsWith('image/')) { let r = new FileReader(); r.onload = ev => { document.getElementById('messageInput').value = ev.target.result; sendMessage(); }; r.readAsDataURL(f); } } };
+  
+  document.getElementById('statusPresetBtn').onclick = () => document.getElementById('statusPresetPicker').classList.toggle('show');
+  document.querySelectorAll('.preset-item').forEach(p => { p.onclick = () => { let status = p.dataset.status; customActivity = status; localStorage.setItem('fanter_activity', customActivity); updatePresence(); document.getElementById('statusPresetPicker').classList.remove('show'); alert(`status set to: ${status}`); }; });
+  
+  document.getElementById('customEmojiBtn').onclick = () => document.getElementById('customEmojiModal').classList.add('show');
+  
+  document.getElementById('slowModeBtn').onclick = () => { document.getElementById('slowModeSecondsInput').value = slowModeSeconds; document.getElementById('slowModeModal').classList.add('show'); };
+  document.getElementById('setSlowModeBtn').onclick = () => { slowModeSeconds = parseInt(document.getElementById('slowModeSecondsInput').value) || 0; let ind = document.getElementById('slowModeIndicator'); if (slowModeSeconds > 0) { ind.textContent = `🐢 ${slowModeSeconds}s slow mode`; ind.style.display = 'inline-block'; } else ind.style.display = 'none'; document.getElementById('slowModeModal').classList.remove('show'); };
+  document.getElementById('closeSlowModeModalBtn').onclick = () => document.getElementById('slowModeModal').classList.remove('show');
+  
+  document.getElementById('helpBtn').onclick = () => { document.getElementById('welcomeScreen').style.display = 'flex'; document.getElementById('fantarenaContainer').classList.remove('show'); };
+  
+  function setTheme(t) { document.body.className = `theme-${t}`; localStorage.setItem('fantarena_theme', t); }
+  let savedTheme = localStorage.getItem('fantarena_theme') || 'dark';
+  setTheme(savedTheme);
+  document.getElementById('themeSelector').value = savedTheme;
+  document.getElementById('themeSelector').onchange = e => setTheme(e.target.value);
+  
+  document.getElementById('channelTopicText').onclick = () => {
+    if (!isMod(currentUser.displayName || currentUser.username)) return alert('only mods');
+    document.getElementById('topicInput').value = channelTopics[currentChannel] || '';
+    document.getElementById('topicModal').classList.add('show');
+  };
+  document.getElementById('setTopicBtn').onclick = () => { let nt = document.getElementById('topicInput').value.trim(); if (nt) { channelTopics[currentChannel] = nt; localStorage.setItem('channelTopics', JSON.stringify(channelTopics)); document.getElementById('channelTopicText').textContent = nt; } document.getElementById('topicModal').classList.remove('show'); };
+  document.getElementById('closeTopicModalBtn').onclick = () => document.getElementById('topicModal').classList.remove('show');
+  
+  document.querySelectorAll('.server-item').forEach(item => {
+    item.addEventListener('click', () => {
+      document.querySelectorAll('.server-item').forEach(i => i.classList.remove('active'));
+      item.classList.add('active');
+      updateChannelIndicator();
+      let c = document.getElementById('messagesContainer');
+      c.style.opacity = '0';
+      setTimeout(() => {
+        currentChannel = item.dataset.channel;
+        currentDM = null;
+        currentGroup = null;
+        document.getElementById('chatHeaderTitle').textContent = item.dataset.display || `# ${currentChannel}`;
+        document.getElementById('slowModeBtn').style.display = isMod(currentUser.displayName || currentUser.username) ? 'inline-block' : 'none';
+        slowModeSeconds = 0;
+        document.getElementById('slowModeIndicator').style.display = 'none';
+        messages = [];
+        loadMessages();
+        setupRealtime();
+        document.getElementById('channelTopicText').textContent = channelTopics[currentChannel] || 'no topic';
+        loadPinnedMessages();
+        c.style.opacity = '1';
+      }, 150);
+    });
+  });
+  
+  document.querySelectorAll('.category-header').forEach(header => {
+    header.onclick = () => {
+      let cat = header.dataset.category;
+      let channels = document.querySelector(`.category-channels[data-category="${cat}"]`);
+      channels.classList.toggle('collapsed');
+      header.querySelector('span:last-child').textContent = channels.classList.contains('collapsed') ? '▶' : '▼';
+    };
+  });
+  
+  document.getElementById('sendBtn').onclick = sendMessage;
+  document.getElementById('messageInput').addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
+  document.getElementById('messageInput').addEventListener('input', () => { supabaseClient.from('fanter_presence').update({ typing: true }).eq('user_id', currentUser.id); clearTimeout(window.typingTimeout); window.typingTimeout = setTimeout(() => supabaseClient.from('fanter_presence').update({ typing: false }).eq('user_id', currentUser.id), 2000); });
+  
+  let welcomeScreen = document.getElementById('welcomeScreen'), fantarenaContainer = document.getElementById('fantarenaContainer');
+  function enterFantarena() { welcomeScreen.style.display = 'none'; fantarenaContainer.classList.add('show'); localStorage.setItem('fantarena_welcomed', 'true'); initChat(); }
+  document.getElementById('enterBtn').onclick = enterFantarena;
+  document.getElementById('skipBtn').onclick = () => { localStorage.setItem('fantarena_welcomed', 'true'); enterFantarena(); };
+  
+  async function initChat() {
+    await loadUserProfile();
+    await loadFriends();
+    await loadGroups();
+    await loadDMConversations();
+    await loadMessages();
+    setupRealtime();
+    loadMembers();
+    updateChannelIndicator();
+    document.getElementById('channelTopicText').textContent = channelTopics[currentChannel] || 'welcome!';
+    loadPinnedMessages();
+    setInterval(loadMembers, 10000);
+    setInterval(() => updatePresence(), 30000);
+    checkBadges();
+  }
+  
+  if (localStorage.getItem('fantarena_welcomed') === 'true') { welcomeScreen.style.display = 'none'; fantarenaContainer.classList.add('show'); initChat(); } else welcomeScreen.style.display = 'flex';
+  
+  let defaultChan = document.querySelector('.server-item[data-channel="general"]');
+  if (defaultChan) { document.querySelectorAll('.server-item').forEach(i => i.classList.remove('active')); defaultChan.classList.add('active'); updateChannelIndicator(); }
+  
+  console.log('🔥 FANTARENA IGNITE - FULLY LOADED!');
 })();
 </script>
 </body>
