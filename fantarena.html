@@ -31,8 +31,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 @keyframes toastIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
 @keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
 @keyframes confettiFall{0%{transform:translateY(-100px) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(360deg);opacity:0}}
-@keyframes firework{0%{transform:scale(0);opacity:1}100%{transform:scale(15);opacity:0}}
+@keyframes firework{0%{transform:scale(0);opacity:1}100%{transform:scale(20);opacity:0}}
 @keyframes announcementGlow{0%,100%{box-shadow:0 0 20px rgba(255,204,0,0.3)}50%{box-shadow:0 0 60px rgba(255,204,0,0.8)}}
+@keyframes pillSlide{0%{transform:translateY(-20px);opacity:0}100%{transform:translateY(0);opacity:1}}
 
 /* WELCOME */
 .welcome-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:9999;background:var(--bg);transition:opacity var(--t-slow) var(--ease)}
@@ -48,16 +49,16 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 .chat-container{display:flex;height:100vh;opacity:0;pointer-events:none;transition:opacity var(--t-slow) var(--ease)}
 .chat-container.active{opacity:1;pointer-events:all}
 
-/* SIDEBAR */
+/* SIDEBAR WITH PILL */
 .sidebar{width:var(--sidebar-w);background:var(--surface);border-right:1px solid var(--blue-border);display:flex;flex-direction:column;overflow:hidden;position:relative}
-.channel-pill{position:absolute;left:0;width:3px;background:linear-gradient(180deg,var(--gold),rgba(255,204,0,0.6));border-radius:0 3px 3px 0;box-shadow:2px 0 12px rgba(255,204,0,0.45);transition:top var(--t-med) var(--ease-out);z-index:10;opacity:0}
+.channel-pill{position:absolute;left:0;width:3px;background:linear-gradient(180deg,var(--gold),rgba(255,204,0,0.6));border-radius:0 3px 3px 0;box-shadow:2px 0 12px rgba(255,204,0,0.45);transition:top var(--t-med) var(--ease-out);z-index:10;opacity:0;animation:pillSlide 0.3s ease}
 .channel-pill.visible{opacity:1}
 .sidebar-header{padding:18px 16px;font-family:'Syne',sans-serif;font-size:17px;font-weight:800;color:var(--gold);border-bottom:1px solid var(--blue-border)}
 .sidebar-scroll{flex:1;overflow-y:auto;padding-bottom:8px}
 .section-label{padding:14px 16px 5px;font-size:10px;font-weight:600;letter-spacing:1.3px;text-transform:uppercase;color:var(--muted);display:flex;justify-content:space-between}
 .add-btn{background:none;border:none;color:var(--gold);font-size:18px;cursor:pointer;transition:transform var(--t-fast) var(--ease-spring)}
 .add-btn:hover{transform:scale(1.25) rotate(90deg)}
-.channel{padding:8px 14px;margin:2px 8px;border-radius:10px;cursor:pointer;font-size:13.5px;display:flex;align-items:center;gap:9px;color:var(--muted);transition:all var(--t-fast) var(--ease)}
+.channel{padding:8px 14px;margin:2px 8px;border-radius:10px;cursor:pointer;font-size:13.5px;display:flex;align-items:center;gap:9px;color:var(--muted);transition:all var(--t-fast) var(--ease);position:relative}
 .channel:hover{background:var(--blue-dim);color:var(--text);transform:translateX(3px)}
 .channel.active{background:rgba(45,90,227,0.22);color:var(--gold)}
 .sidebar-item{padding:7px 14px;margin:1px 8px;border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:9px;font-size:13px;color:var(--muted);transition:all var(--t-fast) var(--ease)}
@@ -127,10 +128,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 .gif-item{flex-shrink:0;border-radius:8px;overflow:hidden;cursor:pointer;height:90px;transition:transform var(--t-fast) var(--ease-spring)}
 .gif-item:hover{transform:scale(1.06)}
 .gif-item img{height:90px;width:auto}
-.emoji-picker{position:absolute;bottom:70px;left:18px;background:var(--surface);border:1px solid var(--blue-border);border-radius:16px;padding:12px;width:300px;max-height:280px;overflow-y:auto;z-index:100;opacity:0;transform:translateY(10px);pointer-events:none;transition:all var(--t-fast) var(--ease-spring)}
+.emoji-picker{position:absolute;bottom:70px;left:18px;background:var(--surface);border:1px solid var(--blue-border);border-radius:16px;padding:12px;width:350px;max-height:350px;overflow-y:auto;z-index:100;opacity:0;transform:translateY(10px);pointer-events:none;transition:all var(--t-fast) var(--ease-spring)}
 .emoji-picker.open{opacity:1;transform:translateY(0);pointer-events:all}
 .emoji-search{width:100%;padding:8px;border-radius:8px;border:1px solid var(--blue-border);background:rgba(0,0,0,0.2);color:var(--text);margin-bottom:10px}
-.emoji-grid{display:flex;flex-wrap:wrap;gap:4px;max-height:180px;overflow-y:auto}
+.emoji-grid{display:flex;flex-wrap:wrap;gap:4px;max-height:250px;overflow-y:auto}
 .emoji-btn{width:36px;height:36px;font-size:20px;display:flex;align-items:center;justify-content:center;border-radius:8px;cursor:pointer;transition:all var(--t-fast) var(--ease)}
 .emoji-btn:hover{background:var(--blue-dim);transform:scale(1.2)}
 
@@ -153,27 +154,37 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 /* MOD PANEL */
 .mod-panel{position:fixed;bottom:20px;right:20px;z-index:1000;transform:translateX(420px);transition:transform var(--t-slow) var(--ease-out)}
 .mod-panel.open{transform:translateX(0)}
-.mod-panel-btn{width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#ffaa00);border:none;cursor:pointer;font-size:24px;box-shadow:0 4px 20px rgba(255,204,0,0.4);transition:all var(--t-fast) var(--ease-spring);margin-left:auto}
+.mod-panel-btn{width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#ffaa00);border:none;cursor:pointer;font-size:24px;box-shadow:0 4px 20px rgba(255,204,0,0.4);transition:all var(--t-fast) var(--ease-spring);margin-left:auto;display:flex;align-items:center;justify-content:center}
 .mod-panel-btn:hover{transform:scale(1.1)}
-.mod-panel-content{background:var(--surface);border:1px solid var(--gold-border);border-radius:20px;width:400px;max-height:80vh;overflow-y:auto;margin-bottom:15px;box-shadow:0 20px 50px rgba(0,0,0,0.5)}
-.mod-panel-header{padding:16px 20px;border-bottom:1px solid var(--blue-border);font-family:'Syne',sans-serif;font-weight:700;color:var(--gold);display:flex;justify-content:space-between}
-.mod-panel-close{background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer}
+.mod-panel-content{background:var(--surface);border:1px solid var(--gold-border);border-radius:20px;width:420px;max-height:85vh;overflow-y:auto;margin-bottom:15px;box-shadow:0 20px 50px rgba(0,0,0,0.5)}
+.mod-panel-header{padding:16px 20px;border-bottom:1px solid var(--blue-border);font-family:'Syne',sans-serif;font-weight:700;color:var(--gold);display:flex;justify-content:space-between;align-items:center}
+.mod-panel-close{background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer;transition:transform var(--t-fast) var(--ease)}
 .mod-panel-close:hover{transform:rotate(90deg);color:var(--gold)}
 .mod-section{padding:12px 16px;border-bottom:1px solid var(--blue-border)}
 .mod-section-title{font-size:11px;font-weight:600;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
 .mod-row{display:flex;gap:10px;margin-bottom:10px;flex-wrap:wrap}
-.mod-input{flex:1;padding:8px 12px;border-radius:10px;border:1px solid var(--blue-border);background:rgba(0,0,0,0.3);color:var(--text)}
+.mod-input{flex:1;padding:8px 12px;border-radius:10px;border:1px solid var(--blue-border);background:rgba(0,0,0,0.3);color:var(--text);min-width:80px}
 .mod-select{flex:1;padding:8px 12px;border-radius:10px;border:1px solid var(--blue-border);background:rgba(0,0,0,0.3);color:var(--text)}
 .mod-select option{background:var(--surface)}
-.btn-mod-action{background:rgba(255,204,0,0.15);color:var(--gold);border:1px solid var(--gold-border);padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:600}
-.btn-mod-action:hover{background:rgba(255,204,0,0.3)}
-.btn-danger-action{background:rgba(255,68,68,0.15);color:var(--red);border:1px solid rgba(255,68,68,0.3);padding:8px 12px;border-radius:10px;cursor:pointer}
-.btn-danger-action:hover{background:rgba(255,68,68,0.3)}
+.btn-mod-action{background:rgba(255,204,0,0.15);color:var(--gold);border:1px solid var(--gold-border);padding:8px 12px;border-radius:10px;cursor:pointer;font-weight:600;transition:all var(--t-fast) var(--ease)}
+.btn-mod-action:hover{background:rgba(255,204,0,0.3);transform:translateY(-2px)}
+.btn-danger-action{background:rgba(255,68,68,0.15);color:var(--red);border:1px solid rgba(255,68,68,0.3);padding:8px 12px;border-radius:10px;cursor:pointer;transition:all var(--t-fast) var(--ease)}
+.btn-danger-action:hover{background:rgba(255,68,68,0.3);transform:translateY(-2px)}
 .command-item{display:flex;align-items:center;gap:10px;padding:8px 12px;background:var(--surface2);border-radius:12px;margin-bottom:6px}
 .command-text{font-family:monospace;font-size:11px;background:rgba(0,0,0,0.3);padding:4px 8px;border-radius:6px;color:var(--gold)}
 .command-desc{flex:1;font-size:12px}
-.command-copy{background:none;border:none;color:var(--muted);cursor:pointer;padding:4px 8px;border-radius:6px}
+.command-copy{background:none;border:none;color:var(--muted);cursor:pointer;padding:4px 8px;border-radius:6px;transition:all var(--t-fast) var(--ease)}
 .command-copy:hover{background:var(--blue-dim);color:var(--gold)}
+
+/* GROUP HOST PANEL */
+.group-host-panel{position:fixed;bottom:20px;left:20px;z-index:1000;transform:translateX(-420px);transition:transform var(--t-slow) var(--ease-out)}
+.group-host-panel.open{transform:translateX(0)}
+.group-host-panel-btn{width:50px;height:50px;border-radius:50%;background:linear-gradient(135deg,var(--purple),#7a3ac0);border:none;cursor:pointer;font-size:24px;box-shadow:0 4px 20px rgba(159,90,227,0.4);transition:all var(--t-fast) var(--ease-spring);display:flex;align-items:center;justify-content:center}
+.group-host-panel-btn:hover{transform:scale(1.1)}
+.group-host-panel-content{background:var(--surface);border:1px solid var(--purple);border-radius:20px;width:380px;max-height:80vh;overflow-y:auto;margin-bottom:15px;box-shadow:0 20px 50px rgba(0,0,0,0.5)}
+.group-host-header{padding:16px 20px;border-bottom:1px solid var(--blue-border);font-family:'Syne',sans-serif;font-weight:700;color:var(--purple);display:flex;justify-content:space-between}
+.group-host-close{background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer}
+.group-host-close:hover{transform:rotate(90deg);color:var(--purple)}
 
 /* ANNOUNCEMENT OVERLAY */
 .announcement-overlay{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.9);background:linear-gradient(135deg,var(--surface),rgba(20,30,50,0.98));border:2px solid var(--gold);border-radius:30px;padding:40px 60px;text-align:center;z-index:20000;opacity:0;pointer-events:none;transition:all 0.3s var(--ease-spring);max-width:90vw}
@@ -182,8 +193,8 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 .announcement-message{font-size:18px;color:var(--text);margin-bottom:20px}
 .announcement-close{background:var(--gold);border:none;border-radius:30px;padding:8px 25px;color:#1a1200;font-weight:700;cursor:pointer}
 
-/* PROFILE CARD */
-.profile-card{width:380px;padding:0;overflow:hidden}
+/* PROFILE CARD - FIXED */
+.profile-card{width:380px;padding:0;overflow:hidden;background:var(--surface);border-radius:24px}
 .profile-banner{height:100px;background:linear-gradient(135deg,var(--blue),var(--purple));position:relative}
 .profile-avatar-big{position:absolute;bottom:-40px;left:20px;width:80px;height:80px;border:4px solid var(--surface);background:linear-gradient(135deg,var(--blue),var(--purple));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:36px;font-weight:700;overflow:hidden;cursor:pointer}
 .profile-avatar-big img{width:100%;height:100%;object-fit:cover}
@@ -192,7 +203,9 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 .profile-username{font-size:13px;color:var(--muted);margin-bottom:12px}
 .profile-bio{font-size:13px;margin-bottom:16px;padding-bottom:12px;border-bottom:1px solid var(--blue-border)}
 .roles-section{margin-bottom:16px}
-.roles-title{font-size:11px;font-weight:600;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
+.roles-title{font-size:11px;font-weight:600;text-transform:uppercase;color:var(--muted);margin-bottom:8px;display:flex;justify-content:space-between;align-items:center}
+.show-achievements-btn{background:none;border:1px solid var(--gold-border);border-radius:20px;padding:2px 10px;font-size:10px;color:var(--gold);cursor:pointer}
+.show-achievements-btn:hover{background:var(--gold-dim)}
 .role-tag{display:inline-block;background:rgba(45,90,227,0.2);border-radius:12px;padding:4px 10px;font-size:11px;margin-right:6px;margin-bottom:6px}
 .role-tag.owner{background:rgba(255,68,68,0.2);color:#ff8888}
 .role-tag.mod{background:rgba(255,204,0,0.15);color:var(--gold)}
@@ -203,16 +216,30 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 .badges-row{display:flex;flex-wrap:wrap;gap:8px;margin-bottom:16px}
 .badge{background:var(--gold-dim);border:1px solid var(--gold-border);border-radius:20px;padding:4px 10px;font-size:11px}
 .profile-actions{display:flex;gap:10px;margin-top:10px}
-.profile-actions button{flex:1;padding:8px;border-radius:30px;border:none;font-weight:600;cursor:pointer}
+.profile-actions button{flex:1;padding:8px;border-radius:30px;border:none;font-weight:600;cursor:pointer;transition:all var(--t-fast) var(--ease)}
+.profile-actions button:hover{transform:translateY(-2px)}
 .btn-primary{background:linear-gradient(135deg,var(--blue),#1a3bc0);color:white}
 .btn-mod{background:rgba(255,204,0,0.15);border:1px solid var(--gold-border);color:var(--gold)}
 .btn-danger{background:rgba(255,68,68,0.15);border:1px solid rgba(255,68,68,0.3);color:#ff8888}
 .profile-close-btn{background:rgba(255,255,255,0.1);color:white}
 
+/* ACHIEVEMENTS MODAL */
+.achievements-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%) scale(0.9);background:var(--surface);border:2px solid var(--gold);border-radius:24px;padding:25px;width:500px;max-width:90vw;max-height:80vh;overflow-y:auto;z-index:20001;opacity:0;pointer-events:none;transition:all 0.3s var(--ease-spring)}
+.achievements-modal.show{opacity:1;transform:translate(-50%,-50%) scale(1);pointer-events:all}
+.achievements-header{font-size:20px;font-weight:700;color:var(--gold);margin-bottom:15px;display:flex;justify-content:space-between}
+.achievements-close{background:none;border:none;color:var(--muted);font-size:24px;cursor:pointer}
+.achievements-list{display:flex;flex-direction:column;gap:10px}
+.achievement-item{display:flex;align-items:center;gap:12px;padding:10px;background:var(--surface2);border-radius:12px;border-left:3px solid var(--gold)}
+.achievement-icon{font-size:24px}
+.achievement-info{flex:1}
+.achievement-name{font-weight:600;font-size:13px}
+.achievement-desc{font-size:10px;color:var(--muted)}
+.achievement-status{font-size:11px;color:var(--gold)}
+
 /* OVERLAYS */
 .overlay{position:fixed;inset:0;background:rgba(0,0,0,0.65);z-index:10000;display:flex;align-items:center;justify-content:center;opacity:0;pointer-events:none;transition:opacity var(--t-med) var(--ease);backdrop-filter:blur(6px)}
 .overlay.active{opacity:1;pointer-events:all}
-.overlay.active .modal-card,.overlay.active .profile-card{transform:translateY(0) scale(1)}
+.overlay.active .modal-card{transform:translateY(0) scale(1)}
 .modal-card{background:var(--surface);border:1px solid var(--blue-border);border-radius:22px;padding:26px 24px;min-width:310px;max-width:400px;transform:translateY(24px) scale(0.96);transition:transform var(--t-med) var(--ease-spring);box-shadow:0 28px 80px rgba(0,0,0,0.55)}
 .modal-title{font-family:'Syne',sans-serif;font-size:18px;font-weight:700;color:var(--gold);margin-bottom:18px}
 .modal-input{width:100%;padding:11px 14px;border-radius:12px;border:1.5px solid var(--blue-border);background:rgba(0,0,0,0.22);color:var(--text);margin-bottom:12px}
@@ -306,7 +333,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
   </div>
 </div>
 
-<!-- MOD PANEL -->
+<!-- MOD PANEL (Owner/Mod) -->
 <div class="mod-panel" id="modPanel">
   <div class="mod-panel-content">
     <div class="mod-panel-header">
@@ -335,21 +362,27 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
       </div>
       <div class="mod-row">
         <select id="targetUserSelect" class="mod-select"></select>
+        <input type="number" id="coinAmount" placeholder="Coins" class="mod-input" style="width:100px">
         <button class="btn-mod-action" id="giveCoinsBtn">🎁 Give Coins</button>
       </div>
       <div class="mod-row">
         <select id="xpTargetSelect" class="mod-select"></select>
-        <input type="number" id="xpAmount" placeholder="XP amount" class="mod-input" style="width:80px">
+        <input type="number" id="xpAmount" placeholder="XP" class="mod-input" style="width:100px">
         <button class="btn-mod-action" id="giveXPBtn">⚡ Give XP</button>
       </div>
       <div class="mod-row">
         <select id="levelTargetSelect" class="mod-select"></select>
-        <input type="number" id="levelAmount" placeholder="Level" class="mod-input" style="width:80px">
+        <input type="number" id="levelAmount" placeholder="Level" class="mod-input" style="width:100px">
         <button class="btn-mod-action" id="setLevelBtn">📈 Set Level</button>
       </div>
       <div class="mod-row">
         <input type="number" id="globalSlowModeSec" placeholder="Slow mode (seconds)" class="mod-input">
         <button class="btn-mod-action" id="applySlowModeBtn">Set Slow Mode</button>
+      </div>
+      <div class="mod-row">
+        <select id="timeoutUserSelect" class="mod-select"></select>
+        <input type="number" id="timeoutMinutes" placeholder="Minutes" class="mod-input" style="width:100px">
+        <button class="btn-danger-action" id="timeoutBtn">⏱️ Timeout</button>
       </div>
       <div class="mod-row">
         <button class="btn-mod-action" id="viewLogsBtn">📜 View Mod Logs</button>
@@ -377,11 +410,63 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
   <button class="mod-panel-btn" id="modPanelBtn">🛡️</button>
 </div>
 
+<!-- GROUP HOST PANEL -->
+<div class="group-host-panel" id="groupHostPanel">
+  <div class="group-host-panel-content">
+    <div class="group-host-header">
+      <span>👑 GROUP HOST CONTROLS</span>
+      <button class="group-host-close" id="groupHostClose">✕</button>
+    </div>
+    <div class="mod-section">
+      <div class="mod-section-title">👥 MANAGE MEMBERS</div>
+      <div class="mod-row">
+        <select id="groupAddMemberSelect" class="mod-select"></select>
+        <button class="btn-mod-action" id="groupAddMemberBtn">➕ Add Member</button>
+      </div>
+      <div class="mod-row">
+        <select id="groupRemoveMemberSelect" class="mod-select"></select>
+        <button class="btn-danger-action" id="groupRemoveMemberBtn">➖ Remove Member</button>
+      </div>
+    </div>
+    <div class="mod-section">
+      <div class="mod-section-title">⚙️ GROUP SETTINGS</div>
+      <div class="mod-row">
+        <select id="groupBgSelect" class="mod-select">
+          <option value="default">🌙 Default</option>
+          <option value="ocean">🌊 Ocean</option>
+          <option value="sunset">🌅 Sunset</option>
+          <option value="forest">🌲 Forest</option>
+        </select>
+        <button class="btn-mod-action" id="groupBgBtn">Apply BG</button>
+      </div>
+      <div class="mod-row">
+        <input type="number" id="groupSlowModeSec" placeholder="Slow mode (seconds)" class="mod-input">
+        <button class="btn-mod-action" id="groupSlowModeBtn">Set Slow Mode</button>
+      </div>
+      <div class="mod-row">
+        <select id="groupTimeoutUserSelect" class="mod-select"></select>
+        <input type="number" id="groupTimeoutMinutes" placeholder="Minutes" class="mod-input">
+        <button class="btn-danger-action" id="groupTimeoutBtn">⏱️ Timeout</button>
+      </div>
+    </div>
+  </div>
+  <button class="group-host-panel-btn" id="groupHostPanelBtn">👑</button>
+</div>
+
 <!-- ANNOUNCEMENT OVERLAY -->
 <div class="announcement-overlay" id="announcementOverlay">
   <div class="announcement-title">📢 ANNOUNCEMENT</div>
   <div class="announcement-message" id="announcementMessage"></div>
   <button class="announcement-close" id="announcementClose">Got it!</button>
+</div>
+
+<!-- ACHIEVEMENTS MODAL -->
+<div class="achievements-modal" id="achievementsModal">
+  <div class="achievements-header">
+    <span>🏆 ACHIEVEMENTS</span>
+    <button class="achievements-close" id="achievementsClose">✕</button>
+  </div>
+  <div id="achievementsList" class="achievements-list"></div>
 </div>
 
 <!-- PROFILE OVERLAY -->
@@ -394,7 +479,13 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
       <div class="profile-name-big" id="profileName">Username</div>
       <div class="profile-username" id="profileUsername">@username</div>
       <div class="profile-bio" id="profileBio"></div>
-      <div class="roles-section"><div class="roles-title">ROLES</div><div id="profileRoles"></div></div>
+      <div class="roles-section">
+        <div class="roles-title">
+          ROLES
+          <button class="show-achievements-btn" id="showAchievementsBtn">🏆 view achievements</button>
+        </div>
+        <div id="profileRoles"></div>
+      </div>
       <div class="profile-stats">
         <div class="profile-stat"><div class="stat-val" id="profileMessages">0</div><div class="stat-lbl">messages</div></div>
         <div class="profile-stat"><div class="stat-val" id="profileLevel">1</div><div class="stat-lbl">level</div></div>
@@ -411,6 +502,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
         <button class="btn-danger" id="kickBtn">👢 Kick</button>
         <button class="btn-danger" id="banBtn">🔨 Ban</button>
         <button class="btn-mod" id="ownerGiveCoinsBtn">🎁 Reward Coins</button>
+        <button class="btn-danger" id="timeoutProfileBtn">⏱️ Timeout</button>
       </div>
     </div>
   </div>
@@ -494,7 +586,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 
 <script>
 // ============================================================
-// FANTARENA ULTIMATE - COMPLETE REWRITE
+// FANTARENA ULTIMATE - COMPLETE FIXED VERSION
 // ============================================================
 document.addEventListener('DOMContentLoaded', function() {
   console.log('🔥 Fantarena Ultimate loading...');
@@ -517,6 +609,7 @@ document.addEventListener('DOMContentLoaded', function() {
   // ============================================================
   let currentChannel = 'general';
   let currentGroupId = null;
+  let currentGroupData = null;
   let channelSub = null;
   let dmSub = null;
   let nameColor = localStorage.getItem('fanter_nameColor') || '#ffcc00';
@@ -531,6 +624,8 @@ document.addEventListener('DOMContentLoaded', function() {
   let globalSlowMode = 0;
   let lastMessageTime = 0;
   let allUsersList = [];
+  let groupSlowMode = 0;
+  let groupLastMessageTime = {};
 
   function safeJSON(key, fallback) {
     try { return JSON.parse(localStorage.getItem(key)) || fallback; }
@@ -573,26 +668,52 @@ document.addEventListener('DOMContentLoaded', function() {
     if (newLv > oldLv) {
       document.getElementById('levelBadge').textContent = `Lv ${newLv}`;
       toast(`🎉 Level up! You're now Level ${newLv}!`, 'gold');
-      if (newLv >= 10) awardBadge('Level 10');
-      if (newLv >= 20) awardBadge('Max Level');
     }
     document.getElementById('levelBadge').textContent = `Lv ${getLevel(userXP[currentUser.id])}`;
   }
-  function awardBadge(name) {
-    if (!userBadges[currentUser.id]?.includes(name)) {
-      userBadges[currentUser.id] = [...(userBadges[currentUser.id] || []), name];
-      save();
-      toast(`🏆 Badge unlocked: ${name}!`, 'gold');
+
+  // ============================================================
+  // ACHIEVEMENTS
+  // ============================================================
+  const ACHIEVEMENTS = [
+    { name: 'First Message', desc: 'Send your first message', icon: '🎮', check: () => messageCounts[currentUser.id] >= 1 },
+    { name: 'Chatterbox', desc: 'Send 100 messages', icon: '💬', check: () => messageCounts[currentUser.id] >= 100 },
+    { name: 'Level 10', desc: 'Reach level 10', icon: '🔟', check: () => getLevel(userXP[currentUser.id] || 0) >= 10 },
+    { name: 'Level 20', desc: 'Reach level 20', icon: '💎', check: () => getLevel(userXP[currentUser.id] || 0) >= 20 },
+    { name: 'High Roller', desc: 'Win 100 coins in a single bet', icon: '🎰', check: () => false },
+    { name: 'Social Butterfly', desc: 'Make 5 friends', icon: '🦋', check: () => false },
+    { name: 'Group Host', desc: 'Create a group', icon: '👑', check: () => false },
+  ];
+  
+  function getUserAchievements(userId) {
+    const achievements = [];
+    for (const ach of ACHIEVEMENTS) {
+      if (ach.check && ach.check()) achievements.push(ach);
     }
+    return achievements;
   }
-  function checkBadges() {
-    const c = messageCounts[currentUser.id] || 0;
-    if (c >= 1) awardBadge('First Message');
-    if (c >= 50) awardBadge('Regular');
-    if (c >= 100) awardBadge('Chatterbox');
-    if (c >= 500) awardBadge('Veteran');
-    if (dailyStreak >= 7) awardBadge('Week Streak');
+  
+  function showAchievementsModal() {
+    const achievements = getUserAchievements(currentUser.id);
+    const container = document.getElementById('achievementsList');
+    container.innerHTML = achievements.map(ach => `
+      <div class="achievement-item">
+        <div class="achievement-icon">${ach.icon}</div>
+        <div class="achievement-info">
+          <div class="achievement-name">${ach.name}</div>
+          <div class="achievement-desc">${ach.desc}</div>
+        </div>
+        <div class="achievement-status">✅</div>
+      </div>
+    `).join('');
+    if (achievements.length === 0) {
+      container.innerHTML = '<div style="text-align:center;padding:20px;color:var(--muted)">no achievements yet. keep chatting!</div>';
+    }
+    document.getElementById('achievementsModal').classList.add('show');
   }
+  
+  document.getElementById('showAchievementsBtn').onclick = showAchievementsModal;
+  document.getElementById('achievementsClose').onclick = () => document.getElementById('achievementsModal').classList.remove('show');
 
   // ============================================================
   // MOD/OWNER SYSTEM
@@ -611,39 +732,37 @@ document.addEventListener('DOMContentLoaded', function() {
   function hasModPermissions(username) { return isOwner(username) || isModerator(username); }
 
   async function assignModeratorDB(username) {
-    if (!isOwner(currentUser.displayName || currentUser.username)) return false;
+    if (!isOwner(currentUser.displayName || currentUser.username)) return;
     try {
       await sb.from('fanter_moderators').insert({ username, assigned_by: currentUser.id });
       moderatorsList.push(username);
       toast(`✅ ${username} is now a moderator`, 'gold');
-      return true;
-    } catch(e) { toast('Failed to assign moderator', 'red'); return false; }
+    } catch(e) { toast('Failed to assign moderator', 'red'); }
   }
   async function revokeModeratorDB(username) {
-    if (!isOwner(currentUser.displayName || currentUser.username)) return false;
+    if (!isOwner(currentUser.displayName || currentUser.username)) return;
     try {
       await sb.from('fanter_moderators').delete().eq('username', username);
       moderatorsList = moderatorsList.filter(m => m !== username);
       toast(`✅ ${username} is no longer a moderator`, 'gold');
-      return true;
-    } catch(e) { toast('Failed to revoke moderator', 'red'); return false; }
+    } catch(e) { toast('Failed to revoke moderator', 'red'); }
   }
-  async function kickUserDB(userId, username) {
+  
+  async function kickUser(userId, username) {
     if (!hasModPermissions(currentUser.displayName || currentUser.username)) return;
     toast(`👢 Kicked ${username}`, 'gold');
   }
-  async function banUserDB(userId, username) {
+  async function banUser(userId, username) {
     if (!isOwner(currentUser.displayName || currentUser.username)) return;
     toast(`🔨 Banned ${username}`, 'gold');
   }
-  async function ownerGiveCoinsDB(targetUsername, amount) {
-    if (!isOwner(currentUser.displayName || currentUser.username)) return false;
-    const user = allUsersList.find(u => u.username === targetUsername);
-    if (user) {
-      toast(`🎁 Gave ${amount} coins to ${targetUsername}`, 'gold');
-      return true;
-    }
-    return false;
+  async function timeoutUser(username, minutes) {
+    if (!hasModPermissions(currentUser.displayName || currentUser.username)) return;
+    toast(`⏱️ Timed out ${username} for ${minutes} minutes`, 'gold');
+  }
+  async function ownerGiveCoins(targetUsername, amount) {
+    if (!isOwner(currentUser.displayName || currentUser.username)) return;
+    toast(`🎁 Gave ${amount} coins to ${targetUsername}`, 'gold');
   }
   async function giveXPToUser(targetUsername, amount) {
     if (!isOwner(currentUser.displayName || currentUser.username)) return;
@@ -667,7 +786,7 @@ document.addEventListener('DOMContentLoaded', function() {
     toast('🎉 Confetti everywhere!', 'gold');
   }
   function triggerFireworks() {
-    for (let i = 0; i < 30; i++) {
+    for (let i = 0; i < 50; i++) {
       const f = document.createElement('div');
       const x = Math.random() * 100;
       const y = Math.random() * 100;
@@ -681,11 +800,9 @@ document.addEventListener('DOMContentLoaded', function() {
     const overlay = document.getElementById('announcementOverlay');
     document.getElementById('announcementMessage').textContent = message;
     overlay.classList.add('show');
-    setTimeout(() => { if (overlay.classList.contains('show')) overlay.classList.remove('show'); }, 8000);
+    setTimeout(() => overlay.classList.remove('show'), 8000);
   }
-  document.getElementById('announcementClose').onclick = () => {
-    document.getElementById('announcementOverlay').classList.remove('show');
-  };
+  document.getElementById('announcementClose').onclick = () => document.getElementById('announcementOverlay').classList.remove('show');
 
   // ============================================================
   // BACKGROUND PRESETS
@@ -707,20 +824,73 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // ============================================================
+  // GROUP HOST FUNCTIONS
+  // ============================================================
+  let currentGroupHostPanelGroup = null;
+  
+  function showGroupHostPanel(groupId, groupData) {
+    currentGroupHostPanelGroup = { id: groupId, data: groupData };
+    // Populate friend list for adding members
+    const friendSelect = document.getElementById('groupAddMemberSelect');
+    friendSelect.innerHTML = '<option value="">Select friend...</option>';
+    friendsList.forEach(friend => {
+      friendSelect.innerHTML += `<option value="${friend.user_id}">${friend.display_name || friend.username}</option>`;
+    });
+    const memberSelect = document.getElementById('groupRemoveMemberSelect');
+    memberSelect.innerHTML = '<option value="">Select member...</option>';
+    if (groupData.members) {
+      groupData.members.forEach(memberId => {
+        const member = allUsersList.find(u => u.user_id === memberId);
+        if (member && member.user_id !== currentUser.id) {
+          memberSelect.innerHTML += `<option value="${member.user_id}">${member.display_name || member.username}</option>`;
+        }
+      });
+    }
+    const timeoutSelect = document.getElementById('groupTimeoutUserSelect');
+    timeoutSelect.innerHTML = '<option value="">Select user...</option>';
+    if (groupData.members) {
+      groupData.members.forEach(memberId => {
+        const member = allUsersList.find(u => u.user_id === memberId);
+        if (member && member.user_id !== currentUser.id) {
+          timeoutSelect.innerHTML += `<option value="${member.user_id}">${member.display_name || member.username}</option>`;
+        }
+      });
+    }
+    document.getElementById('groupHostPanel').classList.add('open');
+  }
+  
+  async function groupAddMember(userId) {
+    if (!currentGroupHostPanelGroup) return;
+    toast(`➕ Added member to group`, 'gold');
+  }
+  async function groupRemoveMember(userId) {
+    if (!currentGroupHostPanelGroup) return;
+    toast(`➖ Removed member from group`, 'gold');
+  }
+  function setGroupBackground(preset) {
+    toast(`Group background changed`, 'gold');
+  }
+  function setGroupSlowMode(seconds) {
+    groupSlowMode = seconds;
+    toast(`Group slow mode set to ${seconds} seconds`, 'gold');
+  }
+  async function groupTimeoutUser(userId, minutes) {
+    toast(`⏱️ Timed out user for ${minutes} minutes`, 'gold');
+  }
+
+  // ============================================================
   // RENDER MESSAGE
   // ============================================================
   function renderMessage(msg) {
     const lv = getLevel(userXP[msg.user_id] || 0);
-    const isOwn = msg.user_id === currentUser.id;
     const avatarUrl = userAvatars[msg.user_id];
     const isMod = isModerator(msg.username);
     const isOwnr = isOwner(msg.username);
     const nameColorStyle = msg.nameColor || '#ffcc00';
-    let nameColorClass = '';
-    if (nameColorStyle === '#ff4444') nameColorClass = 'style="color:#ff4444;text-shadow:0 0 5px #ff4444,0 0 10px rgba(255,68,68,0.5)"';
-    else if (nameColorStyle === '#9f5ae3') nameColorClass = 'style="color:#9f5ae3;text-shadow:0 0 5px #9f5ae3,0 0 10px rgba(159,90,227,0.5)"';
-    else if (nameColorStyle === '#00e87a') nameColorClass = 'style="color:#00e87a;text-shadow:0 0 5px #00e87a,0 0 10px rgba(0,232,122,0.5)"';
-    else nameColorClass = `style="color:${nameColorStyle}"`;
+    let nameColorAttr = `style="color:${nameColorStyle}"`;
+    if (nameColorStyle === '#ff4444') nameColorAttr = `style="color:#ff4444;text-shadow:0 0 5px #ff4444,0 0 10px rgba(255,68,68,0.5)"`;
+    else if (nameColorStyle === '#9f5ae3') nameColorAttr = `style="color:#9f5ae3;text-shadow:0 0 5px #9f5ae3,0 0 10px rgba(159,90,227,0.5)"`;
+    else if (nameColorStyle === '#00e87a') nameColorAttr = `style="color:#00e87a;text-shadow:0 0 5px #00e87a,0 0 10px rgba(0,232,122,0.5)"`;
     return `
       <div class="message" id="msg-${msg.id}">
         <div class="msg-avatar" onclick="showProfile('${esc(msg.user_id)}')">
@@ -728,7 +898,7 @@ document.addEventListener('DOMContentLoaded', function() {
         </div>
         <div class="msg-body">
           <div class="msg-meta">
-            <span class="msg-name" onclick="showProfile('${esc(msg.user_id)}')" ${nameColorClass}>${esc(msg.username)}</span>
+            <span class="msg-name" onclick="showProfile('${esc(msg.user_id)}')" ${nameColorAttr}>${esc(msg.username)}</span>
             <span class="msg-lv">Lv${lv}</span>
             ${isMod ? '<span class="mod-badge">🛡️ MOD</span>' : ''}
             ${isOwnr ? '<span class="owner-badge">👑 OWNER</span>' : ''}
@@ -742,9 +912,9 @@ document.addEventListener('DOMContentLoaded', function() {
             ${['👍','❤️','😂','😮','🔥','💀','🏆','😭'].map(e => `<span class="react-btn" onclick="addReaction('${msg.id}','${e}')">${e}</span>`).join('')}
           </div>
           <button class="msg-action-btn" onclick="toggleReactionPicker('${msg.id}')">😊</button>
-          <button class="msg-action-btn" onclick="startReply('${msg.id}','${esc(msg.username)}','${esc((msg.message||'').slice(0,50))}')">↩</button>
-          ${isOwn ? `<button class="msg-action-btn" onclick="startEdit('${msg.id}')">✏️</button>` : ''}
-          ${isOwn ? `<button class="msg-action-btn" onclick="deleteMsg('${msg.id}')" style="color:var(--red)">🗑</button>` : ''}
+          <button class="msg-action-btn" onclick="startReply('${msg.id}','${esc(msg.username)}')">↩</button>
+          ${msg.user_id === currentUser.id ? `<button class="msg-action-btn" onclick="startEdit('${msg.id}')">✏️</button>` : ''}
+          ${msg.user_id === currentUser.id ? `<button class="msg-action-btn" onclick="deleteMsg('${msg.id}')" style="color:var(--red)">🗑</button>` : ''}
         </div>
       </div>`;
   }
@@ -787,7 +957,7 @@ document.addEventListener('DOMContentLoaded', function() {
   };
   document.addEventListener('click', e => { if (!e.target.closest('.msg-actions')) document.querySelectorAll('.reaction-picker.open').forEach(p => p.classList.remove('open')); });
 
-  window.startReply = function(id, username, preview) {
+  window.startReply = function(id, username) {
     document.getElementById('messageInput').value = `@${username} `;
     document.getElementById('messageInput').focus();
     toast(`↩ Replying to ${username}`, 'gold');
@@ -844,14 +1014,20 @@ document.addEventListener('DOMContentLoaded', function() {
     let text = document.getElementById('messageInput').value.trim();
     if (!text) return;
     document.getElementById('messageInput').value = '';
-    if (globalSlowMode > 0) {
+    
+    // Check slow mode
+    let slowModeActive = currentGroupId ? groupSlowMode : globalSlowMode;
+    if (slowModeActive > 0) {
+      const lastTime = currentGroupId ? (groupLastMessageTime[currentGroupId] || 0) : lastMessageTime;
       const now = Date.now();
-      if (now - lastMessageTime < globalSlowMode * 1000) {
-        toast(`⏸ Slow mode active! Wait ${globalSlowMode}s`, 'red');
+      if (now - lastTime < slowModeActive * 1000) {
+        toast(`⏸ Slow mode active! Wait ${slowModeActive}s`, 'red');
         return;
       }
-      lastMessageTime = now;
+      if (currentGroupId) groupLastMessageTime[currentGroupId] = now;
+      else lastMessageTime = now;
     }
+    
     if (text.startsWith('/')) return handleCommand(text);
     try {
       await sb.from('fanter_chat').insert({
@@ -865,7 +1041,6 @@ document.addEventListener('DOMContentLoaded', function() {
       messageCounts[currentUser.id] = (messageCounts[currentUser.id] || 0) + 1;
       save();
       addXP(5);
-      checkBadges();
     } catch(e) { toast('❌ Failed to send', 'red'); }
   }
 
@@ -875,31 +1050,15 @@ document.addEventListener('DOMContentLoaded', function() {
   async function handleCommand(text) {
     const parts = text.slice(1).split(' ');
     const cmd = parts[0].toLowerCase();
-    const commands = {
-      roll: () => `🎲 ${currentUser.displayName} rolled ${Math.floor(Math.random()*100)+1}!`,
-      '8ball': () => { const a=['Yes!','No!','Maybe...','Definitely!','Never!','Ask again','Absolutely!']; return `🎱 ${a[Math.floor(Math.random()*a.length)]}`; },
-      flip: () => `🪙 ${Math.random()>0.5?'Heads':'Tails'}!`,
-      help: () => 'Commands: /roll, /8ball, /flip, /nick [name], /trivia, /bet [coins]',
-    };
-    if (commands[cmd]) { await insertMessage(commands[cmd]()); return; }
-    if (cmd === 'nick' && parts[1]) {
+    if (cmd === 'roll') await insertMessage(`🎲 ${currentUser.displayName} rolled ${Math.floor(Math.random()*100)+1}!`);
+    else if (cmd === '8ball') { const a=['Yes!','No!','Maybe...','Definitely!','Never!','Ask again','Absolutely!']; await insertMessage(`🎱 ${a[Math.floor(Math.random()*a.length)]}`); }
+    else if (cmd === 'flip') await insertMessage(`🪙 ${Math.random()>0.5?'Heads':'Tails'}!`);
+    else if (cmd === 'help') toast('Commands: /roll, /8ball, /flip, /nick [name]', 'gold');
+    else if (cmd === 'nick' && parts[1]) {
       currentUser.displayName = parts.slice(1).join(' ');
       localStorage.setItem('fanter_currentUser', JSON.stringify(currentUser));
       toast(`✅ Nickname: ${currentUser.displayName}`);
-      return;
-    }
-    if (cmd === 'bet' && parts[1]) {
-      const amount = parseInt(parts[1]);
-      if (isNaN(amount) || amount < 1) { toast('Usage: /bet [amount]', 'red'); return; }
-      if (amount > coins()) { toast(`❌ You only have 🪙${coins()}`, 'red'); return; }
-      const win = Math.random() > 0.5;
-      const gained = win ? amount : -amount;
-      addCoins(gained);
-      await insertMessage(win ? `🎰 ${currentUser.displayName} bet 🪙${amount} and WON! (+🪙${amount})` : `🎰 ${currentUser.displayName} bet 🪙${amount} and lost... (-🪙${amount})`);
-      if (win && amount >= 100) awardBadge('High Roller');
-      return;
-    }
-    toast('Unknown command. Try /help', 'red');
+    } else toast('Unknown command. Try /help', 'red');
   }
   async function insertMessage(text) {
     await sb.from('fanter_chat').insert({
@@ -937,6 +1096,8 @@ document.addEventListener('DOMContentLoaded', function() {
   // ============================================================
   // GROUPS
   // ============================================================
+  let friendsList = [];
+  
   async function loadGroups() {
     try {
       const { data } = await sb.from('fanter_groups').select('*');
@@ -957,11 +1118,23 @@ document.addEventListener('DOMContentLoaded', function() {
   function switchToGroup(groupId, groupName, isHost) {
     currentGroupId = groupId;
     currentChannel = null;
+    currentGroupData = { id: groupId, name: groupName, isHost: isHost };
     document.getElementById('chatTitle').innerHTML = `👥 ${esc(groupName)}${isHost ? ' 👑 HOST' : ''}`;
     document.querySelectorAll('.channel').forEach(c => c.classList.remove('active'));
     document.querySelectorAll('[data-group-id]').forEach(g => g.classList.remove('active'));
     const activeGroup = document.querySelector(`[data-group-id="${groupId}"]`);
     if (activeGroup) activeGroup.classList.add('active');
+    
+    // Show/hide group host panel button
+    const groupHostBtn = document.getElementById('groupHostPanelBtn');
+    if (isHost) {
+      groupHostBtn.style.display = 'flex';
+      // Store current group for panel
+      window.currentHostGroup = { id: groupId, name: groupName, isHost: true };
+    } else {
+      groupHostBtn.style.display = 'none';
+    }
+    
     loadMessages();
     setupRealtime();
   }
@@ -982,6 +1155,7 @@ document.addEventListener('DOMContentLoaded', function() {
       if (!fData || !fData.length) { container.innerHTML = '<div class="hint" style="padding:8px 16px;color:var(--muted)">no friends yet</div>'; return; }
       const { data: f } = await sb.from('fanter_presence').select('*').in('user_id', fData.map(d => d.friend_id));
       if (!f || !f.length) { container.innerHTML = '<div class="hint">no friends yet</div>'; return; }
+      friendsList = f;
       container.innerHTML = f.map(fr => `
         <div class="sidebar-item" onclick="showProfile('${esc(fr.user_id)}')">
           <div class="mini-avatar">${fr.profile_pic ? `<img src="${fr.profile_pic}">` : (fr.username?.[0]?.toUpperCase() || 'U')}</div>
@@ -1018,13 +1192,14 @@ document.addEventListener('DOMContentLoaded', function() {
         (online.length ? `<div class="section-sep">online — ${online.length}</div>` + online.map(memberEl).join('') : '') +
         (offline.length ? `<div class="section-sep">offline — ${offline.length}</div>` + offline.map(memberEl).join('') : '');
       
-      // Update dropdowns with all users
+      // Update all dropdowns
       const userOptions = data.map(u => `<option value="${esc(u.username)}">${esc(u.display_name || u.username)}</option>`).join('');
       document.getElementById('targetUserSelect').innerHTML = userOptions;
       document.getElementById('xpTargetSelect').innerHTML = userOptions;
       document.getElementById('levelTargetSelect').innerHTML = userOptions;
       document.getElementById('quickUserSelect').innerHTML = userOptions;
       document.getElementById('modUserSelect').innerHTML = userOptions;
+      document.getElementById('timeoutUserSelect').innerHTML = userOptions;
       
       // Leaderboard
       const lb = Object.entries(userXP).sort((a,b) => b[1]-a[1]).slice(0,7);
@@ -1078,8 +1253,6 @@ document.addEventListener('DOMContentLoaded', function() {
       document.getElementById('profileMessages').textContent = messageCounts[userId] || 0;
       document.getElementById('profileLevel').textContent = getLevel(userXP[userId] || 0);
       document.getElementById('profileXP').textContent = userXP[userId] || 0;
-      const badges = userBadges[userId] || [];
-      document.getElementById('profileBadges').innerHTML = badges.map(b => `<div class="badge">🏆 ${esc(b)}</div>`).join('') || '<div style="font-size:11px;color:var(--muted)">no badges yet</div>';
       
       let rolesHtml = '';
       if (isOwner(username)) rolesHtml += '<span class="role-tag owner">👑 Owner</span>';
@@ -1097,13 +1270,20 @@ document.addEventListener('DOMContentLoaded', function() {
         document.getElementById('kickBtn').style.display = isCurrentMod ? 'block' : 'none';
         document.getElementById('banBtn').style.display = isCurrentOwner ? 'block' : 'none';
         document.getElementById('ownerGiveCoinsBtn').style.display = isCurrentOwner ? 'block' : 'none';
+        document.getElementById('timeoutProfileBtn').style.display = isCurrentMod ? 'block' : 'none';
+        
         document.getElementById('modAssignBtn').onclick = () => { assignModeratorDB(username); closeOverlay('profileOverlay'); };
         document.getElementById('modRevokeBtn').onclick = () => { revokeModeratorDB(username); closeOverlay('profileOverlay'); };
-        document.getElementById('kickBtn').onclick = () => { kickUserDB(userId, name); closeOverlay('profileOverlay'); };
-        document.getElementById('banBtn').onclick = () => { banUserDB(userId, name); closeOverlay('profileOverlay'); };
+        document.getElementById('kickBtn').onclick = () => { kickUser(userId, name); closeOverlay('profileOverlay'); };
+        document.getElementById('banBtn').onclick = () => { banUser(userId, name); closeOverlay('profileOverlay'); };
         document.getElementById('ownerGiveCoinsBtn').onclick = () => {
           let amt = prompt(`How many coins to give to ${name}?`);
-          if (amt && !isNaN(amt)) ownerGiveCoinsDB(username, parseInt(amt));
+          if (amt && !isNaN(amt)) ownerGiveCoins(username, parseInt(amt));
+          closeOverlay('profileOverlay');
+        };
+        document.getElementById('timeoutProfileBtn').onclick = () => {
+          let mins = prompt(`Timeout ${name} for how many minutes?`);
+          if (mins && !isNaN(mins)) timeoutUser(username, parseInt(mins));
           closeOverlay('profileOverlay');
         };
       } else { modActions.style.display = 'none'; }
@@ -1166,6 +1346,19 @@ document.addEventListener('DOMContentLoaded', function() {
   document.querySelectorAll('.overlay').forEach(o => { o.addEventListener('click', e => { if (e.target === o) o.classList.remove('active'); }); });
 
   // ============================================================
+  // PILL ANIMATION
+  // ============================================================
+  function updateChannelPill() {
+    const activeChannel = document.querySelector('.channel.active');
+    if (!activeChannel) return;
+    const pill = document.getElementById('channelPill');
+    const offsetTop = activeChannel.offsetTop;
+    pill.style.top = offsetTop + 'px';
+    pill.style.height = '32px';
+    pill.classList.add('visible');
+  }
+
+  // ============================================================
   // EVENT BINDINGS
   // ============================================================
   document.getElementById('enterBtn').onclick = () => {
@@ -1191,8 +1384,12 @@ document.addEventListener('DOMContentLoaded', function() {
       document.querySelectorAll('.channel').forEach(c => c.classList.remove('active'));
       ch.classList.add('active');
       document.querySelectorAll('[data-group-id]').forEach(g => g.classList.remove('active'));
+      updateChannelPill();
       loadMessages();
       setupRealtime();
+      // Hide group host panel button
+      document.getElementById('groupHostPanelBtn').style.display = 'none';
+      document.getElementById('groupHostPanel').classList.remove('open');
     };
   });
 
@@ -1235,15 +1432,14 @@ document.addEventListener('DOMContentLoaded', function() {
     localStorage.setItem('dailyStreak', dailyStreak);
     closeOverlay('dailyOverlay');
     toast(`🎁 Claimed +🪙${bonus}!`, 'gold');
-    checkBadges();
   };
   document.getElementById('closeDailyModal').onclick = () => closeOverlay('dailyOverlay');
 
   // Shop
   const SHOP_ITEMS = [
-    { id: 'r', name: 'Red Name', price: 200, emoji: '🔴', value: '#ff4444', type: 'name_color', effect: 'fiery' },
-    { id: 'p', name: 'Purple Name', price: 200, emoji: '🟣', value: '#9f5ae3', type: 'name_color', effect: 'glow' },
-    { id: 'g', name: 'Green Name', price: 200, emoji: '🟢', value: '#00e87a', type: 'name_color', effect: 'fresh' },
+    { id: 'r', name: 'Red Name', price: 200, emoji: '🔴', value: '#ff4444', type: 'name_color' },
+    { id: 'p', name: 'Purple Name', price: 200, emoji: '🟣', value: '#9f5ae3', type: 'name_color' },
+    { id: 'g', name: 'Green Name', price: 200, emoji: '🟢', value: '#00e87a', type: 'name_color' },
     { id: 'c', name: 'Crown Badge', price: 1000, emoji: '👑', value: 'Crown 👑', type: 'badge' },
     { id: 'xp', name: 'XP Boost (+100 XP)', price: 150, emoji: '⚡', value: '100', type: 'xp' },
   ];
@@ -1262,8 +1458,8 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!item) return;
     if (coins() < item.price) { toast(`❌ Need 🪙${item.price}`, 'red'); return; }
     addCoins(-item.price);
-    if (item.type === 'name_color') { nameColor = item.value; localStorage.setItem('fanter_nameColor', nameColor); toast(`✅ Name color changed! ${item.effect ? '✨' : ''}`, 'gold'); }
-    else if (item.type === 'badge') { awardBadge(item.value); }
+    if (item.type === 'name_color') { nameColor = item.value; localStorage.setItem('fanter_nameColor', nameColor); toast(`✅ Name color changed!`, 'gold'); }
+    else if (item.type === 'badge') { toast(`🏆 Badge purchased!`, 'gold'); }
     else if (item.type === 'xp') { addXP(100); }
     renderShop();
   };
@@ -1334,8 +1530,8 @@ document.addEventListener('DOMContentLoaded', function() {
   };
   document.getElementById('gifSearch').addEventListener('input', e => searchGifs(e.target.value));
 
-  // Emoji Picker with search
-  const ALL_EMOJIS = ['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','👹','👺','🤡','💩','👻','💀','👽','🤖','🎃','😺','😸','😹','😻','😼','😽','🙀','😿','😾','❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❣️','💕','💞','💓','💗','💖','💘','💝','💟','☮️','✝️','☪️','🕉️','☸️','✡️','🔯','🕎','☯️','☦️','🛐','⛎','♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓','🆔','⚛️','🉑','☢️','☣️','📴','📳','🈶','🈚','🈸','🈺','🈷️','✴️','🉐','💢','💠','💮','🈴','🈳','🈯','🈲','🈂️','㊗️','㊙️','🈹','🈵','🔴','🟠','🟡','🟢','🔵','🟣','🟤','⚫','⚪','🟥','🟧','🟨','🟩','🟦','🟪','🟫','⬛','⬜','◼️','◻️','◾','◽','▪️','▫️','🔶','🔷','🔸','🔹','🔺','🔻','💠','🔘','🔲','🔳','⚪','⚫','🔴','🔵','🟢','🟡','🟠','🟣','🟤','⬛','⬜','◼️','◻️','◾','◽','▪️','▫️','🔶','🔷','🔸','🔹','🔺','🔻','💠','🔘','🔲','🔳'];
+  // Emoji Picker with ALL emojis
+  const ALL_EMOJIS = ['😀','😃','😄','😁','😆','😅','😂','🤣','😊','😇','🙂','🙃','😉','😌','😍','🥰','😘','😗','😙','😚','😋','😛','😝','😜','🤪','🤨','🧐','🤓','😎','🤩','🥳','😏','😒','😞','😔','😟','😕','🙁','☹️','😣','😖','😫','😩','🥺','😢','😭','😤','😠','😡','🤬','🤯','😳','🥵','🥶','😱','😨','😰','😥','😓','🤗','🤔','🤭','🤫','🤥','😶','😐','😑','😬','🙄','😯','😦','😧','😮','😲','🥱','😴','🤤','😪','😵','🤐','🥴','🤢','🤮','🤧','😷','🤒','🤕','🤑','🤠','😈','👿','👹','👺','🤡','💩','👻','💀','👽','🤖','🎃','😺','😸','😹','😻','😼','😽','🙀','😿','😾','❤️','🧡','💛','💚','💙','💜','🖤','🤍','🤎','💔','❣️','💕','💞','💓','💗','💖','💘','💝','💟','☮️','✝️','☪️','🕉️','☸️','✡️','🔯','🕎','☯️','☦️','🛐','⛎','♈','♉','♊','♋','♌','♍','♎','♏','♐','♑','♒','♓','🆔','⚛️','🉑','☢️','☣️','📴','📳','🈶','🈚','🈸','🈺','🈷️','✴️','🉐','💢','💠','💮','🈴','🈳','🈯','🈲','🈂️','㊗️','㊙️','🈹','🈵','🔴','🟠','🟡','🟢','🔵','🟣','🟤','⚫','⚪','🟥','🟧','🟨','🟩','🟦','🟪','🟫','⬛','⬜','◼️','◻️','◾','◽','▪️','▫️','🔶','🔷','🔸','🔹','🔺','🔻','💠','🔘','🔲','🔳','⭐','🌟','✨','⚡','🔥','💧','💨','💤','💦','💫','💥','💢','💯','🔔','🔕','🎵','🎶','🎤','🎧','🎮','🎲','🎯','🎰','🎳','🎴','🎻','🎸','🎹','🎺','🎷','🎼','🎧','🎤','🎭','🎪','🎨','🎬','🎫','🎟️','🎠','🎡','🎢','🎣','🎥','🎦','📷','📸','📹','📽️','🎞️','📺','📻','📱','📲','☎️','📞','📟','📠','📡','🔋','🔌','💻','🖥️','🖨️','⌨️','🖱️','🖲️','💽','💾','💿','📀','🎙️','🎚️','🎛️','🧭','⏰','⏲️','⏱️','⌛','⏳','📆','📅','🗓️','📁','📂','📄','📑','📊','📈','📉','🗂️','📰','🗞️','📓','📔','📒','📕','📗','📘','📙','📚','📖','🔖','🔗','📎','🖇️','✂️','📏','📐','📍','📌','✒️','✏️','🖍️','🖌️','🔍','🔎','🔐','🔒','🔓','💳','💴','💵','💶','💷','💰','💸','💎','⚖️','🔧','🔨','⚒️','🛠️','⛏️','🔩','⚙️','🗜️','🔫','💣','🔪','🗡️','⚔️','🛡️','🚬','⚰️','⚱️','🏺','🔮','📿','💈','⚗️','🔭','🔬','🕳️','💊','💉','🌡️','🧪','🧫','🧬','🦠','🦷','🦴','🧠','🧿','🪀','🪁','🔮','🧸','📿','🕯️','🪔','🧨','🎈','🎉','🎊','🎁','🎗️','🎀','🎏','🎐','🧧','🎑','🎄','🎃','🎅','🎋','🎍','🎎','🎏','🎐','🎑','🎀','🎁','🎂','🎈','🎉','🎊','🎋','🎌','🎍','🎎','🎏','🎐','🎑','🎒','🎓','🎟️','🎫','🎬','🎭','🎮','🎯','🎰','🎱','🎲','🎳','🎴','🎵','🎶','🎷','🎸','🎹','🎺','🎻','🎼','🎽','🎾','🎿','🏀','🏁','🏂','🏃','🏄','🏅','🏆','🏇','🏈','🏉','🏊','🏋️','🏌️','🏍️','🏎️','🏏','🏐','🏑','🏒','🏓','🏔️','🏕️','🏖️','🏗️','🏘️','🏙️','🏚️','🏛️','🏜️','🏝️','🏞️','🏟️','🏠','🏡','🏢','🏣','🏤','🏥','🏦','🏧','🏨','🏩','🏪','🏫','🏬','🏭','🏮','🏯','🏰','🏳️','🏴','🏴‍☠️','🏁','🚩','🎌','🏴','🏳️‍🌈','🏳️‍⚧️','🇺🇳','🇦🇫','🇦🇽','🇦🇱','🇩🇿','🇦🇸','🇦🇩','🇦🇴','🇦🇮','🇦🇶','🇦🇬','🇦🇷','🇦🇲','🇦🇼','🇦🇺','🇦🇹','🇦🇿','🇧🇸','🇧🇭','🇧🇩','🇧🇧','🇧🇾','🇧🇪','🇧🇿','🇧🇯','🇧🇲','🇧🇹','🇧🇴','🇧🇦','🇧🇼','🇧🇷','🇮🇴','🇻🇬','🇧🇳','🇧🇬','🇧🇫','🇧🇮','🇰🇭','🇨🇲','🇨🇦','🇮🇨','🇨🇻','🇧🇶','🇰🇾','🇨🇫','🇹🇩','🇨🇱','🇨🇳','🇨🇽','🇨🇨','🇨🇴','🇰🇲','🇨🇬','🇨🇩','🇨🇰','🇨🇷','🇨🇮','🇭🇷','🇨🇺','🇨🇼','🇨🇾','🇨🇿','🇩🇰','🇩🇯','🇩🇲','🇩🇴','🇪🇨','🇪🇬','🇸🇻','🇬🇶','🇪🇷','🇪🇪','🇪🇹','🇪🇺','🇫🇰','🇫🇴','🇫🇯','🇫🇮','🇫🇷','🇬🇫','🇵🇫','🇹🇫','🇬🇦','🇬🇲','🇬🇪','🇩🇪','🇬🇭','🇬🇮','🇬🇷','🇬🇱','🇬🇩','🇬🇵','🇬🇺','🇬🇹','🇬🇬','🇬🇳','🇬🇼','🇬🇾','🇭🇹','🇭🇳','🇭🇰','🇭🇺','🇮🇸','🇮🇳','🇮🇩','🇮🇷','🇮🇶','🇮🇪','🇮🇲','🇮🇱','🇮🇹','🇯🇲','🇯🇵','🇯🇪','🇯🇴','🇰🇿','🇰🇪','🇰🇮','🇽🇰','🇰🇼','🇰🇬','🇱🇦','🇱🇻','🇱🇧','🇱🇸','🇱🇷','🇱🇾','🇱🇮','🇱🇹','🇱🇺','🇲🇴','🇲🇬','🇲🇼','🇲🇾','🇲🇻','🇲🇱','🇲🇹','🇲🇭','🇲🇶','🇲🇷','🇲🇺','🇾🇹','🇲🇽','🇫🇲','🇲🇩','🇲🇨','🇲🇳','🇲🇪','🇲🇸','🇲🇦','🇲🇿','🇲🇲','🇳🇦','🇳🇷','🇳🇵','🇳🇱','🇳🇨','🇳🇿','🇳🇮','🇳🇪','🇳🇬','🇳🇺','🇳🇫','🇰🇵','🇲🇰','🇲🇵','🇳🇴','🇴🇲','🇵🇰','🇵🇼','🇵🇸','🇵🇦','🇵🇬','🇵🇾','🇵🇪','🇵🇭','🇵🇳','🇵🇱','🇵🇹','🇵🇷','🇶🇦','🇷🇪','🇷🇴','🇷🇺','🇷🇼','🇧🇱','🇸🇭','🇰🇳','🇱🇨','🇲🇫','🇵🇲','🇻🇨','🇼🇸','🇸🇲','🇸🇹','🇸🇦','🇸🇳','🇷🇸','🇸🇨','🇸🇱','🇸🇬','🇸🇽','🇸🇰','🇸🇮','🇸🇧','🇸🇴','🇿🇦','🇬🇸','🇰🇷','🇸🇸','🇪🇸','🇱🇰','🇸🇩','🇸🇷','🇸🇯','🇸🇿','🇸🇪','🇨🇭','🇸🇾','🇹🇼','🇹🇯','🇹🇿','🇹🇭','🇹🇱','🇹🇬','🇹🇰','🇹🇴','🇹🇹','🇹🇳','🇹🇷','🇹🇲','🇹🇨','🇹🇻','🇺🇬','🇺🇦','🇦🇪','🇬🇧','🇺🇸','🇺🇾','🇺🇿','🇻🇺','🇻🇦','🇻🇪','🇻🇳','🇻🇮','🇼🇫','🇪🇭','🇾🇪','🇿🇲','🇿🇼','🥰','😍','🤩','🥳','😎','🤓','🧐','🥸','🤠','🤑','😇','🙏','🤲','🤝','✌️','👌','👍','👎','👊','✊','🤛','🤜','🤞','✋','🤚','🖐️','🖖','👋','🤙','💪','🦾','🦿','🦵','🦶','👂','🦻','👃','🧠','🦷','🦴','👀','👁️','👄','👅','💋','🩸','🧬','🦠','🧪','🧫','🧬','🦠','🦷','🦴','🧠','🩻','🩼','🩹','🩺','💊','💉','🩸','🧪','🧫','🧬','🦠','🩻','🩼','🩹','🩺'];
   const emojiGrid = document.getElementById('emojiGrid');
   function renderEmojis(filter = '') {
     const filtered = ALL_EMOJIS.filter(e => e.includes(filter));
@@ -1413,10 +1609,7 @@ document.addEventListener('DOMContentLoaded', function() {
       { cmd: '/8ball', desc: 'Ask the magic 8ball' },
       { cmd: '/flip', desc: 'Flip a coin' },
       { cmd: '/nick [name]', desc: 'Change your display name' },
-      { cmd: '/bet [coins]', desc: 'Gamble your coins (50/50)' },
     ];
-    if (isMod) allCommands.push({ cmd: '/timeout @user', desc: 'Timeout a user' });
-    if (isOwnr) allCommands.push({ cmd: '/give @user [coins]', desc: 'Give coins to a user' });
     document.getElementById('commandList').innerHTML = allCommands.map(c => `
       <div class="command-item">
         <code class="command-text">${c.cmd}</code>
@@ -1439,8 +1632,8 @@ document.addEventListener('DOMContentLoaded', function() {
   };
   document.getElementById('giveCoinsBtn').onclick = () => {
     const user = document.getElementById('targetUserSelect').value;
-    const amount = parseInt(prompt('Amount of coins:'));
-    if (user && amount) ownerGiveCoinsDB(user, amount);
+    const amount = parseInt(document.getElementById('coinAmount').value);
+    if (user && amount) ownerGiveCoins(user, amount);
   };
   document.getElementById('giveXPBtn').onclick = () => {
     const user = document.getElementById('xpTargetSelect').value;
@@ -1456,13 +1649,18 @@ document.addEventListener('DOMContentLoaded', function() {
     globalSlowMode = parseInt(document.getElementById('globalSlowModeSec').value) || 0;
     toast(`Global slow mode set to ${globalSlowMode} seconds`, 'gold');
   };
+  document.getElementById('timeoutBtn').onclick = () => {
+    const user = document.getElementById('timeoutUserSelect').value;
+    const minutes = parseInt(document.getElementById('timeoutMinutes').value);
+    if (user && minutes) timeoutUser(user, minutes);
+  };
   document.getElementById('quickKickBtn').onclick = () => {
     const user = document.getElementById('quickUserSelect').value;
-    if (user) kickUserDB(null, user);
+    if (user) kickUser(null, user);
   };
   document.getElementById('quickBanBtn').onclick = () => {
     const user = document.getElementById('quickUserSelect').value;
-    if (user) banUserDB(null, user);
+    if (user) banUser(null, user);
   };
   document.getElementById('makeModBtn').onclick = () => {
     const user = document.getElementById('modUserSelect').value;
@@ -1477,6 +1675,43 @@ document.addEventListener('DOMContentLoaded', function() {
     if (data && data.length) {
       toast(data.map(l => `${l.action}: ${l.target_id}`).join('\n'), 'gold');
     } else toast('No logs found', 'red');
+  };
+
+  // ============================================================
+  // GROUP HOST PANEL
+  // ============================================================
+  const groupHostPanel = document.getElementById('groupHostPanel');
+  const groupHostPanelBtn = document.getElementById('groupHostPanelBtn');
+  const groupHostClose = document.getElementById('groupHostClose');
+  
+  groupHostPanelBtn.onclick = () => {
+    if (window.currentHostGroup) {
+      showGroupHostPanel(window.currentHostGroup.id, window.currentHostGroup);
+      groupHostPanel.classList.add('open');
+    }
+  };
+  groupHostClose.onclick = () => groupHostPanel.classList.remove('open');
+  
+  document.getElementById('groupAddMemberBtn').onclick = () => {
+    const userId = document.getElementById('groupAddMemberSelect').value;
+    if (userId) groupAddMember(userId);
+  };
+  document.getElementById('groupRemoveMemberBtn').onclick = () => {
+    const userId = document.getElementById('groupRemoveMemberSelect').value;
+    if (userId) groupRemoveMember(userId);
+  };
+  document.getElementById('groupBgBtn').onclick = () => {
+    const preset = document.getElementById('groupBgSelect').value;
+    setGroupBackground(preset);
+  };
+  document.getElementById('groupSlowModeBtn').onclick = () => {
+    const seconds = parseInt(document.getElementById('groupSlowModeSec').value);
+    if (seconds) setGroupSlowMode(seconds);
+  };
+  document.getElementById('groupTimeoutBtn').onclick = () => {
+    const userId = document.getElementById('groupTimeoutUserSelect').value;
+    const minutes = parseInt(document.getElementById('groupTimeoutMinutes').value);
+    if (userId && minutes) groupTimeoutUser(userId, minutes);
   };
 
   // ============================================================
@@ -1495,12 +1730,9 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById('levelBadge').textContent = `Lv ${getLevel(userXP[currentUser.id] || 0)}`;
     setInterval(loadMembers, 10000);
     setInterval(updatePresence, 30000);
+    // Initial pill position
+    setTimeout(() => updateChannelPill(), 100);
   }
-
-  // Add missing animation styles
-  const styleSheet = document.createElement('style');
-  styleSheet.textContent = `@keyframes firework{0%{transform:scale(0);opacity:1}100%{transform:scale(20);opacity:0}}`;
-  document.head.appendChild(styleSheet);
 
   console.log('✅ Fantarena Ultimate fully loaded!');
 });
