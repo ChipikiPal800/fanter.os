@@ -14,34 +14,32 @@ body.theme-light .message-text{color:#1a1a2e}
 body.theme-light .sidebar{background:rgba(255,255,255,.95)}
 body.theme-light .server-item{color:#333}
 
-/* ===== EPIC WELCOME SCREEN ===== */
 .welcome-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:radial-gradient(ellipse at 50% 50%,#0a0a2a,#050510);z-index:9999;display:flex;align-items:center;justify-content:center;padding:20px;overflow-y:auto}
-.welcome-card{max-width:min(90vw, 1200px);width:100%;max-height:90vh;overflow-y:auto;background:linear-gradient(135deg,rgba(20,30,50,.95),rgba(10,15,30,.98));border:2px solid rgba(255,204,0,.4);border-radius:40px;padding:clamp(20px, 5vh, 50px);text-align:center;box-shadow:0 30px 60px rgba(0,0,0,.5),0 0 50px rgba(255,204,0,.2);animation:glowPulse 3s infinite,floatIn .6s cubic-bezier(0.34,1.2,0.64,1)}
+.welcome-card{max-width:min(90vw,1000px);width:100%;max-height:90vh;overflow-y:auto;background:linear-gradient(135deg,rgba(20,30,50,.95),rgba(10,15,30,.98));border:2px solid rgba(255,204,0,.4);border-radius:40px;padding:clamp(20px,5vh,40px);text-align:center;box-shadow:0 30px 60px rgba(0,0,0,.5),0 0 50px rgba(255,204,0,.2);animation:glowPulse 3s infinite,floatIn .6s cubic-bezier(0.34,1.2,0.64,1)}
 @keyframes glowPulse{0%,100%{box-shadow:0 30px 60px rgba(0,0,0,.5),0 0 30px rgba(255,204,0,.3)}50%{box-shadow:0 30px 60px rgba(0,0,0,.5),0 0 60px rgba(255,204,0,.6)}}
 @keyframes floatIn{0%{opacity:0;transform:translateY(60px) scale(.95)}100%{opacity:1;transform:translateY(0) scale(1)}}
-.welcome-card h1{font-size:clamp(36px, 8vw, 64px);background:linear-gradient(135deg,#ffcc00,#ffaa00,#ff8800);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px;animation:titleGlow 2s infinite}
+.welcome-card h1{font-size:clamp(36px,8vw,56px);background:linear-gradient(135deg,#ffcc00,#ffaa00,#ff8800);-webkit-background-clip:text;background-clip:text;color:transparent;margin-bottom:10px;animation:titleGlow 2s infinite}
 @keyframes titleGlow{0%,100%{filter:drop-shadow(0 0 5px rgba(255,204,0,.5))}50%{filter:drop-shadow(0 0 20px rgba(255,204,0,.8))}}
-.welcome-card h2{font-size:clamp(16px, 4vw, 24px);color:rgba(255,255,255,.7);margin-bottom:clamp(20px, 4vh, 40px);font-weight:400}
-.welcome-stats{display:flex;justify-content:center;gap:clamp(20px, 5vw, 50px);margin:clamp(20px, 4vh, 40px) 0;padding:clamp(10px, 2vh, 20px);background:rgba(255,255,255,.05);border-radius:60px;flex-wrap:wrap}
-.stat-number{font-size:clamp(24px, 6vw, 48px);font-weight:700;color:#ffcc00}
-.stat-label{font-size:clamp(10px, 2vw, 14px);color:rgba(255,255,255,.5)}
-.feature-grid{display:grid;grid-template-columns:repeat(auto-fit, minmax(250px, 1fr));gap:clamp(15px, 2vw, 25px);margin:clamp(20px, 4vh, 40px) 0}
-.feature-item{background:linear-gradient(135deg,rgba(45,90,227,.15),rgba(45,90,227,.05));border:1px solid rgba(45,90,227,.3);border-radius:20px;padding:clamp(15px, 2vh, 25px);transition:all .3s cubic-bezier(0.2,0.9,0.4,1.1);cursor:pointer}
-.feature-item:hover{transform:translateY(-8px) scale(1.02);border-color:#ffcc00;box-shadow:0 20px 40px rgba(255,204,0,.2)}
-.feature-icon{font-size:clamp(32px, 6vw, 48px);display:block;margin-bottom:15px}
-.feature-title{font-size:clamp(14px, 2vw, 18px);font-weight:700;color:#ffcc00;margin-bottom:8px}
-.feature-desc{font-size:clamp(10px, 1.5vw, 12px);color:rgba(255,255,255,.6)}
-.badge-showcase{display:flex;justify-content:center;gap:clamp(8px, 1.5vw, 15px);margin:clamp(15px, 3vh, 30px) 0;flex-wrap:wrap}
-.badge-preview{background:rgba(255,204,0,.15);border:1px solid rgba(255,204,0,.3);border-radius:40px;padding:clamp(6px, 1.5vh, 10px) clamp(12px, 2vw, 20px);font-size:clamp(11px, 1.5vw, 14px);display:inline-flex;align-items:center;gap:8px;transition:all .2s}
+.welcome-card h2{font-size:clamp(14px,4vw,20px);color:rgba(255,255,255,.7);margin-bottom:clamp(20px,4vh,30px);font-weight:400}
+.welcome-stats{display:flex;justify-content:center;gap:clamp(15px,5vw,40px);margin:clamp(15px,3vh,30px) 0;padding:clamp(8px,2vh,15px);background:rgba(255,255,255,.05);border-radius:50px;flex-wrap:wrap}
+.stat-number{font-size:clamp(20px,6vw,36px);font-weight:700;color:#ffcc00}
+.stat-label{font-size:clamp(10px,2vw,12px);color:rgba(255,255,255,.5)}
+.feature-grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(200px,1fr));gap:clamp(12px,2vw,20px);margin:clamp(15px,4vh,30px) 0}
+.feature-item{background:linear-gradient(135deg,rgba(45,90,227,.15),rgba(45,90,227,.05));border:1px solid rgba(45,90,227,.3);border-radius:16px;padding:clamp(12px,2vh,18px);transition:all .3s cubic-bezier(0.2,0.9,0.4,1.1);cursor:pointer}
+.feature-item:hover{transform:translateY(-5px) scale(1.02);border-color:#ffcc00;box-shadow:0 15px 30px rgba(255,204,0,.2)}
+.feature-icon{font-size:clamp(28px,6vw,40px);display:block;margin-bottom:10px}
+.feature-title{font-size:clamp(13px,2vw,16px);font-weight:700;color:#ffcc00;margin-bottom:5px}
+.feature-desc{font-size:clamp(10px,1.5vw,11px);color:rgba(255,255,255,.6)}
+.badge-showcase{display:flex;justify-content:center;gap:clamp(6px,1.5vw,12px);margin:clamp(12px,3vh,25px) 0;flex-wrap:wrap}
+.badge-preview{background:rgba(255,204,0,.15);border:1px solid rgba(255,204,0,.3);border-radius:30px;padding:clamp(5px,1.5vh,8px) clamp(10px,2vw,15px);font-size:clamp(10px,1.5vw,12px);display:inline-flex;align-items:center;gap:6px;transition:all .2s}
 .badge-preview:hover{transform:scale(1.05);background:rgba(255,204,0,.25)}
-.enter-btn{background:linear-gradient(135deg,#2d5ae3,#1a3a8a);border:none;border-radius:60px;padding:clamp(14px, 2vh, 18px) clamp(30px, 5vw, 50px);color:#fff;font-size:clamp(16px, 2.5vw, 20px);font-weight:700;cursor:pointer;margin-top:20px;width:100%;transition:all .3s cubic-bezier(0.2,0.9,0.4,1.1);box-shadow:0 10px 30px rgba(45,90,227,.4)}
+.enter-btn{background:linear-gradient(135deg,#2d5ae3,#1a3a8a);border:none;border-radius:60px;padding:clamp(12px,2vh,16px) clamp(25px,5vw,40px);color:#fff;font-size:clamp(14px,2.5vw,18px);font-weight:700;cursor:pointer;margin-top:15px;width:100%;transition:all .3s cubic-bezier(0.2,0.9,0.4,1.1);box-shadow:0 10px 30px rgba(45,90,227,.4)}
 .enter-btn:hover{transform:translateY(-3px) scale(1.02);box-shadow:0 15px 40px rgba(45,90,227,.6)}
-.skip-welcome{background:0 0;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.6);padding:clamp(10px, 1.5vh, 12px) clamp(20px, 3vw, 30px);border-radius:40px;margin-top:20px;cursor:pointer;font-size:clamp(12px, 1.5vw, 14px);transition:all .2s}
+.skip-welcome{background:0 0;border:1px solid rgba(255,255,255,.3);color:rgba(255,255,255,.6);padding:clamp(8px,1.5vh,10px) clamp(15px,3vw,25px);border-radius:40px;margin-top:15px;cursor:pointer;font-size:clamp(11px,1.5vw,13px);transition:all .2s}
 .skip-welcome:hover{border-color:#ffcc00;color:#ffcc00}
 
-/* ===== MAIN CHAT ===== */
 .fantarena-container{display:none;height:100vh;width:100%}.fantarena-container.show{display:flex}
-.sidebar{width:280px;background:rgba(10,15,30,.95);backdrop-filter:blur(10px);border-right:1px solid rgba(45,90,227,.3);display:flex;flex-direction:column;overflow-y:auto}
+.sidebar{width:260px;background:rgba(10,15,30,.95);backdrop-filter:blur(10px);border-right:1px solid rgba(45,90,227,.3);display:flex;flex-direction:column;overflow-y:auto}
 .sidebar-header{padding:15px;border-bottom:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between}
 .sidebar-header h2{color:#ffcc00;font-size:18px}
 .theme-selector{background:rgba(255,255,255,.1);border:none;border-radius:15px;padding:5px 10px;color:#fff;cursor:pointer}
@@ -49,24 +47,23 @@ body.theme-light .server-item{color:#333}
 .section-header{padding:8px 15px;color:rgba(255,255,255,.5);font-size:11px;font-weight:600;text-transform:uppercase;display:flex;justify-content:space-between}
 .server-item{padding:10px 15px;margin:2px 8px;border-radius:8px;cursor:pointer;display:flex;align-items:center;gap:10px;color:rgba(255,255,255,.7);font-size:14px;position:relative;transition:all .2s cubic-bezier(0.2,0.9,0.4,1.1)}
 .server-item:hover{background:rgba(45,90,227,.2);color:#fff;transform:translateX(3px)}.server-item.active{background:rgba(45,90,227,.3);color:#ffcc00}
-.channel-indicator{position:absolute;left:-8px;width:3px;background:#ffcc00;border-radius:3px;transition:top .25s cubic-bezier(0.2,0.9,0.4,1.1),height .25s cubic-bezier(0.2,0.9,0.4,1.1);pointer-events:none;box-shadow:0 0 8px #ffcc00}
-.category-header{padding:8px 15px;margin-top:10px;background:rgba(0,0,0,.2);border-radius:8px;cursor:pointer;display:flex;justify-content:space-between;align-items:center;transition:all .2s}
-.category-header:hover{background:rgba(45,90,227,.2)}
+.channel-indicator{position:absolute;left:-8px;width:3px;background:#ffcc00;border-radius:3px;transition:top .25s cubic-bezier(0.2,0.9,0.4,1.1),height .25s cubic-bezier(0.2,0.9,0.4,1.1);pointer-events:none}
+.category-header{padding:8px 15px;margin-top:10px;background:rgba(0,0,0,.2);border-radius:8px;cursor:pointer;display:flex;justify-content:space-between;align-items:center}
 .category-channels{overflow:hidden;transition:max-height .3s cubic-bezier(0.2,0.9,0.4,1.1)}.category-channels.collapsed{max-height:0!important}
 .chat-main{flex:1;display:flex;flex-direction:column;min-width:0}
 .chat-header{padding:15px 20px;border-bottom:1px solid rgba(255,255,255,.1);display:flex;align-items:center;gap:12px;flex-wrap:wrap}
 .chat-header h3{color:#ffcc00;font-size:16px}
-.pinned-bar{background:rgba(255,204,0,.1);padding:5px 15px;font-size:11px;border-bottom:1px solid rgba(255,204,0,.2);display:flex;align-items:center;gap:10px;flex-wrap:wrap}
+.pinned-bar{background:rgba(255,204,0,.1);padding:5px 15px;font-size:11px;border-bottom:1px solid rgba(255,204,0,.2);display:flex;align-items:center;gap:10px;flex-wrap:wrap;display:none}
 .pinned-item{background:rgba(255,204,0,.1);padding:3px 8px;border-radius:12px;cursor:pointer;transition:all .2s}
 .pinned-item:hover{background:rgba(255,204,0,.3);transform:translateX(3px)}
 .format-toolbar{display:flex;gap:5px;margin-bottom:8px;flex-wrap:wrap}
-.format-toolbar button{background:rgba(255,255,255,.1);border:none;border-radius:8px;padding:6px 12px;color:#fff;cursor:pointer;font-weight:600;font-size:12px;transition:all .2s cubic-bezier(0.2,0.9,0.4,1.1)}
+.format-toolbar button{background:rgba(255,255,255,.1);border:none;border-radius:8px;padding:6px 12px;color:#fff;cursor:pointer;font-weight:600;font-size:12px;transition:all .2s}
 .format-toolbar button:hover{background:rgba(45,90,227,.5);transform:scale(1.05)}
 .messages-container{flex:1;overflow-y:auto;padding:15px 20px;display:flex;flex-direction:column;gap:14px}
 .message{display:flex;align-items:flex-start;gap:12px;position:relative;animation:messagePop .25s cubic-bezier(0.34,1.2,0.64,1);border-radius:12px;padding:8px;transition:box-shadow .2s}
 .message:hover{background:rgba(255,255,255,.03);box-shadow:0 0 15px rgba(255,204,0,.1)}
 @keyframes messagePop{0%{opacity:0;transform:translateY(15px) scale(.95)}100%{opacity:1;transform:translateY(0) scale(1)}}
-.message-avatar{width:38px;height:38px;background:linear-gradient(135deg,#2d5ae3,#ffcc00);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;cursor:pointer;flex-shrink:0;overflow:hidden;transition:transform .2s cubic-bezier(0.2,0.9,0.4,1.1)}
+.message-avatar{width:38px;height:38px;background:linear-gradient(135deg,#2d5ae3,#ffcc00);border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;cursor:pointer;flex-shrink:0;overflow:hidden;transition:transform .2s}
 .message-avatar:hover{transform:scale(1.05)}
 .message-avatar img{width:100%;height:100%;object-fit:cover}
 .message-content{flex:1}.message-header{display:flex;align-items:center;gap:8px;margin-bottom:4px;flex-wrap:wrap}
@@ -82,7 +79,7 @@ body.theme-light .server-item{color:#333}
 .thread-indicator{font-size:10px;color:#ffcc00;margin-top:4px;cursor:pointer;opacity:.6;transition:opacity .2s}
 .thread-indicator:hover{opacity:1}
 .message-reactions{display:flex;gap:6px;margin-top:6px;flex-wrap:wrap}
-.reaction{background:rgba(255,255,255,.05);border-radius:20px;padding:2px 8px;font-size:12px;cursor:pointer;transition:all .15s cubic-bezier(0.2,0.9,0.4,1.1);display:inline-flex;align-items:center;gap:4px}
+.reaction{background:rgba(255,255,255,.05);border-radius:20px;padding:2px 8px;font-size:12px;cursor:pointer;transition:all .15s;display:inline-flex;align-items:center;gap:4px}
 .reaction:hover{background:rgba(255,204,0,.2);transform:scale(1.08)}
 .reaction-count{color:rgba(255,255,255,.6);font-size:10px}
 .message-actions{display:flex;gap:4px;position:absolute;right:0;top:-8px;background:rgba(20,30,50,.98);border-radius:15px;padding:3px 6px;opacity:0;transition:opacity .15s;z-index:10}
@@ -91,27 +88,27 @@ body.theme-light .server-item{color:#333}
 .message-action-btn:hover{background:rgba(45,90,227,.3);color:#fff;transform:scale(1.05)}
 .effect-confetti{position:fixed;width:10px;height:10px;animation:confettiFall 3s linear forwards;z-index:10000}
 @keyframes confettiFall{0%{transform:translateY(-100px) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(360deg);opacity:0}}
-.thread-view{position:fixed;right:0;top:0;width:380px;height:100vh;background:rgba(10,15,30,.98);border-left:1px solid rgba(45,90,227,.3);z-index:2000;display:none;flex-direction:column;animation:slideRight .2s cubic-bezier(0.2,0.9,0.4,1.1)}
+.thread-view{position:fixed;right:0;top:0;width:380px;height:100vh;background:rgba(10,15,30,.98);border-left:1px solid rgba(45,90,227,.3);z-index:2000;display:none;flex-direction:column;animation:slideRight .2s ease}
 @keyframes slideRight{from{transform:translateX(100%)}to{transform:translateX(0)}}
 .thread-view.show{display:flex}.thread-header{padding:15px;border-bottom:1px solid rgba(255,255,255,.1);display:flex;justify-content:space-between}
 .thread-messages{flex:1;overflow-y:auto;padding:15px}
 .thread-input{padding:15px;border-top:1px solid rgba(255,255,255,.1);display:flex;gap:8px}
 .thread-input input{flex:1;padding:10px;border-radius:20px;border:1px solid rgba(45,90,227,.4);background:rgba(0,0,0,.3);color:#fff;transition:all .2s}
 .thread-input input:focus{outline:none;border-color:#ffcc00}
-.typing-indicator{padding:6px 20px;color:rgba(255,255,255,.4);font-size:11px;font-style:italic;display:flex;align-items:center;gap:8px}
+.typing-indicator{padding:6px 20px;color:rgba(255,255,255,.4);font-size:11px;font-style:italic;display:flex;align-items:center;gap:8px;display:none}
 .typing-dots{display:flex;gap:3px}.typing-dots span{width:4px;height:4px;background:rgba(255,255,255,.5);border-radius:50%;animation:typingBounce 1.4s infinite}
 .typing-dots span:nth-child(2){animation-delay:.2s}.typing-dots span:nth-child(3){animation-delay:.4s}
 @keyframes typingBounce{0%,60%,100%{transform:translateY(0)}30%{transform:translateY(-6px)}}
 .message-input-container{padding:15px 20px;border-top:1px solid rgba(255,255,255,.1);transition:box-shadow .2s}
 .message-input-container:focus-within{box-shadow:0 -5px 20px rgba(255,204,0,.1)}
-.reply-bar{background:rgba(45,90,227,.2);padding:6px 12px;border-radius:6px;margin-bottom:8px;display:flex;justify-content:space-between;font-size:12px;animation:slideDown .2s cubic-bezier(0.2,0.9,0.4,1.1)}
+.reply-bar{background:rgba(45,90,227,.2);padding:6px 12px;border-radius:6px;margin-bottom:8px;display:flex;justify-content:space-between;font-size:12px;animation:slideDown .2s ease;display:none}
 @keyframes slideDown{from{opacity:0;transform:translateY(-10px)}to{opacity:1;transform:translateY(0)}}
 .input-row{display:flex;gap:8px;align-items:center;flex-wrap:wrap}
 #messageInput{flex:1;padding:12px 16px;border-radius:25px;border:1px solid rgba(45,90,227,.4);background:rgba(0,0,0,.3);color:#fff;font-size:14px;outline:0;transition:all .2s}
 #messageInput:focus{border-color:#ffcc00;box-shadow:0 0 15px rgba(255,204,0,.2);transform:scale(1.01)}
-.format-btn,.emoji-btn,.gif-btn,.image-btn,.sound-btn,.schedule-btn{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:25px;padding:8px 12px;color:#fff;cursor:pointer;font-size:16px;transition:all .2s cubic-bezier(0.2,0.9,0.4,1.1)}
+.format-btn,.emoji-btn,.gif-btn,.image-btn,.sound-btn,.schedule-btn{background:rgba(255,255,255,.05);border:1px solid rgba(255,255,255,.1);border-radius:25px;padding:8px 12px;color:#fff;cursor:pointer;font-size:16px;transition:all .2s}
 .format-btn:hover,.emoji-btn:hover,.gif-btn:hover,.image-btn:hover,.sound-btn:hover,.schedule-btn:hover{background:rgba(45,90,227,.3);border-color:#ffcc00;transform:translateY(-2px) scale(1.05)}
-.emoji-picker,.gif-picker,.sound-picker,.status-preset-picker{position:absolute;bottom:70px;left:20px;background:rgba(20,30,50,.98);border:1px solid rgba(45,90,227,.4);border-radius:12px;padding:10px;width:280px;max-height:300px;overflow-y:auto;display:none;z-index:200;flex-wrap:wrap;gap:8px;animation:fadeInScale .15s cubic-bezier(0.2,0.9,0.4,1.1)}
+.emoji-picker,.gif-picker,.sound-picker,.status-preset-picker{position:absolute;bottom:70px;left:20px;background:rgba(20,30,50,.98);border:1px solid rgba(45,90,227,.4);border-radius:12px;padding:10px;width:280px;max-height:300px;overflow-y:auto;display:none;z-index:200;flex-wrap:wrap;gap:8px;animation:fadeInScale .15s ease}
 @keyframes fadeInScale{from{opacity:0;transform:scale(.9)}to{opacity:1;transform:scale(1)}}
 .emoji-picker.show,.gif-picker.show,.sound-picker.show,.status-preset-picker.show{display:flex}
 .emoji-picker span{font-size:28px;cursor:pointer;padding:5px;transition:all .1s}
@@ -121,7 +118,7 @@ body.theme-light .server-item{color:#333}
 .gif-search{width:100%;padding:8px;margin-bottom:10px;border-radius:8px;border:1px solid rgba(45,90,227,.4);background:rgba(0,0,0,.3);color:#fff}
 .gif-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:8px}.gif-item img{width:100%;border-radius:8px;cursor:pointer;transition:all .15s}
 .gif-item img:hover{transform:scale(1.05);box-shadow:0 4px 10px rgba(0,0,0,.3)}
-.members-sidebar{width:260px;background:rgba(10,15,30,.95);backdrop-filter:blur(10px);border-left:1px solid rgba(45,90,227,.3);padding:15px;overflow-y:auto}
+.members-sidebar{width:240px;background:rgba(10,15,30,.95);backdrop-filter:blur(10px);border-left:1px solid rgba(45,90,227,.3);padding:15px;overflow-y:auto}
 .members-header{display:flex;justify-content:space-between;color:#ffcc00;margin-bottom:15px}
 .member-category{color:rgba(255,255,255,.5);font-size:11px;margin:12px 0 6px}
 .member-item{display:flex;align-items:center;gap:8px;padding:6px 0;color:rgba(255,255,255,.8);font-size:13px;cursor:pointer;transition:all .2s}
@@ -134,7 +131,7 @@ body.theme-light .server-item{color:#333}
 .modal h3{color:#ffcc00;margin-bottom:18px}.modal input,.modal select,.modal textarea{width:100%;padding:12px;border-radius:10px;border:1px solid rgba(45,90,227,.4);background:rgba(0,0,0,.3);color:#fff;margin-bottom:12px;transition:all .2s}
 .modal input:focus,.modal select:focus{outline:none;border-color:#ffcc00}
 .modal-buttons{display:flex;gap:10px;justify-content:flex-end}
-.profile-card-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(20,30,50,.98);border:2px solid rgba(255,204,0,.5);border-radius:24px;padding:25px;width:400px;z-index:1100;display:none;flex-direction:column;align-items:center;text-align:center;animation:modalPop .25s cubic-bezier(0.34,1.2,0.64,1)}
+.profile-card-modal{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:rgba(20,30,50,.98);border:2px solid rgba(255,204,0,.5);border-radius:24px;padding:25px;width:380px;z-index:1100;display:none;flex-direction:column;align-items:center;text-align:center;animation:modalPop .25s cubic-bezier(0.34,1.2,0.64,1)}
 .profile-card-modal.show{display:flex}.profile-card-avatar{width:100px;height:100px;background:linear-gradient(135deg,#2d5ae3,#ffcc00);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:48px;margin-bottom:15px;overflow:hidden;border:3px solid #ffcc00;transition:transform .2s}
 .profile-card-avatar:hover{transform:scale(1.05)}
 .profile-card-name{font-size:24px;font-weight:700;color:#ffcc00}
@@ -166,7 +163,6 @@ body.theme-light .server-item{color:#333}
 </head>
 <body class="theme-dark">
 
-<!-- WELCOME SCREEN -->
 <div class="welcome-screen" id="welcomeScreen">
   <div class="welcome-card">
     <h1>🏟️ FANTARENA IGNITE</h1>
@@ -202,12 +198,11 @@ body.theme-light .server-item{color:#333}
   </div>
 </div>
 
-<!-- MAIN CHAT CONTAINER -->
 <div class="fantarena-container" id="fantarenaContainer">
   <div class="sidebar">
     <div class="sidebar-header"><h2>🏟️ IGNITE</h2><select class="theme-selector" id="themeSelector"><option value="dark">🌙 Dark</option><option value="light">☀️ Light</option><option value="amoled">⬛ AMOLED</option><option value="cyberpunk">💜 Cyberpunk</option></select></div>
     <div class="channels-section"><div class="section-header">📡 CHANNELS</div>
-    <div style="position:relative"><div class="server-item" data-channel="general" data-display="# general">💬 general</div>
+    <div style="position:relative"><div class="server-item active" data-channel="general" data-display="# general">💬 general</div>
     <div class="server-item" data-channel="game-recs" data-display="# game recs">🎮 game recs</div>
     <div class="server-item" data-channel="lfg" data-display="# looking for group">👥 lfg</div>
     <div class="server-item" data-channel="flex" data-display="# flex">🏆 flex</div>
@@ -227,12 +222,12 @@ body.theme-light .server-item{color:#333}
   <div class="chat-main">
     <div class="chat-header"><h3 id="chatHeaderTitle"># general</h3><span id="slowModeIndicator" style="display:none"></span>
     <button id="slowModeBtn" class="send-btn" style="padding:4px 12px;font-size:11px;background:rgba(255,255,255,.1);display:none">🐢 slow mode</button></div>
-    <div class="pinned-bar" id="pinnedBar" style="display:none"><span>📌 PINNED:</span><div id="pinnedList"></div></div>
+    <div class="pinned-bar" id="pinnedBar"><span>📌 PINNED:</span><div id="pinnedList"></div></div>
     <div class="messages-container" id="messagesContainer"><div style="text-align:center;color:rgba(255,255,255,.4)">loading messages...</div></div>
-    <div class="typing-indicator" id="typingIndicator" style="display:none"><span id="typingUsername"></span><div class="typing-dots"><span></span><span></span><span></span></div></div>
+    <div class="typing-indicator" id="typingIndicator"><span id="typingUsername"></span><div class="typing-dots"><span></span><span></span><span></span></div></div>
     <div class="message-input-container">
       <div class="format-toolbar" id="formatToolbar"><button data-format="**">B</button><button data-format="*"><i>I</i></button><button data-format="~~"><s>S</s></button><button data-format="`">&lt;/&gt;</button><button id="emojiBtnToolbar">😊</button><button id="gifBtnToolbar">GIF</button></div>
-      <div class="reply-bar" id="replyBar" style="display:none"><span id="replyText"></span><button id="cancelReplyBtn">✕</button></div>
+      <div class="reply-bar" id="replyBar"><span id="replyText"></span><button id="cancelReplyBtn">✕</button></div>
       <div class="input-row"><input type="text" id="messageInput" placeholder="send a message... (try /help)"><button class="send-btn" id="sendBtn">send</button></div>
       <div style="display:flex;gap:8px;margin-top:8px"><button class="schedule-btn" id="scheduleBtn">📅 schedule</button>
       <button class="sound-btn" id="soundBtn">🔊 sound</button><button class="image-btn" id="imageBtn">🖼️ image</button>
@@ -246,17 +241,13 @@ body.theme-light .server-item{color:#333}
   <div class="members-sidebar"><div class="members-header"><span>👥 MEMBERS</span><span id="onlineCount">0 online</span></div><div id="membersList"></div><button id="editProfileBtn" class="send-btn" style="width:100%;margin-top:15px;padding:8px">✏️ edit my profile</button></div>
 </div>
 
-<!-- THREAD VIEW -->
 <div class="thread-view" id="threadView"><div class="thread-header"><span>💬 Thread</span><button id="closeThreadBtn" style="background:0 0;border:none;color:#fff;font-size:20px;cursor:pointer">✕</button></div>
 <div class="thread-messages" id="threadMessages"></div><div class="thread-input"><input type="text" id="threadInput" placeholder="reply to thread..."><button id="sendThreadBtn" class="send-btn" style="padding:8px 16px">send</button></div></div>
 
-<!-- PROFILE CARD MODAL -->
 <div class="profile-card-modal" id="profileCardModal"><div class="profile-card-avatar" id="profileCardAvatar">👤</div><div class="profile-card-name" id="profileCardName">Username</div><div class="profile-card-username" id="profileCardUsername">@user</div><div class="profile-card-bio" id="profileCardBio">Just a gamer</div><div class="badges-container" id="profileBadges"></div><div class="profile-card-stats"><div class="profile-card-stat"><div class="profile-card-stat-value" id="profileCardLevel">1</div><div class="profile-card-stat-label">level</div></div><div class="profile-card-stat"><div class="profile-card-stat-value" id="profileCardXP">0</div><div class="profile-card-stat-label">xp</div></div><div class="profile-card-stat"><div class="profile-card-stat-value" id="profileCardWarnings">0</div><div class="profile-card-stat-label">warnings</div></div></div><div class="profile-card-buttons"><button class="dm-btn" id="profileCardDMBtn">💬 message</button><button class="coin-btn" id="profileCardCoinBtn">💰 give coins</button><button class="warn-btn" id="profileCardWarnBtn" style="display:none">⚠️ warn</button><button class="timeout-btn" id="profileCardTimeoutBtn" style="display:none">⏱️ timeout</button><button class="close-profile-btn" id="closeProfileCardBtn">close</button></div></div>
 
-<!-- SETTINGS PANEL -->
 <div class="settings-panel" id="settingsPanel"><h3>✏️ edit profile</h3><div class="setting-item"><span>🎨 name color</span><input type="color" id="nameColorPicker" value="#ffcc00"></div><div class="setting-item"><span>🎮 custom activity</span><input type="text" id="activityInput" placeholder="🎮 gaming"></div><div class="setting-item"><span>📝 about me</span><textarea id="bioInput" rows="2" style="width:100%;background:rgba(0,0,0,.3);border:1px solid rgba(45,90,227,.4);border-radius:8px;padding:8px;color:#fff"></textarea></div><div class="setting-item"><span>🎨 profile theme</span><select id="profileThemeSelect"><option value="default">default</option><option value="ocean">🌊 ocean</option><option value="sunset">🌅 sunset</option><option value="forest">🌲 forest</option></select></div><div class="setting-item"><span>🖼️ profile picture</span><input type="file" id="profilePicUpload" accept="image/*,image/gif"></div><div class="setting-item"><span>🔊 message sounds</span><button id="toggleSoundsBtn" class="send-btn" style="padding:5px 10px">enable</button></div><div class="setting-item"><span>🎨 message effects</span><select id="effectSelect"><option value="none">none</option><option value="confetti">🎉 confetti</option></select></div><button id="closeSettingsBtn" class="send-btn" style="width:100%;margin-top:15px">save & close</button></div>
 
-<!-- MODALS -->
 <div class="modal-overlay" id="addFriendModal"><div class="modal"><h3>➕ add friend</h3><input type="text" id="friendUsernameInput"><div class="modal-buttons"><button id="sendFriendReqBtn" class="send-btn">send</button><button id="closeAddFriendModalBtn" class="send-btn">cancel</button></div></div></div>
 <div class="modal-overlay" id="createGroupModal"><div class="modal"><h3>👥 create group</h3><input type="text" id="groupNameInput"><select id="groupIconSelect"><option>🎮</option><option>👾</option><option>🔥</option><option>⭐</option></select><div class="modal-buttons"><button id="createGroupConfirmBtn" class="send-btn">create</button><button id="closeCreateGroupModalBtn" class="send-btn">cancel</button></div></div></div>
 <div class="modal-overlay" id="giveCoinsModal"><div class="modal"><h3>💰 give coins</h3><input type="number" id="coinAmountInput" min="1"><div class="modal-buttons"><button id="confirmGiveCoinsBtn" class="send-btn">give</button><button id="closeGiveCoinsModalBtn" class="send-btn">cancel</button></div></div></div>
@@ -267,9 +258,8 @@ body.theme-light .server-item{color:#333}
 <div class="modal-overlay" id="scheduleModal"><div class="modal"><h3>📅 schedule message</h3><input type="text" id="scheduleMessage" placeholder="message"><input type="datetime-local" id="scheduleTime"><div class="modal-buttons"><button id="confirmScheduleBtn" class="send-btn">schedule</button><button id="closeScheduleModalBtn" class="send-btn">cancel</button></div></div></div>
 <div class="modal-overlay" id="customEmojiModal"><div class="modal"><h3>😎 add custom emoji</h3><input type="text" id="emojiName" placeholder="emoji name (no spaces)"><input type="text" id="emojiChar" placeholder="emoji character or image url"><div class="modal-buttons"><button id="addCustomEmojiBtn" class="send-btn">add</button><button id="closeEmojiModalBtn" class="send-btn">cancel</button></div></div></div>
 <div class="modal-overlay" id="dailyModal"><div class="modal"><div style="text-align:center;padding:20px"><h3>🎁 DAILY REWARD</h3><div id="dailyAmount" style="font-size:48px;color:#ffcc00;margin:20px 0">+0 🪙</div><div id="dailyStreak" style="color:#ffcc00;margin-bottom:20px">streak: 0 days</div><button id="claimDailyBtn" class="send-btn">claim</button><button id="closeDailyModalBtn" class="send-btn" style="margin-top:10px;background:rgba(255,255,255,.1)">close</button></div></div></div>
-
 <script>
-// ===== FULL FANTARENA IGNITE SCRIPT =====
+// ===== FULL FANTARENA IGNITE SCRIPT - PART 2 =====
 (function() {
   console.log('🔥 FANTARENA IGNITE - INITIALIZING');
   
@@ -434,8 +424,10 @@ body.theme-light .server-item{color:#333}
     let a = document.querySelector('.server-item.active');
     if (!a) return;
     let i = document.getElementById('channelIndicator');
-    i.style.top = a.offsetTop + 'px';
-    i.style.height = a.offsetHeight + 'px';
+    if (i) {
+      i.style.top = a.offsetTop + 'px';
+      i.style.height = a.offsetHeight + 'px';
+    }
   }
   
   function formatMessage(text) {
@@ -598,6 +590,7 @@ body.theme-light .server-item{color:#333}
   
   function loadPinnedMessages() {
     let pins = pinnedMessages[currentChannel] || [], bar = document.getElementById('pinnedBar'), list = document.getElementById('pinnedList');
+    if (!bar) return;
     if (pins.length === 0) { bar.style.display = 'none'; return; }
     bar.style.display = 'flex';
     list.innerHTML = pins.map(p => `<span class="pinned-item" onclick="window.jumpToMessage('${p.mid}')">📌 ${escapeHtml(p.content.slice(0, 30))} — ${p.uname}</span>`).join('');
@@ -650,8 +643,7 @@ body.theme-light .server-item{color:#333}
     }
   };
   document.getElementById('closeThreadBtn').onclick = () => { document.getElementById('threadView').classList.remove('show'); activeThread = null; };
-  
-  // User profile functions
+    // User profile functions
   async function loadUserProfile() {
     try {
       let { data } = await supabaseClient.from('fanter_presence').select('*').eq('user_id', currentUser.id).single();
@@ -697,7 +689,7 @@ body.theme-light .server-item{color:#333}
       } else { friends = []; }
       let c = document.getElementById('friendsList');
       if (c) {
-        if (friends.length === 0) c.innerHTML = '<div style="padding:8px 15px;color:rgba(255,255,255,.3)">no friends</div>';
+        if (friends.length === 0) c.innerHTML = '<div style="padding:8px 15px;color:rgba(255,255,255,.3)">no friends yet</div>';
         else c.innerHTML = friends.map(f => `<div class="friend-item" onclick="window.showProfileCard('${f.user_id}')"><div class="friend-avatar">${f.profile_pic ? `<img src="${f.profile_pic}">` : f.username[0]}</div><div class="friend-info"><div class="friend-name">${escapeHtml(f.display_name || f.username)}</div><div class="friend-status"><span class="status-dot ${f.status || 'offline'}"></span>${f.custom_activity || 'offline'}</div></div></div>`).join('');
       }
     } catch(e) {}
@@ -709,7 +701,7 @@ body.theme-light .server-item{color:#333}
       groups = (data || []).filter(g => g.members.includes(currentUser.id));
       let c = document.getElementById('groupsList');
       if (c) {
-        if (groups.length === 0) c.innerHTML = '<div style="padding:8px 15px;color:rgba(255,255,255,.3)">no groups</div>';
+        if (groups.length === 0) c.innerHTML = '<div style="padding:8px 15px;color:rgba(255,255,255,.3)">no groups yet</div>';
         else c.innerHTML = groups.map(g => `<div class="group-item" onclick="window.openGroup('${g.id}', '${g.name}')"><span class="group-icon">${g.settings?.icon || '👥'}</span><div class="group-info"><div class="group-name">${escapeHtml(g.name)} ${g.owner_id === currentUser.id ? '<span class="host-badge">HOST</span>' : ''}</div><div class="group-meta">${g.members.length} members</div></div></div>`).join('');
       }
     } catch(e) {}
@@ -732,7 +724,7 @@ body.theme-light .server-item{color:#333}
       dmConversations = data || [];
       let c = document.getElementById('dmList');
       if (c) {
-        if (dmConversations.length === 0) c.innerHTML = '<div style="padding:8px 15px;color:rgba(255,255,255,.3)">no DMs</div>';
+        if (dmConversations.length === 0) c.innerHTML = '<div style="padding:8px 15px;color:rgba(255,255,255,.3)">no DMs yet</div>';
         else c.innerHTML = dmConversations.map(conv => { let o = conv.user1_id === currentUser.id ? conv.user2_id : conv.user1_id; return `<div class="dm-item" onclick="window.openDM('${o}')"><div class="dm-avatar">👤</div><div class="dm-info"><div class="dm-name">${o.slice(0, 8)}...</div><div class="friend-status">${(conv.last_message || '...').slice(0, 30)}</div></div></div>`; }).join('');
       }
     } catch(e) {}
@@ -791,7 +783,7 @@ body.theme-light .server-item{color:#333}
       document.getElementById('profileCardXP').textContent = userXP[uid] || 0;
       document.getElementById('profileCardWarnings').textContent = userWarnings[uid]?.length || 0;
       let badges = userBadges[uid] || [];
-      document.getElementById('profileBadges').innerHTML = badges.map(b => `<div class="badge" title="${BADGES[b]?.name}">${BADGES[b]?.icon} ${BADGES[b]?.name}</div>`).join('') || '<div style="font-size:11px;opacity:.5">no badges</div>';
+      document.getElementById('profileBadges').innerHTML = badges.map(b => `<div class="badge" title="${BADGES[b]?.name}">${BADGES[b]?.icon} ${BADGES[b]?.name}</div>`).join('') || '<div style="font-size:11px;opacity:.5">no badges yet</div>';
       document.getElementById('profileCardWarnBtn').style.display = isMod(currentUser.displayName || currentUser.username) ? 'block' : 'none';
       document.getElementById('profileCardTimeoutBtn').style.display = isMod(currentUser.displayName || currentUser.username) ? 'block' : 'none';
       document.getElementById('profileCardModal').classList.add('show');
@@ -955,10 +947,26 @@ body.theme-light .server-item{color:#333}
   document.getElementById('nameColorPicker').onchange = e => { nameColor = e.target.value; localStorage.setItem('fanter_nameColor', nameColor); };
   document.getElementById('activityInput').onchange = e => { customActivity = e.target.value; localStorage.setItem('fanter_activity', customActivity); updatePresence(); };
   document.getElementById('bioInput').onchange = e => { userBio = e.target.value; localStorage.setItem('fanter_bio', userBio); updatePresence(); };
-  document.getElementById('profileThemeSelect').onchange = e => { let theme = e.target.value; if (theme !== 'default') document.getElementById('profileCardModal').style.background = theme === 'ocean' ? 'linear-gradient(135deg,#0a2a4a,#0a1a2a)' : theme === 'sunset' ? 'linear-gradient(135deg,#4a1a0a,#2a0a0a)' : theme === 'forest' ? 'linear-gradient(135deg,#0a4a0a,#0a2a0a)' : 'rgba(20,30,50,.98)'; };
+  document.getElementById('profileThemeSelect').onchange = e => { 
+    let theme = e.target.value; 
+    let modal = document.getElementById('profileCardModal');
+    if (modal && theme !== 'default') modal.style.background = theme === 'ocean' ? 'linear-gradient(135deg,#0a2a4a,#0a1a2a)' : theme === 'sunset' ? 'linear-gradient(135deg,#4a1a0a,#2a0a0a)' : theme === 'forest' ? 'linear-gradient(135deg,#0a4a0a,#0a2a0a)' : 'rgba(20,30,50,.98)'; 
+  };
   document.getElementById('toggleSoundsBtn').onclick = () => { messageSounds = !messageSounds; localStorage.setItem('messageSounds', messageSounds); document.getElementById('toggleSoundsBtn').textContent = messageSounds ? 'disable' : 'enable'; };
   document.getElementById('effectSelect').onchange = e => { selectedEffect = e.target.value; localStorage.setItem('messageEffect', selectedEffect); };
-  document.getElementById('profilePicUpload').onchange = e => { let f = e.target.files[0]; if (f) { let r = new FileReader(); r.onload = ev => { profilePic = ev.target.result; localStorage.setItem('fanter_profilePic', profilePic); updatePresence(); alert('profile pic updated!'); }; r.readAsDataURL(f); } };
+  document.getElementById('profilePicUpload').onchange = e => { 
+    let f = e.target.files[0]; 
+    if (f) { 
+      let r = new FileReader(); 
+      r.onload = ev => { 
+        profilePic = ev.target.result; 
+        localStorage.setItem('fanter_profilePic', profilePic); 
+        updatePresence(); 
+        alert('profile pic updated!'); 
+      }; 
+      r.readAsDataURL(f); 
+    } 
+  };
   
   document.getElementById('addFriendBtn').onclick = () => document.getElementById('addFriendModal').classList.add('show');
   document.getElementById('createGroupBtn').onclick = () => document.getElementById('createGroupModal').classList.add('show');
@@ -966,9 +974,9 @@ body.theme-light .server-item{color:#333}
     let u = document.getElementById('friendUsernameInput').value.trim();
     if (!u) return;
     let { data: users } = await supabaseClient.from('fanter_presence').select('user_id').ilike('username', `%${u}%`);
-    if (!users?.length) return alert('not found');
+    if (!users?.length) return alert('user not found');
     await supabaseClient.from('fanter_friend_requests').insert({ sender_id: currentUser.id, receiver_id: users[0].user_id });
-    alert('sent!');
+    alert('friend request sent!');
     document.getElementById('addFriendModal').classList.remove('show');
   };
   document.getElementById('createGroupConfirmBtn').onclick = async () => {
@@ -981,50 +989,123 @@ body.theme-light .server-item{color:#333}
   };
   document.getElementById('closeAddFriendModalBtn').onclick = () => document.getElementById('addFriendModal').classList.remove('show');
   document.getElementById('closeCreateGroupModalBtn').onclick = () => document.getElementById('createGroupModal').classList.remove('show');
-  
-  let emojis = ['😀', '😂', '😊', '😍', '🔥', '💀', '🎮', '🏆', '⭐', '👑', '❤️', '👻', '🐉', '🍕', '⚡'];
+    
+  // Emoji picker
+  let emojis = ['😀', '😂', '😊', '😍', '🔥', '💀', '🎮', '🏆', '⭐', '👑', '❤️', '👻', '🐉', '🍕', '⚡', '👍', '👎', '🙌', '🎉', '🥺', '😈', '👀', '💯'];
   document.getElementById('emojiPicker').innerHTML = emojis.map(e => `<span onclick="insertEmoji('${e}')">${e}</span>`).join('');
   function insertEmoji(e) { let inp = document.getElementById('messageInput'); inp.value += e; document.getElementById('emojiPicker').classList.remove('show'); }
   document.getElementById('emojiBtnToolbar').onclick = () => { document.getElementById('emojiPicker').classList.toggle('show'); document.getElementById('gifPicker').classList.remove('show'); };
   document.getElementById('gifBtnToolbar').onclick = () => { document.getElementById('gifPicker').classList.toggle('show'); document.getElementById('emojiPicker').classList.remove('show'); searchGifs('trending'); };
-  document.querySelectorAll('.format-toolbar button').forEach(btn => { btn.onclick = () => { let w = btn.dataset.format, inp = document.getElementById('messageInput'), s = inp.selectionStart, e = inp.selectionEnd, t = inp.value; inp.value = t.slice(0, s) + w + t.slice(s, e) + w + t.slice(e); }; });
   
-  async function searchGifs(q) { if (!q) q = 'trending'; let res = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${q}&limit=12`); let data = await res.json(); document.getElementById('gifGrid').innerHTML = data.data.map(g => `<div class="gif-item" onclick="sendGif('${g.images.fixed_height.url}')"><img src="${g.images.fixed_height_small.url}"></div>`).join(''); }
+  // Format toolbar buttons
+  document.querySelectorAll('.format-toolbar button[data-format]').forEach(btn => { 
+    btn.onclick = () => { 
+      let w = btn.dataset.format, inp = document.getElementById('messageInput'), s = inp.selectionStart, e = inp.selectionEnd, t = inp.value; 
+      inp.value = t.slice(0, s) + w + t.slice(s, e) + w + t.slice(e); 
+      inp.focus();
+    }; 
+  });
+  
+  // GIF functions
+  async function searchGifs(q) { 
+    if (!q) q = 'trending'; 
+    try {
+      let res = await fetch(`https://api.giphy.com/v1/gifs/search?api_key=${GIPHY_API_KEY}&q=${q}&limit=12`); 
+      let data = await res.json(); 
+      document.getElementById('gifGrid').innerHTML = data.data.map(g => `<div class="gif-item" onclick="sendGif('${g.images.fixed_height.url}')"><img src="${g.images.fixed_height_small.url}"></div>`).join('');
+    } catch(e) { console.error('GIF error:', e); }
+  }
   function sendGif(u) { let inp = document.getElementById('messageInput'); inp.value = u; sendMessage(); document.getElementById('gifPicker').classList.remove('show'); }
   document.getElementById('gifBtn').onclick = () => { document.getElementById('gifPicker').classList.toggle('show'); document.getElementById('emojiPicker').classList.remove('show'); searchGifs('trending'); };
   document.getElementById('gifSearch').oninput = e => searchGifs(e.target.value);
   
+  // Sound picker
   document.getElementById('soundBtn').onclick = () => { document.getElementById('soundPicker').classList.toggle('show'); };
-  document.querySelectorAll('.sound-item').forEach(s => { s.onclick = () => { let sound = s.dataset.sound; playSound(sound); soundUsage[currentUser.id] = (soundUsage[currentUser.id] || 0) + 1; localStorage.setItem('soundUsage', JSON.stringify(soundUsage)); checkBadges(); document.getElementById('soundPicker').classList.remove('show'); }; });
+  document.querySelectorAll('.sound-item').forEach(s => { 
+    s.onclick = () => { 
+      let sound = s.dataset.sound; 
+      playSound(sound); 
+      soundUsage[currentUser.id] = (soundUsage[currentUser.id] || 0) + 1; 
+      localStorage.setItem('soundUsage', JSON.stringify(soundUsage)); 
+      checkBadges(); 
+      document.getElementById('soundPicker').classList.remove('show'); 
+    }; 
+  });
   
+  // Image upload
   document.getElementById('imageBtn').onclick = () => document.getElementById('imageUpload').click();
-  document.getElementById('imageUpload').onchange = e => { if (e.target.files[0]) { let f = e.target.files[0]; if (f.type.startsWith('image/')) { let r = new FileReader(); r.onload = ev => { document.getElementById('messageInput').value = ev.target.result; sendMessage(); }; r.readAsDataURL(f); } } };
+  document.getElementById('imageUpload').onchange = e => { 
+    if (e.target.files[0]) { 
+      let f = e.target.files[0]; 
+      if (f.type.startsWith('image/')) { 
+        let r = new FileReader(); 
+        r.onload = ev => { 
+          document.getElementById('messageInput').value = ev.target.result; 
+          sendMessage(); 
+        }; 
+        r.readAsDataURL(f); 
+      } 
+    } 
+  };
   
+  // Status preset picker
   document.getElementById('statusPresetBtn').onclick = () => document.getElementById('statusPresetPicker').classList.toggle('show');
-  document.querySelectorAll('.preset-item').forEach(p => { p.onclick = () => { let status = p.dataset.status; customActivity = status; localStorage.setItem('fanter_activity', customActivity); updatePresence(); document.getElementById('statusPresetPicker').classList.remove('show'); alert(`status set to: ${status}`); }; });
+  document.querySelectorAll('.preset-item').forEach(p => { 
+    p.onclick = () => { 
+      let status = p.dataset.status; 
+      customActivity = status; 
+      localStorage.setItem('fanter_activity', customActivity); 
+      updatePresence(); 
+      document.getElementById('statusPresetPicker').classList.remove('show'); 
+      alert(`status set to: ${status}`); 
+    }; 
+  });
   
+  // Custom emoji button
   document.getElementById('customEmojiBtn').onclick = () => document.getElementById('customEmojiModal').classList.add('show');
   
+  // Slow mode button
   document.getElementById('slowModeBtn').onclick = () => { document.getElementById('slowModeSecondsInput').value = slowModeSeconds; document.getElementById('slowModeModal').classList.add('show'); };
-  document.getElementById('setSlowModeBtn').onclick = () => { slowModeSeconds = parseInt(document.getElementById('slowModeSecondsInput').value) || 0; let ind = document.getElementById('slowModeIndicator'); if (slowModeSeconds > 0) { ind.textContent = `🐢 ${slowModeSeconds}s slow mode`; ind.style.display = 'inline-block'; } else ind.style.display = 'none'; document.getElementById('slowModeModal').classList.remove('show'); };
+  document.getElementById('setSlowModeBtn').onclick = () => { 
+    slowModeSeconds = parseInt(document.getElementById('slowModeSecondsInput').value) || 0; 
+    let ind = document.getElementById('slowModeIndicator'); 
+    if (slowModeSeconds > 0) { ind.textContent = `🐢 ${slowModeSeconds}s slow mode`; ind.style.display = 'inline-block'; } 
+    else ind.style.display = 'none'; 
+    document.getElementById('slowModeModal').classList.remove('show'); 
+  };
   document.getElementById('closeSlowModeModalBtn').onclick = () => document.getElementById('slowModeModal').classList.remove('show');
   
-  document.getElementById('helpBtn').onclick = () => { document.getElementById('welcomeScreen').style.display = 'flex'; document.getElementById('fantarenaContainer').classList.remove('show'); };
+  // Help button
+  document.getElementById('helpBtn').onclick = () => { 
+    document.getElementById('welcomeScreen').style.display = 'flex'; 
+    document.getElementById('fantarenaContainer').classList.remove('show'); 
+  };
   
+  // Theme selector
   function setTheme(t) { document.body.className = `theme-${t}`; localStorage.setItem('fantarena_theme', t); }
   let savedTheme = localStorage.getItem('fantarena_theme') || 'dark';
   setTheme(savedTheme);
   document.getElementById('themeSelector').value = savedTheme;
   document.getElementById('themeSelector').onchange = e => setTheme(e.target.value);
   
+  // Channel topic click (mod only)
   document.getElementById('channelTopicText').onclick = () => {
-    if (!isMod(currentUser.displayName || currentUser.username)) return alert('only mods');
+    if (!isMod(currentUser.displayName || currentUser.username)) return alert('only mods can change channel topics');
     document.getElementById('topicInput').value = channelTopics[currentChannel] || '';
     document.getElementById('topicModal').classList.add('show');
   };
-  document.getElementById('setTopicBtn').onclick = () => { let nt = document.getElementById('topicInput').value.trim(); if (nt) { channelTopics[currentChannel] = nt; localStorage.setItem('channelTopics', JSON.stringify(channelTopics)); document.getElementById('channelTopicText').textContent = nt; } document.getElementById('topicModal').classList.remove('show'); };
+  document.getElementById('setTopicBtn').onclick = () => { 
+    let nt = document.getElementById('topicInput').value.trim(); 
+    if (nt) { 
+      channelTopics[currentChannel] = nt; 
+      localStorage.setItem('channelTopics', JSON.stringify(channelTopics)); 
+      document.getElementById('channelTopicText').textContent = nt; 
+    } 
+    document.getElementById('topicModal').classList.remove('show'); 
+  };
   document.getElementById('closeTopicModalBtn').onclick = () => document.getElementById('topicModal').classList.remove('show');
   
+  // Channel switching with smooth indicator
   document.querySelectorAll('.server-item').forEach(item => {
     item.addEventListener('click', () => {
       document.querySelectorAll('.server-item').forEach(i => i.classList.remove('active'));
@@ -1032,6 +1113,7 @@ body.theme-light .server-item{color:#333}
       updateChannelIndicator();
       let c = document.getElementById('messagesContainer');
       c.style.opacity = '0';
+      c.style.transition = 'opacity 0.15s ease';
       setTimeout(() => {
         currentChannel = item.dataset.channel;
         currentDM = null;
@@ -1043,13 +1125,14 @@ body.theme-light .server-item{color:#333}
         messages = [];
         loadMessages();
         setupRealtime();
-        document.getElementById('channelTopicText').textContent = channelTopics[currentChannel] || 'no topic';
+        document.getElementById('channelTopicText').textContent = channelTopics[currentChannel] || 'no topic set';
         loadPinnedMessages();
         c.style.opacity = '1';
       }, 150);
     });
   });
   
+  // Category headers (collapsible)
   document.querySelectorAll('.category-header').forEach(header => {
     header.onclick = () => {
       let cat = header.dataset.category;
@@ -1059,16 +1142,48 @@ body.theme-light .server-item{color:#333}
     };
   });
   
+  // Send button and enter key
   document.getElementById('sendBtn').onclick = sendMessage;
   document.getElementById('messageInput').addEventListener('keypress', e => { if (e.key === 'Enter') sendMessage(); });
-  document.getElementById('messageInput').addEventListener('input', () => { supabaseClient.from('fanter_presence').update({ typing: true }).eq('user_id', currentUser.id); clearTimeout(window.typingTimeout); window.typingTimeout = setTimeout(() => supabaseClient.from('fanter_presence').update({ typing: false }).eq('user_id', currentUser.id), 2000); });
   
-  let welcomeScreen = document.getElementById('welcomeScreen'), fantarenaContainer = document.getElementById('fantarenaContainer');
-  function enterFantarena() { welcomeScreen.style.display = 'none'; fantarenaContainer.classList.add('show'); localStorage.setItem('fantarena_welcomed', 'true'); initChat(); }
+  // Typing indicator
+  document.getElementById('messageInput').addEventListener('input', () => { 
+    supabaseClient.from('fanter_presence').update({ typing: true }).eq('user_id', currentUser.id); 
+    clearTimeout(window.typingTimeout); 
+    window.typingTimeout = setTimeout(() => supabaseClient.from('fanter_presence').update({ typing: false }).eq('user_id', currentUser.id), 2000); 
+  });
+  
+  // Typing indicator subscription
+  supabaseClient.channel('typing-fantarena')
+    .on('postgres_changes', { event: 'UPDATE', schema: 'public', table: 'fanter_presence' }, payload => {
+      let typingUser = payload.new;
+      let typingIndicator = document.getElementById('typingIndicator');
+      let typingUsername = document.getElementById('typingUsername');
+      if (typingUser.typing && typingUser.user_id !== currentUser.id && typingUser.typing_channel === currentChannel) {
+        typingUsername.textContent = `${typingUser.display_name || typingUser.username} is typing`;
+        typingIndicator.style.display = 'flex';
+        clearTimeout(window.hideTypingTimeout);
+        window.hideTypingTimeout = setTimeout(() => { typingIndicator.style.display = 'none'; }, 3000);
+      }
+    })
+    .subscribe();
+  
+  // Welcome screen and initialization
+  let welcomeScreen = document.getElementById('welcomeScreen');
+  let fantarenaContainer = document.getElementById('fantarenaContainer');
+  
+  function enterFantarena() { 
+    welcomeScreen.style.display = 'none'; 
+    fantarenaContainer.classList.add('show'); 
+    localStorage.setItem('fantarena_welcomed', 'true'); 
+    initChat(); 
+  }
+  
   document.getElementById('enterBtn').onclick = enterFantarena;
   document.getElementById('skipBtn').onclick = () => { localStorage.setItem('fantarena_welcomed', 'true'); enterFantarena(); };
   
   async function initChat() {
+    console.log('🚀 Initializing Fantarena Ignite...');
     await loadUserProfile();
     await loadFriends();
     await loadGroups();
@@ -1077,17 +1192,28 @@ body.theme-light .server-item{color:#333}
     setupRealtime();
     loadMembers();
     updateChannelIndicator();
-    document.getElementById('channelTopicText').textContent = channelTopics[currentChannel] || 'welcome!';
+    document.getElementById('channelTopicText').textContent = channelTopics[currentChannel] || 'welcome to the chat!';
     loadPinnedMessages();
     setInterval(loadMembers, 10000);
     setInterval(() => updatePresence(), 30000);
     checkBadges();
+    console.log('✅ Fantarena Ignite fully loaded!');
   }
   
-  if (localStorage.getItem('fantarena_welcomed') === 'true') { welcomeScreen.style.display = 'none'; fantarenaContainer.classList.add('show'); initChat(); } else welcomeScreen.style.display = 'flex';
+  // Auto-enter if already welcomed
+  if (localStorage.getItem('fantarena_welcomed') === 'true') { 
+    welcomeScreen.style.display = 'none'; 
+    fantarenaContainer.classList.add('show'); 
+    initChat(); 
+  }
   
+  // Set initial active channel indicator position
   let defaultChan = document.querySelector('.server-item[data-channel="general"]');
-  if (defaultChan) { document.querySelectorAll('.server-item').forEach(i => i.classList.remove('active')); defaultChan.classList.add('active'); updateChannelIndicator(); }
+  if (defaultChan) { 
+    document.querySelectorAll('.server-item').forEach(i => i.classList.remove('active')); 
+    defaultChan.classList.add('active'); 
+    updateChannelIndicator(); 
+  }
   
   console.log('🔥 FANTARENA IGNITE - FULLY LOADED!');
 })();
