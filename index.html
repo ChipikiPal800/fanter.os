@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>fanter v0.05</title>
+  <title>fanter v0.5</title>
   <link rel="stylesheet" href="config/main.css" />
   <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script>
@@ -13,24 +13,127 @@
     console.log("✅ Supabase ready!");
   </script>
   <style>
-    /* ===== COLLAPSIBLE SIDEBAR MENU ===== */
-    .menu-toggle-btn {
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+    
+    body {
+      background: #0a0a1a;
+      font-family: 'Ubuntu', 'Segoe UI', sans-serif;
+      min-height: 100vh;
+    }
+    
+    /* ===== TOP LEFT STACK ===== */
+    .top-left-stack {
       position: fixed;
-      top: 80px;
+      top: 20px;
+      left: 20px;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+    
+    .session-timer {
+      background: rgba(20, 30, 50, 0.8);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(45, 90, 227, 0.4);
+      border-radius: 30px;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 14px;
+      color: white;
+      width: fit-content;
+    }
+    
+    .timer-icon {
+      font-size: 14px;
+    }
+    
+    .timer-display {
+      font-family: monospace;
+      font-weight: bold;
+      letter-spacing: 1px;
+    }
+    
+    .timer-label {
+      font-size: 10px;
+      opacity: 0.6;
+    }
+    
+    .coin-display-header {
+      background: rgba(20, 30, 50, 0.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(45, 90, 227, 0.5);
+      border-radius: 30px;
+      padding: 8px 16px;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      width: fit-content;
+    }
+    
+    .coin-icon {
+      font-size: 18px;
+    }
+    
+    .coin-amount-header {
+      font-weight: bold;
+      color: #ffcc00;
+    }
+    
+    /* ===== TOP RIGHT ===== */
+    .top-right {
+      position: fixed;
+      top: 20px;
       right: 20px;
-      width: 50px;
-      height: 50px;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
+    
+    .account-btn-container {
+      position: static;
+    }
+    
+    .account-btn {
+      background: rgba(20, 30, 50, 0.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(45, 90, 227, 0.5);
+      border-radius: 30px;
+      padding: 8px 16px;
+      color: white;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      transition: all 0.2s;
+    }
+    
+    .account-btn:hover {
+      border-color: #ffcc00;
+      transform: translateY(-2px);
+    }
+    
+    .menu-toggle-btn {
       background: rgba(20, 30, 50, 0.9);
       backdrop-filter: blur(10px);
       border: 1px solid rgba(45, 90, 227, 0.5);
       border-radius: 15px;
       color: white;
       font-size: 28px;
+      width: 44px;
+      height: 44px;
       display: flex;
       align-items: center;
       justify-content: center;
       cursor: pointer;
-      z-index: 101;
       transition: all 0.3s ease;
       box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
     }
@@ -46,11 +149,35 @@
       border-color: #ffcc00;
     }
     
+    /* ===== FAV BUTTON BOTTOM RIGHT ===== */
+    .fav-sidebar-btn {
+      position: fixed;
+      bottom: 20px;
+      right: 20px;
+      width: 50px;
+      height: 50px;
+      background: rgba(20, 30, 50, 0.9);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(45, 90, 227, 0.5);
+      border-radius: 50%;
+      color: white;
+      font-size: 24px;
+      cursor: pointer;
+      z-index: 100;
+      transition: all 0.2s;
+    }
+    
+    .fav-sidebar-btn:hover {
+      border-color: #ffcc00;
+      transform: scale(1.05);
+    }
+    
+    /* ===== SIDEBAR MENU ===== */
     .sidebar-menu {
       position: fixed;
       top: 80px;
-      right: -250px;
-      width: 220px;
+      right: -260px;
+      width: 240px;
       background: rgba(15, 20, 40, 0.95);
       backdrop-filter: blur(15px);
       border: 1px solid rgba(45, 90, 227, 0.5);
@@ -88,16 +215,15 @@
       display: flex;
       align-items: center;
       gap: 15px;
-      padding: 15px 20px;
+      padding: 12px 18px;
       margin: 5px 0;
       background: rgba(255, 255, 255, 0.03);
       border: 1px solid rgba(45, 90, 227, 0.3);
-      border-radius: 15px;
+      border-radius: 12px;
       color: white;
-      font-size: 16px;
+      font-size: 15px;
       cursor: pointer;
       transition: all 0.2s ease;
-      text-decoration: none;
     }
     
     .menu-item:hover {
@@ -108,206 +234,479 @@
     
     .menu-icon {
       font-size: 22px;
-      min-width: 30px;
+      min-width: 32px;
       text-align: center;
     }
     
     .menu-label {
-      font-family: 'Ubuntu', sans-serif;
       font-weight: 500;
+      flex: 1;
     }
     
-    .ai-quick-toggle {
-      position: fixed;
-      bottom: 20px;
-      left: 20px;
-      background: rgba(20, 30, 50, 0.8);
-      backdrop-filter: blur(10px);
-      border: 1px solid rgba(45, 90, 227, 0.4);
-      border-radius: 30px;
-      padding: 8px 15px;
+    .menu-badge {
+      background: rgba(255, 204, 0, 0.2);
+      border: 1px solid rgba(255, 204, 0, 0.3);
+      border-radius: 20px;
+      padding: 2px 8px;
+      font-size: 10px;
+      color: #ffcc00;
+    }
+    
+    .menu-divider {
+      height: 1px;
+      background: rgba(255, 255, 255, 0.1);
+      margin: 12px 0;
+    }
+    
+    /* ===== MAIN CONTENT ===== */
+    .main-container {
+      padding-top: 20px;
+    }
+    
+    .center {
+      text-align: center;
+      padding: 20px;
+    }
+    
+    #title {
+      color: white;
+      font-size: 2.5rem;
+      margin-top: 20px;
+    }
+    
+    #subtitle {
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .game-of-day {
       display: flex;
-      gap: 10px;
-      z-index: 100;
+      flex-direction: row;
+      align-items: center;
+      justify-content: space-between;
+      background: linear-gradient(135deg, rgba(255, 204, 0, 0.1), rgba(45, 90, 227, 0.1));
+      border: 1px solid rgba(255, 204, 0, 0.3);
+      border-radius: 20px;
+      padding: 15px 25px;
+      margin: 20px auto;
+      max-width: 600px;
+      width: 90%;
+      gap: 20px;
+    }
+    
+    .game-of-day-label span {
+      background: #ffcc00;
+      color: #1a1200;
+      padding: 4px 12px;
+      border-radius: 20px;
+      font-size: 11px;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+    
+    .game-of-day-name {
+      font-size: 20px;
+      font-weight: bold;
+      color: #ffcc00;
+      flex: 1;
+      text-align: left;
+    }
+    
+    .game-of-day-play {
+      background: linear-gradient(135deg, #2d5ae3, #1a3bc0);
+      border: none;
+      border-radius: 30px;
+      padding: 8px 20px;
+      color: white;
       cursor: pointer;
       transition: all 0.2s;
+      font-weight: bold;
+      white-space: nowrap;
+    }
+    
+    .game-of-day-play:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 4px 15px rgba(45, 90, 227, 0.4);
+    }
+    
+    #searchInput {
+      width: 300px;
+      padding: 12px 20px;
+      border-radius: 30px;
+      border: 1px solid rgba(45, 90, 227, 0.5);
+      background: rgba(0, 0, 0, 0.3);
+      color: white;
+      font-size: 14px;
+      margin: 20px auto;
+    }
+    
+    #searchInput:focus {
+      outline: none;
+      border-color: #ffcc00;
+    }
+    
+    .search-history {
+      position: absolute;
+      top: 100%;
+      left: 50%;
+      transform: translateX(-50%);
+      width: 300px;
+      background: rgba(15, 20, 40, 0.95);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(45, 90, 227, 0.5);
+      border-radius: 15px;
+      margin-top: 5px;
+      display: none;
+      z-index: 1000;
+    }
+    
+    .search-history.show {
+      display: block;
+    }
+    
+    .search-history-header {
+      display: flex;
+      justify-content: space-between;
+      padding: 10px 15px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+    }
+    
+    .search-history-clear {
+      cursor: pointer;
+      color: #ff4466;
+    }
+    
+    .search-history-item {
+      padding: 10px 15px;
+      cursor: pointer;
+      transition: background 0.2s;
       color: white;
     }
     
-    .ai-quick-toggle:hover {
+    .search-history-item:hover {
+      background: rgba(45, 90, 227, 0.2);
+    }
+    
+    /* GAMES CONTAINER - 5 per row */
+    #gamesContainer {
+      display: grid;
+      grid-template-columns: repeat(5, 1fr);
+      gap: 20px;
+      padding: 20px;
+      max-width: 1400px;
+      margin: 0 auto;
+    }
+    
+    /* Make game cards larger */
+    #gamesContainer .game {
+      background: rgba(20, 30, 50, 0.8);
+      border-radius: 15px;
+      overflow: hidden;
+      transition: all 0.3s ease;
+      cursor: pointer;
+      border: 1px solid rgba(45, 90, 227, 0.3);
+    }
+    
+    #gamesContainer .game:hover {
+      transform: translateY(-5px);
       border-color: #ffcc00;
-      transform: translateY(-2px);
-      box-shadow: 0 4px 15px rgba(255, 204, 0, 0.3);
+      box-shadow: 0 10px 25px rgba(255, 204, 0, 0.2);
     }
     
-    .ai-toggle-icon {
-      font-size: 18px;
+    #gamesContainer .game img {
+      width: 100%;
+      height: 160px;
+      object-fit: cover;
     }
     
-    #aiOverlayBg {
+    #gamesContainer .game-info {
+      padding: 12px;
+    }
+    
+    #gamesContainer .game-title {
+      color: white;
+      font-weight: bold;
+      font-size: 14px;
+      margin-bottom: 5px;
+    }
+    
+    #gamesContainer .game-category {
+      color: rgba(255, 255, 255, 0.5);
+      font-size: 11px;
+    }
+    
+    /* Responsive */
+    @media (max-width: 1200px) {
+      #gamesContainer {
+        grid-template-columns: repeat(4, 1fr);
+      }
+    }
+    
+    @media (max-width: 900px) {
+      #gamesContainer {
+        grid-template-columns: repeat(3, 1fr);
+      }
+    }
+    
+    @media (max-width: 600px) {
+      #gamesContainer {
+        grid-template-columns: repeat(2, 1fr);
+      }
+    }
+    
+    .footer {
+      text-align: center;
+      padding: 20px;
+      color: rgba(255, 255, 255, 0.4);
+      font-size: 12px;
+    }
+    
+    .link {
+      color: #ffcc00;
+      text-decoration: none;
+      margin-left: 10px;
+    }
+    
+    .link:hover {
+      text-decoration: underline;
+    }
+    
+    /* ===== LOADING SCREEN ===== */
+    #loadingScreen {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: #000;
+      z-index: 9999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+    
+    #matrixCanvas {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 1;
+    }
+    
+    .loading-content {
+      position: relative;
+      z-index: 2;
+      text-align: center;
+      color: #00ff88;
+    }
+    
+    .loading-title {
+      font-size: 2rem;
+      margin-bottom: 20px;
+    }
+    
+    .loading-progress {
+      width: 300px;
+      height: 4px;
+      background: rgba(0, 255, 136, 0.2);
+      border-radius: 2px;
+      margin: 20px auto;
+      overflow: hidden;
+    }
+    
+    .loading-progress-bar {
+      width: 0%;
+      height: 100%;
+      background: #00ff88;
+      transition: width 0.3s ease;
+    }
+    
+    .loading-status {
+      font-size: 14px;
+      margin-top: 10px;
+    }
+    
+    .loading-commands {
+      font-family: monospace;
+      font-size: 12px;
+      color: rgba(0, 255, 136, 0.7);
+      margin-top: 20px;
+    }
+    
+    #whiteFlash {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: white;
+      z-index: 10000;
+      opacity: 0;
+      pointer-events: none;
+    }
+    
+    #revealOverlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: black;
+      z-index: 10001;
+      transform: scaleX(0);
+      transform-origin: left;
+    }
+    
+    .daily-bonus-overlay {
       display: none;
       position: fixed;
       top: 0;
       left: 0;
       width: 100%;
       height: 100%;
-      background: linear-gradient(270deg, #1a0000, #1a0a00, #0d0d00, #001a00, #001a1a, #00001a, #0d001a, #1a001a, #1a0000);
-      background-size: 800% 800%;
-      animation: gradientShift 22.5s linear infinite;
-      backdrop-filter: blur(8px);
-      z-index: 999;
-    }
-    
-    #aiChatOverlay {
-      display: none;
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      width: 450px;
-      height: 600px;
-      background: rgba(20, 30, 50, 0.95);
-      backdrop-filter: blur(12px);
-      border: 1px solid rgba(45, 90, 227, 0.4);
-      border-radius: 20px;
-      z-index: 1000;
-      box-shadow: 0 20px 40px rgba(0, 0, 0, 0.5);
-    }
-    
-    #aiChatOverlay iframe {
-      width: 100%;
-      height: 540px;
-      border: none;
-      border-radius: 0 0 20px 20px;
-    }
-    
-    .chat-header {
-      padding: 15px;
-      border-bottom: 1px solid rgba(255, 255, 255, 0.1);
-      display: flex;
-      justify-content: space-between;
+      background: rgba(0, 0, 0, 0.8);
+      z-index: 10002;
       align-items: center;
+      justify-content: center;
     }
     
-    .chat-header span {
+    .daily-bonus-overlay.show {
+      display: flex;
+    }
+    
+    .daily-bonus-card {
+      background: linear-gradient(135deg, #1a1a2e, #16213e);
+      border: 2px solid #ffcc00;
+      border-radius: 20px;
+      padding: 30px;
+      text-align: center;
+      color: white;
+    }
+    
+    .daily-reward {
+      font-size: 36px;
       color: #ffcc00;
-      font-family: Orbitron;
-      font-size: 16px;
+      margin: 20px 0;
     }
     
-    .chat-header button {
-      background: none;
+    .settings-btn {
+      background: linear-gradient(135deg, #2d5ae3, #1a3bc0);
       border: none;
+      border-radius: 30px;
+      padding: 10px 24px;
       color: white;
       cursor: pointer;
-      font-size: 20px;
-      opacity: 0.7;
-      transition: opacity 0.2s;
     }
     
-    .chat-header button:hover {
-      opacity: 1;
+    #mainContent {
+      opacity: 0;
+      visibility: hidden;
     }
   </style>
 </head>
 <body>
-  <div id="loadingScreen">
-    <canvas id="matrixCanvas"></canvas>
-    <div class="matrix-scanlines"></div>
-    <div id="brokenWallContainer"></div>
-    <div class="loading-content">
-      <div class="loading-icon"></div>
-      <h1 class="loading-title">Loading fanter.OS</h1>
-      <div class="loading-progress"><div class="loading-progress-bar"></div></div>
-      <p class="loading-status" id="loadingStatus">Initializing systems...</p>
-      <div class="loading-commands" id="loadingCommands">
-        <p>>_ Loading kernel modules...</p><p>>_ Establishing secure connection...</p><p>>_ Decrypting game database...</p>
-      </div>
-    </div>
-  </div>
-  <div id="whiteFlash"></div>
-  <div id="revealOverlay"></div>
 
-  <div id="dailyBonusOverlay" class="daily-bonus-overlay">
-    <div class="daily-bonus-card">
-      <h2>🎁 DAILY REWARD!</h2>
-      <div class="daily-reward" id="dailyRewardAmount">+0 🪙</div>
-      <p>Come back tomorrow for more!</p>
-      <div class="daily-streak" id="dailyStreakText">Streak: 0 days</div>
-      <button class="settings-btn" onclick="closeDailyBonus()" style="margin-top:20px;">Claim</button>
-    </div>
+<div id="loadingScreen">
+  <canvas id="matrixCanvas"></canvas>
+  <div class="loading-content">
+    <h1 class="loading-title">Loading fanter.OS</h1>
+    <div class="loading-progress"><div class="loading-progress-bar"></div></div>
+    <p class="loading-status" id="loadingStatus">Initializing systems...</p>
+    <div class="loading-commands" id="loadingCommands"></div>
   </div>
+</div>
 
-  <div id="mainContent" style="opacity:0;visibility:hidden;">
-    <div id="sessionTimer">
+<div id="whiteFlash"></div>
+<div id="revealOverlay"></div>
+
+<div id="dailyBonusOverlay" class="daily-bonus-overlay">
+  <div class="daily-bonus-card">
+    <h2>🎁 DAILY REWARD!</h2>
+    <div class="daily-reward" id="dailyRewardAmount">+0 🪙</div>
+    <p>Come back tomorrow for more!</p>
+    <div class="daily-streak" id="dailyStreakText">Streak: 0 days</div>
+    <button class="settings-btn" onclick="closeDailyBonus()" style="margin-top:20px;">Claim</button>
+  </div>
+</div>
+
+<div id="mainContent">
+  <!-- TOP LEFT STACK: Timer + Coins below it -->
+  <div class="top-left-stack">
+    <div class="session-timer">
       <div class="timer-icon">⏱️</div>
       <div class="timer-display"><span id="timerHours">00</span>:<span id="timerMinutes">00</span>:<span id="timerSeconds">00</span></div>
       <div class="timer-label">session time</div>
     </div>
-
-    <!-- Collapsible Menu Button -->
-    <div class="menu-toggle-btn" id="menuToggleBtn" onclick="toggleMenu()">
-      ≡
-    </div>
-    
-    <!-- Sidebar Menu Overlay -->
-    <div class="sidebar-menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
-    
-    <!-- Sidebar Menu -->
-    <div class="sidebar-menu" id="sidebarMenu">
-      <div class="menu-item" onclick="window.location.href='settings.html'">
-        <span class="menu-icon">⚙️</span>
-        <span class="menu-label">Settings</span>
-      </div>
-      <div class="menu-item" onclick="window.location.href='shop.html'">
-        <span class="menu-icon">🛒</span>
-        <span class="menu-label">Shop</span>
-      </div>
-      <div class="menu-item" onclick="window.location.href='fantarena.html'">
-        <span class="menu-icon">🏟️</span>
-        <span class="menu-label">Fantarena</span>
-      </div>
-    </div>
-
-    <!-- AI Chat Button -->
-    <div class="ai-quick-toggle" id="aiQuickToggle" onclick="toggleAIChat()">
-      <span class="ai-toggle-icon">💬</span>
-      <span>chat</span>
-    </div>
-
-    <!-- AI Chat Overlay -->
-    <div id="aiOverlayBg" onclick="toggleAIChat()"></div>
-    <div id="aiChatOverlay">
-      <div class="chat-header">
-        <span> fanter ai</span>
-        <button onclick="toggleAIChat()">✕</button>
-      </div>
-      <iframe src="https://chipikipal800.github.io/fanter.ai/"></iframe>
-    </div>
-
-    <!-- Account Button (Top Right) -->
-    <div class="account-btn-container">
-      <button class="account-btn" id="accountBtn" onclick="window.location.href='fantaccount.html'">
-        <span class="account-icon">👤</span>
-        <span class="account-name" id="accountName">Guest</span>
-      </button>
-    </div>
-
-    <!-- Coin Display -->
     <div class="coin-display-header">
       <span class="coin-icon">🪙</span>
       <span id="headerCoinAmount" class="coin-amount-header">0</span>
-      <span class="coin-label-header">coins</span>
+      <span>coins</span>
     </div>
+  </div>
 
-    <button class="fav-sidebar-btn" id="favSidebarBtn" onclick="window.toggleFavSidebar()">★</button>
+  <!-- TOP RIGHT STACK: Account + Menu below it -->
+  <div class="top-right">
+    <div class="account-btn-container">
+      <button class="account-btn" onclick="window.location.href='fantaccount.html'">
+        <span>👤</span>
+        <span class="account-name" id="accountName">Guest</span>
+      </button>
+    </div>
+    <div class="menu-toggle-btn" id="menuToggleBtn" onclick="toggleMenu()">≡</div>
+  </div>
+
+  <!-- FAV BUTTON - Bottom Right -->
+  <button class="fav-sidebar-btn" id="favSidebarBtn" onclick="window.toggleFavSidebar && window.toggleFavSidebar()">★</button>
+  
+  <!-- SIDEBAR MENU OVERLAY -->
+  <div class="sidebar-menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
+  
+  <!-- SIDEBAR MENU -->
+  <div class="sidebar-menu" id="sidebarMenu">
+    <div class="menu-item" onclick="window.location.href='settings.html'">
+      <span class="menu-icon">⚙️</span>
+      <span class="menu-label">Settings</span>
+    </div>
+    <div class="menu-item" onclick="window.location.href='shop.html'">
+      <span class="menu-icon">🛒</span>
+      <span class="menu-label">Shop</span>
+    </div>
+    <div class="menu-item" onclick="window.location.href='fantarena.html'">
+      <span class="menu-icon">🏟️</span>
+      <span class="menu-label">Fantarena</span>
+      <span class="menu-badge">CHAT</span>
+    </div>
     
+    <div class="menu-divider"></div>
+    
+    <div class="menu-item" onclick="window.open('https://chipikipal800.github.io/fanter.ai/', '_blank')">
+      <span class="menu-icon">🤖</span>
+      <span class="menu-label">AI Chatbot</span>
+      <span class="menu-badge">NEW</span>
+    </div>
+    <div class="menu-item" onclick="window.open('https://chipikipal800.github.io/fanter-studios/', '_blank')">
+      <span class="menu-icon">🎮</span>
+      <span class="menu-label">Fanter Studios</span>
+      <span class="menu-badge">CREATE</span>
+    </div>
+    
+    <div class="menu-divider"></div>
+    
+    <div class="menu-item" onclick="window.location.href='fantaccount.html'">
+      <span class="menu-icon">👤</span>
+      <span class="menu-label">My Account</span>
+    </div>
+  </div>
+
+  <!-- MAIN CONTENT -->
+  <div class="main-container">
     <div class="center">
       <h1 id="title"></h1>
       <p id="subtitle"></p>
     </div>
     
-    <!-- Game of the Day -->
     <div id="gameOfDay" class="game-of-day" style="display:none;">
       <div class="game-of-day-label"><span>🌟 GAME OF THE DAY</span></div>
       <div class="game-of-day-name" id="gameOfDayName">Loading...</div>
@@ -325,193 +724,234 @@
     <div id="gamesContainer"></div>
     
     <div class="footer">
-      <a style="font-weight:700">a site created by abcatlmfao</a>
-      <a style="font-weight:700" class="link" href="https://dsc.gg/parcoil">parcoil network</a>
+      <span>a site created by abcatlmfao</span>
+      <a class="link" href="https://dsc.gg/parcoil">parcoil network</a>
     </div>
   </div>
+</div>
 
-  <script src="config/theme-loader.js"></script>
-  <script src="config/main.js"></script>
-  <script src="config/quicklaunch.js"></script>
-  <script src="config/categories.js"></script>
-  <script src="config/gamedetails.js"></script>
+<script src="config/theme-loader.js"></script>
+<script src="config/main.js"></script>
+<script src="config/quicklaunch.js"></script>
+<script src="config/categories.js"></script>
+<script src="config/gamedetails.js"></script>
 
-  <script>
-    // ===== MENU TOGGLE =====
-    function toggleMenu() {
-      const menu = document.getElementById('sidebarMenu');
-      const overlay = document.getElementById('menuOverlay');
-      const btn = document.getElementById('menuToggleBtn');
-      
-      menu.classList.toggle('open');
-      overlay.classList.toggle('open');
-      btn.classList.toggle('active');
+<script>
+function toggleMenu() {
+  const menu = document.getElementById('sidebarMenu');
+  const overlay = document.getElementById('menuOverlay');
+  const btn = document.getElementById('menuToggleBtn');
+  menu.classList.toggle('open');
+  overlay.classList.toggle('open');
+  btn.classList.toggle('active');
+}
+
+document.getElementById('menuOverlay').addEventListener('click', function() {
+  document.getElementById('sidebarMenu').classList.remove('open');
+  this.classList.remove('open');
+  document.getElementById('menuToggleBtn').classList.remove('active');
+});
+
+// Session Timer
+(function() {
+  let sessionStart = localStorage.getItem('sessionStart') || Date.now();
+  if (!localStorage.getItem('sessionStart')) localStorage.setItem('sessionStart', sessionStart);
+  else sessionStart = parseInt(sessionStart);
+  let totalPausedTime = parseInt(localStorage.getItem('totalPausedTime') || '0');
+  let pausedStart = null, timerInterval = null;
+  
+  function updateTimerDisplay() {
+    const activeTime = Date.now() - sessionStart - totalPausedTime;
+    const h = Math.floor(activeTime / 3600000), m = Math.floor((activeTime % 3600000) / 60000), s = Math.floor((activeTime % 60000) / 1000);
+    document.getElementById('timerHours').textContent = h.toString().padStart(2,'0');
+    document.getElementById('timerMinutes').textContent = m.toString().padStart(2,'0');
+    document.getElementById('timerSeconds').textContent = s.toString().padStart(2,'0');
+  }
+  
+  function startTimer() { if(timerInterval) clearInterval(timerInterval); updateTimerDisplay(); timerInterval = setInterval(updateTimerDisplay, 1000); }
+  function pauseTimer() { if(pausedStart===null) { pausedStart = Date.now(); if(timerInterval) { clearInterval(timerInterval); timerInterval = null; } } }
+  function resumeTimer() { if(pausedStart!==null) { totalPausedTime += Date.now() - pausedStart; localStorage.setItem('totalPausedTime', totalPausedTime); pausedStart = null; startTimer(); } }
+  
+  document.addEventListener('visibilitychange', () => document.hidden ? pauseTimer() : resumeTimer());
+  window.addEventListener('focus', () => { if(!document.hidden) resumeTimer(); });
+  window.addEventListener('blur', pauseTimer);
+  startTimer();
+})();
+
+function checkDailyBonus() {
+  const lastClaim = localStorage.getItem('lastDailyClaim'), today = new Date().toDateString();
+  let streak = parseInt(localStorage.getItem('dailyStreak') || '0');
+  if (lastClaim !== today) {
+    const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
+    streak = (lastClaim === yesterday.toDateString()) ? streak + 1 : 1;
+    const reward = 50 + Math.min(streak, 7) * 10;
+    document.getElementById('dailyRewardAmount').textContent = `+${reward} 🪙`;
+    document.getElementById('dailyStreakText').textContent = `Streak: ${streak} day${streak!==1?'s':''}`;
+    window.pendingDailyReward = reward;
+    window.pendingDailyStreak = streak;
+    document.getElementById('dailyBonusOverlay').classList.add('show');
+  }
+}
+
+function closeDailyBonus() {
+  if (window.pendingDailyReward) {
+    let user = JSON.parse(localStorage.getItem('fanter_currentUser') || 'null');
+    if (user) {
+      user.coins = (user.coins || 0) + window.pendingDailyReward;
+      localStorage.setItem('fanter_currentUser', JSON.stringify(user));
+      let users = JSON.parse(localStorage.getItem('fanter_users') || '[]');
+      let idx = users.findIndex(u => u.id === user.id);
+      if (idx !== -1) { users[idx].coins = user.coins; localStorage.setItem('fanter_users', JSON.stringify(users)); }
+      localStorage.setItem('lastDailyClaim', new Date().toDateString());
+      localStorage.setItem('dailyStreak', window.pendingDailyStreak);
+      updateHeaderCoins();
     }
-    
-    // Close menu when clicking a menu item
-    document.querySelectorAll('.menu-item').forEach(item => {
-      item.addEventListener('click', () => {
-        const menu = document.getElementById('sidebarMenu');
-        const overlay = document.getElementById('menuOverlay');
-        const btn = document.getElementById('menuToggleBtn');
-        
-        menu.classList.remove('open');
-        overlay.classList.remove('open');
-        btn.classList.remove('active');
-      });
-    });
+  }
+  document.getElementById('dailyBonusOverlay').classList.remove('show');
+  window.pendingDailyReward = null;
+}
 
-    // ===== AI CHAT TOGGLE =====
-    function toggleAIChat() {
-      const overlay = document.getElementById('aiChatOverlay');
-      const bg = document.getElementById('aiOverlayBg');
-      if (overlay.style.display === 'none' || !overlay.style.display) {
-        overlay.style.display = 'block';
-        bg.style.display = 'block';
-      } else {
-        overlay.style.display = 'none';
-        bg.style.display = 'none';
+function updateGameOfDay() {
+  if (!window.gamesData || !window.gamesData.length) return;
+  const today = new Date().toDateString();
+  let game = (localStorage.getItem('gameOfDayDate') === today) ? window.gamesData.find(g => g.name === localStorage.getItem('gameOfDay')) : null;
+  if (!game) { 
+    game = window.gamesData[Math.floor(Math.random() * window.gamesData.length)]; 
+    localStorage.setItem('gameOfDay', game.name); 
+    localStorage.setItem('gameOfDayDate', today); 
+  }
+  document.getElementById('gameOfDayName').textContent = game.name;
+  document.getElementById('gameOfDay').style.display = 'flex';
+  document.getElementById('gameOfDayPlay').onclick = () => window.open(`play.html?gameurl=${encodeURIComponent(game.url)}&game=${encodeURIComponent(game.name)}`, '_blank');
+}
+
+let searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
+function updateSearchHistoryDisplay() {
+  const list = document.getElementById('searchHistoryList');
+  if (!list) return;
+  list.innerHTML = searchHistory.length ? searchHistory.map(t => `<div class="search-history-item" onclick="document.getElementById('searchInput').value='${t.replace(/'/g,"\\'")}';document.getElementById('searchInput').dispatchEvent(new Event('input'));document.getElementById('searchHistory').classList.remove('show');">🔍 ${t}</div>`).join('') : '<div style="padding:10px 15px;color:rgba(255,255,255,0.4);">no recent searches</div>';
+}
+
+function clearSearchHistory() { 
+  searchHistory = []; 
+  localStorage.setItem('searchHistory', '[]'); 
+  updateSearchHistoryDisplay(); 
+}
+
+document.addEventListener('DOMContentLoaded', () => {
+  const inp = document.getElementById('searchInput'), hist = document.getElementById('searchHistory');
+  if (inp) { 
+    inp.addEventListener('focus', () => { updateSearchHistoryDisplay(); hist.classList.add('show'); }); 
+    inp.addEventListener('blur', () => setTimeout(() => hist.classList.remove('show'), 200)); 
+  }
+});
+
+function updateHeaderCoins() {
+  const user = JSON.parse(localStorage.getItem('fanter_currentUser') || 'null');
+  const el = document.getElementById('headerCoinAmount');
+  if (el && user) el.textContent = Math.floor((user.coins || 0) * 100) / 100;
+  const nameEl = document.getElementById('accountName');
+  if (nameEl && user) nameEl.textContent = user.displayName || user.username || 'Guest';
+}
+
+setInterval(updateHeaderCoins, 1000);
+updateHeaderCoins();
+window.addEventListener('storage', e => { if (e.key === 'fanter_currentUser') updateHeaderCoins(); });
+
+let lastKeyTime = 0, lastKey = "";
+document.addEventListener("keydown", e => {
+  const key = localStorage.getItem("safetyKey"), url = localStorage.getItem("safetyUrl");
+  if (!key || !url) return;
+  const pressed = e.key.toLowerCase();
+  if (pressed === key.toLowerCase() && pressed === lastKey && Date.now() - lastKeyTime < 1000) window.location.href = url;
+  lastKey = pressed; lastKeyTime = Date.now();
+});
+
+// Loading Screen
+(function() {
+  if (sessionStorage.getItem('fanterLoaded') === 'true') {
+    document.getElementById('loadingScreen').style.display = 'none';
+    document.getElementById('mainContent').style.opacity = '1';
+    document.getElementById('mainContent').style.visibility = 'visible';
+    checkDailyBonus();
+    return;
+  }
+  sessionStorage.setItem('fanterLoaded', 'true');
+  const ls = document.getElementById('loadingScreen'), pb = document.querySelector('.loading-progress-bar'), se = document.getElementById('loadingStatus');
+  const wf = document.getElementById('whiteFlash'), ro = document.getElementById('revealOverlay');
+  const mc = document.getElementById('mainContent'), lc = document.getElementById('loadingCommands');
+  const cmds = [">_ Loading kernel modules...", ">_ Establishing secure connection...", ">_ Decrypting game database...", ">_ Loading user preferences...", ">_ Initializing game engine...", ">_ Connecting to game servers...", ">_ Verifying achievements...", ">_ Loading shop inventory...", ">_ Syncing cloud saves...", ">_ Almost there...", ">_ Starting fanter.OS..."];
+  let ci = 0;
+  function uc() { if(ci < cmds.length && lc) { const p = document.createElement('p'); p.textContent = cmds[ci]; lc.appendChild(p); ci++; setTimeout(uc, 800); } }
+  uc();
+  mc.style.opacity = '0';
+  mc.style.visibility = 'hidden';
+  
+  const cv = document.getElementById('matrixCanvas'), ctx = cv.getContext('2d');
+  let w, h, drops = [], fs = 16, chars = "01";
+  function rc() { w = window.innerWidth; h = window.innerHeight; cv.width = w; cv.height = h; drops = Array(Math.floor(w/fs)).fill(0).map(() => Math.random() * -h); }
+  function dm() { ctx.fillStyle = 'rgba(0,0,0,0.05)'; ctx.fillRect(0,0,w,h); ctx.fillStyle = '#00ff88'; ctx.font = fs+'px monospace'; for(let i=0;i<drops.length;i++) { ctx.fillText(chars[Math.floor(Math.random()*chars.length)], i*fs, drops[i]*fs); if(drops[i]*fs > h && Math.random()>0.975) drops[i]=0; drops[i]++; } }
+  rc(); const mi = setInterval(dm, 50); window.addEventListener('resize', rc);
+  
+  let progress = 0, msgIdx = 0;
+  const msgs = ["Initializing fanter.OS...","Loading core modules...","Bypassing firewalls...","Decrypting database...","Loading games library...","Applying themes...","Hacking mainframe...","Almost there...","Starting fanter.OS..."];
+  const pi = setInterval(() => {
+    if(progress < 100) {
+      progress += Math.random()*2+1;
+      if(progress >= 100) { 
+        progress=100; pb.style.width='100%'; se.textContent="Complete! Loading games..."; clearInterval(pi); clearInterval(mi);
+        let attempts=0; 
+        const ci2=setInterval(()=>{ 
+          attempts++; 
+          if((document.getElementById('gamesContainer')?.children.length>0)||attempts>=100){ 
+            clearInterval(ci2); 
+            setTimeout(()=>{
+              wf.style.opacity='1'; 
+              setTimeout(()=>{ 
+                ls.style.opacity='0'; 
+                setTimeout(()=>{ 
+                  ls.style.display='none'; 
+                  ro.style.transform='scaleX(1)'; 
+                  setTimeout(()=>{ 
+                    wf.style.opacity='0'; 
+                    mc.style.opacity='1'; 
+                    mc.style.visibility='visible';
+                    setTimeout(()=>{ 
+                      document.querySelectorAll('.game').forEach((g,i)=>{ 
+                        g.style.opacity='0'; 
+                        g.style.transform='scale(0)'; 
+                        setTimeout(()=>{ 
+                          g.style.opacity='1'; 
+                          g.style.transform='scale(1)'; 
+                          g.style.transition='all 0.4s'; 
+                        }, i*30); 
+                      });
+                      checkDailyBonus();
+                    },100); 
+                    setTimeout(()=>{ 
+                      ro.style.transform='scaleX(0)'; 
+                      setTimeout(()=>{ 
+                        if(ro.parentNode) ro.remove(); 
+                        if(wf.parentNode) wf.remove(); 
+                      },1200); 
+                    },500); 
+                  },300); 
+                },400); 
+              },300); 
+            },800); 
+          }},100);
+      } else { 
+        pb.style.width=progress+'%'; 
+        const ni=Math.floor(progress/12); 
+        if(ni>msgIdx&&ni<msgs.length){ 
+          msgIdx=ni; 
+          se.textContent=msgs[msgIdx]; 
+        } 
       }
     }
-
-    // Session Timer
-    (function() {
-      let sessionStart = localStorage.getItem('sessionStart') || Date.now();
-      if (!localStorage.getItem('sessionStart')) localStorage.setItem('sessionStart', sessionStart);
-      else sessionStart = parseInt(sessionStart);
-      let totalPausedTime = parseInt(localStorage.getItem('totalPausedTime') || '0');
-      let pausedStart = null, timerInterval = null;
-      
-      function updateTimerDisplay() {
-        const activeTime = Date.now() - sessionStart - totalPausedTime;
-        const h = Math.floor(activeTime / 3600000), m = Math.floor((activeTime % 3600000) / 60000), s = Math.floor((activeTime % 60000) / 1000);
-        document.getElementById('timerHours').textContent = h.toString().padStart(2,'0');
-        document.getElementById('timerMinutes').textContent = m.toString().padStart(2,'0');
-        document.getElementById('timerSeconds').textContent = s.toString().padStart(2,'0');
-      }
-      
-      function startTimer() { if(timerInterval) clearInterval(timerInterval); updateTimerDisplay(); timerInterval = setInterval(updateTimerDisplay, 1000); }
-      function pauseTimer() { if(pausedStart===null) { pausedStart = Date.now(); if(timerInterval) { clearInterval(timerInterval); timerInterval = null; } } }
-      function resumeTimer() { if(pausedStart!==null) { totalPausedTime += Date.now() - pausedStart; localStorage.setItem('totalPausedTime', totalPausedTime); pausedStart = null; startTimer(); } }
-      
-      document.addEventListener('visibilitychange', () => document.hidden ? pauseTimer() : resumeTimer());
-      window.addEventListener('focus', () => { if(!document.hidden) resumeTimer(); });
-      window.addEventListener('blur', pauseTimer);
-      startTimer();
-    })();
-
-    // Daily Bonus
-    function checkDailyBonus() {
-      const lastClaim = localStorage.getItem('lastDailyClaim'), today = new Date().toDateString();
-      let streak = parseInt(localStorage.getItem('dailyStreak') || '0');
-      if (lastClaim !== today) {
-        const yesterday = new Date(); yesterday.setDate(yesterday.getDate()-1);
-        streak = (lastClaim === yesterday.toDateString()) ? streak + 1 : 1;
-        const reward = 50 + Math.min(streak, 7) * 10;
-        document.getElementById('dailyRewardAmount').textContent = `+${reward} 🪙`;
-        document.getElementById('dailyStreakText').textContent = `Streak: ${streak} day${streak!==1?'s':''}`;
-        window.pendingDailyReward = reward; window.pendingDailyStreak = streak;
-        document.getElementById('dailyBonusOverlay').classList.add('show');
-      }
-    }
-    function closeDailyBonus() {
-      if (window.pendingDailyReward) {
-        let user = JSON.parse(localStorage.getItem('fanter_currentUser') || 'null');
-        if (user) {
-          user.coins = (user.coins || 0) + window.pendingDailyReward;
-          localStorage.setItem('fanter_currentUser', JSON.stringify(user));
-          let users = JSON.parse(localStorage.getItem('fanter_users') || '[]');
-          let idx = users.findIndex(u => u.id === user.id);
-          if (idx!==-1) { users[idx].coins = user.coins; localStorage.setItem('fanter_users', JSON.stringify(users)); }
-          localStorage.setItem('lastDailyClaim', new Date().toDateString());
-          localStorage.setItem('dailyStreak', window.pendingDailyStreak);
-          updateHeaderCoins();
-        }
-      }
-      document.getElementById('dailyBonusOverlay').classList.remove('show');
-      window.pendingDailyReward = null;
-    }
-
-    // Game of Day
-    function updateGameOfDay() {
-      if (!window.gamesData?.length) return;
-      const today = new Date().toDateString();
-      let game = (localStorage.getItem('gameOfDayDate') === today) ? window.gamesData.find(g => g.name === localStorage.getItem('gameOfDay')) : null;
-      if (!game) { game = window.gamesData[Math.floor(Math.random() * window.gamesData.length)]; localStorage.setItem('gameOfDay', game.name); localStorage.setItem('gameOfDayDate', today); }
-      document.getElementById('gameOfDayName').textContent = game.name;
-      document.getElementById('gameOfDay').style.display = 'flex';
-      document.getElementById('gameOfDayPlay').onclick = () => window.open(`play.html?gameurl=${encodeURIComponent(game.url)}&game=${encodeURIComponent(game.name)}`, '_blank');
-    }
-
-    // Search History
-    let searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
-    function updateSearchHistoryDisplay() {
-      const list = document.getElementById('searchHistoryList');
-      if (!list) return;
-      list.innerHTML = searchHistory.length ? searchHistory.map(t => `<div class="search-history-item" onclick="document.getElementById('searchInput').value='${t.replace(/'/g,"\\'")}';document.getElementById('searchInput').dispatchEvent(new Event('input'));document.getElementById('searchHistory').classList.remove('show');">🔍 ${t}</div>`).join('') : '<div style="padding:10px 15px;color:rgba(255,255,255,0.4);">no recent searches</div>';
-    }
-    function clearSearchHistory() { searchHistory = []; localStorage.setItem('searchHistory', '[]'); updateSearchHistoryDisplay(); }
-    document.addEventListener('DOMContentLoaded', () => {
-      const inp = document.getElementById('searchInput'), hist = document.getElementById('searchHistory');
-      if (inp) { inp.addEventListener('focus', () => { updateSearchHistoryDisplay(); hist.classList.add('show'); }); inp.addEventListener('blur', () => setTimeout(() => hist.classList.remove('show'), 200)); }
-    });
-
-    // Coins
-    function updateHeaderCoins() {
-      const user = JSON.parse(localStorage.getItem('fanter_currentUser') || 'null');
-      const el = document.getElementById('headerCoinAmount');
-      if (el && user) el.textContent = Math.floor((user.coins || 0) * 100) / 100;
-    }
-    setInterval(updateHeaderCoins, 1000); updateHeaderCoins();
-    window.addEventListener('storage', e => { if (e.key === 'fanter_currentUser') updateHeaderCoins(); });
-
-    // Safety Key
-    let lastKeyTime = 0, lastKey = "";
-    document.addEventListener("keydown", e => {
-      const key = localStorage.getItem("safetyKey"), url = localStorage.getItem("safetyUrl");
-      if (!key || !url) return;
-      const pressed = e.key.toLowerCase();
-      if (pressed === key.toLowerCase() && pressed === lastKey && Date.now() - lastKeyTime < 1000) window.location.href = url;
-      lastKey = pressed; lastKeyTime = Date.now();
-    });
-
-    // Loading Screen
-    (function() {
-      if (sessionStorage.getItem('fanterLoaded') === 'true') {
-        document.getElementById('loadingScreen').style.display = 'none';
-        document.getElementById('mainContent').style.opacity = document.getElementById('mainContent').style.visibility = 'visible';
-        checkDailyBonus(); return;
-      }
-      sessionStorage.setItem('fanterLoaded', 'true');
-      const ls = document.getElementById('loadingScreen'), pb = document.querySelector('.loading-progress-bar'), se = document.getElementById('loadingStatus');
-      const wf = document.getElementById('whiteFlash'), ro = document.getElementById('revealOverlay'), bw = document.getElementById('brokenWallContainer');
-      const mc = document.getElementById('mainContent'), lc = document.getElementById('loadingCommands');
-      const cmds = [">_ Loading kernel modules...", ">_ Establishing secure connection...", ">_ Decrypting game database...", ">_ Loading user preferences...", ">_ Initializing game engine...", ">_ Connecting to game servers...", ">_ Verifying achievements...", ">_ Loading shop inventory...", ">_ Syncing cloud saves...", ">_ Almost there...", ">_ Starting fanter.OS..."];
-      let ci = 0;
-      function uc() { if(ci < cmds.length && lc) { const p = document.createElement('p'); p.textContent = cmds[ci]; lc.appendChild(p); ci++; setTimeout(uc, 800); } }
-      uc(); mc.style.opacity = '0'; mc.style.visibility = 'hidden';
-      
-      const cv = document.getElementById('matrixCanvas'), ctx = cv.getContext('2d');
-      let w, h, drops = [], fs = 16, chars = "01";
-      function rc() { w = window.innerWidth; h = window.innerHeight; cv.width = w; cv.height = h; drops = Array(Math.floor(w/fs)).fill(0).map(() => Math.random() * -h); }
-      function dm() { ctx.fillStyle = 'rgba(0,0,0,0.05)'; ctx.fillRect(0,0,w,h); ctx.fillStyle = '#00ff88'; ctx.font = fs+'px monospace'; for(let i=0;i<drops.length;i++) { ctx.fillText(chars[Math.floor(Math.random()*chars.length)], i*fs, drops[i]*fs); if(drops[i]*fs > h && Math.random()>0.975) drops[i]=0; drops[i]++; } }
-      rc(); const mi = setInterval(dm, 50); window.addEventListener('resize', rc);
-      
-      let progress = 0, msgIdx = 0;
-      const msgs = ["Initializing fanter.OS...","Loading core modules...","Bypassing firewalls...","Decrypting database...","Loading games library...","Applying themes...","Hacking mainframe...","Almost there...","Starting fanter.OS..."];
-      const pi = setInterval(() => {
-        if(progress < 100) {
-          progress += Math.random()*2+1;
-          if(progress >= 100) { progress=100; pb.style.width='100%'; se.textContent="Complete! Loading games..."; clearInterval(pi); clearInterval(mi);
-            let attempts=0; const ci2=setInterval(()=>{ attempts++; if((document.getElementById('gamesContainer')?.children.length>0)||attempts>=100){ clearInterval(ci2); setTimeout(()=>{
-              wf.style.opacity='1'; setTimeout(()=>{ ls.style.opacity='0'; setTimeout(()=>{ ls.style.display='none'; ro.style.transform='scaleX(1)'; setTimeout(()=>{ wf.style.opacity='0'; mc.style.opacity='1'; mc.style.visibility='visible';
-                setTimeout(()=>{ document.querySelectorAll('.game').forEach((g,i)=>{ g.style.opacity='0'; g.style.transform='scale(0)'; setTimeout(()=>{ g.style.opacity='1'; g.style.transform='scale(1)'; g.style.transition='all 0.4s'; }, i*30); });
-                },100); setTimeout(()=>{ ro.style.transform='scaleX(0)'; setTimeout(()=>{ ro.remove(); wf.remove(); },1200); },500); },300); },400); },300); },800); }},100);
-          } else { pb.style.width=progress+'%'; const ni=Math.floor(progress/12); if(ni>msgIdx&&ni<msgs.length){ msgIdx=ni; se.textContent=msgs[msgIdx]; } }
-        }
-      },350);
-      ls.addEventListener('click', e => e.stopPropagation());
-    })();
-  </script>
+  },350);
+  ls.addEventListener('click', e => e.stopPropagation());
+})();
+</script>
 </body>
 </html>
