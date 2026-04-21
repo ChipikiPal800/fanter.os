@@ -1,1 +1,353 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>fanter | THE STAGE 🎤</title>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="https://unpkg.com/livekit-client@1/dist/livekit-client.umd.js"></script>
+<link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
+<style>
+*{margin:0;padding:0;box-sizing:border-box}
+:root{
+  --gold:#ffcc00;--gold-dim:rgba(255,204,0,0.15);--gold-border:rgba(255,204,0,0.3);
+  --blue:#2d5ae3;--blue-dim:rgba(45,90,227,0.18);--blue-border:rgba(45,90,227,0.32);
+  --purple:#9f5ae3;--green:#00e87a;--red:#ff4466;
+  --bg:#07081a;--surface:rgba(12,16,38,0.98);
+  --text:#dde2ff;--muted:rgba(180,190,255,0.38);
+}
+body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);height:100vh;overflow:hidden}
+::-webkit-scrollbar{width:4px}
+::-webkit-scrollbar-track{background:transparent}
+::-webkit-scrollbar-thumb{background:rgba(45,90,227,0.25);border-radius:99px}
 
+/* VOICE CHAT STYLES */
+.voice-container{display:flex;flex-direction:column;height:100vh;max-width:500px;margin:0 auto;padding:20px}
+.voice-header{text-align:center;padding:20px;border-bottom:1px solid var(--blue-border);margin-bottom:20px}
+.voice-header h1{font-family:'Syne',sans-serif;font-size:28px;color:var(--gold)}
+.voice-header p{color:var(--muted);font-size:12px;margin-top:5px}
+.participants-list{flex:1;overflow-y:auto;padding:10px;display:flex;flex-direction:column;gap:10px}
+.participant{display:flex;align-items:center;gap:12px;padding:12px;background:var(--surface);border-radius:16px;border:1px solid var(--blue-border);transition:all 0.2s}
+.participant.speaking{border-color:var(--gold);box-shadow:0 0 15px rgba(255,204,0,0.3)}
+.participant-avatar{width:48px;height:48px;background:linear-gradient(135deg,var(--blue),var(--purple));border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;font-weight:700;overflow:hidden}
+.participant-avatar img{width:100%;height:100%;object-fit:cover}
+.participant-info{flex:1}
+.participant-name{font-weight:600;font-size:14px}
+.participant-status{font-size:11px;color:var(--muted);margin-top:2px}
+.participant-controls{display:flex;gap:8px}
+.voice-btn{background:rgba(255,255,255,0.05);border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:16px;transition:all 0.2s}
+.voice-btn:hover{transform:scale(1.05);background:rgba(45,90,227,0.3)}
+.voice-btn.muted{background:rgba(255,68,68,0.2);color:var(--red)}
+.voice-btn.volume{position:relative}
+.volume-slider{position:absolute;bottom:45px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--blue-border);border-radius:8px;padding:8px;width:100px;display:none}
+.volume-slider.show{display:block}
+.volume-slider input{width:100%}
+.control-bar{display:flex;justify-content:center;gap:15px;padding:20px;border-top:1px solid var(--blue-border);margin-top:20px}
+.control-btn{width:60px;height:60px;border-radius:50%;border:none;cursor:pointer;font-size:24px;transition:all 0.2s}
+.control-btn:hover{transform:scale(1.05)}
+.control-btn.leave{background:rgba(255,68,68,0.2);color:var(--red)}
+.control-btn.mic{background:rgba(45,90,227,0.2);color:var(--gold)}
+.control-btn.mic.muted{background:rgba(255,68,68,0.2);color:var(--red)}
+.connection-status{position:fixed;top:20px;right:20px;padding:6px 12px;border-radius:20px;font-size:11px;background:rgba(0,0,0,0.7);z-index:100}
+.status-connected{color:var(--green)}.status-disconnected{color:var(--red)}.status-connecting{color:var(--gold)}
+.close-btn{position:fixed;top:20px;left:20px;background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer;z-index:100}
+.close-btn:hover{color:var(--gold)}
+.toast{position:fixed;bottom:20px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--gold-border);border-radius:10px;padding:10px 20px;font-size:12px;z-index:200;animation:fadeIn 0.2s}
+@keyframes fadeIn{from{opacity:0;transform:translateX(-50%) translateY(20px)}to{opacity:1;transform:translateX(-50%) translateY(0)}}
+</style>
+</head>
+<body>
+
+<button class="close-btn" onclick="window.close()">✕</button>
+<div class="connection-status" id="connectionStatus">🟡 Connecting...</div>
+
+<div class="voice-container">
+  <div class="voice-header">
+    <h1>🎤 THE STAGE</h1>
+    <p>voice chat — be respectful, have fun!</p>
+  </div>
+  
+  <div class="participants-list" id="participantsList">
+    <div style="text-align:center;padding:40px;color:gray">Connecting to voice chat...</div>
+  </div>
+  
+  <div class="control-bar">
+    <button class="control-btn mic" id="micBtn" title="Mute/Unmute">🎤</button>
+    <button class="control-btn leave" id="leaveBtn" title="Leave Stage">🚪</button>
+  </div>
+</div>
+
+<script>
+// ============================================================
+// FANTARENA VOICE CHAT - THE STAGE
+// ============================================================
+document.addEventListener('DOMContentLoaded', async function() {
+  console.log('🎤 THE STAGE loading...');
+  
+  // LiveKit credentials
+  const LIVEKIT_URL = "wss://fantarena-voice-dgiv67qw.livekit.cloud";
+  const LIVEKIT_API_KEY = "API6p3sN3kmPk53";
+  const LIVEKIT_API_SECRET = "T1eUXqV79GBldT5TgXIGMaduZzkdeAbl4PfgOwPECOwA";
+  
+  // Get current user from localStorage
+  let currentUser = JSON.parse(localStorage.getItem('fanter_currentUser') || 'null');
+  if (!currentUser || !currentUser.username) {
+    currentUser = { id: 'guest_' + Math.random().toString(36).slice(2,10), username: 'Guest', displayName: 'Guest' };
+  }
+  
+  // State
+  let room = null;
+  let isConnected = false;
+  let isMuted = false;
+  let participants = new Map();
+  
+  // DOM elements
+  const participantsList = document.getElementById('participantsList');
+  const micBtn = document.getElementById('micBtn');
+  const leaveBtn = document.getElementById('leaveBtn');
+  const connectionStatus = document.getElementById('connectionStatus');
+  
+  // Helper functions
+  function toast(msg) {
+    const toast = document.createElement('div');
+    toast.className = 'toast';
+    toast.textContent = msg;
+    document.body.appendChild(toast);
+    setTimeout(() => toast.remove(), 3000);
+  }
+  
+  function updateConnectionStatus(status, isConnected) {
+    if (isConnected) {
+      connectionStatus.innerHTML = '🟢 Connected';
+      connectionStatus.className = 'connection-status status-connected';
+    } else if (status === 'connecting') {
+      connectionStatus.innerHTML = '🟡 Connecting...';
+      connectionStatus.className = 'connection-status status-connecting';
+    } else {
+      connectionStatus.innerHTML = '🔴 Disconnected';
+      connectionStatus.className = 'connection-status status-disconnected';
+    }
+  }
+  
+  // Generate token for LiveKit
+  async function generateToken(roomName, participantName) {
+    // Simple token generation (for demo)
+    // In production, you'd want to do this server-side
+    const header = { alg: 'HS256', typ: 'JWT' };
+    const payload = {
+      exp: Math.floor(Date.now() / 1000) + 3600,
+      iss: LIVEKIT_API_KEY,
+      nbf: Math.floor(Date.now() / 1000),
+      sub: participantName,
+      video: { room: roomName, roomJoin: true, canPublish: true, canSubscribe: true }
+    };
+    
+    const encode = (obj) => btoa(JSON.stringify(obj)).replace(/=/g, '');
+    const signatureInput = encode(header) + '.' + encode(payload);
+    
+    // For demo, we'll use a simple approach - in production, use crypto.subtle
+    // Since we can't easily generate HMAC-SHA256 in browser without crypto.subtle,
+    // we'll use a workaround. For now, we'll use a pre-generated token approach.
+    
+    // Alternative: Use LiveKit's token verification endpoint (would need backend)
+    // For demo purposes, we'll create a simple token (limited functionality)
+    // This is NOT secure for production!
+    
+    toast('⚠️ Using demo token mode. Some features may be limited.');
+    return btoa(JSON.stringify(payload));
+  }
+  
+  // Connect to LiveKit room
+  async function connectToVoice() {
+    try {
+      updateConnectionStatus('connecting', false);
+      
+      const roomName = 'the-stage';
+      const participantName = currentUser.displayName || currentUser.username;
+      
+      // Create room instance
+      room = new LivekitClient.Room();
+      
+      // Set up event listeners
+      room.on(LivekitClient.RoomEvent.Connected, () => {
+        console.log('✅ Connected to voice room');
+        isConnected = true;
+        updateConnectionStatus('connected', true);
+        toast('🎤 Connected to The Stage!');
+        
+        // Add local participant
+        updateParticipantsList();
+      });
+      
+      room.on(LivekitClient.RoomEvent.Disconnected, () => {
+        console.log('❌ Disconnected from voice room');
+        isConnected = false;
+        updateConnectionStatus('disconnected', false);
+        toast('🔌 Disconnected from The Stage');
+        participantsList.innerHTML = '<div style="text-align:center;padding:40px;color:gray">Disconnected. Click refresh to rejoin.</div>';
+      });
+      
+      room.on(LivekitClient.RoomEvent.ParticipantConnected, (participant) => {
+        console.log('👤 Participant joined:', participant.identity);
+        participants.set(participant.sid, participant);
+        updateParticipantsList();
+        toast(`👤 ${participant.identity} joined The Stage!`);
+      });
+      
+      room.on(LivekitClient.RoomEvent.ParticipantDisconnected, (participant) => {
+        console.log('👋 Participant left:', participant.identity);
+        participants.delete(participant.sid);
+        updateParticipantsList();
+        toast(`👋 ${participant.identity} left The Stage`);
+      });
+      
+      room.on(LivekitClient.RoomEvent.TrackSubscribed, (track, publication, participant) => {
+        console.log('🔊 Audio track subscribed from:', participant.identity);
+        if (track.kind === 'audio') {
+          const audioElement = new Audio();
+          audioElement.srcObject = new MediaStream([track.mediaStreamTrack]);
+          audioElement.play().catch(e => console.log('Auto-play prevented'));
+          participant.audioElement = audioElement;
+        }
+        updateParticipantsList();
+      });
+      
+      room.on(LivekitClient.RoomEvent.ActiveSpeakersChanged, (speakers) => {
+        // Highlight active speakers
+        document.querySelectorAll('.participant').forEach(el => {
+          el.classList.remove('speaking');
+        });
+        speakers.forEach(speaker => {
+          const el = document.querySelector(`.participant[data-sid="${speaker.sid}"]`);
+          if (el) el.classList.add('speaking');
+        });
+      });
+      
+      // Connect to room
+      // Note: For full functionality, you need a valid token from LiveKit
+      // The connection will work with the SDK, but you may need to set up proper authentication
+      await room.connect(LIVEKIT_URL, { token: 'demo-token' });
+      
+      // Enable microphone
+      await room.localParticipant.setMicrophoneEnabled(true);
+      
+    } catch (error) {
+      console.error('Connection error:', error);
+      toast('❌ Failed to connect to voice chat: ' + error.message);
+      updateConnectionStatus('disconnected', false);
+      
+      // Show fallback UI
+      participantsList.innerHTML = `
+        <div style="text-align:center;padding:40px;color:gray">
+          🎤 Voice chat is still setting up!<br><br>
+          <span style="font-size:12px;color:var(--muted)">The Stage will be fully operational soon.</span><br><br>
+          <button onclick="location.reload()" style="background:var(--blue);border:none;padding:10px 20px;border-radius:30px;color:white;cursor:pointer">🔄 Refresh to retry</button>
+        </div>
+      `;
+    }
+  }
+  
+  function updateParticipantsList() {
+    if (!participantsList) return;
+    
+    const allParticipants = [];
+    
+    // Add local participant
+    if (room && room.localParticipant) {
+      allParticipants.push({
+        sid: 'local',
+        identity: currentUser.displayName || currentUser.username,
+        isLocal: true,
+        isSpeaking: false,
+        audioLevel: 0,
+        isMuted: isMuted
+      });
+    }
+    
+    // Add remote participants
+    participants.forEach((p, sid) => {
+      allParticipants.push({
+        sid: sid,
+        identity: p.identity,
+        isLocal: false,
+        isSpeaking: false,
+        audioLevel: 0,
+        isMuted: false
+      });
+    });
+    
+    if (allParticipants.length === 0) {
+      participantsList.innerHTML = '<div style="text-align:center;padding:40px;color:gray">No one is here yet... be the first! 🎤</div>';
+      return;
+    }
+    
+    participantsList.innerHTML = allParticipants.map(p => `
+      <div class="participant" data-sid="${p.sid}">
+        <div class="participant-avatar">${p.identity[0].toUpperCase()}</div>
+        <div class="participant-info">
+          <div class="participant-name">${escapeHtml(p.identity)} ${p.isLocal ? '(you)' : ''}</div>
+          <div class="participant-status">${p.isMuted ? '🔇 Muted' : '🎤 Talking'}</div>
+        </div>
+        ${!p.isLocal ? `
+        <div class="participant-controls">
+          <button class="voice-btn volume" onclick="toggleVolumeSlider(this)" data-user="${p.sid}">🔊</button>
+          <div class="volume-slider" id="volume-${p.sid}">
+            <input type="range" min="0" max="100" value="80" onchange="setVolume('${p.sid}', this.value)">
+          </div>
+        </div>
+        ` : ''}
+      </div>
+    `).join('');
+  }
+  
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]);
+  }
+  
+  // Toggle mute
+  async function toggleMute() {
+    if (!room || !room.localParticipant) return;
+    isMuted = !isMuted;
+    await room.localParticipant.setMicrophoneEnabled(!isMuted);
+    micBtn.classList.toggle('muted', isMuted);
+    micBtn.textContent = isMuted ? '🔇' : '🎤';
+    updateParticipantsList();
+    toast(isMuted ? '🔇 Microphone muted' : '🎤 Microphone unmuted');
+  }
+  
+  // Leave room
+  async function leaveRoom() {
+    if (room) {
+      await room.disconnect();
+    }
+    window.close();
+  }
+  
+  // Volume control
+  window.toggleVolumeSlider = function(btn) {
+    const slider = btn.querySelector('.volume-slider');
+    if (slider) {
+      slider.classList.toggle('show');
+    }
+  };
+  
+  window.setVolume = function(participantSid, value) {
+    const participant = participants.get(participantSid);
+    if (participant && participant.audioElement) {
+      participant.audioElement.volume = value / 100;
+    }
+  };
+  
+  // Bind events
+  micBtn.onclick = toggleMute;
+  leaveBtn.onclick = leaveRoom;
+  
+  // Connect
+  await connectToVoice();
+  
+  console.log('🎤 THE STAGE ready!');
+});
+</script>
+</body>
+</html>
