@@ -471,5 +471,16 @@
     "loadTime": "2-4 seconds",
     "releaseDate": "2018-10-05",
     "developer": "toby fox"
+  },
+  {
+    "name": "spacebar clicker",
+    "image": "https://img.itch.zone/aW1nLzcwMDQ3NzEucG5n/original/e%2BxRdp.png",
+    "url": "https://abcatlmfao.github.io/SpaceBarClicker/",
+    "new": true,
+    "category": "arcade",
+    "desc": "click spacebar for money, get better",
+    "loadTime": "instant",
+    "releaseDate": "2018-10-05",
+    "developer": "crociDB"
   }
 ]
