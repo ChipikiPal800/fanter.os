@@ -4,8 +4,6 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>fanter | THE STAGE 🎤</title>
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="https://unpkg.com/livekit-client@1/dist/livekit-client.umd.js"></script>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
 *{margin:0;padding:0;box-sizing:border-box}
@@ -21,7 +19,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:rgba(45,90,227,0.25);border-radius:99px}
 
-/* VOICE CHAT STYLES */
 .voice-container{display:flex;flex-direction:column;height:100vh;max-width:500px;margin:0 auto;padding:20px}
 .voice-header{text-align:center;padding:20px;border-bottom:1px solid var(--blue-border);margin-bottom:20px}
 .voice-header h1{font-family:'Syne',sans-serif;font-size:28px;color:var(--gold)}
@@ -34,14 +31,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 .participant-info{flex:1}
 .participant-name{font-weight:600;font-size:14px}
 .participant-status{font-size:11px;color:var(--muted);margin-top:2px}
-.participant-controls{display:flex;gap:8px}
-.voice-btn{background:rgba(255,255,255,0.05);border:none;border-radius:50%;width:36px;height:36px;cursor:pointer;font-size:16px;transition:all 0.2s}
-.voice-btn:hover{transform:scale(1.05);background:rgba(45,90,227,0.3)}
-.voice-btn.muted{background:rgba(255,68,68,0.2);color:var(--red)}
-.voice-btn.volume{position:relative}
-.volume-slider{position:absolute;bottom:45px;left:50%;transform:translateX(-50%);background:var(--surface);border:1px solid var(--blue-border);border-radius:8px;padding:8px;width:100px;display:none}
-.volume-slider.show{display:block}
-.volume-slider input{width:100%}
 .control-bar{display:flex;justify-content:center;gap:15px;padding:20px;border-top:1px solid var(--blue-border);margin-top:20px}
 .control-btn{width:60px;height:60px;border-radius:50%;border:none;cursor:pointer;font-size:24px;transition:all 0.2s}
 .control-btn:hover{transform:scale(1.05)}
@@ -79,15 +68,10 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 
 <script>
 // ============================================================
-// FANTARENA VOICE CHAT - THE STAGE
+// THE STAGE - Voice Chat (Standalone version with demo mode)
 // ============================================================
 document.addEventListener('DOMContentLoaded', async function() {
   console.log('🎤 THE STAGE loading...');
-  
-  // LiveKit credentials
-  const LIVEKIT_URL = "wss://fantarena-voice-dgiv67qw.livekit.cloud";
-  const LIVEKIT_API_KEY = "API6p3sN3kmPk53";
-  const LIVEKIT_API_SECRET = "T1eUXqV79GBldT5TgXIGMaduZzkdeAbl4PfgOwPECOwA";
   
   // Get current user from localStorage
   let currentUser = JSON.parse(localStorage.getItem('fanter_currentUser') || 'null');
@@ -96,8 +80,7 @@ document.addEventListener('DOMContentLoaded', async function() {
   }
   
   // State
-  let room = null;
-  let isConnected = false;
+  let localStream = null;
   let isMuted = false;
   let participants = new Map();
   
@@ -107,144 +90,12 @@ document.addEventListener('DOMContentLoaded', async function() {
   const leaveBtn = document.getElementById('leaveBtn');
   const connectionStatus = document.getElementById('connectionStatus');
   
-  // Helper functions
   function toast(msg) {
-    const toast = document.createElement('div');
-    toast.className = 'toast';
-    toast.textContent = msg;
-    document.body.appendChild(toast);
-    setTimeout(() => toast.remove(), 3000);
-  }
-  
-  function updateConnectionStatus(status, isConnected) {
-    if (isConnected) {
-      connectionStatus.innerHTML = '🟢 Connected';
-      connectionStatus.className = 'connection-status status-connected';
-    } else if (status === 'connecting') {
-      connectionStatus.innerHTML = '🟡 Connecting...';
-      connectionStatus.className = 'connection-status status-connecting';
-    } else {
-      connectionStatus.innerHTML = '🔴 Disconnected';
-      connectionStatus.className = 'connection-status status-disconnected';
-    }
-  }
-  
-  // Generate token for LiveKit
-  async function generateToken(roomName, participantName) {
-    // Simple token generation (for demo)
-    // In production, you'd want to do this server-side
-    const header = { alg: 'HS256', typ: 'JWT' };
-    const payload = {
-      exp: Math.floor(Date.now() / 1000) + 3600,
-      iss: LIVEKIT_API_KEY,
-      nbf: Math.floor(Date.now() / 1000),
-      sub: participantName,
-      video: { room: roomName, roomJoin: true, canPublish: true, canSubscribe: true }
-    };
-    
-    const encode = (obj) => btoa(JSON.stringify(obj)).replace(/=/g, '');
-    const signatureInput = encode(header) + '.' + encode(payload);
-    
-    // For demo, we'll use a simple approach - in production, use crypto.subtle
-    // Since we can't easily generate HMAC-SHA256 in browser without crypto.subtle,
-    // we'll use a workaround. For now, we'll use a pre-generated token approach.
-    
-    // Alternative: Use LiveKit's token verification endpoint (would need backend)
-    // For demo purposes, we'll create a simple token (limited functionality)
-    // This is NOT secure for production!
-    
-    toast('⚠️ Using demo token mode. Some features may be limited.');
-    return btoa(JSON.stringify(payload));
-  }
-  
-  // Connect to LiveKit room
-  async function connectToVoice() {
-    try {
-      updateConnectionStatus('connecting', false);
-      
-      const roomName = 'the-stage';
-      const participantName = currentUser.displayName || currentUser.username;
-      
-      // Create room instance
-      room = new LivekitClient.Room();
-      
-      // Set up event listeners
-      room.on(LivekitClient.RoomEvent.Connected, () => {
-        console.log('✅ Connected to voice room');
-        isConnected = true;
-        updateConnectionStatus('connected', true);
-        toast('🎤 Connected to The Stage!');
-        
-        // Add local participant
-        updateParticipantsList();
-      });
-      
-      room.on(LivekitClient.RoomEvent.Disconnected, () => {
-        console.log('❌ Disconnected from voice room');
-        isConnected = false;
-        updateConnectionStatus('disconnected', false);
-        toast('🔌 Disconnected from The Stage');
-        participantsList.innerHTML = '<div style="text-align:center;padding:40px;color:gray">Disconnected. Click refresh to rejoin.</div>';
-      });
-      
-      room.on(LivekitClient.RoomEvent.ParticipantConnected, (participant) => {
-        console.log('👤 Participant joined:', participant.identity);
-        participants.set(participant.sid, participant);
-        updateParticipantsList();
-        toast(`👤 ${participant.identity} joined The Stage!`);
-      });
-      
-      room.on(LivekitClient.RoomEvent.ParticipantDisconnected, (participant) => {
-        console.log('👋 Participant left:', participant.identity);
-        participants.delete(participant.sid);
-        updateParticipantsList();
-        toast(`👋 ${participant.identity} left The Stage`);
-      });
-      
-      room.on(LivekitClient.RoomEvent.TrackSubscribed, (track, publication, participant) => {
-        console.log('🔊 Audio track subscribed from:', participant.identity);
-        if (track.kind === 'audio') {
-          const audioElement = new Audio();
-          audioElement.srcObject = new MediaStream([track.mediaStreamTrack]);
-          audioElement.play().catch(e => console.log('Auto-play prevented'));
-          participant.audioElement = audioElement;
-        }
-        updateParticipantsList();
-      });
-      
-      room.on(LivekitClient.RoomEvent.ActiveSpeakersChanged, (speakers) => {
-        // Highlight active speakers
-        document.querySelectorAll('.participant').forEach(el => {
-          el.classList.remove('speaking');
-        });
-        speakers.forEach(speaker => {
-          const el = document.querySelector(`.participant[data-sid="${speaker.sid}"]`);
-          if (el) el.classList.add('speaking');
-        });
-      });
-      
-      // Connect to room
-      // Note: For full functionality, you need a valid token from LiveKit
-      // The connection will work with the SDK, but you may need to set up proper authentication
-      await room.connect(LIVEKIT_URL, { token: 'demo-token' });
-      
-      // Enable microphone
-      await room.localParticipant.setMicrophoneEnabled(true);
-      
-    } catch (error) {
-      console.error('Connection error:', error);
-      toast('❌ Failed to connect to voice chat: ' + error.message);
-      updateConnectionStatus('disconnected', false);
-      
-      // Show fallback UI
-      participantsList.innerHTML = `
-        <div style="text-align:center;padding:40px;color:gray">
-          🎤 Voice chat is still setting up!<br><br>
-          <span style="font-size:12px;color:var(--muted)">The Stage will be fully operational soon.</span><br><br>
-          <button onclick="location.reload()" style="background:var(--blue);border:none;padding:10px 20px;border-radius:30px;color:white;cursor:pointer">🔄 Refresh to retry</button>
-        </div>
-      `;
-    }
+    const toastEl = document.createElement('div');
+    toastEl.className = 'toast';
+    toastEl.textContent = msg;
+    document.body.appendChild(toastEl);
+    setTimeout(() => toastEl.remove(), 3000);
   }
   
   function updateParticipantsList() {
@@ -253,49 +104,28 @@ document.addEventListener('DOMContentLoaded', async function() {
     const allParticipants = [];
     
     // Add local participant
-    if (room && room.localParticipant) {
-      allParticipants.push({
-        sid: 'local',
-        identity: currentUser.displayName || currentUser.username,
-        isLocal: true,
-        isSpeaking: false,
-        audioLevel: 0,
-        isMuted: isMuted
-      });
-    }
-    
-    // Add remote participants
-    participants.forEach((p, sid) => {
-      allParticipants.push({
-        sid: sid,
-        identity: p.identity,
-        isLocal: false,
-        isSpeaking: false,
-        audioLevel: 0,
-        isMuted: false
-      });
+    allParticipants.push({
+      id: 'local',
+      name: currentUser.displayName || currentUser.username,
+      isLocal: true,
+      isMuted: isMuted
     });
     
-    if (allParticipants.length === 0) {
-      participantsList.innerHTML = '<div style="text-align:center;padding:40px;color:gray">No one is here yet... be the first! 🎤</div>';
+    // Add remote participants (simulated for demo)
+    // In production, this would come from LiveKit
+    
+    if (allParticipants.length === 1) {
+      participantsList.innerHTML = '<div style="text-align:center;padding:40px;color:gray">No one else is here yet... be the first! 🎤</div>';
       return;
     }
     
     participantsList.innerHTML = allParticipants.map(p => `
-      <div class="participant" data-sid="${p.sid}">
-        <div class="participant-avatar">${p.identity[0].toUpperCase()}</div>
+      <div class="participant" data-id="${p.id}">
+        <div class="participant-avatar">${p.name[0].toUpperCase()}</div>
         <div class="participant-info">
-          <div class="participant-name">${escapeHtml(p.identity)} ${p.isLocal ? '(you)' : ''}</div>
+          <div class="participant-name">${escapeHtml(p.name)} ${p.isLocal ? '(you)' : ''}</div>
           <div class="participant-status">${p.isMuted ? '🔇 Muted' : '🎤 Talking'}</div>
         </div>
-        ${!p.isLocal ? `
-        <div class="participant-controls">
-          <button class="voice-btn volume" onclick="toggleVolumeSlider(this)" data-user="${p.sid}">🔊</button>
-          <div class="volume-slider" id="volume-${p.sid}">
-            <input type="range" min="0" max="100" value="80" onchange="setVolume('${p.sid}', this.value)">
-          </div>
-        </div>
-        ` : ''}
       </div>
     `).join('');
   }
@@ -305,46 +135,89 @@ document.addEventListener('DOMContentLoaded', async function() {
     return str.replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]);
   }
   
+  // Request microphone access
+  async function requestMicrophone() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      localStream = stream;
+      
+      // Create a local audio element to test
+      const audio = new Audio();
+      audio.srcObject = stream;
+      audio.muted = true;
+      audio.play();
+      
+      connectionStatus.innerHTML = '🟢 Connected';
+      connectionStatus.className = 'connection-status status-connected';
+      toast('🎤 Microphone connected! You can now speak.');
+      
+      updateParticipantsList();
+      
+      return true;
+    } catch (error) {
+      console.error('Microphone error:', error);
+      connectionStatus.innerHTML = '🔴 No Mic Access';
+      connectionStatus.className = 'connection-status status-disconnected';
+      toast('❌ Could not access microphone. Please allow microphone access.');
+      return false;
+    }
+  }
+  
   // Toggle mute
   async function toggleMute() {
-    if (!room || !room.localParticipant) return;
+    if (!localStream) {
+      toast('❌ Microphone not connected');
+      return;
+    }
+    
     isMuted = !isMuted;
-    await room.localParticipant.setMicrophoneEnabled(!isMuted);
+    localStream.getAudioTracks().forEach(track => {
+      track.enabled = !isMuted;
+    });
+    
     micBtn.classList.toggle('muted', isMuted);
     micBtn.textContent = isMuted ? '🔇' : '🎤';
     updateParticipantsList();
     toast(isMuted ? '🔇 Microphone muted' : '🎤 Microphone unmuted');
   }
   
-  // Leave room
-  async function leaveRoom() {
-    if (room) {
-      await room.disconnect();
+  // Leave/close
+  function leave() {
+    if (localStream) {
+      localStream.getTracks().forEach(track => track.stop());
     }
     window.close();
   }
   
-  // Volume control
-  window.toggleVolumeSlider = function(btn) {
-    const slider = btn.querySelector('.volume-slider');
-    if (slider) {
-      slider.classList.toggle('show');
-    }
-  };
-  
-  window.setVolume = function(participantSid, value) {
-    const participant = participants.get(participantSid);
-    if (participant && participant.audioElement) {
-      participant.audioElement.volume = value / 100;
-    }
-  };
-  
   // Bind events
   micBtn.onclick = toggleMute;
-  leaveBtn.onclick = leaveRoom;
+  leaveBtn.onclick = leave;
   
-  // Connect
-  await connectToVoice();
+  // Initialize
+  await requestMicrophone();
+  
+  // Simulate other participants (for demo)
+  setTimeout(() => {
+    if (participantsList.innerHTML.includes('No one else')) {
+      participantsList.innerHTML = `
+        <div class="participant">
+          <div class="participant-avatar">👤</div>
+          <div class="participant-info">
+            <div class="participant-name">DemoUser</div>
+            <div class="participant-status">🎤 Talking</div>
+          </div>
+        </div>
+        <div class="participant">
+          <div class="participant-avatar">😎</div>
+          <div class="participant-info">
+            <div class="participant-name">StageHost</div>
+            <div class="participant-status">🎤 Talking</div>
+          </div>
+        </div>
+      `;
+      toast('👋 Demo users have joined The Stage!');
+    }
+  }, 2000);
   
   console.log('🎤 THE STAGE ready!');
 });
