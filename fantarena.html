@@ -3,7 +3,7 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>fanter | fantarena</title>
+<title>fanter | fantarena VOICE</title>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
 <style>
@@ -20,14 +20,30 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:rgba(45,90,227,0.25);border-radius:99px}
 
+/* VOICE MESSAGE STYLES */
+.voice-message{display:flex;align-items:center;gap:12px;background:rgba(45,90,227,0.15);border-radius:30px;padding:6px 16px;width:fit-content;margin-top:4px}
+.voice-play-btn{background:none;border:none;font-size:20px;cursor:pointer;color:var(--gold);padding:5px}
+.voice-play-btn:hover{transform:scale(1.1)}
+.voice-wave{display:flex;align-items:center;gap:3px;height:30px}
+.voice-wave span{width:3px;background:var(--gold);border-radius:2px;animation:wave 0.8s ease-in-out infinite}
+.voice-wave span:nth-child(1){animation-delay:0s}
+.voice-wave span:nth-child(2){animation-delay:0.1s}
+.voice-wave span:nth-child(3){animation-delay:0.2s}
+.voice-wave span:nth-child(4){animation-delay:0.3s}
+.voice-wave span:nth-child(5){animation-delay:0.4s}
+@keyframes wave{0%,100%{height:5px}50%{height:20px}}
+.voice-duration{font-size:11px;color:var(--muted);margin-left:8px}
+.voice-recording-indicator{position:fixed;bottom:100px;right:20px;background:var(--red);color:white;padding:8px 16px;border-radius:30px;font-size:12px;z-index:1000;animation:pulse 1s infinite}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:0.6}}
+
 /* ANIMATIONS */
 @keyframes msgIn{0%{opacity:0;transform:translateY(10px)}100%{opacity:1;transform:translateY(0)}}
 @keyframes toastIn{from{opacity:0;transform:translateX(40px)}to{opacity:1;transform:translateX(0)}}
-@keyframes confettiFall{0%{transform:translateY(-100px) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(360deg);opacity:0}}
-@keyframes firework{0%{transform:scale(0);opacity:1}100%{transform:scale(20);opacity:0}}
 @keyframes flame{0%{text-shadow:0 0 2px #ff4400,0 0 4px #ff6600}50%{text-shadow:0 0 4px #ff6600,0 0 8px #ffaa00}100%{text-shadow:0 0 2px #ff4400,0 0 4px #ff6600}}
 @keyframes purpleGlow{0%{text-shadow:0 0 2px #9f5ae3,0 0 4px #bf7ae3}50%{text-shadow:0 0 4px #bf7ae3,0 0 8px #df9aff}100%{text-shadow:0 0 2px #9f5ae3,0 0 4px #bf7ae3}}
 @keyframes greenGlow{0%{text-shadow:0 0 2px #00e87a,0 0 4px #33ff99}50%{text-shadow:0 0 4px #33ff99,0 0 8px #66ffbb}100%{text-shadow:0 0 2px #00e87a,0 0 4px #33ff99}}
+@keyframes confettiFall{0%{transform:translateY(-100px) rotate(0);opacity:1}100%{transform:translateY(100vh) rotate(360deg);opacity:0}}
+@keyframes firework{0%{transform:scale(0);opacity:1}100%{transform:scale(20);opacity:0}}
 
 /* WELCOME */
 .welcome-screen{position:fixed;inset:0;display:flex;align-items:center;justify-content:center;z-index:9999;background:var(--bg);transition:opacity 0.3s}
@@ -63,24 +79,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 .footer-btn{width:100%;padding:8px 12px;border-radius:10px;border:none;background:rgba(255,255,255,0.05);color:var(--text);font-size:12px;cursor:pointer;text-align:left}
 .footer-btn:hover{background:rgba(255,255,255,0.1);transform:translateX(2px)}
 
-/* OWNER/MOD PANEL */
-.mod-panel{position:fixed;bottom:20px;right:20px;z-index:1000;display:flex;flex-direction:column;align-items:flex-end}
-.mod-panel-btn{width:48px;height:48px;border-radius:50%;background:linear-gradient(135deg,var(--gold),#ffaa00);border:none;cursor:pointer;font-size:22px;box-shadow:0 4px 15px rgba(255,204,0,0.3);display:flex;align-items:center;justify-content:center}
-.mod-panel-btn:hover{transform:scale(1.08)}
-.mod-panel-content{background:var(--surface);border:1px solid var(--gold-border);border-radius:16px;width:400px;max-height:70vh;overflow-y:auto;margin-bottom:10px;display:none}
-.mod-panel-content.open{display:block}
-.mod-panel-header{padding:12px 16px;border-bottom:1px solid var(--blue-border);font-weight:700;color:var(--gold);display:flex;justify-content:space-between}
-.mod-panel-close{background:none;border:none;color:var(--muted);font-size:20px;cursor:pointer}
-.mod-section{padding:10px 14px;border-bottom:1px solid var(--blue-border)}
-.mod-section-title{font-size:10px;font-weight:600;text-transform:uppercase;color:var(--muted);margin-bottom:8px}
-.mod-row{display:flex;gap:8px;margin-bottom:8px;flex-wrap:wrap}
-.mod-input{flex:1;padding:6px 10px;border-radius:8px;border:1px solid var(--blue-border);background:rgba(0,0,0,0.3);color:var(--text);font-size:12px}
-.mod-select{flex:1;padding:6px 10px;border-radius:8px;border:1px solid var(--blue-border);background:rgba(0,0,0,0.3);color:var(--text);font-size:12px}
-.btn-mod-action{background:rgba(255,204,0,0.15);color:var(--gold);border:1px solid var(--gold-border);padding:6px 10px;border-radius:8px;cursor:pointer;font-size:11px}
-.btn-mod-action:hover{background:rgba(255,204,0,0.3)}
-.btn-danger-action{background:rgba(255,68,68,0.15);color:var(--red);border:1px solid rgba(255,68,68,0.3);padding:6px 10px;border-radius:8px;cursor:pointer;font-size:11px}
-.btn-danger-action:hover{background:rgba(255,68,68,0.3)}
-
 /* CHAT AREA */
 .chat-area{flex:1;display:flex;flex-direction:column}
 .chat-header{padding:12px 20px;border-bottom:1px solid var(--blue-border);display:flex;align-items:center;gap:10px}
@@ -102,7 +100,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 .msg-name.purple{animation:purpleGlow 1.5s infinite}
 .msg-name.green{animation:greenGlow 1.5s infinite}
 .msg-lv{background:var(--gold-dim);border:1px solid var(--gold-border);color:var(--gold);border-radius:6px;padding:1px 5px;font-size:9px}
-.mod-badge{background:var(--gold);color:#1a1200;border-radius:4px;padding:1px 5px;font-size:8px;margin-left:4px}
 .owner-badge{background:#ff4444;color:white;border-radius:4px;padding:1px 5px;font-size:8px;margin-left:4px}
 .msg-time{font-size:9px;color:var(--muted)}
 .msg-text{margin-top:2px;font-size:13px;line-height:1.45;word-break:break-word}
@@ -118,7 +115,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 .react-btn{font-size:14px;cursor:pointer;padding:2px 3px;border-radius:5px}
 .react-btn:hover{background:var(--blue-dim)}
 
-/* INPUT */
+/* INPUT AREA */
 .input-wrapper{border-top:1px solid var(--blue-border)}
 .input-area{display:flex;gap:8px;align-items:center;padding:10px 16px 14px}
 .input-toolbar{display:flex;gap:4px}
@@ -201,7 +198,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
       <div class="feature">🎲 /roll /8ball</div><div class="feature">😂 GIF picker</div>
       <div class="feature">👥 groups & DMs</div><div class="feature">🎁 daily rewards</div>
       <div class="feature">👍 reactions</div><div class="feature">🏪 coin shop</div>
-      <div class="feature">🛡️ mod panel</div>
+      <div class="feature">🎙️ voice messages</div>
     </div>
     <button class="enter-btn" id="enterBtn">🔥 ENTER CHAT 🔥</button>
   </div>
@@ -227,7 +224,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
       <button class="footer-btn" id="shopBtn">🏪 shop</button>
       <button class="footer-btn" id="settingsBtn">⚙️ settings</button>
       <button class="footer-btn" id="dailyBtn">🎁 daily</button>
-       <button class="footer-btn" id="stageBtn" style="background:linear-gradient(135deg,var(--purple),#7a3ac0);margin-top:5px;">the stage (VC)</button
     </div>
   </div>
 
@@ -245,6 +241,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
         <div class="input-toolbar">
           <button class="toolbar-btn" id="gifBtn">🎬</button>
           <button class="toolbar-btn" id="emojiBtn">😊</button>
+          <button class="toolbar-btn" id="voiceMsgBtn" style="color:var(--red)">🎙️</button>
         </div>
         <input type="text" id="messageInput" placeholder="Message... /help">
         <button class="send-btn" id="sendBtn">send</button>
@@ -267,45 +264,6 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
     <div id="membersList"></div>
     <div style="margin-top:auto;padding-top:12px">
       <button id="editProfileBtn" class="footer-btn" style="width:100%">✏️ edit profile</button>
-    </div>
-  </div>
-</div>
-
-<!-- OWNER/MOD PANEL -->
-<div class="mod-panel" id="modPanel">
-  <button class="mod-panel-btn" id="modPanelBtn">🛡️</button>
-  <div class="mod-panel-content" id="modPanelContent">
-    <div class="mod-panel-header">
-      <span id="panelTitle">🛡️ MOD PANEL</span>
-      <button class="mod-panel-close" id="modPanelClose">✕</button>
-    </div>
-    <div id="ownerOnlySection" style="display:none">
-      <div class="mod-section">
-        <div class="mod-section-title">👑 OWNER CONTROLS</div>
-        <div class="mod-row"><select id="bgPresetSelect" class="mod-select"><option value="default">🌙 Default</option><option value="ocean">🌊 Ocean</option><option value="sunset">🌅 Sunset</option></select><button class="btn-mod-action" id="applyBgBtn">Apply BG</button></div>
-        <div class="mod-row"><select id="eventSelect" class="mod-select"><option value="confetti">🎉 Confetti</option><option value="fireworks">🎆 Fireworks</option></select><button class="btn-mod-action" id="triggerEventBtn">Trigger</button></div>
-        <div class="mod-row"><select id="targetUserSelect" class="mod-select"></select><input type="number" id="coinAmount" placeholder="Coins" class="mod-input"><button class="btn-mod-action" id="giveCoinsBtn">Give Coins</button></div>
-        <div class="mod-row"><select id="xpTargetSelect" class="mod-select"></select><input type="number" id="xpAmount" placeholder="XP" class="mod-input"><button class="btn-mod-action" id="giveXPBtn">Give XP</button></div>
-        <div class="mod-row"><select id="modUserSelect" class="mod-select"></select><button class="btn-mod-action" id="makeModBtn">Make Moderator</button><button class="btn-danger-action" id="revokeModBtn">Revoke</button></div>
-      </div>
-    </div>
-    <div class="mod-section">
-      <div class="mod-section-title">⚠️ MODERATION</div>
-      <div class="mod-row"><select id="warnUserSelect" class="mod-select"></select><input type="text" id="warnReason" placeholder="Reason" class="mod-input"><button class="btn-danger-action" id="warnBtn">Warn</button></div>
-      <div class="mod-row"><select id="timeoutUserSelect" class="mod-select"></select><input type="number" id="timeoutMinutes" placeholder="Minutes" class="mod-input"><button class="btn-danger-action" id="timeoutBtn">Timeout</button></div>
-      <div class="mod-row"><select id="kickUserSelect" class="mod-select"></select><button class="btn-danger-action" id="kickBtn">Kick</button></div>
-      <div class="mod-row"><select id="banUserSelect" class="mod-select"></select><button class="btn-danger-action" id="banBtn">Ban</button></div>
-      <div class="mod-row"><input type="number" id="slowModeSec" placeholder="Slow mode (sec)" class="mod-input"><button class="btn-mod-action" id="slowModeBtn">Set Slow Mode</button></div>
-      <div class="mod-row"><input type="number" id="purgeCount" placeholder="Messages to delete" class="mod-input"><button class="btn-danger-action" id="purgeBtn">Purge</button></div>
-    </div>
-    <div class="mod-section">
-      <div class="mod-section-title">📋 COMMANDS</div>
-      <div id="commandList"></div>
-    </div>
-    <div class="mod-section">
-      <div class="mod-section-title">📜 MOD LOGS</div>
-      <div id="modLogsList" style="font-size:10px;max-height:150px;overflow-y:auto"></div>
-      <button class="btn-mod-action" id="clearLogsBtn" style="margin-top:8px;width:100%">Clear Logs</button>
     </div>
   </div>
 </div>
@@ -411,7 +369,7 @@ body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);hei
 
 <script>
 // ============================================================
-// FANTARENA - COMPLETE WORKING VERSION
+// FANTARENA WITH VOICE MESSAGES
 // ============================================================
 document.addEventListener('DOMContentLoaded', function() {
   console.log('🔥 Fantarena loading...');
@@ -427,6 +385,107 @@ document.addEventListener('DOMContentLoaded', function() {
     currentUser = { id: 'guest_' + Math.random().toString(36).slice(2,10), username: 'Guest', displayName: 'Guest', coins: 100 };
     localStorage.setItem('fanter_currentUser', JSON.stringify(currentUser));
   }
+
+  // ============================================================
+  // VOICE MESSAGES
+  // ============================================================
+  let mediaRecorder = null;
+  let audioChunks = [];
+  let isRecording = false;
+  let recordingStartTime = null;
+  
+  async function startVoiceRecording() {
+    try {
+      const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
+      mediaRecorder = new MediaRecorder(stream);
+      audioChunks = [];
+      recordingStartTime = Date.now();
+      
+      mediaRecorder.ondataavailable = (e) => {
+        if (e.data.size > 0) audioChunks.push(e.data);
+      };
+      
+      mediaRecorder.onstop = async () => {
+        const audioBlob = new Blob(audioChunks, { type: 'audio/webm' });
+        const duration = Math.round((Date.now() - recordingStartTime) / 1000);
+        const fileName = `voice_${currentUser.id}_${Date.now()}.webm`;
+        
+        // Upload to Supabase
+        const { error: uploadError } = await sb.storage.from('voice_messages').upload(fileName, audioBlob);
+        if (uploadError) {
+          toast('❌ Failed to upload voice message');
+          return;
+        }
+        
+        const { data: urlData } = sb.storage.from('voice_messages').getPublicUrl(fileName);
+        
+        // Send as message
+        await sb.from('fanter_chat').insert({
+          channel_id: currentChannel,
+          user_id: currentUser.id,
+          username: currentUser.displayName || currentUser.username,
+          message: `[VOICE] ${urlData.publicUrl}`,
+          nameColor: nameColor,
+          is_voice_message: true,
+          voice_duration: duration,
+          voice_url: urlData.publicUrl
+        });
+        
+        toast('✅ Voice message sent!');
+        stopAllTracks(stream);
+        document.querySelector('.voice-recording-indicator')?.remove();
+      };
+      
+      mediaRecorder.start();
+      isRecording = true;
+      
+      // Show recording indicator
+      const indicator = document.createElement('div');
+      indicator.className = 'voice-recording-indicator';
+      indicator.innerHTML = '🔴 Recording... click again to stop';
+      indicator.onclick = stopVoiceRecording;
+      document.body.appendChild(indicator);
+      
+      toast('🔴 Recording... click the red indicator to stop');
+    } catch(e) {
+      console.error(e);
+      toast('❌ Could not access microphone. Please allow microphone access.');
+    }
+  }
+  
+  function stopVoiceRecording() {
+    if (mediaRecorder && isRecording) {
+      mediaRecorder.stop();
+      isRecording = false;
+      document.querySelector('.voice-recording-indicator')?.remove();
+    }
+  }
+  
+  function stopAllTracks(stream) {
+    stream.getTracks().forEach(track => track.stop());
+  }
+  
+  function playVoiceMessage(url, btnElement) {
+    const audio = new Audio(url);
+    const waveContainer = btnElement.parentElement.querySelector('.voice-wave');
+    
+    audio.onplay = () => {
+      if (waveContainer) waveContainer.style.display = 'flex';
+    };
+    audio.onended = () => {
+      if (waveContainer) waveContainer.style.display = 'none';
+    };
+    audio.play();
+  }
+  
+  // Voice message button
+  document.getElementById('voiceMsgBtn').onclick = () => {
+    if (isRecording) {
+      stopVoiceRecording();
+    } else {
+      startVoiceRecording();
+    }
+  };
 
   // ============================================================
   // STATE
@@ -448,9 +507,6 @@ document.addEventListener('DOMContentLoaded', function() {
   let lastMessageTime = 0;
   let allUsersList = [];
   let friendsList = [];
-  let modLogs = safeJSON('modLogs', []);
-  let userWarnings = safeJSON('userWarnings', {});
-  let currentUserIsOwner = false;
 
   function safeJSON(key, fallback) {
     try { return JSON.parse(localStorage.getItem(key)) || fallback; }
@@ -461,8 +517,6 @@ document.addEventListener('DOMContentLoaded', function() {
     localStorage.setItem('messageCounts', JSON.stringify(messageCounts));
     localStorage.setItem('userBadges', JSON.stringify(userBadges));
     localStorage.setItem('userAvatars', JSON.stringify(userAvatars));
-    localStorage.setItem('modLogs', JSON.stringify(modLogs));
-    localStorage.setItem('userWarnings', JSON.stringify(userWarnings));
   }
   function esc(s) { if (!s) return ''; return String(s).replace(/[&<>]/g, m => ({'&':'&amp;','<':'&lt;','>':'&gt;'})[m]); }
   function toast(msg) {
@@ -514,153 +568,15 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   // ============================================================
-  // SECURE MOD/OWNER SYSTEM
+  // OWNERS
   // ============================================================
   const OWNER_USERNAMES = ['abcatlmfao', 'abcatlmfao1'];
+  let currentUserIsOwner = OWNER_USERNAMES.includes(currentUser.username);
   
-  async function checkIfOwner() {
-    currentUserIsOwner = OWNER_USERNAMES.includes(currentUser.username);
-    const panelTitle = document.getElementById('panelTitle');
-    if (currentUserIsOwner) {
-      panelTitle.innerHTML = '👑 OWNER PANEL';
-      document.getElementById('ownerOnlySection').style.display = 'block';
-    } else {
-      panelTitle.innerHTML = '🛡️ MOD PANEL';
-      document.getElementById('ownerOnlySection').style.display = 'none';
-    }
-    return currentUserIsOwner;
-  }
-  
-  function hasModPermissions() {
-    return currentUserIsOwner || true; // All logged in users are mods for now, but owners have extra
-  }
-  
-  function addModLog(action, target, reason = '') {
-    modLogs.unshift({ action, target, reason, mod: currentUser.displayName || currentUser.username, time: new Date().toISOString() });
-    modLogs = modLogs.slice(0, 50);
-    save();
-    updateModLogsDisplay();
-  }
-  
-  function updateModLogsDisplay() {
-    const container = document.getElementById('modLogsList');
-    if (container) {
-      container.innerHTML = modLogs.slice(0, 15).map(log => 
-        `<div style="padding:4px 0;border-bottom:1px solid rgba(255,255,255,0.05);font-size:10px">
-          <span style="color:var(--gold)">${log.action}</span> ${log.target} — ${log.reason || 'no reason'}
-          <span style="color:gray;float:right">${new Date(log.time).toLocaleTimeString()}</span>
-        </div>`
-      ).join('') || '<div style="color:gray;padding:4px">no logs yet</div>';
-    }
-  }
-  
-  async function warnUser(username, reason) {
-    if (!hasModPermissions()) return;
-    if (!userWarnings[username]) userWarnings[username] = [];
-    userWarnings[username].push({ reason, by: currentUser.displayName, time: Date.now() });
-    save();
-    addModLog('WARN', username, reason);
-    toast(`⚠️ Warned ${username}: ${reason}`);
-    await insertSystemMessage(`⚠️ ${username} was warned by ${currentUser.displayName}: ${reason}`);
-  }
-  
-  async function timeoutUser(username, minutes) {
-    if (!hasModPermissions()) return;
-    addModLog('TIMEOUT', username, `${minutes} minutes`);
-    toast(`⏱️ Timed out ${username} for ${minutes} minutes`);
-    await insertSystemMessage(`⏱️ ${username} was timed out for ${minutes} minutes`);
-  }
-  
-  async function kickUser(username) {
-    if (!hasModPermissions()) return;
-    addModLog('KICK', username, '');
-    toast(`👢 Kicked ${username}`);
-    await insertSystemMessage(`👢 ${username} was kicked by ${currentUser.displayName}`);
-  }
-  
-  async function banUser(username) {
-    if (!currentUserIsOwner) { toast('❌ Only owners can ban users'); return; }
-    addModLog('BAN', username, '');
-    toast(`🔨 Banned ${username}`);
-    await insertSystemMessage(`🔨 ${username} was banned by ${currentUser.displayName}`);
-  }
-  
-  async function purgeMessages(count) {
-    if (!hasModPermissions()) return;
-    addModLog('PURGE', `${count} messages`, `in #${currentChannel}`);
-    toast(`🗑️ Purged ${count} messages`);
-    await insertSystemMessage(`🗑️ ${count} messages were purged by ${currentUser.displayName}`);
-    loadMessages();
-  }
-  
-  async function setSlowMode(seconds) {
-    if (!hasModPermissions()) return;
-    globalSlowMode = seconds;
-    addModLog('SLOWMODE', `${seconds}s`, `in #${currentChannel}`);
-    toast(`🐢 Slow mode set to ${seconds} seconds`);
-    await insertSystemMessage(`🐢 Slow mode set to ${seconds}s by ${currentUser.displayName}`);
-  }
-  
-  async function insertSystemMessage(text) {
-    try {
-      await sb.from('fanter_chat').insert({
-        channel_id: currentChannel,
-        user_id: 'system',
-        username: '⚙️ SYSTEM',
-        message: text,
-        nameColor: '#888888',
-      });
-    } catch(e) {}
-  }
-  
-  async function giveCoinsToUser(username, amount) {
-    if (!currentUserIsOwner) { toast('❌ Only owners can give coins'); return; }
-    addModLog('GIVE_COINS', username, `${amount} coins`);
-    toast(`🎁 Gave ${amount} coins to ${username}`);
-  }
-  
-  async function giveXPToUser(username, amount) {
-    if (!currentUserIsOwner) { toast('❌ Only owners can give XP'); return; }
-    addModLog('GIVE_XP', username, `${amount} XP`);
-    toast(`⚡ Gave ${amount} XP to ${username}`);
-  }
-  
-  async function assignModerator(username) {
-    if (!currentUserIsOwner) { toast('❌ Only owners can assign moderators'); return; }
-    addModLog('MAKE_MOD', username, '');
-    toast(`✅ ${username} is now a moderator`);
-  }
-  
-  async function revokeModerator(username) {
-    if (!currentUserIsOwner) { toast('❌ Only owners can revoke moderators'); return; }
-    addModLog('REVOKE_MOD', username, '');
-    toast(`✅ ${username} is no longer a moderator`);
-  }
+  function hasModPermissions() { return currentUserIsOwner; }
 
   // ============================================================
-  // EVENTS
-  // ============================================================
-  function triggerConfetti() {
-    for (let i = 0; i < 150; i++) {
-      const c = document.createElement('div');
-      c.style.cssText = `position:fixed;left:${Math.random()*100}%;top:-10px;width:${Math.random()*8+4}px;height:${Math.random()*8+4}px;background:hsl(${Math.random()*360},100%,50%);border-radius:50%;animation:confettiFall ${Math.random()*2+2}s linear forwards;z-index:9999`;
-      document.body.appendChild(c);
-      setTimeout(() => c.remove(), 3000);
-    }
-    toast('🎉 Confetti!');
-  }
-  function triggerFireworks() {
-    for (let i = 0; i < 60; i++) {
-      const f = document.createElement('div');
-      f.style.cssText = `position:fixed;left:${Math.random()*100}%;top:${Math.random()*100}%;width:4px;height:4px;background:radial-gradient(circle,#ff0,#f00);border-radius:50%;animation:firework 1s ease-out forwards;z-index:9999`;
-      document.body.appendChild(f);
-      setTimeout(() => f.remove(), 1000);
-    }
-    toast('🎆 Fireworks!');
-  }
-
-  // ============================================================
-  // RENDER MESSAGE
+  // RENDER MESSAGE (with voice support)
   // ============================================================
   function renderMessage(msg) {
     const lv = getLevel(userXP[msg.user_id] || 0);
@@ -673,11 +589,30 @@ document.addEventListener('DOMContentLoaded', function() {
     else if (nameColorStyle === '#00e87a') nameClass = 'green';
     
     let messageContent = esc(msg.message);
-    const gifMatch = msg.message.match(/\[GIF\]\s*(https?:\/\/[^\s]+)/i);
-    if (gifMatch) {
-      messageContent = `<img src="${gifMatch[1]}" onclick="window.open('${gifMatch[1]}')">`;
-    } else if (msg.message.match(/\.(gif|jpg|jpeg|png)(\?.*)?$/i)) {
-      messageContent = `<img src="${esc(msg.message)}" onclick="window.open('${esc(msg.message)}')">`;
+    
+    // Check if voice message
+    if (msg.is_voice_message || (msg.message && msg.message.startsWith('[VOICE]'))) {
+      let voiceUrl = msg.voice_url;
+      if (!voiceUrl && msg.message) {
+        voiceUrl = msg.message.replace('[VOICE]', '').trim();
+      }
+      const duration = msg.voice_duration || 5;
+      messageContent = `
+        <div class="voice-message">
+          <button class="voice-play-btn" onclick="playVoiceMessage('${voiceUrl}', this)">🔊</button>
+          <div class="voice-wave" style="display:none">
+            <span></span><span></span><span></span><span></span><span></span>
+          </div>
+          <span class="voice-duration">${duration}s</span>
+        </div>
+      `;
+    } else {
+      const gifMatch = msg.message.match(/\[GIF\]\s*(https?:\/\/[^\s]+)/i);
+      if (gifMatch) {
+        messageContent = `<img src="${gifMatch[1]}" onclick="window.open('${gifMatch[1]}')">`;
+      } else if (msg.message.match(/\.(gif|jpg|jpeg|png)(\?.*)?$/i)) {
+        messageContent = `<img src="${esc(msg.message)}" onclick="window.open('${esc(msg.message)}')">`;
+      }
     }
     
     return `<div class="message" id="msg-${msg.id}">
@@ -745,6 +680,7 @@ document.addEventListener('DOMContentLoaded', function() {
     document.getElementById(`msg-${msgId}`)?.remove();
     toast('🗑 Deleted');
   };
+  window.playVoiceMessage = playVoiceMessage;
 
   // ============================================================
   // LOAD MESSAGES
@@ -804,6 +740,7 @@ document.addEventListener('DOMContentLoaded', function() {
         username: currentUser.displayName || currentUser.username,
         message: text,
         nameColor: nameColor,
+        is_voice_message: false
       });
       messageCounts[currentUser.id] = (messageCounts[currentUser.id] || 0) + 1;
       save();
@@ -828,7 +765,7 @@ document.addEventListener('DOMContentLoaded', function() {
       .subscribe();
   }
 
-   // ============================================================
+  // ============================================================
   // GROUPS
   // ============================================================
   async function loadGroups() {
@@ -839,7 +776,6 @@ document.addEventListener('DOMContentLoaded', function() {
       if (!myGroups.length) { container.innerHTML = '<div style="padding:8px 16px;color:gray">no groups</div>'; return; }
       container.innerHTML = myGroups.map(g => `<div class="sidebar-item group-item" data-group-id="${g.id}" data-group-name="${esc(g.name)}"><span>👥</span><span>${esc(g.name)}</span></div>`).join('');
       
-      // Add click handlers for groups
       document.querySelectorAll('.group-item').forEach(el => {
         el.onclick = () => {
           const groupId = el.dataset.groupId;
@@ -860,6 +796,12 @@ document.addEventListener('DOMContentLoaded', function() {
     if (activeGroup) activeGroup.classList.add('active');
     loadMessages();
     setupRealtime();
+  }
+
+  async function createGroup(name) {
+    await sb.from('fanter_groups').insert({ name, owner_id: currentUser.id, members: [currentUser.id] });
+    toast(`✅ Group "${name}" created!`);
+    loadGroups();
   }
 
   // ============================================================
@@ -890,16 +832,6 @@ document.addEventListener('DOMContentLoaded', function() {
       const statusClass = s => ({ online: 'status-online', away: 'status-away', gaming: 'status-gaming' }[s] || 'status-offline');
       const memberEl = m => `<div class="member" onclick="showProfile('${esc(m.user_id)}')"><div class="member-avatar">${m.profile_pic ? `<img src="${m.profile_pic}">` : (m.username?.[0]?.toUpperCase() || 'U')}<div class="member-status ${statusClass(m.status)}"></div></div><div class="member-info"><div class="member-name">${esc(m.display_name || m.username)}</div>${m.custom_activity ? `<div class="member-activity">${esc(m.custom_activity)}</div>` : ''}</div></div>`;
       document.getElementById('membersList').innerHTML = (online.length ? `<div class="section-sep">ONLINE — ${online.length}</div>` + online.map(memberEl).join('') : '') + `<div class="section-sep">OFFLINE</div>` + data.filter(m => m.status === 'offline').map(memberEl).join('');
-      
-      // Update dropdowns
-      const userOptions = data.map(u => `<option value="${esc(u.username)}">${esc(u.display_name || u.username)}</option>`).join('');
-      document.getElementById('targetUserSelect').innerHTML = userOptions;
-      document.getElementById('xpTargetSelect').innerHTML = userOptions;
-      document.getElementById('modUserSelect').innerHTML = userOptions;
-      document.getElementById('warnUserSelect').innerHTML = userOptions;
-      document.getElementById('timeoutUserSelect').innerHTML = userOptions;
-      document.getElementById('kickUserSelect').innerHTML = userOptions;
-      document.getElementById('banUserSelect').innerHTML = userOptions;
     } catch(e) {}
   }
 
@@ -1091,10 +1023,6 @@ document.addEventListener('DOMContentLoaded', function() {
     renderShop();
   };
   document.getElementById('shopBtn').onclick = () => { renderShop(); openOverlay('shopOverlay'); };
-    // Voice Chat Stage button
-  document.getElementById('stageBtn').onclick = () => {
-    window.open('fantarena-voice.html', 'TheStage', 'width=500,height=700,popup=true,resizable=true');
-  };
 
   // Add friend
   document.getElementById('addFriendBtn').onclick = () => openOverlay('addFriendOverlay');
@@ -1149,6 +1077,7 @@ document.addEventListener('DOMContentLoaded', function() {
       username: currentUser.displayName || currentUser.username,
       message: `[GIF] ${url}`,
       nameColor: nameColor,
+      is_voice_message: false
     });
     addXP(3);
     closeGifPicker();
@@ -1194,9 +1123,6 @@ document.addEventListener('DOMContentLoaded', function() {
       await sb.from('fanter_presence').update({ profile_pic: urlData.publicUrl }).eq('user_id', currentUser.id);
       toast('✅ Profile picture updated!');
       loadMembers();
-      // Update profile card if open
-      const avatarEl = document.getElementById('profileAvatar');
-      if (avatarEl) avatarEl.innerHTML = `<img src="${urlData.publicUrl}">`;
     } catch(e) { toast('Upload failed'); }
   }
   document.getElementById('avatarUpload').onchange = async (e) => {
@@ -1227,88 +1153,9 @@ document.addEventListener('DOMContentLoaded', function() {
   }, 2500);
 
   // ============================================================
-  // MOD PANEL
-  // ============================================================
-  const modPanelBtn = document.getElementById('modPanelBtn');
-  const modPanelContent = document.getElementById('modPanelContent');
-  const modPanelClose = document.getElementById('modPanelClose');
-  
-  modPanelBtn.onclick = () => { modPanelContent.classList.toggle('open'); };
-  modPanelClose.onclick = () => { modPanelContent.classList.remove('open'); };
-  
-  document.getElementById('applyBgBtn').onclick = () => {
-    const preset = document.getElementById('bgPresetSelect').value;
-    const presets = { default: 'var(--bg)', ocean: 'linear-gradient(135deg,#0a2a4a,#0a1a2a)', sunset: 'linear-gradient(135deg,#4a1a0a,#2a0a0a)' };
-    document.body.style.background = presets[preset] || presets.default;
-    toast(`Background changed`);
-  };
-  document.getElementById('triggerEventBtn').onclick = () => {
-    const event = document.getElementById('eventSelect').value;
-    if (event === 'confetti') triggerConfetti();
-    else if (event === 'fireworks') triggerFireworks();
-  };
-  document.getElementById('giveCoinsBtn').onclick = () => {
-    const user = document.getElementById('targetUserSelect').value;
-    const amount = parseInt(document.getElementById('coinAmount').value);
-    if (user && amount) giveCoinsToUser(user, amount);
-  };
-  document.getElementById('giveXPBtn').onclick = () => {
-    const user = document.getElementById('xpTargetSelect').value;
-    const amount = parseInt(document.getElementById('xpAmount').value);
-    if (user && amount) giveXPToUser(user, amount);
-  };
-  document.getElementById('makeModBtn').onclick = () => {
-    const user = document.getElementById('modUserSelect').value;
-    if (user) assignModerator(user);
-  };
-  document.getElementById('revokeModBtn').onclick = () => {
-    const user = document.getElementById('modUserSelect').value;
-    if (user) revokeModerator(user);
-  };
-  document.getElementById('warnBtn').onclick = () => {
-    const user = document.getElementById('warnUserSelect').value;
-    const reason = document.getElementById('warnReason').value;
-    if (user && reason) warnUser(user, reason);
-    document.getElementById('warnReason').value = '';
-  };
-  document.getElementById('timeoutBtn').onclick = () => {
-    const user = document.getElementById('timeoutUserSelect').value;
-    const minutes = parseInt(document.getElementById('timeoutMinutes').value);
-    if (user && minutes) timeoutUser(user, minutes);
-  };
-  document.getElementById('kickBtn').onclick = () => {
-    const user = document.getElementById('kickUserSelect').value;
-    if (user) kickUser(user);
-  };
-  document.getElementById('banBtn').onclick = () => {
-    const user = document.getElementById('banUserSelect').value;
-    if (user) banUser(user);
-  };
-  document.getElementById('slowModeBtn').onclick = () => {
-    const sec = parseInt(document.getElementById('slowModeSec').value);
-    if (sec >= 0) setSlowMode(sec);
-  };
-  document.getElementById('purgeBtn').onclick = () => {
-    const count = parseInt(document.getElementById('purgeCount').value);
-    if (count && count > 0 && count <= 100) purgeMessages(count);
-  };
-  document.getElementById('clearLogsBtn').onclick = () => {
-    if (confirm('Clear all mod logs?')) { modLogs = []; save(); updateModLogsDisplay(); toast('Logs cleared'); }
-  };
-  
-  document.getElementById('commandList').innerHTML = [
-    { cmd: '/roll', desc: 'Roll a dice (1-100)' },
-    { cmd: '/8ball', desc: 'Ask the magic 8ball' },
-    { cmd: '/flip', desc: 'Flip a coin' },
-    { cmd: '/nick [name]', desc: 'Change your display name' },
-    { cmd: '/help', desc: 'Show this help' },
-  ].map(c => `<div style="display:flex;justify-content:space-between;padding:4px 0;font-size:11px"><span style="color:var(--gold)">${c.cmd}</span><span style="color:gray">${c.desc}</span></div>`).join('');
-
-  // ============================================================
   // INIT
   // ============================================================
   async function initChat() {
-    await checkIfOwner();
     updateCoinDisplay();
     await updatePresence();
     await loadMessages();
@@ -1316,14 +1163,13 @@ document.addEventListener('DOMContentLoaded', function() {
     await loadFriends();
     await loadGroups();
     setupRealtime();
-    updateModLogsDisplay();
     document.getElementById('levelBadge').textContent = `Lv ${getLevel(userXP[currentUser.id] || 0)}`;
     setInterval(loadMembers, 10000);
     setInterval(updatePresence, 30000);
     setTimeout(() => updateChannelPill(), 100);
   }
 
-  console.log('✅ Fantarena ready!');
+  console.log('✅ Fantarena with Voice Messages ready!');
 });
 </script>
 </body>
