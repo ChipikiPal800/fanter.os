@@ -827,7 +827,7 @@ document.addEventListener('DOMContentLoaded', function() {
       .subscribe();
   }
 
-  // ============================================================
+   // ============================================================
   // GROUPS
   // ============================================================
   async function loadGroups() {
@@ -836,14 +836,29 @@ document.addEventListener('DOMContentLoaded', function() {
       const myGroups = (data || []).filter(g => g.members && g.members.includes(currentUser.id));
       const container = document.getElementById('groupsList');
       if (!myGroups.length) { container.innerHTML = '<div style="padding:8px 16px;color:gray">no groups</div>'; return; }
-      container.innerHTML = myGroups.map(g => `<div class="sidebar-item" data-group-id="${g.id}" data-group-name="${esc(g.name)}"><span>👥</span><span>${esc(g.name)}</span></div>`).join('');
+      container.innerHTML = myGroups.map(g => `<div class="sidebar-item group-item" data-group-id="${g.id}" data-group-name="${esc(g.name)}"><span>👥</span><span>${esc(g.name)}</span></div>`).join('');
+      
+      // Add click handlers for groups
+      document.querySelectorAll('.group-item').forEach(el => {
+        el.onclick = () => {
+          const groupId = el.dataset.groupId;
+          const groupName = el.dataset.groupName;
+          switchToGroup(groupId, groupName);
+        };
+      });
     } catch(e) {}
   }
-
-  async function createGroup(name) {
-    await sb.from('fanter_groups').insert({ name, owner_id: currentUser.id, members: [currentUser.id] });
-    toast(`✅ Group "${name}" created!`);
-    loadGroups();
+  
+  function switchToGroup(groupId, groupName) {
+    currentGroupId = groupId;
+    currentChannel = null;
+    document.getElementById('chatTitle').innerHTML = `👥 ${esc(groupName)}`;
+    document.querySelectorAll('.channel').forEach(c => c.classList.remove('active'));
+    document.querySelectorAll('.group-item').forEach(g => g.classList.remove('active'));
+    const activeGroup = document.querySelector(`.group-item[data-group-id="${groupId}"]`);
+    if (activeGroup) activeGroup.classList.add('active');
+    loadMessages();
+    setupRealtime();
   }
 
   // ============================================================
