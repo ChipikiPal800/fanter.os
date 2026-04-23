@@ -526,5 +526,16 @@
     "loadTime": "2-3 seconds",
     "releaseDate": "??",
     "developer": "klenne"
+  },
+  {
+    "name": "plants vs zombies",
+    "image": "https://play-lh.googleusercontent.com/JmIPtT31wkUTqZo93gM5Ss7Lipedx519xyoGXSs0Er7egQCon2yiH99quk7OOuYIAg=w526-h296-rw",
+    "url": "https://abcatlmfao.github.io/pvz/game/iframe.html",
+    "new": true,
+    "category": "arcade",
+    "desc": "plants vs zombies, what else do you need to know?",
+    "loadTime": "2-3 seconds",
+    "releaseDate": "??",
+    "developer": "POPCAP development"
   }
 ]
