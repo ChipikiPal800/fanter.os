@@ -619,7 +619,7 @@
    {
     "name": "alien hominid",
     "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQPrVh1enVCEzhdUWn0uqBOiEZT8sepgz7YRA&s",
-    "url": "https://chipikipal800.github.io/alien_hominid/",
+    "url": "https://upload.wikimedia.org/wikipedia/en/2/20/Alien_Hominid_cover.png",
     "new": true,
     "category": "arcade",
     "desc": "classic xbox 360 game, i loved playing this on my dads xbox",
@@ -692,5 +692,60 @@
     "loadTime": "instant",
     "releaseDate": "2014-8-?",
     "developer": "royalin"
-  }
+  },
+  {
+    "name": "2048 fusion",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTiSZdFjKl1aFcvmOSBI8Ledf27FQ3B-IY61g&s",
+    "url": "https://chipikipal800.github.io/2048Fusion/",
+    "new": true,
+    "category": "arcade",
+    "desc": "normal 2048 but better",
+    "loadTime": "instant",
+    "releaseDate": "tmrw",
+    "developer": "idk"
+  },
+   {
+    "name": "soccer random",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTnBENS6gJUZOlcQ-qsdyhW197OqfivqwlqEw&s",
+    "url": "https://chipikipal800.github.io/SoccerRandom/",
+    "new": true,
+    "category": "multiplayer",
+    "desc": "bloxy & :) are gonna love this",
+    "loadTime": "instant",
+    "releaseDate": "tmrw",
+    "developer": "idk"
+  },
+  {
+    "name": "rooftop snipers",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQLSDYCC3re3lAUGg2dW_Wyy-zFE8zTVYLjrQ&s",
+    "url": "https://chipikipal800.github.io/RooftopSnipers/",
+    "new": true,
+    "category": "arcade",
+    "desc": "shoot on roof?",
+    "loadTime": "instant",
+    "releaseDate": "tmrw",
+    "developer": "idk"
+  },
+  {
+    "name": "poly art 3d",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTUO-kjWh1KJDSap2vRsjtmT1mCespqyP7_mg&s",
+    "url": "https://chipikipal800.github.io/PolyArt3D/",
+    "new": true,
+    "category": "arcade",
+    "desc": "idk maybe some people would play?",
+    "loadTime": "instant",
+    "releaseDate": "tmrw",
+    "developer": "idk"
+  },
+   {
+    "name": "super mario wonder",
+    "image": "https://i.ytimg.com/vi/QqwAHt_nrU4/maxresdefault.jpg",
+    "url": "https://chipikipal800.github.io/SuperMarioWonder/",
+    "new": true,
+    "category": "platformer",
+    "desc": "pretty fun kinda like gd",
+    "loadTime": "instant",
+    "releaseDate": "tmrw",
+    "developer": "idk"
+  },
 ]
