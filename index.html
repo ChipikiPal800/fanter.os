@@ -149,6 +149,138 @@
       border-color: #ffcc00;
     }
     
+    /* ===== EMULATORS MENU (NEW) ===== */
+    .emulators-menu-container {
+      position: fixed;
+      top: 140px;
+      right: 20px;
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+      align-items: flex-end;
+      gap: 10px;
+    }
+    
+    .emulators-toggle-btn {
+      background: linear-gradient(135deg, #9f5ae3, #7a3ac0);
+      backdrop-filter: blur(10px);
+      border: 1px solid rgba(159, 90, 227, 0.5);
+      border-radius: 15px;
+      color: white;
+      font-size: 20px;
+      font-weight: bold;
+      width: 44px;
+      height: 44px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+    }
+    
+    .emulators-toggle-btn:hover {
+      border-color: #ffcc00;
+      transform: scale(1.05);
+      box-shadow: 0 6px 20px rgba(159, 90, 227, 0.4);
+    }
+    
+    .emulators-toggle-btn.active {
+      background: rgba(159, 90, 227, 0.8);
+      border-color: #ffcc00;
+    }
+    
+    .emulators-sidebar {
+      position: fixed;
+      top: 80px;
+      right: -260px;
+      width: 260px;
+      background: rgba(25, 20, 45, 0.97);
+      backdrop-filter: blur(15px);
+      border: 1px solid rgba(159, 90, 227, 0.5);
+      border-radius: 20px 0 0 20px;
+      padding: 20px 15px;
+      z-index: 101;
+      transition: right 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
+      box-shadow: -5px 5px 20px rgba(0, 0, 0, 0.4);
+    }
+    
+    .emulators-sidebar.open {
+      right: 0;
+    }
+    
+    .emulators-overlay {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0, 0, 0, 0.5);
+      backdrop-filter: blur(3px);
+      z-index: 100;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.3s ease;
+    }
+    
+    .emulators-overlay.open {
+      opacity: 1;
+      visibility: visible;
+    }
+    
+    .emulators-header {
+      font-size: 18px;
+      font-weight: bold;
+      color: #ffcc00;
+      padding: 8px 12px;
+      margin-bottom: 12px;
+      border-bottom: 1px solid rgba(159, 90, 227, 0.5);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+    
+    .emulator-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 12px 18px;
+      margin: 5px 0;
+      background: rgba(255, 255, 255, 0.03);
+      border: 1px solid rgba(159, 90, 227, 0.3);
+      border-radius: 12px;
+      color: white;
+      font-size: 15px;
+      cursor: pointer;
+      transition: all 0.2s ease;
+    }
+    
+    .emulator-item:hover {
+      background: rgba(159, 90, 227, 0.3);
+      border-color: #ffcc00;
+      transform: translateX(-5px);
+    }
+    
+    .emulator-icon {
+      font-size: 24px;
+      min-width: 36px;
+      text-align: center;
+    }
+    
+    .emulator-label {
+      font-weight: 500;
+      flex: 1;
+    }
+    
+    .emulator-badge {
+      background: rgba(255, 204, 0, 0.2);
+      border: 1px solid rgba(255, 204, 0, 0.3);
+      border-radius: 20px;
+      padding: 2px 8px;
+      font-size: 9px;
+      color: #ffcc00;
+    }
+    
     /* ===== FAV BUTTON BOTTOM RIGHT ===== */
     .fav-sidebar-btn {
       position: fixed;
@@ -183,7 +315,7 @@
       border: 1px solid rgba(45, 90, 227, 0.5);
       border-radius: 20px 0 0 20px;
       padding: 20px 15px;
-      z-index: 100;
+      z-index: 102;
       transition: right 0.3s cubic-bezier(0.68, -0.55, 0.265, 1.55);
       box-shadow: -5px 5px 20px rgba(0, 0, 0, 0.4);
     }
@@ -200,7 +332,7 @@
       height: 100%;
       background: rgba(0, 0, 0, 0.5);
       backdrop-filter: blur(3px);
-      z-index: 99;
+      z-index: 101;
       opacity: 0;
       visibility: hidden;
       transition: all 0.3s ease;
@@ -668,15 +800,52 @@
     <div class="menu-toggle-btn" id="menuToggleBtn" onclick="toggleMenu()">≡</div>
   </div>
 
+  <!-- NEW: EMULATORS MENU (second menu) -->
+  <div class="emulators-menu-container">
+    <div class="emulators-toggle-btn" id="emulatorsToggleBtn" onclick="toggleEmulators()">🎮</div>
+  </div>
+  
+  <!-- EMULATORS SIDEBAR -->
+  <div class="emulators-sidebar" id="emulatorsSidebar">
+    <div class="emulators-header">
+      <span>🎮</span> EMULATORS
+    </div>
+    <div class="emulator-item" onclick="window.open('https://chipikipal800.github.io/MKGBA2.0/', '_blank')">
+      <span class="emulator-icon">🎮</span>
+      <span class="emulator-label">MKGBA 2.0</span>
+      <span class="emulator-badge">GBA</span>
+    </div>
+    <div class="emulator-item" onclick="window.open('https://chipikipal800.github.io/snes-emu/', '_blank')">
+      <span class="emulator-icon">🕹️</span>
+      <span class="emulator-label">SNES Emulator</span>
+      <span class="emulator-badge">SNES</span>
+    </div>
+    <div class="emulator-item" onclick="window.open('https://chipikipal800.github.io/nes-emu/', '_blank')">
+      <span class="emulator-icon">📺</span>
+      <span class="emulator-label">NES Emulator</span>
+      <span class="emulator-badge">NES</span>
+    </div>
+    <div class="emulator-item" onclick="window.open('https://chipikipal800.github.io/gbc-emu/', '_blank')">
+      <span class="emulator-icon">🌸</span>
+      <span class="emulator-label">GBC Emulator</span>
+      <span class="emulator-badge">GBC</span>
+    </div>
+    <div class="emulator-item" onclick="window.open('https://chipikipal800.github.io/sega-emu/', '_blank')">
+      <span class="emulator-icon">🌀</span>
+      <span class="emulator-label">Sega Genesis</span>
+      <span class="emulator-badge">MEGA DRIVE</span>
+    </div>
+  </div>
+  <div class="emulators-overlay" id="emulatorsOverlay" onclick="toggleEmulators()"></div>
+
   <!-- FAV BUTTON - Bottom Right -->
   <button class="fav-sidebar-btn" id="favSidebarBtn" onclick="window.toggleFavSidebar && window.toggleFavSidebar()">★</button>
   
   <!-- SIDEBAR MENU OVERLAY -->
   <div class="sidebar-menu-overlay" id="menuOverlay" onclick="toggleMenu()"></div>
   
-  <!-- SIDEBAR MENU (UPDATED: added Fanter Clicker button with highlight) -->
+  <!-- SIDEBAR MENU -->
   <div class="sidebar-menu" id="sidebarMenu">
-    <!-- 🔥 NEW: Fanter Clicker special menu item - prominently placed first -->
     <div class="menu-item fanter-clicker-highlight" onclick="window.open('https://chipikipal800.github.io/Fanter-Clicker/', '_blank')">
       <span class="menu-icon">🍪</span>
       <span class="menu-label">Fanter Clicker</span>
@@ -712,7 +881,6 @@
       <span class="menu-badge">CREATE</span>
     </div>
     
-    <!-- Fanter Search Link -->
     <div class="menu-item" onclick="window.open('https://chipikipal800.github.io/Fanter-search/', '_blank')">
       <span class="menu-icon">🔍</span>
       <span class="menu-label">Fanter Search</span>
@@ -764,6 +932,7 @@
 <script src="config/gamedetails.js"></script>
 
 <script>
+// ==================== HAMBURGER MENU TOGGLE ====================
 function toggleMenu() {
   const menu = document.getElementById('sidebarMenu');
   const overlay = document.getElementById('menuOverlay');
@@ -779,7 +948,23 @@ document.getElementById('menuOverlay').addEventListener('click', function() {
   document.getElementById('menuToggleBtn').classList.remove('active');
 });
 
-// Session Timer
+// ==================== EMULATORS MENU TOGGLE (NEW) ====================
+function toggleEmulators() {
+  const menu = document.getElementById('emulatorsSidebar');
+  const overlay = document.getElementById('emulatorsOverlay');
+  const btn = document.getElementById('emulatorsToggleBtn');
+  menu.classList.toggle('open');
+  overlay.classList.toggle('open');
+  btn.classList.toggle('active');
+}
+
+document.getElementById('emulatorsOverlay').addEventListener('click', function() {
+  document.getElementById('emulatorsSidebar').classList.remove('open');
+  this.classList.remove('open');
+  document.getElementById('emulatorsToggleBtn').classList.remove('active');
+});
+
+// ==================== SESSION TIMER ====================
 (function() {
   let sessionStart = localStorage.getItem('sessionStart') || Date.now();
   if (!localStorage.getItem('sessionStart')) localStorage.setItem('sessionStart', sessionStart);
@@ -805,6 +990,7 @@ document.getElementById('menuOverlay').addEventListener('click', function() {
   startTimer();
 })();
 
+// ==================== DAILY BONUS ====================
 function checkDailyBonus() {
   const lastClaim = localStorage.getItem('lastDailyClaim'), today = new Date().toDateString();
   let streak = parseInt(localStorage.getItem('dailyStreak') || '0');
@@ -838,6 +1024,7 @@ function closeDailyBonus() {
   window.pendingDailyReward = null;
 }
 
+// ==================== GAME OF DAY ====================
 function updateGameOfDay() {
   if (!window.gamesData || !window.gamesData.length) return;
   const today = new Date().toDateString();
@@ -852,6 +1039,7 @@ function updateGameOfDay() {
   document.getElementById('gameOfDayPlay').onclick = () => window.open(`play.html?gameurl=${encodeURIComponent(game.url)}&game=${encodeURIComponent(game.name)}`, '_blank');
 }
 
+// ==================== SEARCH HISTORY ====================
 let searchHistory = JSON.parse(localStorage.getItem('searchHistory') || '[]');
 function updateSearchHistoryDisplay() {
   const list = document.getElementById('searchHistoryList');
@@ -873,6 +1061,7 @@ document.addEventListener('DOMContentLoaded', () => {
   }
 });
 
+// ==================== HEADER COINS ====================
 function updateHeaderCoins() {
   const user = JSON.parse(localStorage.getItem('fanter_currentUser') || 'null');
   const el = document.getElementById('headerCoinAmount');
@@ -885,6 +1074,7 @@ setInterval(updateHeaderCoins, 1000);
 updateHeaderCoins();
 window.addEventListener('storage', e => { if (e.key === 'fanter_currentUser') updateHeaderCoins(); });
 
+// ==================== SAFETY KEY ====================
 let lastKeyTime = 0, lastKey = "";
 document.addEventListener("keydown", e => {
   const key = localStorage.getItem("safetyKey"), url = localStorage.getItem("safetyUrl");
@@ -894,7 +1084,7 @@ document.addEventListener("keydown", e => {
   lastKey = pressed; lastKeyTime = Date.now();
 });
 
-// Loading Screen
+// ==================== LOADING SCREEN ====================
 (function() {
   if (sessionStorage.getItem('fanterLoaded') === 'true') {
     document.getElementById('loadingScreen').style.display = 'none';
