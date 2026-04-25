@@ -5,7 +5,6 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>fanterOS — desktop environment</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
     * {
@@ -16,9 +15,10 @@
 
     :root {
       --bg-dark: #0a0a0f;
-      --bg-glass: rgba(15, 15, 25, 0.75);
-      --border-glass: rgba(255, 255, 255, 0.06);
+      --bg-glass: rgba(15, 15, 25, 0.85);
+      --border-glass: rgba(255, 255, 255, 0.08);
       --accent: #7c5cff;
+      --accent-hover: #9b7cff;
       --accent-glow: rgba(124, 92, 255, 0.4);
       --text-primary: #f0f0ff;
       --text-secondary: #a0a0c0;
@@ -77,33 +77,11 @@
       100% { transform: rotate(360deg); }
     }
     
-    .loading-logo {
-      font-size: 48px;
-      margin-bottom: 20px;
-      animation: pulse 1.5s ease infinite;
-    }
-    
-    @keyframes pulse {
-      0%, 100% { opacity: 0.6; transform: scale(1); }
-      50% { opacity: 1; transform: scale(1.05); text-shadow: 0 0 20px var(--accent); }
-    }
-    
-    .loading-title {
-      font-size: 24px;
-      font-weight: 600;
-      background: linear-gradient(135deg, #fff, var(--accent));
-      -webkit-background-clip: text;
-      background-clip: text;
-      color: transparent;
-      margin-bottom: 10px;
-    }
-    
-    .loading-status {
-      font-size: 14px;
-      color: var(--text-secondary);
-      font-family: monospace;
-      margin-top: 20px;
-    }
+    .loading-logo { font-size: 48px; margin-bottom: 20px; animation: pulse 1.5s ease infinite; }
+    @keyframes pulse { 0%,100% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); text-shadow: 0 0 20px var(--accent); } }
+    .loading-title { font-size: 24px; font-weight: 600; background: linear-gradient(135deg, #fff, var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 10px; }
+    .loading-status { font-size: 14px; color: var(--text-secondary); font-family: monospace; margin-top: 20px; }
+    .loading-dots { display: inline-block; min-width: 30px; text-align: left; }
 
     /* Login Screen */
     .login-screen {
@@ -173,6 +151,7 @@
       font-weight: 600;
       cursor: pointer;
       margin-top: 8px;
+      transition: all 0.2s;
     }
     .login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px var(--accent-glow); }
     .guest-btn { background: rgba(255,255,255,0.08); margin-top: 12px; }
@@ -187,8 +166,6 @@
       left: 0;
       width: 100%;
       height: 100%;
-      z-index: 0;
-      overflow: hidden;
       opacity: 0;
       visibility: hidden;
       transition: opacity 0.5s ease;
@@ -201,7 +178,6 @@
       width: 100%;
       height: 100%;
       background: url('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/ee4c29a6-9564-4bee-befd-79a0597c29ca/dhsrl04-16049839-0c0f-4077-977f-09a992ec4b07.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9lZTRjMjlhNi05NTY0LTRiZWUtYmVmZC03OWEwNTk3YzI5Y2EvZGhzcmwwNC0xNjA0OTgzOS0wYzBmLTQwNzctOTc3Zi0wOWE5OTJlYzRiMDcuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.XIZi3LNLcPUgY_lP-4R7TJ2r6klMfpBRxT7-cMHGvic') center/cover no-repeat;
-      transition: background-image 0.3s ease;
       z-index: -1;
     }
     .desktop-bg::before {
@@ -212,14 +188,17 @@
       width: 100%;
       height: 100%;
       background: rgba(0,0,0,0.3);
-      pointer-events: none;
     }
-    body.workspace-games .desktop-bg::before { background: rgba(0,0,0,0.3); }
-    body.workspace-learning .desktop-bg::before { background: rgba(0,30,0,0.3); }
-    body.workspace-personal .desktop-bg::before { background: rgba(30,0,30,0.3); }
 
     /* Desktop Icons */
-    .desktop-icons { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; }
+    .desktop-icons {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      z-index: 10;
+    }
     .desktop-icon {
       position: absolute;
       display: flex;
@@ -230,10 +209,10 @@
       border-radius: 14px;
       cursor: pointer;
       transition: all 0.2s;
-      background: rgba(255, 255, 255, 0);
+      background: rgba(255,255,255,0);
       z-index: 15;
     }
-    .desktop-icon:hover { background: rgba(255, 255, 255, 0.15); transform: translateY(-3px); backdrop-filter: blur(4px); }
+    .desktop-icon:hover { background: rgba(255,255,255,0.15); transform: translateY(-3px); backdrop-filter: blur(4px); }
     .desktop-icon .icon { font-size: 36px; margin-bottom: 6px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
     .desktop-icon .label { font-size: 11px; text-align: center; color: white; font-weight: 500; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
     .desktop-icon .delete-btn {
@@ -436,8 +415,8 @@
     /* Window */
     .window {
       position: absolute;
-      min-width: 450px;
-      min-height: 350px;
+      min-width: 500px;
+      min-height: 400px;
       background: rgba(18, 18, 26, 0.95);
       backdrop-filter: blur(4px);
       border-radius: 20px;
@@ -477,8 +456,111 @@
     }
     .window-control:hover { background: rgba(255,255,255,0.1); }
     .window-control.close:hover { background: var(--danger); color: white; }
-    .window-content { flex: 1; overflow: auto; background: rgba(10,10,15,0.95); }
-    .window-content iframe { width: 100%; height: 100%; border: none; }
+    .window-content { flex: 1; overflow: auto; background: rgba(10,10,15,0.95); padding: 20px; }
+
+    /* Game Card */
+    .game-card {
+      background: rgba(255,255,255,0.05);
+      border-radius: 16px;
+      overflow: hidden;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .game-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.1); }
+    .game-card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
+    .game-card-info { padding: 12px; }
+    .game-card-title { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .game-card-category { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
+
+    /* Game Details Modal (Steam-like) */
+    .game-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: rgba(0,0,0,0.85);
+      backdrop-filter: blur(12px);
+      z-index: 20000;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      opacity: 0;
+      visibility: hidden;
+      transition: all 0.2s;
+    }
+    .game-modal.open { opacity: 1; visibility: visible; }
+    .game-modal-content {
+      background: linear-gradient(135deg, #1a1a2e, #0f0f1a);
+      border-radius: 24px;
+      width: 900px;
+      max-width: 90vw;
+      max-height: 85vh;
+      overflow-y: auto;
+      border: 1px solid var(--border-glass);
+      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
+    }
+    .game-modal-header {
+      position: relative;
+      height: 250px;
+      overflow: hidden;
+      border-radius: 24px 24px 0 0;
+    }
+    .game-modal-header img {
+      width: 100%;
+      height: 100%;
+      object-fit: cover;
+    }
+    .game-modal-header .overlay {
+      position: absolute;
+      bottom: 0;
+      left: 0;
+      right: 0;
+      padding: 30px;
+      background: linear-gradient(transparent, rgba(0,0,0,0.9));
+    }
+    .game-modal-header h2 { font-size: 32px; font-weight: 700; color: white; }
+    .game-modal-header .tag { display: inline-block; padding: 4px 12px; background: var(--accent); border-radius: 20px; font-size: 12px; margin-top: 10px; }
+    .game-modal-body { padding: 24px; display: flex; gap: 24px; flex-wrap: wrap; }
+    .game-modal-left { flex: 2; min-width: 200px; }
+    .game-modal-right { flex: 1; min-width: 200px; }
+    .game-description { color: var(--text-secondary); line-height: 1.6; margin-bottom: 20px; }
+    .game-rating { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
+    .game-stars { display: flex; gap: 5px; font-size: 20px; cursor: pointer; }
+    .game-star { color: rgba(255,255,255,0.2); transition: all 0.1s; }
+    .game-star.active { color: var(--warning); }
+    .game-star:hover { transform: scale(1.1); }
+    .game-info-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-glass); font-size: 13px; }
+    .game-info-label { color: var(--text-muted); }
+    .game-info-value { color: var(--text-primary); font-weight: 500; }
+    .game-play-btn {
+      width: 100%;
+      padding: 14px;
+      background: linear-gradient(135deg, var(--accent), #5a3cc9);
+      border: none;
+      border-radius: 40px;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    .game-play-btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
+    .close-modal {
+      position: absolute;
+      top: 20px;
+      right: 20px;
+      background: rgba(0,0,0,0.5);
+      border: none;
+      border-radius: 50%;
+      width: 40px;
+      height: 40px;
+      font-size: 20px;
+      cursor: pointer;
+      color: white;
+      z-index: 10;
+    }
+    .close-modal:hover { background: var(--danger); }
 
     /* Notes Widget */
     .notes-widget {
@@ -571,29 +653,30 @@
 </head>
 <body>
 
+<!-- LOADING SCREEN -->
 <div class="loading-screen" id="loadingScreen">
   <div class="loading-container">
     <div class="loading-spinner"></div>
     <div class="loading-logo">🍥</div>
     <div class="loading-title">fanterOS</div>
-    <div class="loading-status" id="loadingStatus">Loading<span id="loadingDots">...</span></div>
+    <div class="loading-status">Loading<span class="loading-dots" id="loadingDots">...</span></div>
   </div>
 </div>
 
+<!-- LOGIN SCREEN -->
 <div class="login-screen" id="loginScreen">
   <div class="login-card">
     <div class="login-logo">🍥</div>
     <div class="login-title">welcome back</div>
     <div class="login-sub">sign in to continue</div>
-    <input type="email" class="login-input" id="loginEmail" placeholder="email">
-    <input type="password" class="login-input" id="loginPassword" placeholder="password">
+    <input type="text" class="login-input" id="loginUsername" placeholder="username">
     <button class="login-btn" id="loginBtn">sign in</button>
     <button class="login-btn guest-btn" id="guestBtn">continue as guest</button>
-    <div class="login-switch">no account? <span id="showRegister">create one</span></div>
     <div class="login-error" id="loginError"></div>
   </div>
 </div>
 
+<!-- DESKTOP -->
 <div class="desktop" id="desktop">
   <div class="desktop-bg" id="desktopBg"></div>
   <div class="desktop-icons" id="desktopIcons"></div>
@@ -603,6 +686,7 @@
   </div>
 </div>
 
+<!-- TASKBAR -->
 <div class="taskbar" id="taskbar">
   <div class="start-btn" id="startBtn">🍥 fanterOS</div>
   <div class="taskbar-apps" id="taskbarApps"></div>
@@ -616,6 +700,7 @@
   </div>
 </div>
 
+<!-- START MENU -->
 <div class="start-menu" id="startMenu">
   <div class="start-header">
     <div class="user-name" id="startUserName">Guest</div>
@@ -625,12 +710,14 @@
   <div class="start-apps" id="startApps"></div>
 </div>
 
+<!-- BOOT MENU -->
 <div class="boot-menu" id="bootMenu">
   <div class="boot-search"><input type="text" id="bootSearch" placeholder="Search games..." autocomplete="off"></div>
   <div class="boot-results" id="bootResults"></div>
   <div class="boot-footer"><span>↑↓ navigate</span><span>↵ play</span><span>esc close</span></div>
 </div>
 
+<!-- CONTEXT MENU -->
 <div class="context-menu" id="contextMenu">
   <div class="context-menu-item" id="ctxChangeWallpaper">🖼️ Change Wallpaper</div>
   <div class="context-menu-item" id="ctxRefresh">🔄 Refresh</div>
@@ -644,6 +731,7 @@
   <div class="context-menu-item" id="ctxSettings">⚙️ Settings</div>
 </div>
 
+<!-- QUICK SETTINGS -->
 <div class="quick-settings" id="quickSettings">
   <div class="quick-settings-header">Quick Settings</div>
   <div class="quick-settings-item" id="qsWallpaper">🖼️ Change Wallpaper</div>
@@ -652,6 +740,7 @@
   <div class="quick-settings-item" id="qsSettings">⚙️ Full Settings</div>
 </div>
 
+<!-- SHORTCUTS MODAL -->
 <div class="shortcuts-modal" id="shortcutsModal">
   <h3 style="margin-bottom:16px;">⌨️ Keyboard Shortcuts</h3>
   <div class="shortcut-row"><span>Ctrl+K</span><span>Quick launch / search</span></div>
@@ -663,18 +752,32 @@
   <button class="context-menu-item" id="closeShortcuts" style="margin-top:16px; text-align:center;">Close</button>
 </div>
 
+<!-- GAME DETAILS MODAL (Steam-like) -->
+<div class="game-modal" id="gameModal">
+  <div class="game-modal-content" id="gameModalContent"></div>
+</div>
+
 <div class="screenshot-flash" id="screenshotFlash"></div>
 <div class="toast" id="toast"></div>
 
 <script>
 // ============================================================
-// FANTER OS - COMPLETE WITH FIXED LOADING SCREEN
+// FANTER OS - FULLY FUNCTIONAL WITH STEAM-LIKE GAME MODAL
 // ============================================================
 
-// Supabase config
-const SUPABASE_URL = "https://gvzgnclowylrrpovdvtw.supabase.co";
-const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd2emduY2xvd3lscnJwb3ZkdnR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NjM5ODEsImV4cCI6MjA5MjAzOTk4MX0.p7oeYBVX870iSK-TLDRj6pfW7wLj7HJsTHjNWaNpL7o";
-const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+// ========== GAMES DATA (HARDCODED - NO JSON ERRORS) ==========
+const GAMES_DATA = [
+  { id: 1, name: "1v1lol", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWaqfMWlZb2y2L3wxKaIx9W0H9VyacAWGI1g&s", url: "https://abcatlmfao.github.io/1v1lol-unblocked-free.github.io/", category: "action", desc: "Build and fight in this fast-paced building battle royale. Outbuild your opponents, edit like a pro, and show off your shotgun skills.", developer: "JustPlay.LOL", releaseDate: "2020", rating: 4.5 },
+  { id: 2, name: "Hollow Knight", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsLIpQXZ-qUzdIOxeFC9LAaYznn0jmMIE9WA&s", url: "https://abcatlmfao.github.io/hollow-knight2/", category: "adventure", desc: "Descend into a hauntingly beautiful bug kingdom. Explore ancient caverns, fight epic bosses, and uncover forgotten secrets.", developer: "Team Cherry", releaseDate: "2017", rating: 4.9 },
+  { id: 3, name: "Cuphead", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9qSIX-nkzPX90AalYjAOofWbbOfNZUcrlyg&s", url: "https://woahhcrackers.github.io/CupheadWeb/", category: "platformer", desc: "Don't ragequit, it's worth it. Classic run-and-gun action with beautiful 1930s cartoon style.", developer: "Studio MDHR", releaseDate: "2017", rating: 4.8 },
+  { id: 4, name: "Celeste", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSjUo7PS_3CMR-54X5QWZGNgJ8L8m7503uCA&s", url: "https://chipikipal800.github.io/celeste/", category: "platformer", desc: "A hidden gem about climbing a mountain. Tight controls, emotional story, and amazing music.", developer: "Extremely OK Games", releaseDate: "2018", rating: 4.9 },
+  { id: 5, name: "Granny", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8X5JjpaXIFfsI2KKuU_kjCFDAGJZxktgz3g&s", url: "https://chipikipal800.github.io/Granny/", category: "horror", desc: "You're trapped in Granny's house. She hears everything. Escape within 5 days.", developer: "DVloper", releaseDate: "2017", rating: 4.2 },
+  { id: 6, name: "Pokemon LeafGreen", image: "https://assets-prd.ignimgs.com/2022/01/31/pokemon-leafgreen-button-crop-v3-1643617153926.jpg", url: "https://javyquavy.github.io/PokemonLeafGreen/", category: "rpg", desc: "The classic Gen 3 Pokemon game. Choose Bulbasaur, Charmander, or Squirtle. Catch 'em all!", developer: "Game Freak", releaseDate: "2004", rating: 4.7 },
+  { id: 7, name: "Minecraft", image: "https://static0.gamerantimages.com/wordpress/wp-content/uploads/Minecraft-1.8-Adventure-Update-Trailer.jpg", url: "https://abcatlmfao69.github.io/minraft/", category: "sandbox", desc: "Build, explore, survive in an endless block world. Classic Minecraft 1.8 experience.", developer: "Mojang", releaseDate: "2011", rating: 4.9 },
+  { id: 8, name: "Brotato", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyDe2stCyUFVRMAqp2eD8f-kcWjJ6k2mm2RQ&s", url: "https://abcatlmfao.github.io/BrotatoWeb/", category: "arcade", desc: "A potato with a gun. Survive waves of aliens, collect upgrades.", developer: "Blobfish", releaseDate: "2023", rating: 4.6 },
+  { id: 9, name: "OVO", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT7a8NY9ACBZXwsfacA2CuEbSyDZqwcw3J9bQ&s", url: "https://chipikipal800.github.io/OvO/", category: "platformer", desc: "A challenging platformer where you jump, dash, and wall-jump through difficult levels.", developer: "Dedra Games", releaseDate: "2022", rating: 4.4 },
+  { id: 10, name: "Ultrakill", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRipnEUkFwPl2HDexU5SGTeKCQ-kA6s-o79df42EJpypoez7xC8AZFbKqRDWnp0F4QU9SkU&s=10", url: "https://chipikipal800.github.io/UK-web/", category: "action", desc: "Move fast. Shoot faster. Style on demons. Blood is fuel.", developer: "New Blood", releaseDate: "2020", rating: 4.9 }
+];
 
 // App definitions
 const APPS = [
@@ -683,11 +786,7 @@ const APPS = [
   { id: 'shop', name: 'Item Shop', icon: '🛒', url: 'shop.html', desc: 'Buy themes & pets' },
   { id: 'settings', name: 'Settings', icon: '⚙️', url: 'settings.html', desc: 'Customize your OS' },
   { id: 'fantarena', name: 'Fantarena', icon: '🏟️', url: 'fantarena.html', desc: 'Chat with friends' },
-  { id: 'account', name: 'My Account', icon: '👤', url: 'fantaccount.html', desc: 'Profile & achievements' },
-  { id: 'fanterai', name: 'Fanter AI', icon: '🤖', url: 'https://chipikipal800.github.io/fanter.ai/', external: true, desc: 'AI assistant' },
-  { id: 'fanterstudios', name: 'Fanter Studios', icon: '🎨', url: 'https://chipikipal800.github.io/fanter-studios/', external: true, desc: 'Create games' },
-  { id: 'fantersearch', name: 'Fanter Search', icon: '🔍', url: 'https://chipikipal800.github.io/Fanter-search/', external: true, desc: 'Proxy browser' },
-  { id: 'fanterclicker', name: 'Fanter Clicker', icon: '🍪', url: 'https://chipikipal800.github.io/Fanter-Clicker/', external: true, desc: 'Clicker game' }
+  { id: 'account', name: 'My Account', icon: '👤', url: 'fantaccount.html', desc: 'Profile & achievements' }
 ];
 
 const EMULATORS = [
@@ -715,11 +814,10 @@ let startMenuOpen = false;
 let bootMenuOpen = false;
 let currentBootResults = [];
 let selectedBootIndex = -1;
-let gamesData = [];
 let desktopIcons = [];
-let currentWorkspace = localStorage.getItem('fanter_workspace') || 'games';
 let currentUser = null;
 let dragIcon = null;
+let userRatings = JSON.parse(localStorage.getItem('userRatings') || '{}');
 
 // Helper functions
 function showToast(msg) {
@@ -729,35 +827,73 @@ function showToast(msg) {
   setTimeout(() => toast.classList.remove('show'), 2500);
 }
 
-function escapeHtml(s) { if (!s) return ''; return s.replace(/[&<>]/g, m => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;' })[m]); }
-
 function updateClock() {
   const now = new Date();
   document.getElementById('taskbarTime').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
   document.getElementById('taskbarDate').textContent = now.toLocaleDateString([], { month: 'short', day: 'numeric' });
 }
 
-function applyWorkspace() {
-  document.body.classList.remove('workspace-games', 'workspace-learning', 'workspace-personal');
-  document.body.classList.add(`workspace-${currentWorkspace}`);
-  localStorage.setItem('fanter_workspace', currentWorkspace);
+// Game Details Modal (Steam-like)
+function showGameDetails(game) {
+  const modal = document.getElementById('gameModal');
+  const content = document.getElementById('gameModalContent');
+  const userRating = userRatings[game.name] || 0;
+  const avgRating = game.rating || 4.0;
+  
+  content.innerHTML = `
+    <div style="position: relative;">
+      <button class="close-modal" onclick="closeGameModal()">✕</button>
+      <div class="game-modal-header">
+        <img src="${game.image}" alt="${game.name}">
+        <div class="overlay">
+          <h2>${game.name}</h2>
+          <span class="tag">${game.category}</span>
+        </div>
+      </div>
+      <div class="game-modal-body">
+        <div class="game-modal-left">
+          <div class="game-description">${game.desc}</div>
+          <div class="game-rating">
+            <div class="game-stars" id="modalStars">
+              ${[1,2,3,4,5].map(s => `<span class="game-star ${s <= userRating ? 'active' : ''}" data-star="${s}">★</span>`).join('')}
+            </div>
+            <span style="color: var(--warning);">${avgRating.toFixed(1)}</span>
+            <span style="color: var(--text-muted);">average rating</span>
+          </div>
+          <button class="game-play-btn" id="playGameBtn">🎮 PLAY NOW</button>
+        </div>
+        <div class="game-modal-right">
+          <div class="game-info-row"><span class="game-info-label">Developer</span><span class="game-info-value">${game.developer}</span></div>
+          <div class="game-info-row"><span class="game-info-label">Release Date</span><span class="game-info-value">${game.releaseDate}</span></div>
+          <div class="game-info-row"><span class="game-info-label">Category</span><span class="game-info-value">${game.category}</span></div>
+          <div class="game-info-row"><span class="game-info-label">Your Rating</span><span class="game-info-value">${userRating > 0 ? '★'.repeat(userRating) + '☆'.repeat(5-userRating) : 'Not rated'}</span></div>
+        </div>
+      </div>
+    </div>
+  `;
+  
+  modal.classList.add('open');
+  
+  // Star rating handler
+  content.querySelectorAll('.game-star').forEach(star => {
+    star.addEventListener('click', () => {
+      const rating = parseInt(star.dataset.star);
+      userRatings[game.name] = rating;
+      localStorage.setItem('userRatings', JSON.stringify(userRatings));
+      showGameDetails(game); // Refresh modal
+      showToast(`You rated "${game.name}" ${rating}★`);
+    });
+  });
+  
+  // Play button
+  document.getElementById('playGameBtn').addEventListener('click', () => {
+    window.open(game.url, '_blank');
+    modal.classList.remove('open');
+  });
 }
 
-// Loading screen with animated dots
-async function runLoadingScreen() {
-  const loadingDots = document.getElementById('loadingDots');
-  let dotCount = 1;
-  const dotInterval = setInterval(() => {
-    dotCount = (dotCount % 3) + 1;
-    loadingDots.textContent = '.'.repeat(dotCount);
-  }, 500);
-  
-  const loadingTime = Math.random() * 5000 + 2000; // 2-7 seconds
-  await new Promise(resolve => setTimeout(resolve, loadingTime));
-  
-  clearInterval(dotInterval);
-  document.getElementById('loadingScreen').classList.add('hide');
-  document.getElementById('loginScreen').classList.add('visible');
+function closeGameModal() {
+  document.getElementById('gameModal').classList.remove('open');
 }
 
 // Desktop Icons
@@ -850,18 +986,16 @@ function createGameHubWindow(x = 80, y = 60, w = 1100, h = 750) {
         <select id="categorySelect-${id}" style="padding: 12px 20px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); border-radius: 30px; color: white;">
           <option value="all">🎮 All Games</option>
           <option value="action">⚔️ Action</option>
-          <option value="puzzle">🧩 Puzzle</option>
-          <option value="racing">🏎️ Racing</option>
-          <option value="sports">⚽ Sports</option>
-          <option value="adventure">🗺️ Adventure</option>
           <option value="platformer">🏃 Platformer</option>
-          <option value="strategy">♟️ Strategy</option>
+          <option value="adventure">🗺️ Adventure</option>
           <option value="horror">👻 Horror</option>
+          <option value="rpg">🎲 RPG</option>
+          <option value="sandbox">🎨 Sandbox</option>
           <option value="arcade">🕹️ Arcade</option>
         </select>
         <button id="randomGameBtn-${id}" style="padding: 12px 24px; background: var(--accent); border: none; border-radius: 30px; color: white; cursor: pointer;">🎲 Random</button>
       </div>
-      <div class="game-grid" id="gameGrid-${id}" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px;"></div>
+      <div class="game-grid" id="gameGrid-${id}" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px;"></div>
       <div style="text-align: center; padding: 20px; color: var(--text-muted); font-size: 11px; border-top: 1px solid var(--border-glass); margin-top: 20px;">
         a site created by abcatlmfao · parcoil network
       </div>
@@ -873,51 +1007,35 @@ function createGameHubWindow(x = 80, y = 60, w = 1100, h = 750) {
   focusWindow(id);
   setupWindowEvents(win, id);
   updateTaskbar();
-  initGameHubContent(id);
-  return id;
-}
-
-function initGameHubContent(windowId) {
-  const searchInput = document.getElementById(`gameSearch-${windowId}`);
-  const categorySelect = document.getElementById(`categorySelect-${windowId}`);
-  const gridContainer = document.getElementById(`gameGrid-${windowId}`);
-  const randomBtn = document.getElementById(`randomGameBtn-${windowId}`);
+  
+  // Render games in this window
+  const searchInput = document.getElementById(`gameSearch-${id}`);
+  const categorySelect = document.getElementById(`categorySelect-${id}`);
+  const gridContainer = document.getElementById(`gameGrid-${id}`);
+  const randomBtn = document.getElementById(`randomGameBtn-${id}`);
   
   function renderGames() {
-    if (!gridContainer || !gamesData.length) {
-      gridContainer.innerHTML = '<div style="text-align:center;padding:40px;">Loading games...</div>';
-      return;
-    }
-    let filtered = [...gamesData];
+    let filtered = [...GAMES_DATA];
     const category = categorySelect?.value || 'all';
     if (category !== 'all') filtered = filtered.filter(g => g.category === category);
     const term = searchInput?.value.toLowerCase() || '';
     if (term) filtered = filtered.filter(g => g.name.toLowerCase().includes(term));
     
-    if (filtered.length === 0) {
-      gridContainer.innerHTML = '<div style="text-align:center;padding:40px;">No games found 😔</div>';
-      return;
-    }
-    
     gridContainer.innerHTML = filtered.map(game => `
-      <div style="background: rgba(255,255,255,0.05); border-radius: 16px; overflow: hidden; cursor: pointer; transition: all 0.2s;" data-game='${JSON.stringify(game)}'>
-        <img src="${game.image}" alt="${escapeHtml(game.name)}" style="width:100%; aspect-ratio:16/9; object-fit:cover;">
-        <div style="padding: 12px;">
-          <div style="font-size: 14px; font-weight: 500;">${escapeHtml(game.name.length > 22 ? game.name.slice(0,20)+'..' : game.name)}</div>
-          <div style="font-size: 11px; color: var(--text-muted); margin-top: 4px;">${game.category || 'game'}</div>
+      <div class="game-card" data-game-id="${game.id}">
+        <img src="${game.image}" alt="${game.name}">
+        <div class="game-card-info">
+          <div class="game-card-title">${game.name}</div>
+          <div class="game-card-category">${game.category}</div>
         </div>
       </div>
     `).join('');
     
-    gridContainer.querySelectorAll('[data-game]').forEach(card => {
+    gridContainer.querySelectorAll('.game-card').forEach(card => {
       card.addEventListener('click', () => {
-        const game = JSON.parse(card.dataset.game);
-        playGame(game);
-      });
-      card.addEventListener('contextmenu', (e) => {
-        e.preventDefault();
-        const game = JSON.parse(card.dataset.game);
-        showGameContextMenu(e.clientX, e.clientY, game);
+        const gameId = parseInt(card.dataset.gameId);
+        const game = GAMES_DATA.find(g => g.id === gameId);
+        if (game) showGameDetails(game);
       });
     });
   }
@@ -925,9 +1043,12 @@ function initGameHubContent(windowId) {
   if (searchInput) searchInput.addEventListener('input', renderGames);
   if (categorySelect) categorySelect.addEventListener('change', renderGames);
   if (randomBtn) randomBtn.addEventListener('click', () => {
-    if (gamesData.length) playGame(gamesData[Math.floor(Math.random() * gamesData.length)]);
+    const randomGame = GAMES_DATA[Math.floor(Math.random() * GAMES_DATA.length)];
+    showGameDetails(randomGame);
   });
   renderGames();
+  
+  return id;
 }
 
 function createEmulatorWindow(x = 100, y = 80, w = 600, h = 500) {
@@ -996,7 +1117,7 @@ function createWindow(app, x = 150, y = 100, w = 900, h = 650) {
       </div>
     </div>
     <div class="window-content">
-      <iframe src="${url}" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals allow-top-navigation"></iframe>
+      <iframe src="${url}" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals allow-top-navigation" style="width:100%;height:100%;border:none;"></iframe>
     </div>
   `;
   
@@ -1055,7 +1176,7 @@ function toggleMinimize(id) {
     win.minimized = !win.minimized;
     win.element.classList.toggle('minimized', win.minimized);
     if (win.minimized && activeWindowId === id) {
-      const next = windows.find(w => !w.minimized && w.id !== id);
+      const next = windows.find(w => !w.minimized);
       if (next) focusWindow(next.id);
       else activeWindowId = null;
     } else if (!win.minimized) focusWindow(id);
@@ -1118,40 +1239,6 @@ function updateTaskbar() {
   });
 }
 
-// Game functions
-function playGame(game) {
-  trackPlayedGame(game.name);
-  window.open(`play.html?gameurl=${encodeURIComponent(game.url)}&game=${encodeURIComponent(game.name)}`, '_blank');
-}
-
-function trackPlayedGame(name) {
-  let plays = JSON.parse(localStorage.getItem('gamePlayCounts') || '{}');
-  plays[name] = (plays[name] || 0) + 1;
-  localStorage.setItem('gamePlayCounts', JSON.stringify(plays));
-  if (currentUser && currentUser.id && !currentUser.id.startsWith('guest')) {
-    currentUser.coins = (currentUser.coins || 0) + 0.05;
-    localStorage.setItem('fanter_currentUser', JSON.stringify(currentUser));
-  }
-}
-
-// Screenshot
-function takeScreenshot() {
-  const flash = document.getElementById('screenshotFlash');
-  flash.style.opacity = '0.3';
-  setTimeout(() => flash.style.opacity = '0', 200);
-  if (typeof html2canvas !== 'undefined') {
-    html2canvas(document.body).then(canvas => {
-      const link = document.createElement('a');
-      link.download = `fanter-screenshot-${Date.now()}.png`;
-      link.href = canvas.toDataURL();
-      link.click();
-      showToast('📸 Screenshot saved!');
-    }).catch(() => showToast('Screenshot failed'));
-  } else {
-    showToast('📸 Screenshot feature ready!');
-  }
-}
-
 // Start Menu
 function renderStartApps(search = '') {
   const container = document.getElementById('startApps');
@@ -1182,20 +1269,21 @@ function toggleStartMenu() {
 // Boot Menu
 function updateBootResults(query) {
   const container = document.getElementById('bootResults');
-  let results = query ? gamesData.filter(g => g.name.toLowerCase().includes(query.toLowerCase())).slice(0, 10) : gamesData.slice(0, 8);
+  let results = query ? GAMES_DATA.filter(g => g.name.toLowerCase().includes(query.toLowerCase())).slice(0, 10) : GAMES_DATA.slice(0, 8);
   currentBootResults = results;
   selectedBootIndex = results.length > 0 ? 0 : -1;
   if (!results.length) { container.innerHTML = '<div style="padding:20px;text-align:center;">no games found</div>'; return; }
   container.innerHTML = results.map((game, idx) => `
     <div class="boot-result ${idx === selectedBootIndex ? 'selected' : ''}" data-index="${idx}">
       <div class="boot-result-icon">🎮</div>
-      <div class="boot-result-info"><div class="boot-result-name">${escapeHtml(game.name)}</div><div class="boot-result-desc">${game.category || 'game'}</div></div>
+      <div class="boot-result-info"><div class="boot-result-name">${game.name}</div><div class="boot-result-desc">${game.category}</div></div>
     </div>
   `).join('');
   container.querySelectorAll('.boot-result').forEach(el => {
     el.addEventListener('click', () => {
       const game = currentBootResults[parseInt(el.dataset.index)];
-      if (game) { playGame(game); toggleBootMenu(); }
+      if (game) showGameDetails(game);
+      toggleBootMenu();
     });
   });
 }
@@ -1206,39 +1294,12 @@ function toggleBootMenu() {
   if (bootMenuOpen) { document.getElementById('bootSearch').focus(); updateBootResults(''); }
 }
 
-// Context menus
 function showDesktopContextMenu(x, y) {
   const menu = document.getElementById('contextMenu');
   menu.style.left = `${x}px`;
   menu.style.top = `${y}px`;
   menu.classList.add('visible');
   const close = () => { menu.classList.remove('visible'); document.removeEventListener('click', close); };
-  setTimeout(() => document.addEventListener('click', close), 10);
-}
-
-function showGameContextMenu(x, y, game) {
-  const menu = document.getElementById('contextMenu');
-  menu.style.left = `${x}px`;
-  menu.style.top = `${y}px`;
-  menu.classList.add('visible');
-  const pinItem = document.getElementById('ctxPinGame');
-  const original = pinItem.innerHTML;
-  pinItem.innerHTML = `📌 Pin "${game.name.slice(0,20)}" to Desktop`;
-  pinItem.onclick = () => {
-    if (!desktopIcons.some(i => i.id === `game_${game.name}`)) {
-      desktopIcons.push({ id: `game_${game.name}`, icon: '🎮', label: game.name.length > 12 ? game.name.slice(0,10)+'..' : game.name, x: 100, y: 100 });
-      saveDesktopIcons();
-      renderDesktopIcons();
-      showToast(`Pinned "${game.name}" to desktop`);
-    }
-    menu.classList.remove('visible');
-  };
-  const close = () => {
-    pinItem.innerHTML = original;
-    pinItem.onclick = null;
-    menu.classList.remove('visible');
-    document.removeEventListener('click', close);
-  };
   setTimeout(() => document.addEventListener('click', close), 10);
 }
 
@@ -1262,51 +1323,68 @@ function uploadWallpaper() {
   input.click();
 }
 
-// Auth
-async function handleLogin(email, password) {
-  try {
-    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (error) throw error;
-    currentUser = { id: data.user.id, username: email.split('@')[0], displayName: email.split('@')[0], email, coins: 300 };
-    localStorage.setItem('fanter_currentUser', JSON.stringify(currentUser));
-    showToast(`Welcome back!`);
-    showDesktop();
-  } catch (err) { document.getElementById('loginError').textContent = err.message; }
+function takeScreenshot() {
+  const flash = document.getElementById('screenshotFlash');
+  flash.style.opacity = '0.3';
+  setTimeout(() => flash.style.opacity = '0', 200);
+  if (typeof html2canvas !== 'undefined') {
+    html2canvas(document.body).then(canvas => {
+      const link = document.createElement('a');
+      link.download = `fanter-screenshot-${Date.now()}.png`;
+      link.href = canvas.toDataURL();
+      link.click();
+      showToast('📸 Screenshot saved!');
+    }).catch(() => showToast('Screenshot failed'));
+  } else {
+    showToast('📸 Screenshot feature ready!');
+  }
 }
 
 function handleGuest() {
   currentUser = { id: 'guest_' + Date.now(), username: 'Guest', displayName: 'Guest', coins: 300 };
   localStorage.setItem('fanter_currentUser', JSON.stringify(currentUser));
+  document.getElementById('startUserName').textContent = 'Guest';
   showToast('Playing as Guest');
-  showDesktop();
-}
-
-function showDesktop() {
   document.getElementById('loginScreen').classList.remove('visible');
   document.getElementById('desktop').classList.add('visible');
   initDesktop();
 }
 
-// Load games
-async function loadGames() {
-  try {
-    const res = await fetch('./config/games.json');
-    const text = await res.text();
-    let fixed = text.replace(/,(\s*}\s*)\]/g, '$1]').replace(/,\s*\]/, ']');
-    gamesData = JSON.parse(fixed);
-    console.log(`✅ Loaded ${gamesData.length} games`);
-  } catch(e) { 
-    console.error('Failed to load games:', e);
-    gamesData = [];
-    showToast('Error loading games, but desktop works!');
+function handleLogin() {
+  const username = document.getElementById('loginUsername').value.trim();
+  if (!username) {
+    document.getElementById('loginError').textContent = 'Enter a username';
+    return;
   }
+  currentUser = { id: 'user_' + Date.now(), username: username, displayName: username, coins: 300 };
+  localStorage.setItem('fanter_currentUser', JSON.stringify(currentUser));
+  document.getElementById('startUserName').textContent = username;
+  showToast(`Welcome back, ${username}!`);
+  document.getElementById('loginScreen').classList.remove('visible');
+  document.getElementById('desktop').classList.add('visible');
+  initDesktop();
+}
+
+// Loading screen animation
+async function runLoadingScreen() {
+  const dotsSpan = document.getElementById('loadingDots');
+  let dotCount = 1;
+  const dotInterval = setInterval(() => {
+    dotCount = (dotCount % 3) + 1;
+    dotsSpan.textContent = '.'.repeat(dotCount) + ' '.repeat(3 - dotCount);
+  }, 500);
+  
+  const loadingTime = Math.random() * 5000 + 2000;
+  await new Promise(resolve => setTimeout(resolve, loadingTime));
+  
+  clearInterval(dotInterval);
+  document.getElementById('loadingScreen').classList.add('hide');
+  document.getElementById('loginScreen').classList.add('visible');
 }
 
 // Init desktop
 async function initDesktop() {
-  await loadGames();
   loadDesktopIcons();
-  applyWorkspace();
   updateClock();
   setInterval(updateClock, 1000);
   
@@ -1324,7 +1402,7 @@ async function initDesktop() {
   document.getElementById('bootSearch').onkeydown = (e) => {
     if (e.key === 'ArrowDown') { e.preventDefault(); if (selectedBootIndex < currentBootResults.length - 1) { selectedBootIndex++; updateBootResults(document.getElementById('bootSearch').value); } }
     else if (e.key === 'ArrowUp') { e.preventDefault(); if (selectedBootIndex > 0) { selectedBootIndex--; updateBootResults(document.getElementById('bootSearch').value); } }
-    else if (e.key === 'Enter') { e.preventDefault(); if (currentBootResults[selectedBootIndex]) { playGame(currentBootResults[selectedBootIndex]); toggleBootMenu(); } }
+    else if (e.key === 'Enter') { e.preventDefault(); if (currentBootResults[selectedBootIndex]) { showGameDetails(currentBootResults[selectedBootIndex]); toggleBootMenu(); } }
   };
   document.getElementById('datetimeBtn').onclick = () => document.getElementById('quickSettings').classList.toggle('open');
   document.getElementById('screenshotBtn').onclick = takeScreenshot;
@@ -1338,10 +1416,10 @@ async function initDesktop() {
   document.getElementById('qsWallpaper').onclick = uploadWallpaper;
   document.getElementById('qsWorkspace').onclick = () => {
     const workspaces = ['games', 'learning', 'personal'];
-    currentWorkspace = workspaces[(workspaces.indexOf(currentWorkspace) + 1) % workspaces.length];
-    applyWorkspace();
-    document.getElementById('quickSettings').classList.remove('open');
-    showToast(`Switched to ${currentWorkspace} workspace`);
+    const current = localStorage.getItem('fanter_workspace') || 'games';
+    const next = workspaces[(workspaces.indexOf(current) + 1) % workspaces.length];
+    localStorage.setItem('fanter_workspace', next);
+    showToast(`Switched to ${next} workspace`);
   };
   document.getElementById('qsShortcuts').onclick = () => document.getElementById('shortcutsModal').classList.add('open');
   document.getElementById('qsSettings').onclick = () => window.location.href = 'settings.html';
@@ -1349,9 +1427,9 @@ async function initDesktop() {
   
   document.getElementById('ctxChangeWallpaper').onclick = uploadWallpaper;
   document.getElementById('ctxRefresh').onclick = () => location.reload();
-  document.getElementById('ctxWorkspaceGames').onclick = () => { currentWorkspace = 'games'; applyWorkspace(); showToast('Switched to Games workspace'); };
-  document.getElementById('ctxWorkspaceLearning').onclick = () => { currentWorkspace = 'learning'; applyWorkspace(); showToast('Switched to Learning workspace'); };
-  document.getElementById('ctxWorkspacePersonal').onclick = () => { currentWorkspace = 'personal'; applyWorkspace(); showToast('Switched to Personal workspace'); };
+  document.getElementById('ctxWorkspaceGames').onclick = () => { localStorage.setItem('fanter_workspace', 'games'); showToast('Switched to Games workspace'); };
+  document.getElementById('ctxWorkspaceLearning').onclick = () => { localStorage.setItem('fanter_workspace', 'learning'); showToast('Switched to Learning workspace'); };
+  document.getElementById('ctxWorkspacePersonal').onclick = () => { localStorage.setItem('fanter_workspace', 'personal'); showToast('Switched to Personal workspace'); };
   document.getElementById('ctxSettings').onclick = () => window.location.href = 'settings.html';
   document.getElementById('desktopBg').oncontextmenu = (e) => { e.preventDefault(); showDesktopContextMenu(e.clientX, e.clientY); };
   
@@ -1377,14 +1455,6 @@ async function initDesktop() {
   }, 500);
 }
 
-// Start - run loading screen first, then show login
-runLoadingScreen();
-
-// Auth event listeners
-document.getElementById('loginBtn').onclick = () => handleLogin(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value);
-document.getElementById('guestBtn').onclick = handleGuest;
-document.getElementById('showRegister').onclick = () => window.location.href = 'fantaccount.html';
-
 // Safety key
 let lastKey = '', lastKeyTime = 0;
 document.addEventListener('keydown', (e) => {
@@ -1393,6 +1463,11 @@ document.addEventListener('keydown', (e) => {
   if (safetyKey && safetyUrl && e.key.toLowerCase() === safetyKey.toLowerCase() && e.key === lastKey && Date.now() - lastKeyTime < 1000) window.location.href = safetyUrl;
   lastKey = e.key; lastKeyTime = Date.now();
 });
+
+// Start the app
+runLoadingScreen();
+
+document.getElementById('loginBtn').onclick = handleLogin;
+document.getElementById('guestBtn').onclick = handleGuest;
 </script>
 </body>
-</html>
