@@ -3,23 +3,16 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-  <title>fanterOS — desktop environment</title>
+  <title>fanterOS — desktop</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
-  <script src="https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js"></script>
   <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
-
+    * { margin: 0; padding: 0; box-sizing: border-box; }
     :root {
       --bg-dark: #0a0a0f;
-      --bg-glass: rgba(15, 15, 25, 0.85);
-      --border-glass: rgba(255, 255, 255, 0.08);
+      --bg-glass: rgba(15,15,25,0.85);
+      --border-glass: rgba(255,255,255,0.08);
       --accent: #7c5cff;
-      --accent-hover: #9b7cff;
-      --accent-glow: rgba(124, 92, 255, 0.4);
+      --accent-glow: rgba(124,92,255,0.4);
       --text-primary: #f0f0ff;
       --text-secondary: #a0a0c0;
       --text-muted: #606080;
@@ -27,622 +20,199 @@
       --success: #4cd964;
       --warning: #ffcc00;
     }
-
-    body {
-      font-family: 'Inter', sans-serif;
-      background: #0a0a0f;
-      height: 100vh;
-      overflow: hidden;
-      color: var(--text-primary);
-    }
-
-    /* Loading Screen */
-    .loading-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: linear-gradient(135deg, #0a0a0f, #12121a);
-      z-index: 10000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      transition: opacity 0.5s ease;
-    }
-    .loading-screen.hide { opacity: 0; pointer-events: none; }
+    body { font-family: 'Inter', sans-serif; background: #0a0a0f; height: 100vh; overflow: hidden; color: var(--text-primary); }
     
-    .loading-container {
-      text-align: center;
-      background: rgba(20, 20, 30, 0.6);
-      backdrop-filter: blur(20px);
-      padding: 40px 60px;
-      border-radius: 40px;
-      border: 1px solid rgba(255,255,255,0.1);
-    }
-    
-    .loading-spinner {
-      width: 60px;
-      height: 60px;
-      margin: 0 auto 20px;
-      border: 4px solid rgba(124,92,255,0.2);
-      border-top: 4px solid var(--accent);
-      border-right: 4px solid var(--accent);
-      border-radius: 50%;
-      animation: spin 0.8s linear infinite;
-    }
-    
-    @keyframes spin {
-      0% { transform: rotate(0deg); }
-      100% { transform: rotate(360deg); }
-    }
-    
-    .loading-logo { font-size: 48px; margin-bottom: 20px; animation: pulse 1.5s ease infinite; }
+    // Animations
+    @keyframes fadeIn { 0% { opacity: 0; } 100% { opacity: 1; } }
+    @keyframes slideUp { 0% { transform: translateY(20px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+    @keyframes slideDown { 0% { transform: translateY(-20px); opacity: 0; } 100% { transform: translateY(0); opacity: 1; } }
+    @keyframes scaleIn { 0% { transform: scale(0.9); opacity: 0; } 100% { transform: scale(1); opacity: 1; } }
+    @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
     @keyframes pulse { 0%,100% { opacity: 0.6; transform: scale(1); } 50% { opacity: 1; transform: scale(1.05); text-shadow: 0 0 20px var(--accent); } }
-    .loading-title { font-size: 24px; font-weight: 600; background: linear-gradient(135deg, #fff, var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent; margin-bottom: 10px; }
+    @keyframes windowPop { 0% { transform: scale(0.8); opacity: 0; } 80% { transform: scale(1.02); } 100% { transform: scale(1); opacity: 1; } }
+    @keyframes taskbarSlide { 0% { bottom: -70px; } 100% { bottom: 12px; } }
+    
+    // Loading screen
+    .loading-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: linear-gradient(135deg, #0a0a0f, #12121a); z-index: 10000; display: flex; align-items: center; justify-content: center; transition: opacity 0.5s ease; }
+    .loading-screen.hide { opacity: 0; pointer-events: none; }
+    .loading-container { text-align: center; background: rgba(20,20,30,0.6); backdrop-filter: blur(20px); padding: 40px 60px; border-radius: 40px; border: 1px solid var(--border-glass); animation: scaleIn 0.3s ease; }
+    .loading-spinner { width: 60px; height: 60px; margin: 0 auto 20px; border: 4px solid rgba(124,92,255,0.2); border-top: 4px solid var(--accent); border-right: 4px solid var(--accent); border-radius: 50%; animation: spin 0.8s linear infinite; }
+    .loading-logo { font-size: 48px; margin-bottom: 20px; animation: pulse 1.5s ease infinite; }
+    .loading-title { font-size: 24px; font-weight: 600; background: linear-gradient(135deg, #fff, var(--accent)); -webkit-background-clip: text; background-clip: text; color: transparent; }
     .loading-status { font-size: 14px; color: var(--text-secondary); font-family: monospace; margin-top: 20px; }
-    .loading-dots { display: inline-block; min-width: 30px; text-align: left; }
-
-    /* Login Screen */
-    .login-screen {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: url('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/ee4c29a6-9564-4bee-befd-79a0597c29ca/dhsrl04-16049839-0c0f-4077-977f-09a992ec4b07.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9lZTRjMjlhNi05NTY0LTRiZWUtYmVmZC03OWEwNTk3YzI5Y2EvZGhzcmwwNC0xNjA0OTgzOS0wYzBmLTQwNzctOTc3Zi0wOWE5OTJlYzRiMDcuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.XIZi3LNLcPUgY_lP-4R7TJ2r6klMfpBRxT7-cMHGvic') center/cover no-repeat;
-      z-index: 9999;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.6s ease, visibility 0.6s ease;
-    }
-    .login-screen::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.6);
-      backdrop-filter: blur(8px);
-    }
+    
+    // Login screen
+    .login-screen { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/ee4c29a6-9564-4bee-befd-79a0597c29ca/dhsrl04-16049839-0c0f-4077-977f-09a992ec4b07.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9lZTRjMjlhNi05NTY0LTRiZWUtYmVmZC03OWEwNTk3YzI5Y2EvZGhzcmwwNC0xNjA0OTgzOS0wYzBmLTQwNzctOTc3Zi0wOWE5OTJlYzRiMDcuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.XIZi3LNLcPUgY_lP-4R7TJ2r6klMfpBRxT7-cMHGvic') center/cover no-repeat; z-index: 9999; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: opacity 0.6s ease; }
+    .login-screen::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.6); backdrop-filter: blur(8px); }
     .login-screen.visible { opacity: 1; visibility: visible; }
-    .login-card {
-      position: relative;
-      z-index: 10;
-      background: var(--bg-glass);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--border-glass);
-      border-radius: 32px;
-      padding: 40px;
-      width: 400px;
-      max-width: 90vw;
-      text-align: center;
-      transform: scale(0.95);
-      transition: transform 0.3s ease;
-    }
+    .login-card { position: relative; z-index: 10; background: var(--bg-glass); backdrop-filter: blur(20px); border: 1px solid var(--border-glass); border-radius: 32px; padding: 40px; width: 400px; text-align: center; transform: scale(0.95); transition: transform 0.3s ease; animation: slideUp 0.4s ease; }
     .login-screen.visible .login-card { transform: scale(1); }
     .login-logo { font-size: 56px; margin-bottom: 16px; }
     .login-title { font-size: 24px; font-weight: 600; margin-bottom: 8px; }
     .login-sub { font-size: 13px; color: var(--text-muted); margin-bottom: 30px; }
-    .login-input {
-      width: 100%;
-      padding: 14px 16px;
-      background: rgba(0,0,0,0.4);
-      border: 1px solid var(--border-glass);
-      border-radius: 16px;
-      color: white;
-      font-size: 14px;
-      margin-bottom: 12px;
-      outline: none;
-    }
+    .login-input { width: 100%; padding: 14px 16px; background: rgba(0,0,0,0.4); border: 1px solid var(--border-glass); border-radius: 16px; color: white; font-size: 14px; margin-bottom: 12px; outline: none; transition: all 0.2s; }
     .login-input:focus { border-color: var(--accent); box-shadow: 0 0 0 2px var(--accent-glow); }
-    .login-btn {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, var(--accent), #5a3cc9);
-      border: none;
-      border-radius: 16px;
-      color: white;
-      font-size: 15px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 8px;
-      transition: all 0.2s;
-    }
+    .login-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--accent), #5a3cc9); border: none; border-radius: 16px; color: white; font-size: 15px; font-weight: 600; cursor: pointer; margin-top: 8px; transition: all 0.2s; }
     .login-btn:hover { transform: translateY(-2px); box-shadow: 0 8px 20px var(--accent-glow); }
     .guest-btn { background: rgba(255,255,255,0.08); margin-top: 12px; }
-    .login-switch { margin-top: 20px; font-size: 13px; color: var(--text-muted); }
-    .login-switch span { color: var(--accent); cursor: pointer; }
     .login-error { font-size: 12px; color: var(--danger); margin-top: 12px; }
-
-    /* Desktop */
-    .desktop {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      opacity: 0;
-      visibility: hidden;
-      transition: opacity 0.5s ease;
-    }
+    
+    // Desktop
+    .desktop { position: fixed; top: 0; left: 0; width: 100%; height: 100%; opacity: 0; visibility: hidden; transition: opacity 0.5s ease; }
     .desktop.visible { opacity: 1; visibility: visible; }
-    .desktop-bg {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: url('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/ee4c29a6-9564-4bee-befd-79a0597c29ca/dhsrl04-16049839-0c0f-4077-977f-09a992ec4b07.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9lZTRjMjlhNi05NTY0LTRiZWUtYmVmZC03OWEwNTk3YzI5Y2EvZGhzcmwwNC0xNjA0OTgzOS0wYzBmLTQwNzctOTc3Zi0wOWE5OTJlYzRiMDcuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.XIZi3LNLcPUgY_lP-4R7TJ2r6klMfpBRxT7-cMHGvic') center/cover no-repeat;
-      z-index: -1;
-    }
-    .desktop-bg::before {
-      content: '';
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.3);
-    }
-
-    /* Desktop Icons */
-    .desktop-icons {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      z-index: 10;
-    }
-    .desktop-icon {
-      position: absolute;
-      display: flex;
-      flex-direction: column;
-      align-items: center;
-      width: 85px;
-      padding: 10px 6px;
-      border-radius: 14px;
-      cursor: pointer;
-      transition: all 0.2s;
-      background: rgba(255,255,255,0);
-      z-index: 15;
-    }
-    .desktop-icon:hover { background: rgba(255,255,255,0.15); transform: translateY(-3px); backdrop-filter: blur(4px); }
+    .desktop-bg { position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: url('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/ee4c29a6-9564-4bee-befd-79a0597c29ca/dhsrl04-16049839-0c0f-4077-977f-09a992ec4b07.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9lZTRjMjlhNi05NTY0LTRiZWUtYmVmZC03OWEwNTk3YzI5Y2EvZGhzcmwwNC0xNjA0OTgzOS0wYzBmLTQwNzctOTc3Zi0wOWE5OTJlYzRiMDcuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.XIZi3LNLcPUgY_lP-4R7TJ2r6klMfpBRxT7-cMHGvic') center/cover no-repeat; z-index: -1; }
+    .desktop-bg::before { content: ''; position: absolute; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.3); }
+    
+    // Desktop icons
+    .desktop-icons { position: absolute; top: 0; left: 0; width: 100%; height: 100%; z-index: 10; }
+    .desktop-icon { position: absolute; display: flex; flex-direction: column; align-items: center; width: 85px; padding: 10px 6px; border-radius: 14px; cursor: pointer; transition: all 0.2s ease; background: transparent; z-index: 15; }
+    .desktop-icon:hover { background: rgba(255,255,255,0.15); transform: translateY(-3px) scale(1.02); backdrop-filter: blur(4px); }
     .desktop-icon .icon { font-size: 36px; margin-bottom: 6px; filter: drop-shadow(0 2px 4px rgba(0,0,0,0.5)); }
     .desktop-icon .label { font-size: 11px; text-align: center; color: white; font-weight: 500; text-shadow: 0 1px 2px rgba(0,0,0,0.5); }
-    .desktop-icon .delete-btn {
-      position: absolute;
-      top: -4px;
-      right: -4px;
-      width: 18px;
-      height: 18px;
-      background: var(--danger);
-      border-radius: 50%;
-      display: none;
-      align-items: center;
-      justify-content: center;
-      font-size: 10px;
-      color: white;
-      cursor: pointer;
-    }
+    .desktop-icon .delete-btn { position: absolute; top: -4px; right: -4px; width: 18px; height: 18px; background: var(--danger); border-radius: 50%; display: none; align-items: center; justify-content: center; font-size: 10px; color: white; cursor: pointer; }
     .desktop-icon:hover .delete-btn { display: flex; }
-
-    /* Taskbar */
-    .taskbar {
-      position: fixed;
-      bottom: -70px;
-      left: 12px;
-      right: 12px;
-      height: 56px;
-      background: var(--bg-glass);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--border-glass);
-      border-radius: 24px;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      padding: 0 16px;
-      z-index: 1000;
-      transition: bottom 0.3s;
-      box-shadow: 0 8px 32px rgba(0,0,0,0.2);
-    }
-    .taskbar.visible { bottom: 12px; }
-    .taskbar:hover { bottom: 12px; }
-    .start-btn {
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      padding: 8px 20px;
-      background: linear-gradient(135deg, var(--accent), #5a3cc9);
-      border-radius: 18px;
-      cursor: pointer;
-      font-weight: 600;
-      font-size: 14px;
-    }
+    
+    // Taskbar - fixed to bottom
+    .taskbar { position: fixed; bottom: 12px; left: 12px; right: 12px; height: 56px; background: var(--bg-glass); backdrop-filter: blur(20px); border: 1px solid var(--border-glass); border-radius: 24px; display: flex; align-items: center; justify-content: space-between; padding: 0 16px; z-index: 1000; box-shadow: 0 8px 32px rgba(0,0,0,0.2); transition: all 0.2s ease; }
+    .taskbar:hover { transform: translateY(-2px); }
+    .start-btn { display: flex; align-items: center; gap: 10px; padding: 8px 20px; background: linear-gradient(135deg, var(--accent), #5a3cc9); border-radius: 18px; cursor: pointer; font-weight: 600; font-size: 14px; transition: all 0.2s; }
+    .start-btn:hover { transform: scale(1.02); filter: brightness(1.05); }
     .taskbar-apps { display: flex; gap: 6px; flex: 1; margin-left: 20px; overflow-x: auto; }
-    .taskbar-app {
-      padding: 6px 16px;
-      background: rgba(255,255,255,0.1);
-      border-radius: 14px;
-      cursor: pointer;
-      display: flex;
-      align-items: center;
-      gap: 10px;
-      font-size: 12px;
-      white-space: nowrap;
-    }
-    .taskbar-app:hover { background: rgba(255,255,255,0.2); }
+    .taskbar-app { padding: 6px 16px; background: rgba(255,255,255,0.1); border-radius: 14px; cursor: pointer; display: flex; align-items: center; gap: 10px; font-size: 12px; transition: all 0.15s; }
+    .taskbar-app:hover { background: rgba(255,255,255,0.2); transform: translateY(-2px); }
     .taskbar-app.active { background: var(--accent); }
     .taskbar-right { display: flex; align-items: center; gap: 12px; }
-    .taskbar-datetime {
-      display: flex;
-      flex-direction: column;
-      align-items: flex-end;
-      background: rgba(0,0,0,0.3);
-      padding: 4px 14px;
-      border-radius: 14px;
-      cursor: pointer;
-    }
+    .taskbar-datetime { background: rgba(0,0,0,0.3); padding: 4px 14px; border-radius: 14px; cursor: pointer; transition: all 0.15s; }
+    .taskbar-datetime:hover { background: rgba(255,255,255,0.1); transform: scale(1.02); }
     .taskbar-time { font-family: monospace; font-size: 13px; font-weight: 500; }
     .taskbar-date { font-size: 9px; color: var(--text-muted); }
-    .taskbar-icon {
-      background: rgba(0,0,0,0.3);
-      border: none;
-      border-radius: 12px;
-      padding: 6px 10px;
-      cursor: pointer;
-      font-size: 14px;
-      color: white;
-    }
-    .taskbar-icon:hover { background: rgba(255,255,255,0.2); transform: scale(1.05); }
-
-    /* Start Menu */
-    .start-menu {
-      position: fixed;
-      bottom: 80px;
-      left: 20px;
-      width: 380px;
-      background: var(--bg-glass);
-      backdrop-filter: blur(24px);
-      border-radius: 24px;
-      border: 1px solid var(--border-glass);
-      z-index: 1001;
-      transform: translateY(20px) scale(0.98);
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.2s;
-      overflow: hidden;
-    }
+    
+    // Start menu
+    .start-menu { position: fixed; bottom: 80px; left: 20px; width: 380px; background: var(--bg-glass); backdrop-filter: blur(24px); border-radius: 24px; border: 1px solid var(--border-glass); z-index: 1001; transform: translateY(20px) scale(0.98); opacity: 0; visibility: hidden; transition: all 0.2s cubic-bezier(0.2,0.9,0.4,1.1); overflow: hidden; max-height: 500px; }
     .start-menu.open { transform: translateY(0) scale(1); opacity: 1; visibility: visible; }
     .start-header { padding: 20px; background: linear-gradient(135deg, rgba(124,92,255,0.2), rgba(124,92,255,0.05)); border-bottom: 1px solid var(--border-glass); }
     .start-header .user-name { font-weight: 600; font-size: 16px; }
-    .start-header .user-status { font-size: 12px; opacity: 0.7; margin-top: 4px; }
     .start-search { padding: 12px 16px; border-bottom: 1px solid var(--border-glass); }
-    .start-search input {
-      width: 100%;
-      padding: 10px 14px;
-      background: rgba(0,0,0,0.3);
-      border: 1px solid var(--border-glass);
-      border-radius: 14px;
-      color: white;
-      font-size: 13px;
-      outline: none;
-    }
+    .start-search input { width: 100%; padding: 10px 14px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); border-radius: 14px; color: white; font-size: 13px; outline: none; transition: all 0.15s; }
     .start-search input:focus { border-color: var(--accent); }
-    .start-apps { max-height: 400px; overflow-y: auto; padding: 8px; }
-    .start-app {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 12px 14px;
-      border-radius: 14px;
-      cursor: pointer;
-    }
-    .start-app:hover { background: rgba(255,255,255,0.1); }
+    .start-apps { max-height: 350px; overflow-y: auto; padding: 8px; }
+    .start-app { display: flex; align-items: center; gap: 14px; padding: 12px 14px; border-radius: 14px; cursor: pointer; transition: all 0.1s; }
+    .start-app:hover { background: rgba(255,255,255,0.1); transform: translateX(4px); }
     .start-app-icon { font-size: 24px; width: 40px; text-align: center; }
     .start-app-name { font-size: 14px; font-weight: 500; flex: 1; }
-    .start-app-desc { font-size: 11px; color: var(--text-muted); }
-
-    /* Boot Menu */
-    .boot-menu {
-      position: fixed;
-      top: 20%;
-      left: 50%;
-      transform: translate(-50%, -30%);
-      width: 520px;
-      max-width: 90vw;
-      background: var(--bg-glass);
-      backdrop-filter: blur(28px);
-      border-radius: 28px;
-      border: 1px solid var(--border-glass);
-      z-index: 10000;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.2s;
-    }
+    
+    // Boot menu (Ctrl+K)
+    .boot-menu { position: fixed; top: 20%; left: 50%; transform: translate(-50%, -30%); width: 520px; max-width: 90vw; background: var(--bg-glass); backdrop-filter: blur(28px); border-radius: 28px; border: 1px solid var(--border-glass); z-index: 10000; opacity: 0; visibility: hidden; transition: all 0.2s cubic-bezier(0.2,0.9,0.4,1.1); }
     .boot-menu.open { opacity: 1; visibility: visible; transform: translate(-50%, 0); }
     .boot-search { padding: 20px; border-bottom: 1px solid var(--border-glass); }
-    .boot-search input {
-      width: 100%;
-      padding: 14px 18px;
-      background: rgba(0,0,0,0.3);
-      border: 1px solid var(--border-glass);
-      border-radius: 18px;
-      color: white;
-      font-size: 16px;
-      outline: none;
-    }
+    .boot-search input { width: 100%; padding: 14px 18px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); border-radius: 18px; color: white; font-size: 16px; outline: none; }
+    .boot-search input:focus { border-color: var(--accent); }
     .boot-results { max-height: 350px; overflow-y: auto; padding: 12px; }
-    .boot-result {
-      display: flex;
-      align-items: center;
-      gap: 14px;
-      padding: 12px 16px;
-      border-radius: 14px;
-      cursor: pointer;
-    }
+    .boot-result { display: flex; align-items: center; gap: 14px; padding: 12px 16px; border-radius: 14px; cursor: pointer; transition: all 0.1s; }
     .boot-result.selected { background: var(--accent); }
-    .boot-result:hover:not(.selected) { background: rgba(255,255,255,0.1); }
+    .boot-result:hover:not(.selected) { background: rgba(255,255,255,0.1); transform: translateX(4px); }
     .boot-result-icon { font-size: 28px; }
     .boot-result-info { flex: 1; }
     .boot-result-name { font-weight: 500; }
-    .boot-result-desc { font-size: 11px; color: var(--text-muted); }
     .boot-footer { padding: 12px 20px; border-top: 1px solid var(--border-glass); font-size: 11px; color: var(--text-muted); display: flex; justify-content: space-between; }
-
-    /* Context Menu */
-    .context-menu {
-      position: fixed;
-      background: var(--bg-glass);
-      backdrop-filter: blur(20px);
-      border: 1px solid var(--border-glass);
-      border-radius: 16px;
-      padding: 8px 0;
-      min-width: 220px;
-      z-index: 10001;
-      opacity: 0;
-      visibility: hidden;
-    }
+    
+    // Context menu (right-click)
+    .context-menu { position: fixed; background: var(--bg-glass); backdrop-filter: blur(20px); border: 1px solid var(--border-glass); border-radius: 16px; padding: 8px 0; min-width: 220px; z-index: 10001; opacity: 0; visibility: hidden; transition: opacity 0.1s; }
     .context-menu.visible { opacity: 1; visibility: visible; }
-    .context-menu-item { padding: 10px 18px; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 12px; }
-    .context-menu-item:hover { background: rgba(255,255,255,0.1); }
+    .context-menu-item { padding: 10px 18px; cursor: pointer; font-size: 13px; display: flex; align-items: center; gap: 12px; transition: all 0.1s; }
+    .context-menu-item:hover { background: rgba(255,255,255,0.1); transform: translateX(4px); }
     .context-menu-divider { height: 1px; background: var(--border-glass); margin: 6px 0; }
-
-    /* Window */
-    .window {
-      position: absolute;
-      min-width: 500px;
-      min-height: 400px;
-      background: rgba(18, 18, 26, 0.95);
-      backdrop-filter: blur(4px);
-      border-radius: 20px;
-      border: 1px solid var(--border-glass);
-      box-shadow: 0 20px 40px rgba(0,0,0,0.4);
-      z-index: 100;
-      display: flex;
-      flex-direction: column;
-      overflow: hidden;
-    }
+    
+    // Window - resizeable on all edges
+    .window { position: absolute; min-width: 400px; min-height: 300px; background: rgba(18,18,26,0.95); backdrop-filter: blur(4px); border-radius: 20px; border: 1px solid var(--border-glass); box-shadow: 0 20px 40px rgba(0,0,0,0.4); z-index: 100; display: flex; flex-direction: column; overflow: visible; transition: box-shadow 0.1s; animation: windowPop 0.2s ease; }
     .window.active { z-index: 200; box-shadow: 0 20px 40px rgba(0,0,0,0.5), 0 0 0 2px var(--accent); }
-    .window.minimized { transform: scale(0) !important; opacity: 0; pointer-events: none; transition: transform 0.2s; }
-    .window.maximized { top: 0 !important; left: 0 !important; width: 100% !important; height: 100% !important; border-radius: 0; transition: all 0.2s; }
-    .window-header {
-      padding: 14px 18px;
-      background: rgba(25, 25, 35, 0.95);
-      cursor: move;
-      display: flex;
-      align-items: center;
-      justify-content: space-between;
-      border-bottom: 1px solid var(--border-glass);
-    }
+    .window.minimized { transform: scale(0) !important; opacity: 0; pointer-events: none; transition: transform 0.2s cubic-bezier(0.34,1.2,0.64,1); }
+    .window.maximized { top: 0 !important; left: 0 !important; width: 100% !important; height: calc(100% - 80px) !important; border-radius: 0; transition: all 0.2s; }
+    .window-header { padding: 14px 18px; background: rgba(25,25,35,0.95); cursor: move; display: flex; align-items: center; justify-content: space-between; border-bottom: 1px solid var(--border-glass); border-radius: 20px 20px 0 0; }
     .window-title { display: flex; align-items: center; gap: 10px; font-size: 13px; font-weight: 500; }
     .window-controls { display: flex; gap: 10px; }
-    .window-control {
-      width: 32px;
-      height: 32px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      border-radius: 10px;
-      cursor: pointer;
-      font-size: 14px;
-      background: transparent;
-      border: none;
-      color: var(--text-secondary);
-    }
-    .window-control:hover { background: rgba(255,255,255,0.1); }
+    .window-control { width: 32px; height: 32px; display: flex; align-items: center; justify-content: center; border-radius: 10px; cursor: pointer; font-size: 14px; background: transparent; border: none; color: var(--text-secondary); transition: all 0.15s; }
+    .window-control:hover { background: rgba(255,255,255,0.1); transform: scale(1.05); }
     .window-control.close:hover { background: var(--danger); color: white; }
     .window-content { flex: 1; overflow: auto; background: rgba(10,10,15,0.95); padding: 20px; }
-
-    /* Game Card */
-    .game-card {
-      background: rgba(255,255,255,0.05);
-      border-radius: 16px;
-      overflow: hidden;
-      cursor: pointer;
-      transition: all 0.2s;
-    }
-    .game-card:hover { transform: translateY(-5px); background: rgba(255,255,255,0.1); }
+    
+    // Resize handles - all edges
+    .resize-handle { position: absolute; z-index: 10; }
+    .resize-n { top: 0; left: 10px; right: 10px; height: 8px; cursor: n-resize; }
+    .resize-s { bottom: 0; left: 10px; right: 10px; height: 8px; cursor: s-resize; }
+    .resize-w { top: 10px; left: 0; bottom: 10px; width: 8px; cursor: w-resize; }
+    .resize-e { top: 10px; right: 0; bottom: 10px; width: 8px; cursor: e-resize; }
+    .resize-nw { top: 0; left: 0; width: 12px; height: 12px; cursor: nw-resize; }
+    .resize-ne { top: 0; right: 0; width: 12px; height: 12px; cursor: ne-resize; }
+    .resize-sw { bottom: 0; left: 0; width: 12px; height: 12px; cursor: sw-resize; }
+    .resize-se { bottom: 0; right: 0; width: 12px; height: 12px; cursor: se-resize; }
+    
+    // Game card
+    .game-card { background: rgba(255,255,255,0.05); border-radius: 16px; overflow: hidden; cursor: pointer; transition: all 0.2s ease; }
+    .game-card:hover { transform: translateY(-5px) scale(1.02); background: rgba(255,255,255,0.1); }
     .game-card img { width: 100%; aspect-ratio: 16/9; object-fit: cover; }
     .game-card-info { padding: 12px; }
     .game-card-title { font-size: 14px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
     .game-card-category { font-size: 11px; color: var(--text-muted); margin-top: 4px; }
-
-    /* Game Details Modal (Steam-like) */
-    .game-modal {
-      position: fixed;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: rgba(0,0,0,0.85);
-      backdrop-filter: blur(12px);
-      z-index: 20000;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.2s;
-    }
+    
+    // Game modal (Steam-like)
+    .game-modal { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: rgba(0,0,0,0.85); backdrop-filter: blur(12px); z-index: 20000; display: flex; align-items: center; justify-content: center; opacity: 0; visibility: hidden; transition: all 0.2s; }
     .game-modal.open { opacity: 1; visibility: visible; }
-    .game-modal-content {
-      background: linear-gradient(135deg, #1a1a2e, #0f0f1a);
-      border-radius: 24px;
-      width: 900px;
-      max-width: 90vw;
-      max-height: 85vh;
-      overflow-y: auto;
-      border: 1px solid var(--border-glass);
-      box-shadow: 0 25px 50px rgba(0,0,0,0.5);
-    }
-    .game-modal-header {
-      position: relative;
-      height: 250px;
-      overflow: hidden;
-      border-radius: 24px 24px 0 0;
-    }
-    .game-modal-header img {
-      width: 100%;
-      height: 100%;
-      object-fit: cover;
-    }
-    .game-modal-header .overlay {
-      position: absolute;
-      bottom: 0;
-      left: 0;
-      right: 0;
-      padding: 30px;
-      background: linear-gradient(transparent, rgba(0,0,0,0.9));
-    }
-    .game-modal-header h2 { font-size: 32px; font-weight: 700; color: white; }
+    .game-modal-content { background: linear-gradient(135deg, #1a1a2e, #0f0f1a); border-radius: 24px; width: 900px; max-width: 90vw; max-height: 85vh; overflow-y: auto; border: 1px solid var(--border-glass); box-shadow: 0 25px 50px rgba(0,0,0,0.5); animation: scaleIn 0.2s ease; }
+    .game-modal-header { position: relative; height: 250px; overflow: hidden; border-radius: 24px 24px 0 0; }
+    .game-modal-header img { width: 100%; height: 100%; object-fit: cover; }
+    .game-modal-header .overlay { position: absolute; bottom: 0; left: 0; right: 0; padding: 30px; background: linear-gradient(transparent, rgba(0,0,0,0.9)); }
+    .game-modal-header h2 { font-size: 32px; font-weight: 700; }
     .game-modal-header .tag { display: inline-block; padding: 4px 12px; background: var(--accent); border-radius: 20px; font-size: 12px; margin-top: 10px; }
     .game-modal-body { padding: 24px; display: flex; gap: 24px; flex-wrap: wrap; }
     .game-modal-left { flex: 2; min-width: 200px; }
     .game-modal-right { flex: 1; min-width: 200px; }
     .game-description { color: var(--text-secondary); line-height: 1.6; margin-bottom: 20px; }
-    .game-rating { display: flex; align-items: center; gap: 10px; margin-bottom: 20px; }
     .game-stars { display: flex; gap: 5px; font-size: 20px; cursor: pointer; }
     .game-star { color: rgba(255,255,255,0.2); transition: all 0.1s; }
     .game-star.active { color: var(--warning); }
     .game-star:hover { transform: scale(1.1); }
     .game-info-row { display: flex; justify-content: space-between; padding: 8px 0; border-bottom: 1px solid var(--border-glass); font-size: 13px; }
-    .game-info-label { color: var(--text-muted); }
-    .game-info-value { color: var(--text-primary); font-weight: 500; }
-    .game-play-btn {
-      width: 100%;
-      padding: 14px;
-      background: linear-gradient(135deg, var(--accent), #5a3cc9);
-      border: none;
-      border-radius: 40px;
-      color: white;
-      font-size: 16px;
-      font-weight: 600;
-      cursor: pointer;
-      margin-top: 20px;
-    }
+    .game-play-btn { width: 100%; padding: 14px; background: linear-gradient(135deg, var(--accent), #5a3cc9); border: none; border-radius: 40px; color: white; font-size: 16px; font-weight: 600; cursor: pointer; margin-top: 20px; transition: all 0.2s; }
     .game-play-btn:hover { transform: translateY(-2px); filter: brightness(1.05); }
-    .close-modal {
-      position: absolute;
-      top: 20px;
-      right: 20px;
-      background: rgba(0,0,0,0.5);
-      border: none;
-      border-radius: 50%;
-      width: 40px;
-      height: 40px;
-      font-size: 20px;
-      cursor: pointer;
-      color: white;
-      z-index: 10;
-    }
-    .close-modal:hover { background: var(--danger); }
-
-    /* Notes Widget */
-    .notes-widget {
-      position: absolute;
-      bottom: 150px;
-      right: 20px;
-      width: 280px;
-      background: var(--bg-glass);
-      backdrop-filter: blur(20px);
-      border-radius: 20px;
-      border: 1px solid var(--border-glass);
-      z-index: 25;
-      overflow: hidden;
-      display: none;
-    }
-    .notes-header {
-      padding: 12px 16px;
-      background: rgba(124,92,255,0.2);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: move;
-    }
-    .notes-header .close-notes { cursor: pointer; padding: 4px 8px; border-radius: 8px; }
-    .notes-header .close-notes:hover { background: rgba(255,255,255,0.1); }
-    .notes-content textarea {
-      width: 100%;
-      height: 160px;
-      background: rgba(0,0,0,0.3);
-      border: none;
-      color: white;
-      padding: 14px;
-      font-size: 12px;
-      font-family: inherit;
-      resize: none;
-      outline: none;
-    }
-
-    /* Quick Settings */
-    .quick-settings {
-      position: fixed;
-      bottom: 80px;
-      right: 20px;
-      width: 280px;
-      background: var(--bg-glass);
-      backdrop-filter: blur(24px);
-      border-radius: 20px;
-      border: 1px solid var(--border-glass);
-      z-index: 1002;
-      transform: translateY(20px);
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.2s;
-    }
+    .close-modal { position: absolute; top: 20px; right: 20px; background: rgba(0,0,0,0.5); border: none; border-radius: 50%; width: 40px; height: 40px; font-size: 20px; cursor: pointer; color: white; transition: all 0.15s; }
+    .close-modal:hover { background: var(--danger); transform: scale(1.05); }
+    
+    // Apps grid for App Store style
+    .apps-grid { display: grid; grid-template-columns: repeat(auto-fill, minmax(100px, 1fr)); gap: 16px; }
+    .app-icon { display: flex; flex-direction: column; align-items: center; gap: 8px; padding: 12px; background: rgba(255,255,255,0.05); border-radius: 16px; cursor: pointer; transition: all 0.15s; }
+    .app-icon:hover { background: rgba(255,255,255,0.1); transform: translateY(-4px); }
+    .app-icon span:first-child { font-size: 32px; }
+    .app-icon span:last-child { font-size: 11px; text-align: center; }
+    
+    // Calculator
+    .calc-btn { background: rgba(255,255,255,0.1); border: none; border-radius: 12px; padding: 16px; color: white; font-size: 18px; cursor: pointer; transition: all 0.1s; }
+    .calc-btn:hover { background: var(--accent); transform: scale(1.02); }
+    
+    // Whiteboard canvas
+    .whiteboard-canvas { border: 2px solid var(--border-glass); border-radius: 12px; background: white; cursor: crosshair; }
+    
+    // Notes
+    .notes-widget { position: absolute; bottom: 150px; right: 20px; width: 280px; background: var(--bg-glass); backdrop-filter: blur(20px); border-radius: 20px; border: 1px solid var(--border-glass); z-index: 25; overflow: hidden; display: none; animation: slideUp 0.2s ease; }
+    .notes-header { padding: 12px 16px; background: rgba(124,92,255,0.2); display: flex; justify-content: space-between; align-items: center; cursor: move; }
+    .notes-header .close-notes { cursor: pointer; padding: 4px 8px; border-radius: 8px; transition: all 0.1s; }
+    .notes-header .close-notes:hover { background: rgba(255,255,255,0.1); transform: scale(1.05); }
+    .notes-content textarea { width: 100%; height: 160px; background: rgba(0,0,0,0.3); border: none; color: white; padding: 14px; font-size: 12px; font-family: inherit; resize: none; outline: none; }
+    
+    // Quick settings panel
+    .quick-settings { position: fixed; bottom: 80px; right: 20px; width: 280px; background: var(--bg-glass); backdrop-filter: blur(24px); border-radius: 20px; border: 1px solid var(--border-glass); z-index: 1002; transform: translateY(20px); opacity: 0; visibility: hidden; transition: all 0.2s; }
     .quick-settings.open { transform: translateY(0); opacity: 1; visibility: visible; }
     .quick-settings-header { padding: 14px 18px; border-bottom: 1px solid var(--border-glass); font-weight: 600; }
-    .quick-settings-item { padding: 12px 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; }
-    .quick-settings-item:hover { background: rgba(255,255,255,0.05); }
-
-    /* Shortcuts Modal */
-    .shortcuts-modal {
-      position: fixed;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%) scale(0.95);
-      width: 480px;
-      background: var(--bg-glass);
-      backdrop-filter: blur(24px);
-      border-radius: 24px;
-      border: 1px solid var(--border-glass);
-      z-index: 10003;
-      opacity: 0;
-      visibility: hidden;
-      transition: all 0.2s;
-      padding: 24px;
-    }
-    .shortcuts-modal.open { transform: translate(-50%, -50%) scale(1); opacity: 1; visibility: visible; }
-    .shortcut-row { display: flex; justify-content: space-between; padding: 10px 0; border-bottom: 1px solid var(--border-glass); font-size: 13px; }
-    .shortcut-key { font-family: monospace; background: rgba(255,255,255,0.1); padding: 4px 10px; border-radius: 8px; }
-
-    /* Utilities */
-    .screenshot-flash { position: fixed; top: 0; left: 0; width: 100%; height: 100%; background: white; opacity: 0; pointer-events: none; z-index: 20000; transition: opacity 0.2s; }
+    .quick-settings-item { padding: 12px 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: all 0.1s; }
+    .quick-settings-item:hover { background: rgba(255,255,255,0.05); transform: translateX(-4px); }
+    
+    // Command area (terminal)
+    .command-area { background: rgba(0,0,0,0.5); border-radius: 12px; padding: 12px; margin-top: 16px; font-family: monospace; font-size: 12px; }
+    .command-input { display: flex; gap: 8px; margin-top: 8px; }
+    .command-input input { flex: 1; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); border-radius: 8px; padding: 8px; color: white; font-family: monospace; outline: none; }
+    .command-output { color: var(--success); margin-top: 8px; font-size: 11px; max-height: 100px; overflow-y: auto; }
+    
+    // Utilities
     .toast { position: fixed; bottom: 80px; left: 50%; transform: translateX(-50%); background: rgba(0,0,0,0.9); backdrop-filter: blur(12px); border: 1px solid var(--accent); border-radius: 30px; padding: 10px 20px; color: white; font-size: 13px; z-index: 20001; opacity: 0; transition: opacity 0.2s; pointer-events: none; }
     .toast.show { opacity: 1; }
     ::-webkit-scrollbar { width: 5px; height: 5px; }
@@ -653,30 +223,30 @@
 </head>
 <body>
 
-<!-- LOADING SCREEN -->
+// Loading screen
 <div class="loading-screen" id="loadingScreen">
   <div class="loading-container">
     <div class="loading-spinner"></div>
     <div class="loading-logo">🍥</div>
     <div class="loading-title">fanterOS</div>
-    <div class="loading-status">Loading<span class="loading-dots" id="loadingDots">...</span></div>
+    <div class="loading-status" id="loadingStatus">Loading<span id="loadingDots">...</span></div>
   </div>
 </div>
 
-<!-- LOGIN SCREEN -->
+// Login screen
 <div class="login-screen" id="loginScreen">
   <div class="login-card">
     <div class="login-logo">🍥</div>
     <div class="login-title">welcome back</div>
     <div class="login-sub">sign in to continue</div>
-    <input type="text" class="login-input" id="loginUsername" placeholder="username">
+    <input type="text" class="login-input" id="loginUsername" placeholder="username" autocomplete="off">
     <button class="login-btn" id="loginBtn">sign in</button>
     <button class="login-btn guest-btn" id="guestBtn">continue as guest</button>
     <div class="login-error" id="loginError"></div>
   </div>
 </div>
 
-<!-- DESKTOP -->
+// Desktop
 <div class="desktop" id="desktop">
   <div class="desktop-bg" id="desktopBg"></div>
   <div class="desktop-icons" id="desktopIcons"></div>
@@ -686,13 +256,11 @@
   </div>
 </div>
 
-<!-- TASKBAR -->
+// Taskbar
 <div class="taskbar" id="taskbar">
   <div class="start-btn" id="startBtn">🍥 fanterOS</div>
   <div class="taskbar-apps" id="taskbarApps"></div>
   <div class="taskbar-right">
-    <button class="taskbar-icon" id="screenshotBtn" title="Screenshot (Ctrl+Shift+S)">📸</button>
-    <button class="taskbar-icon" id="notesBtn" title="Sticky Notes">📝</button>
     <div class="taskbar-datetime" id="datetimeBtn">
       <div class="taskbar-time" id="taskbarTime">--:--</div>
       <div class="taskbar-date" id="taskbarDate">--/--</div>
@@ -700,24 +268,23 @@
   </div>
 </div>
 
-<!-- START MENU -->
+// Start menu
 <div class="start-menu" id="startMenu">
   <div class="start-header">
     <div class="user-name" id="startUserName">Guest</div>
-    <div class="user-status">🟢 online</div>
   </div>
   <div class="start-search"><input type="text" id="startSearch" placeholder="Search apps..."></div>
   <div class="start-apps" id="startApps"></div>
 </div>
 
-<!-- BOOT MENU -->
+// Boot menu (Ctrl+K)
 <div class="boot-menu" id="bootMenu">
   <div class="boot-search"><input type="text" id="bootSearch" placeholder="Search games..." autocomplete="off"></div>
   <div class="boot-results" id="bootResults"></div>
   <div class="boot-footer"><span>↑↓ navigate</span><span>↵ play</span><span>esc close</span></div>
 </div>
 
-<!-- CONTEXT MENU -->
+// Context menu
 <div class="context-menu" id="contextMenu">
   <div class="context-menu-item" id="ctxChangeWallpaper">🖼️ Change Wallpaper</div>
   <div class="context-menu-item" id="ctxRefresh">🔄 Refresh</div>
@@ -731,64 +298,71 @@
   <div class="context-menu-item" id="ctxSettings">⚙️ Settings</div>
 </div>
 
-<!-- QUICK SETTINGS -->
+// Quick settings
 <div class="quick-settings" id="quickSettings">
   <div class="quick-settings-header">Quick Settings</div>
   <div class="quick-settings-item" id="qsWallpaper">🖼️ Change Wallpaper</div>
   <div class="quick-settings-item" id="qsWorkspace">🌿 Switch Workspace</div>
   <div class="quick-settings-item" id="qsShortcuts">⌨️ Keyboard Shortcuts</div>
-  <div class="quick-settings-item" id="qsSettings">⚙️ Full Settings</div>
 </div>
 
-<!-- SHORTCUTS MODAL -->
-<div class="shortcuts-modal" id="shortcutsModal">
-  <h3 style="margin-bottom:16px;">⌨️ Keyboard Shortcuts</h3>
-  <div class="shortcut-row"><span>Ctrl+K</span><span>Quick launch / search</span></div>
-  <div class="shortcut-row"><span>Ctrl+Shift+S</span><span>Take screenshot</span></div>
-  <div class="shortcut-row"><span>Ctrl+/</span><span>Show shortcuts</span></div>
-  <div class="shortcut-row"><span>Ctrl+W</span><span>Close window</span></div>
-  <div class="shortcut-row"><span>Ctrl+M</span><span>Minimize window</span></div>
-  <div class="shortcut-row"><span>ESC</span><span>Close menus</span></div>
-  <button class="context-menu-item" id="closeShortcuts" style="margin-top:16px; text-align:center;">Close</button>
-</div>
-
-<!-- GAME DETAILS MODAL (Steam-like) -->
+// Game modal
 <div class="game-modal" id="gameModal">
   <div class="game-modal-content" id="gameModalContent"></div>
 </div>
 
-<div class="screenshot-flash" id="screenshotFlash"></div>
 <div class="toast" id="toast"></div>
 
 <script>
-// ============================================================
-// FANTER OS - FULLY FUNCTIONAL WITH STEAM-LIKE GAME MODAL
-// ============================================================
+// ============================================
+// FANTER OS - COMPLETE WITH 28 APPS
+// ============================================
 
-// ========== GAMES DATA (HARDCODED - NO JSON ERRORS) ==========
-const GAMES_DATA = [
-  { id: 1, name: "1v1lol", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQWaqfMWlZb2y2L3wxKaIx9W0H9VyacAWGI1g&s", url: "https://abcatlmfao.github.io/1v1lol-unblocked-free.github.io/", category: "action", desc: "Build and fight in this fast-paced building battle royale. Outbuild your opponents, edit like a pro, and show off your shotgun skills.", developer: "JustPlay.LOL", releaseDate: "2020", rating: 4.5 },
-  { id: 2, name: "Hollow Knight", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsLIpQXZ-qUzdIOxeFC9LAaYznn0jmMIE9WA&s", url: "https://abcatlmfao.github.io/hollow-knight2/", category: "adventure", desc: "Descend into a hauntingly beautiful bug kingdom. Explore ancient caverns, fight epic bosses, and uncover forgotten secrets.", developer: "Team Cherry", releaseDate: "2017", rating: 4.9 },
-  { id: 3, name: "Cuphead", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9qSIX-nkzPX90AalYjAOofWbbOfNZUcrlyg&s", url: "https://woahhcrackers.github.io/CupheadWeb/", category: "platformer", desc: "Don't ragequit, it's worth it. Classic run-and-gun action with beautiful 1930s cartoon style.", developer: "Studio MDHR", releaseDate: "2017", rating: 4.8 },
-  { id: 4, name: "Celeste", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTSjUo7PS_3CMR-54X5QWZGNgJ8L8m7503uCA&s", url: "https://chipikipal800.github.io/celeste/", category: "platformer", desc: "A hidden gem about climbing a mountain. Tight controls, emotional story, and amazing music.", developer: "Extremely OK Games", releaseDate: "2018", rating: 4.9 },
-  { id: 5, name: "Granny", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS8X5JjpaXIFfsI2KKuU_kjCFDAGJZxktgz3g&s", url: "https://chipikipal800.github.io/Granny/", category: "horror", desc: "You're trapped in Granny's house. She hears everything. Escape within 5 days.", developer: "DVloper", releaseDate: "2017", rating: 4.2 },
-  { id: 6, name: "Pokemon LeafGreen", image: "https://assets-prd.ignimgs.com/2022/01/31/pokemon-leafgreen-button-crop-v3-1643617153926.jpg", url: "https://javyquavy.github.io/PokemonLeafGreen/", category: "rpg", desc: "The classic Gen 3 Pokemon game. Choose Bulbasaur, Charmander, or Squirtle. Catch 'em all!", developer: "Game Freak", releaseDate: "2004", rating: 4.7 },
-  { id: 7, name: "Minecraft", image: "https://static0.gamerantimages.com/wordpress/wp-content/uploads/Minecraft-1.8-Adventure-Update-Trailer.jpg", url: "https://abcatlmfao69.github.io/minraft/", category: "sandbox", desc: "Build, explore, survive in an endless block world. Classic Minecraft 1.8 experience.", developer: "Mojang", releaseDate: "2011", rating: 4.9 },
-  { id: 8, name: "Brotato", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyDe2stCyUFVRMAqp2eD8f-kcWjJ6k2mm2RQ&s", url: "https://abcatlmfao.github.io/BrotatoWeb/", category: "arcade", desc: "A potato with a gun. Survive waves of aliens, collect upgrades.", developer: "Blobfish", releaseDate: "2023", rating: 4.6 },
-  { id: 9, name: "OVO", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcT7a8NY9ACBZXwsfacA2CuEbSyDZqwcw3J9bQ&s", url: "https://chipikipal800.github.io/OvO/", category: "platformer", desc: "A challenging platformer where you jump, dash, and wall-jump through difficult levels.", developer: "Dedra Games", releaseDate: "2022", rating: 4.4 },
-  { id: 10, name: "Ultrakill", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRipnEUkFwPl2HDexU5SGTeKCQ-kA6s-o79df42EJpypoez7xC8AZFbKqRDWnp0F4QU9SkU&s=10", url: "https://chipikipal800.github.io/UK-web/", category: "action", desc: "Move fast. Shoot faster. Style on demons. Blood is fuel.", developer: "New Blood", releaseDate: "2020", rating: 4.9 }
-];
+// Games data - loaded from games.json
+let GAMES_DATA = [];
+let userRatings = JSON.parse(localStorage.getItem('userRatings') || '{}');
 
-// App definitions
+// All 28 apps
 const APPS = [
   { id: 'gamehub', name: 'Game Hub', icon: '🎮', isBuiltin: true, desc: 'Browse and play games' },
   { id: 'emulators', name: 'Emulators', icon: '🕹️', isEmulator: true, desc: 'GBA, NES, N64, Genesis' },
-  { id: 'shop', name: 'Item Shop', icon: '🛒', url: 'shop.html', desc: 'Buy themes & pets' },
-  { id: 'settings', name: 'Settings', icon: '⚙️', url: 'settings.html', desc: 'Customize your OS' },
-  { id: 'fantarena', name: 'Fantarena', icon: '🏟️', url: 'fantarena.html', desc: 'Chat with friends' },
-  { id: 'account', name: 'My Account', icon: '👤', url: 'fantaccount.html', desc: 'Profile & achievements' }
+  { id: 'fileexplorer', name: 'File Explorer', icon: '📁', appType: 'fileexplorer', desc: 'Browse your files' },
+  { id: 'mediaplayer', name: 'Media Player', icon: '🎬', appType: 'mediaplayer', desc: 'Watch videos' },
+  { id: 'youtube', name: 'YouTube', icon: '📺', appType: 'youtube', desc: 'Watch videos' },
+  { id: 'pixelart', name: 'Pixel Art', icon: '🎨', appType: 'pixelart', desc: 'Create pixel art' },
+  { id: 'visualizer', name: 'Music Viz', icon: '🎵', appType: 'visualizer', desc: 'Audio visualizer' },
+  { id: 'calendar', name: 'Calendar', icon: '📅', appType: 'calendar', desc: 'Track events' },
+  { id: 'tasks', name: 'Tasks', icon: '✅', appType: 'tasks', desc: 'To-do list' },
+  { id: 'timer', name: 'Timer', icon: '⏱️', appType: 'timer', desc: 'Pomodoro timer' },
+  { id: 'whiteboard', name: 'Whiteboard', icon: '✏️', appType: 'whiteboard', desc: 'Draw freely' },
+  { id: 'journal', name: 'Journal', icon: '📓', appType: 'journal', desc: 'Daily entries' },
+  { id: 'budget', name: 'Budget', icon: '💰', appType: 'budget', desc: 'Track spending' },
+  { id: 'flashcards', name: 'Flashcards', icon: '🃏', appType: 'flashcards', desc: 'Study tool' },
+  { id: 'pdfviewer', name: 'PDF Viewer', icon: '📄', appType: 'pdfviewer', desc: 'Read PDFs' },
+  { id: 'texteditor', name: 'Text Editor', icon: '📝', appType: 'texteditor', desc: 'Edit text' },
+  { id: 'converter', name: 'Converter', icon: '🔄', appType: 'converter', desc: 'Unit converter' },
+  { id: 'weather', name: 'Weather', icon: '🌤️', appType: 'weather', desc: 'Check weather' },
+  { id: 'sysmonitor', name: 'System Monitor', icon: '📊', appType: 'sysmonitor', desc: 'CPU/Memory stats' },
+  { id: 'passwordgen', name: 'Password Gen', icon: '🔐', appType: 'passwordgen', desc: 'Secure passwords' },
+  { id: 'qrcode', name: 'QR Code', icon: '📱', appType: 'qrcode', desc: 'Generate QR codes' },
+  { id: 'colorpicker', name: 'Color Picker', icon: '🎨', appType: 'colorpicker', desc: 'Pick colors' },
+  { id: 'linksaver', name: 'Link Saver', icon: '🔗', appType: 'linksaver', desc: 'Save bookmarks' },
+  { id: 'wallpaperstudio', name: 'Wallpaper Studio', icon: '🖼️', appType: 'wallpaperstudio', desc: 'Create wallpapers' },
+  { id: 'iconmaker', name: 'Icon Maker', icon: '✨', appType: 'iconmaker', desc: 'Make custom icons' },
+  { id: 'soundstudio', name: 'Sound Studio', icon: '🎙️', appType: 'soundstudio', desc: 'Record audio' },
+  { id: 'asciiart', name: 'ASCII Art', icon: '💻', appType: 'asciiart', desc: 'Image to ASCII' },
+  { id: 'fortuneteller', name: 'Fortune Teller', icon: '🔮', appType: 'fortuneteller', desc: 'Get your fortune' },
+  { id: 'eightball', name: '8-Ball', icon: '🎱', appType: 'eightball', desc: 'Ask a question' },
+  { id: 'snake', name: 'Snake Game', icon: '🐍', appType: 'snake', desc: 'Classic snake' },
+  { id: 'shop', name: 'Shop', icon: '🛒', url: 'shop.html', desc: 'Buy items' },
+  { id: 'settings', name: 'Settings', icon: '⚙️', url: 'settings.html', desc: 'Customize' },
+  { id: 'fantarena', name: 'Fantarena', icon: '🏟️', url: 'fantarena.html', desc: 'Chat' },
+  { id: 'account', name: 'Account', icon: '👤', url: 'fantaccount.html', desc: 'Profile' },
+  { id: 'calculator', name: 'Calculator', icon: '🧮', appType: 'calculator', desc: 'Math' },
+  { id: 'notes', name: 'Notes', icon: '📋', appType: 'notes', desc: 'Quick notes' }
 ];
 
+// Emulators
 const EMULATORS = [
   { name: 'Game Boy Advance', icon: '🎮', url: 'https://chipikipal800.github.io/MKGBA2.0/' },
   { name: 'Nintendo NES', icon: '📺', url: 'https://chipikipal800.github.io/nes-emulator-/' },
@@ -799,14 +373,15 @@ const EMULATORS = [
   { name: 'Atari 2600', icon: '🕹️', url: 'https://chipikipal800.github.io/Atari-2600-emulator-/' }
 ];
 
+// Desktop icons
 const DEFAULT_DESKTOP_ICONS = [
   { id: 'gamehub', icon: '🎮', label: 'Game Hub', x: 30, y: 30 },
-  { id: 'emulators', icon: '🕹️', label: 'Emulators', x: 30, y: 120 },
-  { id: 'shop', icon: '🛒', label: 'Shop', x: 30, y: 210 },
+  { id: 'fileexplorer', icon: '📁', label: 'Files', x: 30, y: 120 },
+  { id: 'mediaplayer', icon: '🎬', label: 'Media', x: 30, y: 210 },
   { id: 'settings', icon: '⚙️', label: 'Settings', x: 30, y: 300 }
 ];
 
-// Global state
+// State
 let windows = [];
 let nextWindowId = 1;
 let activeWindowId = null;
@@ -817,9 +392,9 @@ let selectedBootIndex = -1;
 let desktopIcons = [];
 let currentUser = null;
 let dragIcon = null;
-let userRatings = JSON.parse(localStorage.getItem('userRatings') || '{}');
+let resizeData = null;
 
-// Helper functions
+// Helper
 function showToast(msg) {
   const toast = document.getElementById('toast');
   toast.textContent = msg;
@@ -833,12 +408,30 @@ function updateClock() {
   document.getElementById('taskbarDate').textContent = now.toLocaleDateString([], { month: 'short', day: 'numeric' });
 }
 
-// Game Details Modal (Steam-like)
+// Load games from JSON
+async function loadGames() {
+  try {
+    const res = await fetch('./config/games.json');
+    let text = await res.text();
+    // Fix trailing comma issue
+    text = text.replace(/,(\s*}\s*)\]/g, '$1]').replace(/,\s*\]/, ']');
+    GAMES_DATA = JSON.parse(text);
+    console.log(`✅ Loaded ${GAMES_DATA.length} games`);
+  } catch(e) {
+    console.error('Games load failed, using fallback:', e);
+    // Fallback games
+    GAMES_DATA = [
+      { name: "Hollow Knight", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsLIpQXZ-qUzdIOxeFC9LAaYznn0jmMIE9WA&s", url: "https://abcatlmfao.github.io/hollow-knight2/", category: "adventure", desc: "Descend into a bug kingdom.", developer: "Team Cherry", releaseDate: "2017" },
+      { name: "Cuphead", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9qSIX-nkzPX90AalYjAOofWbbOfNZUcrlyg&s", url: "https://woahhcrackers.github.io/CupheadWeb/", category: "platformer", desc: "Run and gun action.", developer: "Studio MDHR", releaseDate: "2017" }
+    ];
+  }
+}
+
+// Game modal
 function showGameDetails(game) {
   const modal = document.getElementById('gameModal');
   const content = document.getElementById('gameModalContent');
   const userRating = userRatings[game.name] || 0;
-  const avgRating = game.rating || 4.0;
   
   content.innerHTML = `
     <div style="position: relative;">
@@ -847,26 +440,21 @@ function showGameDetails(game) {
         <img src="${game.image}" alt="${game.name}">
         <div class="overlay">
           <h2>${game.name}</h2>
-          <span class="tag">${game.category}</span>
+          <span class="tag">${game.category || 'game'}</span>
         </div>
       </div>
       <div class="game-modal-body">
         <div class="game-modal-left">
-          <div class="game-description">${game.desc}</div>
-          <div class="game-rating">
-            <div class="game-stars" id="modalStars">
-              ${[1,2,3,4,5].map(s => `<span class="game-star ${s <= userRating ? 'active' : ''}" data-star="${s}">★</span>`).join('')}
-            </div>
-            <span style="color: var(--warning);">${avgRating.toFixed(1)}</span>
-            <span style="color: var(--text-muted);">average rating</span>
+          <div class="game-description">${game.desc || 'No description available.'}</div>
+          <div class="game-stars" id="modalStars">
+            ${[1,2,3,4,5].map(s => `<span class="game-star ${s <= userRating ? 'active' : ''}" data-star="${s}">★</span>`).join('')}
           </div>
           <button class="game-play-btn" id="playGameBtn">🎮 PLAY NOW</button>
         </div>
         <div class="game-modal-right">
-          <div class="game-info-row"><span class="game-info-label">Developer</span><span class="game-info-value">${game.developer}</span></div>
-          <div class="game-info-row"><span class="game-info-label">Release Date</span><span class="game-info-value">${game.releaseDate}</span></div>
-          <div class="game-info-row"><span class="game-info-label">Category</span><span class="game-info-value">${game.category}</span></div>
-          <div class="game-info-row"><span class="game-info-label">Your Rating</span><span class="game-info-value">${userRating > 0 ? '★'.repeat(userRating) + '☆'.repeat(5-userRating) : 'Not rated'}</span></div>
+          <div class="game-info-row"><span>Developer</span><span>${game.developer || 'Unknown'}</span></div>
+          <div class="game-info-row"><span>Release</span><span>${game.releaseDate || 'Unknown'}</span></div>
+          <div class="game-info-row"><span>Category</span><span>${game.category || 'game'}</span></div>
         </div>
       </div>
     </div>
@@ -874,29 +462,27 @@ function showGameDetails(game) {
   
   modal.classList.add('open');
   
-  // Star rating handler
   content.querySelectorAll('.game-star').forEach(star => {
     star.addEventListener('click', () => {
       const rating = parseInt(star.dataset.star);
       userRatings[game.name] = rating;
       localStorage.setItem('userRatings', JSON.stringify(userRatings));
-      showGameDetails(game); // Refresh modal
-      showToast(`You rated "${game.name}" ${rating}★`);
+      showGameDetails(game);
+      showToast(`Rated ${game.name} ${rating}★`);
     });
   });
   
-  // Play button
-  document.getElementById('playGameBtn').addEventListener('click', () => {
+  document.getElementById('playGameBtn').onclick = () => {
     window.open(game.url, '_blank');
     modal.classList.remove('open');
-  });
+  };
 }
 
 function closeGameModal() {
   document.getElementById('gameModal').classList.remove('open');
 }
 
-// Desktop Icons
+// Desktop icons
 function loadDesktopIcons() {
   const saved = localStorage.getItem('fanter_desktop_icons');
   desktopIcons = saved ? JSON.parse(saved) : [...DEFAULT_DESKTOP_ICONS];
@@ -931,24 +517,63 @@ function renderDesktopIcons() {
   });
 }
 
-document.addEventListener('mousemove', (e) => {
-  if (dragIcon) {
-    const dx = e.clientX - dragIcon.startX;
-    const dy = e.clientY - dragIcon.startY;
-    dragIcon.element.style.left = `${Math.max(0, Math.min(dragIcon.originalX + dx, window.innerWidth - 100))}px`;
-    dragIcon.element.style.top = `${Math.max(0, Math.min(dragIcon.originalY + dy, window.innerHeight - 100))}px`;
-  }
-});
-document.addEventListener('mouseup', () => {
-  if (dragIcon) {
-    const icon = desktopIcons.find(i => i.id === dragIcon.element.dataset.id);
-    if (icon) { icon.x = parseInt(dragIcon.element.style.left); icon.y = parseInt(dragIcon.element.style.top); saveDesktopIcons(); }
-    dragIcon.element.classList.remove('dragging');
-    dragIcon = null;
-  }
-});
+// Window resize handles - all edges
+function addResizeHandles(win, id) {
+  const handles = ['n', 's', 'w', 'e', 'nw', 'ne', 'sw', 'se'];
+  handles.forEach(dir => {
+    const handle = document.createElement('div');
+    handle.className = `resize-handle resize-${dir}`;
+    win.appendChild(handle);
+    handle.addEventListener('mousedown', (e) => {
+      e.stopPropagation();
+      const rect = win.getBoundingClientRect();
+      resizeData = {
+        id: id,
+        dir: dir,
+        startX: e.clientX,
+        startY: e.clientY,
+        startW: rect.width,
+        startH: rect.height,
+        startL: rect.left,
+        startT: rect.top
+      };
+      document.addEventListener('mousemove', onResize);
+      document.addEventListener('mouseup', stopResize);
+    });
+  });
+}
 
-// Window Management
+function onResize(e) {
+  if (!resizeData) return;
+  const dx = e.clientX - resizeData.startX;
+  const dy = e.clientY - resizeData.startY;
+  const win = windows.find(w => w.id === resizeData.id);
+  if (!win || win.maximized) return;
+  
+  let newW = resizeData.startW;
+  let newH = resizeData.startH;
+  let newL = resizeData.startL;
+  let newT = resizeData.startT;
+  
+  if (resizeData.dir.includes('e')) newW = Math.max(400, resizeData.startW + dx);
+  if (resizeData.dir.includes('w')) { newW = Math.max(400, resizeData.startW - dx); newL = resizeData.startL + dx; }
+  if (resizeData.dir.includes('s')) newH = Math.max(300, resizeData.startH + dy);
+  if (resizeData.dir.includes('n')) { newH = Math.max(300, resizeData.startH - dy); newT = resizeData.startT + dy; }
+  
+  win.element.style.width = `${newW}px`;
+  win.element.style.height = `${newH}px`;
+  win.element.style.left = `${newL}px`;
+  win.element.style.top = `${newT}px`;
+  win.w = newW; win.h = newH; win.x = newL; win.y = newT;
+}
+
+function stopResize() {
+  resizeData = null;
+  document.removeEventListener('mousemove', onResize);
+  document.removeEventListener('mouseup', stopResize);
+}
+
+// Window management
 function launchApp(app) {
   const existing = windows.find(w => w.app?.id === app.id);
   if (existing) {
@@ -958,7 +583,9 @@ function launchApp(app) {
   }
   if (app.isBuiltin) createGameHubWindow();
   else if (app.isEmulator) createEmulatorWindow();
-  else createWindow(app);
+  else if (app.appType) createAppWindow(app);
+  else if (app.url) createExternalWindow(app);
+  else createAppWindow(app);
 }
 
 function createGameHubWindow(x = 80, y = 60, w = 1100, h = 750) {
@@ -966,39 +593,40 @@ function createGameHubWindow(x = 80, y = 60, w = 1100, h = 750) {
   const win = document.createElement('div');
   win.className = 'window';
   win.id = `window-${id}`;
-  win.style.left = `${x}px`;
-  win.style.top = `${y}px`;
-  win.style.width = `${w}px`;
-  win.style.height = `${h}px`;
+  win.style.cssText = `left: ${x}px; top: ${y}px; width: ${w}px; height: ${h}px;`;
   
   win.innerHTML = `
     <div class="window-header">
       <div class="window-title"><span>🎮</span><span>Game Hub</span></div>
       <div class="window-controls">
-        <button class="window-control minimize" data-action="minimize">─</button>
-        <button class="window-control maximize" data-action="maximize">□</button>
-        <button class="window-control close" data-action="close">✕</button>
+        <button class="window-control minimize">─</button>
+        <button class="window-control maximize">□</button>
+        <button class="window-control close">✕</button>
       </div>
     </div>
-    <div class="window-content" style="padding: 20px; overflow-y: auto;">
+    <div class="window-content" style="padding: 20px;">
       <div style="display: flex; gap: 12px; margin-bottom: 20px; flex-wrap: wrap;">
-        <input type="text" id="gameSearch-${id}" placeholder="Search games..." style="flex:2; min-width: 200px; padding: 12px 16px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); border-radius: 30px; color: white;">
+        <input type="text" id="gameSearch-${id}" placeholder="Search games..." style="flex:2; padding: 12px 16px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); border-radius: 30px; color: white;">
         <select id="categorySelect-${id}" style="padding: 12px 20px; background: rgba(0,0,0,0.3); border: 1px solid var(--border-glass); border-radius: 30px; color: white;">
           <option value="all">🎮 All Games</option>
           <option value="action">⚔️ Action</option>
           <option value="platformer">🏃 Platformer</option>
           <option value="adventure">🗺️ Adventure</option>
           <option value="horror">👻 Horror</option>
-          <option value="rpg">🎲 RPG</option>
-          <option value="sandbox">🎨 Sandbox</option>
           <option value="arcade">🕹️ Arcade</option>
         </select>
         <button id="randomGameBtn-${id}" style="padding: 12px 24px; background: var(--accent); border: none; border-radius: 30px; color: white; cursor: pointer;">🎲 Random</button>
       </div>
-      <div class="game-grid" id="gameGrid-${id}" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(180px, 1fr)); gap: 16px;"></div>
-      <div style="text-align: center; padding: 20px; color: var(--text-muted); font-size: 11px; border-top: 1px solid var(--border-glass); margin-top: 20px;">
-        a site created by abcatlmfao · parcoil network
+      <div class="command-area">
+        <div>⚡ quick commands</div>
+        <div class="command-input">
+          <span>$</span>
+          <input type="text" id="commandInput-${id}" placeholder="type 'help' for commands..." style="flex:1; background:transparent; border:none; color:white; outline:none;">
+        </div>
+        <div class="command-output" id="commandOutput-${id}">> type 'help' to see commands</div>
       </div>
+      <div class="game-grid" id="gameGrid-${id}" style="display: grid; grid-template-columns: repeat(auto-fill, minmax(160px, 1fr)); gap: 16px; margin-top: 20px;"></div>
+      <div style="text-align: center; padding: 20px; color: var(--text-muted); font-size: 11px;">a site created by abcatlmfao · parcoil network</div>
     </div>
   `;
   
@@ -1006,13 +634,55 @@ function createGameHubWindow(x = 80, y = 60, w = 1100, h = 750) {
   windows.push({ id, element: win, app: APPS.find(a => a.id === 'gamehub'), minimized: false, maximized: false, x, y, w, h });
   focusWindow(id);
   setupWindowEvents(win, id);
+  addResizeHandles(win, id);
   updateTaskbar();
   
-  // Render games in this window
+  // Setup game grid
   const searchInput = document.getElementById(`gameSearch-${id}`);
   const categorySelect = document.getElementById(`categorySelect-${id}`);
   const gridContainer = document.getElementById(`gameGrid-${id}`);
   const randomBtn = document.getElementById(`randomGameBtn-${id}`);
+  const commandInput = document.getElementById(`commandInput-${id}`);
+  const commandOutput = document.getElementById(`commandOutput-${id}`);
+  
+  // Command handler
+  function handleCommand(cmd) {
+    const args = cmd.toLowerCase().trim().split(' ');
+    const output = commandOutput;
+    
+    if (cmd === 'help') {
+      output.innerHTML = '> available commands: help, games [#], random, search [term], clear, theme [dark/light], time';
+    } else if (cmd === 'games') {
+      output.innerHTML = `> ${GAMES_DATA.length} games available. Type 'games 5' to see first 5.`;
+    } else if (cmd.startsWith('games ')) {
+      const num = parseInt(args[1]) || 5;
+      const topGames = GAMES_DATA.slice(0, num).map(g => g.name).join(', ');
+      output.innerHTML = `> Top ${num} games: ${topGames}`;
+    } else if (cmd === 'random') {
+      const randomGame = GAMES_DATA[Math.floor(Math.random() * GAMES_DATA.length)];
+      output.innerHTML = `> Random game: ${randomGame.name} (${randomGame.category})`;
+      showGameDetails(randomGame);
+    } else if (cmd.startsWith('search ')) {
+      const term = args.slice(1).join(' ');
+      const results = GAMES_DATA.filter(g => g.name.toLowerCase().includes(term));
+      output.innerHTML = `> Found ${results.length} games matching "${term}"`;
+    } else if (cmd === 'clear') {
+      output.innerHTML = '';
+    } else if (cmd === 'time') {
+      output.innerHTML = `> ${new Date().toLocaleString()}`;
+    } else if (cmd !== '') {
+      output.innerHTML = `> Unknown command: ${cmd}. Type 'help' for available commands.`;
+    }
+  }
+  
+  if (commandInput) {
+    commandInput.addEventListener('keypress', (e) => {
+      if (e.key === 'Enter') {
+        handleCommand(commandInput.value);
+        commandInput.value = '';
+      }
+    });
+  }
   
   function renderGames() {
     let filtered = [...GAMES_DATA];
@@ -1022,20 +692,19 @@ function createGameHubWindow(x = 80, y = 60, w = 1100, h = 750) {
     if (term) filtered = filtered.filter(g => g.name.toLowerCase().includes(term));
     
     gridContainer.innerHTML = filtered.map(game => `
-      <div class="game-card" data-game-id="${game.id}">
+      <div class="game-card" data-game='${JSON.stringify(game)}'>
         <img src="${game.image}" alt="${game.name}">
         <div class="game-card-info">
           <div class="game-card-title">${game.name}</div>
-          <div class="game-card-category">${game.category}</div>
+          <div class="game-card-category">${game.category || 'game'}</div>
         </div>
       </div>
     `).join('');
     
     gridContainer.querySelectorAll('.game-card').forEach(card => {
       card.addEventListener('click', () => {
-        const gameId = parseInt(card.dataset.gameId);
-        const game = GAMES_DATA.find(g => g.id === gameId);
-        if (game) showGameDetails(game);
+        const game = JSON.parse(card.dataset.game);
+        showGameDetails(game);
       });
     });
   }
@@ -1051,32 +720,398 @@ function createGameHubWindow(x = 80, y = 60, w = 1100, h = 750) {
   return id;
 }
 
+function createAppWindow(app, x = 150, y = 100, w = 500, h = 400) {
+  const id = nextWindowId++;
+  const win = document.createElement('div');
+  win.className = 'window';
+  win.id = `window-${id}`;
+  win.style.cssText = `left: ${x}px; top: ${y}px; width: ${w}px; height: ${h}px;`;
+  
+  let content = '';
+  
+  // App content based on type
+  switch(app.appType) {
+    case 'calculator':
+      content = `
+        <div style="background: rgba(0,0,0,0.3); border-radius: 16px; padding: 20px; margin-bottom: 16px; text-align: right; font-size: 32px; font-family: monospace;" id="calcDisplay-${id}">0</div>
+        <div style="display: grid; grid-template-columns: repeat(4, 1fr); gap: 8px;">
+          ${['7','8','9','/','4','5','6','*','1','2','3','-','0','.','=','+'].map(v => `<button class="calc-btn" data-val="${v}">${v}</button>`).join('')}
+          <button class="calc-btn" data-val="C" style="grid-column: span 2; background: var(--danger);">C</button>
+          <button class="calc-btn" data-val="⌫" style="background: var(--warning);">⌫</button>
+        </div>
+      `;
+      break;
+    case 'notes':
+      content = `<textarea id="notesApp-${id}" style="width:100%; height:100%; background:rgba(0,0,0,0.3); border:none; color:white; padding:12px; font-size:13px; resize:none;" placeholder="Write your notes here..."></textarea>`;
+      break;
+    case 'whiteboard':
+      content = `
+        <canvas id="whiteboard-${id}" class="whiteboard-canvas" width="400" height="300" style="width:100%; height:300px; background:white; cursor:crosshair;"></canvas>
+        <div style="display:flex; gap:8px; margin-top:12px; flex-wrap:wrap;">
+          <button class="calc-btn" id="clearCanvas-${id}" style="padding:8px 16px;">Clear</button>
+          <button class="calc-btn" id="saveCanvas-${id}" style="padding:8px 16px;">Save</button>
+          <input type="color" id="penColor-${id}" value="#000000">
+        </div>
+      `;
+      break;
+    case 'timer':
+      content = `
+        <div style="text-align:center; padding:20px;">
+          <div style="font-size:48px; font-family:monospace;" id="timerDisplay-${id}">25:00</div>
+          <div style="display:flex; gap:10px; justify-content:center; margin-top:20px;">
+            <button class="calc-btn" id="timerStart-${id}">Start</button>
+            <button class="calc-btn" id="timerPause-${id}">Pause</button>
+            <button class="calc-btn" id="timerReset-${id}">Reset</button>
+          </div>
+          <div style="margin-top:15px; color:var(--text-muted);">Pomodoro: 25 min work / 5 min break</div>
+        </div>
+      `;
+      break;
+    case 'tasks':
+      content = `
+        <div style="display:flex; gap:8px; margin-bottom:16px;">
+          <input type="text" id="taskInput-${id}" placeholder="New task..." style="flex:1; padding:10px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white;">
+          <button class="calc-btn" id="addTask-${id}" style="padding:10px 20px;">Add</button>
+        </div>
+        <div id="taskList-${id}" style="display:flex; flex-direction:column; gap:8px;"></div>
+      `;
+      break;
+    case 'passwordgen':
+      content = `
+        <div style="text-align:center; padding:20px;">
+          <div style="font-size:24px; font-family:monospace; background:rgba(0,0,0,0.3); padding:16px; border-radius:12px; margin-bottom:16px;" id="passwordDisplay-${id}">Click Generate</div>
+          <button class="calc-btn" id="genPassword-${id}" style="padding:12px 24px;">Generate Password</button>
+          <div style="margin-top:16px;">
+            <label><input type="checkbox" id="includeUpper-${id}" checked> A-Z</label>
+            <label><input type="checkbox" id="includeLower-${id}" checked> a-z</label>
+            <label><input type="checkbox" id="includeNumbers-${id}" checked> 0-9</label>
+            <label><input type="checkbox" id="includeSymbols-${id}" checked> !@#$</label>
+          </div>
+        </div>
+      `;
+      break;
+    case 'qrcode':
+      content = `
+        <div style="text-align:center; padding:20px;">
+          <input type="text" id="qrText-${id}" placeholder="Enter text or URL..." style="width:100%; padding:12px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white; margin-bottom:16px;">
+          <button class="calc-btn" id="generateQR-${id}" style="padding:12px 24px;">Generate QR Code</button>
+          <div id="qrResult-${id}" style="margin-top:20px;"></div>
+        </div>
+      `;
+      break;
+    case 'snake':
+      content = `
+        <div style="text-align:center;">
+          <canvas id="snakeCanvas-${id}" width="400" height="400" style="border:2px solid var(--border-glass); border-radius:12px; background:#1a1a2e;"></canvas>
+          <div style="margin-top:12px;">Score: <span id="snakeScore-${id}">0</span></div>
+          <button class="calc-btn" id="resetSnake-${id}" style="margin-top:8px;">Restart</button>
+        </div>
+      `;
+      break;
+    case 'fortuneteller':
+      content = `
+        <div style="text-align:center; padding:40px;">
+          <div style="font-size:64px; margin-bottom:20px;">🔮</div>
+          <button class="calc-btn" id="getFortune-${id}" style="padding:12px 24px;">Tell My Fortune</button>
+          <div id="fortuneText-${id}" style="margin-top:20px; font-size:18px; color:var(--accent);"></div>
+        </div>
+      `;
+      break;
+    case 'eightball':
+      content = `
+        <div style="text-align:center; padding:40px;">
+          <div style="font-size:64px; margin-bottom:20px;">🎱</div>
+          <input type="text" id="eightballQuestion-${id}" placeholder="Ask a yes/no question..." style="width:100%; padding:12px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white; margin-bottom:16px;">
+          <button class="calc-btn" id="askEightball-${id}" style="padding:12px 24px;">Ask</button>
+          <div id="eightballAnswer-${id}" style="margin-top:20px; font-size:18px;"></div>
+        </div>
+      `;
+      break;
+    default:
+      content = `<div style="text-align:center; padding:40px;">${app.name} - Coming Soon!</div>`;
+  }
+  
+  win.innerHTML = `
+    <div class="window-header">
+      <div class="window-title"><span>${app.icon}</span><span>${app.name}</span></div>
+      <div class="window-controls">
+        <button class="window-control minimize">─</button>
+        <button class="window-control maximize">□</button>
+        <button class="window-control close">✕</button>
+      </div>
+    </div>
+    <div class="window-content">${content}</div>
+  `;
+  
+  document.body.appendChild(win);
+  windows.push({ id, element: win, app, minimized: false, maximized: false, x, y, w, h });
+  focusWindow(id);
+  setupWindowEvents(win, id);
+  addResizeHandles(win, id);
+  updateTaskbar();
+  
+  // Initialize app logic
+  initAppLogic(win, id, app);
+  
+  return id;
+}
+
+function initAppLogic(win, id, app) {
+  // Calculator
+  if (app.appType === 'calculator') {
+    let calcExpr = '';
+    const display = document.getElementById(`calcDisplay-${id}`);
+    const updateDisplay = () => { display.innerText = calcExpr || '0'; };
+    win.querySelectorAll('.calc-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const val = btn.dataset.val;
+        if (val === 'C') { calcExpr = ''; }
+        else if (val === '⌫') { calcExpr = calcExpr.slice(0, -1); }
+        else if (val === '=') { try { calcExpr = eval(calcExpr).toString(); } catch(e) { calcExpr = 'Error'; } }
+        else { calcExpr += val; }
+        updateDisplay();
+      });
+    });
+  }
+  
+  // Notes
+  if (app.appType === 'notes') {
+    const saved = localStorage.getItem(`notes_${app.id}`);
+    const textarea = document.getElementById(`notesApp-${id}`);
+    if (saved) textarea.value = saved;
+    textarea.addEventListener('input', () => localStorage.setItem(`notes_${app.id}`, textarea.value));
+  }
+  
+  // Whiteboard
+  if (app.appType === 'whiteboard') {
+    const canvas = document.getElementById(`whiteboard-${id}`);
+    const ctx = canvas.getContext('2d');
+    let drawing = false;
+    let color = document.getElementById(`penColor-${id}`).value;
+    
+    canvas.width = canvas.clientWidth;
+    canvas.height = canvas.clientHeight;
+    ctx.fillStyle = 'white';
+    ctx.fillRect(0, 0, canvas.width, canvas.height);
+    
+    canvas.addEventListener('mousedown', () => drawing = true);
+    canvas.addEventListener('mouseup', () => drawing = false);
+    canvas.addEventListener('mousemove', (e) => {
+      if (!drawing) return;
+      const rect = canvas.getBoundingClientRect();
+      const x = e.clientX - rect.left;
+      const y = e.clientY - rect.top;
+      ctx.fillStyle = color;
+      ctx.fillRect(x-2, y-2, 4, 4);
+    });
+    document.getElementById(`penColor-${id}`).addEventListener('change', (e) => color = e.target.value);
+    document.getElementById(`clearCanvas-${id}`).onclick = () => {
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+    };
+    document.getElementById(`saveCanvas-${id}`).onclick = () => {
+      const link = document.createElement('a');
+      link.download = 'drawing.png';
+      link.href = canvas.toDataURL();
+      link.click();
+    };
+  }
+  
+  // Timer
+  if (app.appType === 'timer') {
+    let timerInterval = null;
+    let timeLeft = 25 * 60;
+    const display = document.getElementById(`timerDisplay-${id}`);
+    function updateDisplay() {
+      const mins = Math.floor(timeLeft / 60);
+      const secs = timeLeft % 60;
+      display.innerText = `${mins.toString().padStart(2,'0')}:${secs.toString().padStart(2,'0')}`;
+    }
+    document.getElementById(`timerStart-${id}`).onclick = () => {
+      if (timerInterval) clearInterval(timerInterval);
+      timerInterval = setInterval(() => {
+        if (timeLeft > 0) { timeLeft--; updateDisplay(); }
+        else { clearInterval(timerInterval); showToast('Time is up!'); }
+      }, 1000);
+    };
+    document.getElementById(`timerPause-${id}`).onclick = () => { if (timerInterval) clearInterval(timerInterval); timerInterval = null; };
+    document.getElementById(`timerReset-${id}`).onclick = () => { timeLeft = 25 * 60; updateDisplay(); };
+    updateDisplay();
+  }
+  
+  // Tasks
+  if (app.appType === 'tasks') {
+    let tasks = JSON.parse(localStorage.getItem('fanter_tasks') || '[]');
+    const taskList = document.getElementById(`taskList-${id}`);
+    const taskInput = document.getElementById(`taskInput-${id}`);
+    function renderTasks() {
+      taskList.innerHTML = tasks.map((t, i) => `
+        <div style="display:flex; align-items:center; gap:8px; padding:8px; background:rgba(255,255,255,0.05); border-radius:8px;">
+          <input type="checkbox" ${t.done ? 'checked' : ''} data-index="${i}" style="width:18px; height:18px;">
+          <span style="flex:1; ${t.done ? 'text-decoration:line-through; color:gray;' : ''}">${t.text}</span>
+          <button class="delete-task" data-index="${i}" style="background:none; border:none; color:var(--danger); cursor:pointer;">🗑</button>
+        </div>
+      `).join('');
+      taskList.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        cb.onchange = () => { tasks[cb.dataset.index].done = cb.checked; localStorage.setItem('fanter_tasks', JSON.stringify(tasks)); renderTasks(); };
+      });
+      taskList.querySelectorAll('.delete-task').forEach(btn => {
+        btn.onclick = () => { tasks.splice(btn.dataset.index, 1); localStorage.setItem('fanter_tasks', JSON.stringify(tasks)); renderTasks(); };
+      });
+    }
+    document.getElementById(`addTask-${id}`).onclick = () => {
+      if (taskInput.value.trim()) {
+        tasks.push({ text: taskInput.value.trim(), done: false });
+        localStorage.setItem('fanter_tasks', JSON.stringify(tasks));
+        taskInput.value = '';
+        renderTasks();
+      }
+    };
+    renderTasks();
+  }
+  
+  // Password Generator
+  if (app.appType === 'passwordgen') {
+    const generatePassword = () => {
+      const upper = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      const lower = 'abcdefghijklmnopqrstuvwxyz';
+      const numbers = '0123456789';
+      const symbols = '!@#$%^&*';
+      let chars = '';
+      if (document.getElementById(`includeUpper-${id}`).checked) chars += upper;
+      if (document.getElementById(`includeLower-${id}`).checked) chars += lower;
+      if (document.getElementById(`includeNumbers-${id}`).checked) chars += numbers;
+      if (document.getElementById(`includeSymbols-${id}`).checked) chars += symbols;
+      let password = '';
+      for (let i = 0; i < 12; i++) password += chars[Math.floor(Math.random() * chars.length)];
+      document.getElementById(`passwordDisplay-${id}`).innerText = password;
+    };
+    document.getElementById(`genPassword-${id}`).onclick = generatePassword;
+    generatePassword();
+  }
+  
+  // QR Code Generator
+  if (app.appType === 'qrcode') {
+    document.getElementById(`generateQR-${id}`).onclick = () => {
+      const text = document.getElementById(`qrText-${id}`).value;
+      if (text) {
+        const qrUrl = `https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(text)}`;
+        document.getElementById(`qrResult-${id}`).innerHTML = `<img src="${qrUrl}" style="border-radius:12px;">`;
+      }
+    };
+  }
+  
+  // Snake Game
+  if (app.appType === 'snake') {
+    const canvas = document.getElementById(`snakeCanvas-${id}`);
+    const ctx = canvas.getContext('2d');
+    let snake = [{x: 200, y: 200}];
+    let direction = 'RIGHT';
+    let food = {x: 100, y: 100};
+    let score = 0;
+    let gameInterval = null;
+    
+    function draw() {
+      ctx.fillStyle = '#1a1a2e';
+      ctx.fillRect(0, 0, 400, 400);
+      ctx.fillStyle = 'green';
+      snake.forEach(seg => ctx.fillRect(seg.x, seg.y, 20, 20));
+      ctx.fillStyle = 'red';
+      ctx.fillRect(food.x, food.y, 20, 20);
+      document.getElementById(`snakeScore-${id}`).innerText = score;
+    }
+    
+    function update() {
+      let newHead = {...snake[0]};
+      if (direction === 'RIGHT') newHead.x += 20;
+      if (direction === 'LEFT') newHead.x -= 20;
+      if (direction === 'UP') newHead.y -= 20;
+      if (direction === 'DOWN') newHead.y += 20;
+      
+      if (newHead.x === food.x && newHead.y === food.y) {
+        score++;
+        food = {x: Math.floor(Math.random() * 20) * 20, y: Math.floor(Math.random() * 20) * 20};
+      } else {
+        snake.pop();
+      }
+      snake.unshift(newHead);
+      
+      if (newHead.x < 0 || newHead.x >= 400 || newHead.y < 0 || newHead.y >= 400 || snake.slice(1).some(seg => seg.x === newHead.x && seg.y === newHead.y)) {
+        clearInterval(gameInterval);
+        gameInterval = null;
+        showToast('Game Over! Score: ' + score);
+        return;
+      }
+      draw();
+    }
+    
+    function startGame() {
+      if (gameInterval) clearInterval(gameInterval);
+      snake = [{x: 200, y: 200}];
+      direction = 'RIGHT';
+      score = 0;
+      food = {x: 100, y: 100};
+      gameInterval = setInterval(update, 150);
+      draw();
+    }
+    
+    document.addEventListener('keydown', (e) => {
+      if (e.key === 'ArrowRight' && direction !== 'LEFT') direction = 'RIGHT';
+      if (e.key === 'ArrowLeft' && direction !== 'RIGHT') direction = 'LEFT';
+      if (e.key === 'ArrowUp' && direction !== 'DOWN') direction = 'UP';
+      if (e.key === 'ArrowDown' && direction !== 'UP') direction = 'DOWN';
+    });
+    
+    document.getElementById(`resetSnake-${id}`).onclick = startGame;
+    startGame();
+  }
+  
+  // Fortune Teller
+  if (app.appType === 'fortuneteller') {
+    const fortunes = [
+      "Great success awaits you!", "A pleasant surprise is coming", "Adventure lies ahead",
+      "Trust your instincts", "New opportunities will arise", "Happiness is around the corner",
+      "Someone is thinking of you", "A journey begins soon", "Your creativity will shine"
+    ];
+    document.getElementById(`getFortune-${id}`).onclick = () => {
+      const fortune = fortunes[Math.floor(Math.random() * fortunes.length)];
+      document.getElementById(`fortuneText-${id}`).innerHTML = fortune;
+    };
+  }
+  
+  // 8-Ball
+  if (app.appType === 'eightball') {
+    const answers = ["Yes", "No", "Maybe", "Ask again", "Definitely", "Probably not", "Outlook good", "Very doubtful"];
+    document.getElementById(`askEightball-${id}`).onclick = () => {
+      const answer = answers[Math.floor(Math.random() * answers.length)];
+      document.getElementById(`eightballAnswer-${id}`).innerHTML = `🎱 ${answer}`;
+    };
+  }
+}
+
 function createEmulatorWindow(x = 100, y = 80, w = 600, h = 500) {
   const id = nextWindowId++;
   const win = document.createElement('div');
   win.className = 'window';
   win.id = `window-${id}`;
-  win.style.left = `${x}px`;
-  win.style.top = `${y}px`;
-  win.style.width = `${w}px`;
-  win.style.height = `${h}px`;
+  win.style.cssText = `left: ${x}px; top: ${y}px; width: ${w}px; height: ${h}px;`;
   
   win.innerHTML = `
     <div class="window-header">
       <div class="window-title"><span>🕹️</span><span>Emulators</span></div>
       <div class="window-controls">
-        <button class="window-control minimize" data-action="minimize">─</button>
-        <button class="window-control maximize" data-action="maximize">□</button>
-        <button class="window-control close" data-action="close">✕</button>
+        <button class="window-control minimize">─</button>
+        <button class="window-control maximize">□</button>
+        <button class="window-control close">✕</button>
       </div>
     </div>
     <div class="window-content" style="padding: 20px;">
       <div style="display: grid; gap: 12px;">
         ${EMULATORS.map(emu => `
-          <div class="emulator-item" data-url="${emu.url}" style="display: flex; align-items: center; gap: 16px; padding: 14px 18px; background: rgba(255,255,255,0.05); border-radius: 16px; cursor: pointer;">
+          <div class="emulator-item" data-url="${emu.url}" style="display: flex; align-items: center; gap: 16px; padding: 14px; background: rgba(255,255,255,0.05); border-radius: 16px; cursor: pointer; transition: all 0.15s;">
             <span style="font-size: 32px;">${emu.icon}</span>
-            <div style="flex:1;"><div style="font-weight:500;">${emu.name}</div><div style="font-size:11px; color:var(--text-muted);">Click to launch</div></div>
-            <span style="font-size:20px;">▶</span>
+            <div style="flex:1;"><div style="font-weight:500;">${emu.name}</div></div>
+            <span>▶</span>
           </div>
         `).join('')}
       </div>
@@ -1087,37 +1122,34 @@ function createEmulatorWindow(x = 100, y = 80, w = 600, h = 500) {
   windows.push({ id, element: win, app: APPS.find(a => a.id === 'emulators'), minimized: false, maximized: false, x, y, w, h });
   focusWindow(id);
   setupWindowEvents(win, id);
+  addResizeHandles(win, id);
   updateTaskbar();
   
   win.querySelectorAll('.emulator-item').forEach(el => {
     el.addEventListener('click', () => window.open(el.dataset.url, '_blank'));
   });
+  
   return id;
 }
 
-function createWindow(app, x = 150, y = 100, w = 900, h = 650) {
+function createExternalWindow(app, x = 150, y = 100, w = 900, h = 650) {
   const id = nextWindowId++;
-  const url = app.url;
-  
   const win = document.createElement('div');
   win.className = 'window';
   win.id = `window-${id}`;
-  win.style.left = `${x}px`;
-  win.style.top = `${y}px`;
-  win.style.width = `${w}px`;
-  win.style.height = `${h}px`;
+  win.style.cssText = `left: ${x}px; top: ${y}px; width: ${w}px; height: ${h}px;`;
   
   win.innerHTML = `
     <div class="window-header">
       <div class="window-title"><span>${app.icon}</span><span>${app.name}</span></div>
       <div class="window-controls">
-        <button class="window-control minimize" data-action="minimize">─</button>
-        <button class="window-control maximize" data-action="maximize">□</button>
-        <button class="window-control close" data-action="close">✕</button>
+        <button class="window-control minimize">─</button>
+        <button class="window-control maximize">□</button>
+        <button class="window-control close">✕</button>
       </div>
     </div>
     <div class="window-content">
-      <iframe src="${url}" sandbox="allow-same-origin allow-scripts allow-popups allow-forms allow-modals allow-top-navigation" style="width:100%;height:100%;border:none;"></iframe>
+      <iframe src="${app.url}" style="width:100%; height:100%; border:none;"></iframe>
     </div>
   `;
   
@@ -1125,15 +1157,16 @@ function createWindow(app, x = 150, y = 100, w = 900, h = 650) {
   windows.push({ id, element: win, app, minimized: false, maximized: false, x, y, w, h });
   focusWindow(id);
   setupWindowEvents(win, id);
+  addResizeHandles(win, id);
   updateTaskbar();
   return id;
 }
 
 function setupWindowEvents(win, id) {
   const header = win.querySelector('.window-header');
-  const minimizeBtn = win.querySelector('[data-action="minimize"]');
-  const maximizeBtn = win.querySelector('[data-action="maximize"]');
-  const closeBtn = win.querySelector('[data-action="close"]');
+  const minimizeBtn = win.querySelector('.window-control.minimize');
+  const maximizeBtn = win.querySelector('.window-control.maximize');
+  const closeBtn = win.querySelector('.window-control.close');
   
   win.addEventListener('mousedown', () => focusWindow(id));
   
@@ -1244,11 +1277,10 @@ function renderStartApps(search = '') {
   const container = document.getElementById('startApps');
   let filtered = APPS;
   if (search) filtered = APPS.filter(a => a.name.toLowerCase().includes(search.toLowerCase()));
-  container.innerHTML = filtered.map(app => `
+  container.innerHTML = filtered.slice(0, 30).map(app => `
     <div class="start-app" data-app-id="${app.id}">
       <div class="start-app-icon">${app.icon}</div>
       <div class="start-app-name">${app.name}</div>
-      <div class="start-app-desc">${app.desc}</div>
     </div>
   `).join('');
   container.querySelectorAll('.start-app').forEach(el => {
@@ -1266,7 +1298,7 @@ function toggleStartMenu() {
   if (startMenuOpen) { document.getElementById('startSearch').focus(); renderStartApps(''); }
 }
 
-// Boot Menu
+// Boot menu
 function updateBootResults(query) {
   const container = document.getElementById('bootResults');
   let results = query ? GAMES_DATA.filter(g => g.name.toLowerCase().includes(query.toLowerCase())).slice(0, 10) : GAMES_DATA.slice(0, 8);
@@ -1276,7 +1308,7 @@ function updateBootResults(query) {
   container.innerHTML = results.map((game, idx) => `
     <div class="boot-result ${idx === selectedBootIndex ? 'selected' : ''}" data-index="${idx}">
       <div class="boot-result-icon">🎮</div>
-      <div class="boot-result-info"><div class="boot-result-name">${game.name}</div><div class="boot-result-desc">${game.category}</div></div>
+      <div class="boot-result-info"><div class="boot-result-name">${game.name}</div><div class="boot-result-desc">${game.category || 'game'}</div></div>
     </div>
   `).join('');
   container.querySelectorAll('.boot-result').forEach(el => {
@@ -1312,9 +1344,8 @@ function uploadWallpaper() {
     if (file) {
       const reader = new FileReader();
       reader.onload = (ev) => {
-        const wallpaper = ev.target.result;
-        localStorage.setItem('fanter_wallpaper', wallpaper);
-        document.getElementById('desktopBg').style.backgroundImage = `url(${wallpaper})`;
+        localStorage.setItem('fanter_wallpaper', ev.target.result);
+        document.getElementById('desktopBg').style.backgroundImage = `url(${ev.target.result})`;
         showToast('Wallpaper changed!');
       };
       reader.readAsDataURL(file);
@@ -1323,27 +1354,10 @@ function uploadWallpaper() {
   input.click();
 }
 
-function takeScreenshot() {
-  const flash = document.getElementById('screenshotFlash');
-  flash.style.opacity = '0.3';
-  setTimeout(() => flash.style.opacity = '0', 200);
-  if (typeof html2canvas !== 'undefined') {
-    html2canvas(document.body).then(canvas => {
-      const link = document.createElement('a');
-      link.download = `fanter-screenshot-${Date.now()}.png`;
-      link.href = canvas.toDataURL();
-      link.click();
-      showToast('📸 Screenshot saved!');
-    }).catch(() => showToast('Screenshot failed'));
-  } else {
-    showToast('📸 Screenshot feature ready!');
-  }
-}
-
 function handleGuest() {
-  currentUser = { id: 'guest_' + Date.now(), username: 'Guest', displayName: 'Guest', coins: 300 };
+  currentUser = { id: 'guest_' + Date.now(), username: 'Guest', displayName: 'Guest' };
   localStorage.setItem('fanter_currentUser', JSON.stringify(currentUser));
-  document.getElementById('startUserName').textContent = 'Guest';
+  document.getElementById('startUserName').innerHTML = 'Guest';
   showToast('Playing as Guest');
   document.getElementById('loginScreen').classList.remove('visible');
   document.getElementById('desktop').classList.add('visible');
@@ -1353,12 +1367,12 @@ function handleGuest() {
 function handleLogin() {
   const username = document.getElementById('loginUsername').value.trim();
   if (!username) {
-    document.getElementById('loginError').textContent = 'Enter a username';
+    document.getElementById('loginError').innerHTML = 'Enter a username';
     return;
   }
-  currentUser = { id: 'user_' + Date.now(), username: username, displayName: username, coins: 300 };
+  currentUser = { id: 'user_' + Date.now(), username: username, displayName: username };
   localStorage.setItem('fanter_currentUser', JSON.stringify(currentUser));
-  document.getElementById('startUserName').textContent = username;
+  document.getElementById('startUserName').innerHTML = username;
   showToast(`Welcome back, ${username}!`);
   document.getElementById('loginScreen').classList.remove('visible');
   document.getElementById('desktop').classList.add('visible');
@@ -1371,10 +1385,10 @@ async function runLoadingScreen() {
   let dotCount = 1;
   const dotInterval = setInterval(() => {
     dotCount = (dotCount % 3) + 1;
-    dotsSpan.textContent = '.'.repeat(dotCount) + ' '.repeat(3 - dotCount);
+    dotsSpan.innerHTML = '.'.repeat(dotCount) + ' '.repeat(3 - dotCount);
   }, 500);
   
-  const loadingTime = Math.random() * 5000 + 2000;
+  const loadingTime = Math.random() * 3000 + 2000;
   await new Promise(resolve => setTimeout(resolve, loadingTime));
   
   clearInterval(dotInterval);
@@ -1384,16 +1398,14 @@ async function runLoadingScreen() {
 
 // Init desktop
 async function initDesktop() {
+  await loadGames();
   loadDesktopIcons();
   updateClock();
   setInterval(updateClock, 1000);
   
-  // Taskbar auto-hide
-  let timeout;
+  // Taskbar always visible at bottom
   const taskbar = document.getElementById('taskbar');
-  function showTaskbar() { taskbar.classList.add('visible'); clearTimeout(timeout); timeout = setTimeout(() => taskbar.classList.remove('visible'), 2500); }
-  document.addEventListener('mousemove', showTaskbar);
-  showTaskbar();
+  taskbar.style.bottom = '12px';
   
   // Event listeners
   document.getElementById('startBtn').onclick = toggleStartMenu;
@@ -1405,14 +1417,6 @@ async function initDesktop() {
     else if (e.key === 'Enter') { e.preventDefault(); if (currentBootResults[selectedBootIndex]) { showGameDetails(currentBootResults[selectedBootIndex]); toggleBootMenu(); } }
   };
   document.getElementById('datetimeBtn').onclick = () => document.getElementById('quickSettings').classList.toggle('open');
-  document.getElementById('screenshotBtn').onclick = takeScreenshot;
-  document.getElementById('notesBtn').onclick = () => {
-    const w = document.getElementById('notesWidget');
-    w.style.display = w.style.display === 'none' ? 'block' : 'none';
-  };
-  document.getElementById('closeNotes').onclick = () => document.getElementById('notesWidget').style.display = 'none';
-  document.getElementById('notesText').oninput = () => localStorage.setItem('fanter_notes', document.getElementById('notesText').value);
-  
   document.getElementById('qsWallpaper').onclick = uploadWallpaper;
   document.getElementById('qsWorkspace').onclick = () => {
     const workspaces = ['games', 'learning', 'personal'];
@@ -1421,9 +1425,7 @@ async function initDesktop() {
     localStorage.setItem('fanter_workspace', next);
     showToast(`Switched to ${next} workspace`);
   };
-  document.getElementById('qsShortcuts').onclick = () => document.getElementById('shortcutsModal').classList.add('open');
-  document.getElementById('qsSettings').onclick = () => window.location.href = 'settings.html';
-  document.getElementById('closeShortcuts').onclick = () => document.getElementById('shortcutsModal').classList.remove('open');
+  document.getElementById('qsShortcuts').onclick = () => alert('Shortcuts:\nCtrl+K - Quick launch\nCtrl+W - Close window\nCtrl+M - Minimize window');
   
   document.getElementById('ctxChangeWallpaper').onclick = uploadWallpaper;
   document.getElementById('ctxRefresh').onclick = () => location.reload();
@@ -1432,12 +1434,11 @@ async function initDesktop() {
   document.getElementById('ctxWorkspacePersonal').onclick = () => { localStorage.setItem('fanter_workspace', 'personal'); showToast('Switched to Personal workspace'); };
   document.getElementById('ctxSettings').onclick = () => window.location.href = 'settings.html';
   document.getElementById('desktopBg').oncontextmenu = (e) => { e.preventDefault(); showDesktopContextMenu(e.clientX, e.clientY); };
+  document.getElementById('notesText').oninput = () => localStorage.setItem('fanter_notes', document.getElementById('notesText').value);
   
   // Keyboard shortcuts
   document.addEventListener('keydown', (e) => {
     if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); toggleBootMenu(); }
-    if ((e.ctrlKey || e.metaKey) && e.shiftKey && e.key === 'S') { e.preventDefault(); takeScreenshot(); }
-    if ((e.ctrlKey || e.metaKey) && e.key === '/') { e.preventDefault(); document.getElementById('shortcutsModal').classList.add('open'); }
     if ((e.ctrlKey || e.metaKey) && e.key === 'w') { e.preventDefault(); if (activeWindowId) closeWindow(activeWindowId); }
     if ((e.ctrlKey || e.metaKey) && e.key === 'm') { e.preventDefault(); if (activeWindowId) toggleMinimize(activeWindowId); }
     if (e.key === 'Escape') { if (bootMenuOpen) toggleBootMenu(); if (startMenuOpen) toggleStartMenu(); }
@@ -1466,8 +1467,8 @@ document.addEventListener('keydown', (e) => {
 
 // Start the app
 runLoadingScreen();
-
 document.getElementById('loginBtn').onclick = handleLogin;
 document.getElementById('guestBtn').onclick = handleGuest;
 </script>
 </body>
+</html>
