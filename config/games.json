@@ -802,5 +802,49 @@
     "loadTime": "instant",
     "releaseDate": "tmrw",
     "developer": "??"
+  },
+  {
+    "name": "buckshot roulette",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTIsmBgt-wvSmsQkM9tcOpkvnzVpbpa5igulQ&s",
+    "url": "https://chipikipal800.github.io/buckshot_roulette/",
+    "new": true,
+    "category": "horror",
+    "desc": "super fun",
+    "loadTime": "20-28 seconds",
+    "releaseDate": "tmrw",
+    "developer": "??"
+  },
+  {
+    "name": "cloverpit",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxlZ71HusMLOJbhDqY-mgDdeAi3TIKCnkmnQ&s",
+    "url": "https://parrrotvr.github.io/cloverpit/",
+    "new": true,
+    "category": "horror",
+    "desc": "gamble. have fun. dont go past the deadline.",
+    "loadTime": "7-12 seconds",
+    "releaseDate": "tmrw",
+    "developer": "??"
+  },
+   {
+    "name": "cloverpit",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTxlZ71HusMLOJbhDqY-mgDdeAi3TIKCnkmnQ&s",
+    "url": "https://parrrotvr.github.io/cloverpit/",
+    "new": true,
+    "category": "horror",
+    "desc": "soooooo fun, i highly reccomend this game: collect slimes, its easy and chill ",
+    "loadTime": "7-12 seconds",
+    "releaseDate": "tmrw",
+    "developer": "??"
+  },
+  {
+    "name": "pizza tower",
+    "image": "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcS0SJDBiv07P1vr6Ar11UjvkUXJIv6PUWA5QaIk6LFdSTynPz6PDRLjVFgAW-orgIhIbubzi3TSOLtW4XBueZEwaQ8fgD-6UgmZ4LG-Vb-Gfp3DOxTKzszbpSPQynmW&s=10&ec=121657078",
+    "url": "https://chipikipal800.github.io/pizza-tower-webport/",
+    "new": true,
+    "category": "platformer",
+    "desc": "really fun & fast playformer, great art ",
+    "loadTime": "7-12 seconds",
+    "releaseDate": "tmrw",
+    "developer": "??"
   }
 ]
