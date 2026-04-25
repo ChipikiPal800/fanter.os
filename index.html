@@ -9,11 +9,11 @@
     *{margin:0;padding:0;box-sizing:border-box}
     :root{--bg-dark:#0a0a0f;--bg-glass:rgba(15,15,25,0.85);--border-glass:rgba(255,255,255,0.08);--accent:#7c5cff;--accent-glow:rgba(124,92,255,0.4);--text-primary:#f0f0ff;--text-secondary:#a0a0c0;--text-muted:#606080;--danger:#ff5e5e;--success:#4cd964;--warning:#ffcc00}
     body{font-family:'Inter',sans-serif;background:#0a0a0f;height:100vh;overflow:hidden;color:var(--text-primary)}
-    
+
     @keyframes slideUp{0%{transform:translateY(20px);opacity:0}100%{transform:translateY(0);opacity:1}}
     @keyframes scaleIn{0%{transform:scale(0.9);opacity:0}100%{transform:scale(1);opacity:1}}
     @keyframes windowPop{0%{transform:scale(0.8);opacity:0}80%{transform:scale(1.02)}100%{transform:scale(1);opacity:1}}
-    
+
     /* Login Screen */
     .login-screen{position:fixed;top:0;left:0;width:100%;height:100%;background:url('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/ee4c29a6-9564-4bee-befd-79a0597c29ca/dhsrl04-16049839-0c0f-4077-977f-09a992ec4b07.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9lZTRjMjlhNi05NTY0LTRiZWUtYmVmZC03OWEwNTk3YzI5Y2EvZGhzcmwwNC0xNjA0OTgzOS0wYzBmLTQwNzctOTc3Zi0wOWE5OTJlYzRiMDcuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.XIZi3LNLcPUgY_lP-4R7TJ2r6klMfpBRxT7-cMHGvic') center/cover no-repeat;z-index:10000;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:opacity 0.6s ease}
     .login-screen::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px)}
@@ -29,13 +29,13 @@
     .login-error{font-size:12px;color:var(--danger);margin-top:12px}
     .register-link{margin-top:20px;font-size:13px;color:var(--text-muted);cursor:pointer}
     .register-link span{color:var(--accent)}
-    
+
     /* Desktop */
     .desktop{position:fixed;top:0;left:0;width:100%;height:100%;opacity:0;visibility:hidden;transition:opacity 0.5s ease;z-index:1}
     .desktop.visible{opacity:1;visibility:visible}
     .desktop-bg{position:absolute;top:0;left:0;width:100%;height:100%;background:url('https://images-wixmp-ed30a86b8c4ca887773594c2.wixmp.com/f/ee4c29a6-9564-4bee-befd-79a0597c29ca/dhsrl04-16049839-0c0f-4077-977f-09a992ec4b07.jpg?token=eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJzdWIiOiJ1cm46YXBwOjdlMGQxODg5ODIyNjQzNzNhNWYwZDQxNWVhMGQyNmUwIiwiaXNzIjoidXJuOmFwcDo3ZTBkMTg4OTgyMjY0MzczYTVmMGQ0MTVlYTBkMjZlMCIsIm9iaiI6W1t7InBhdGgiOiIvZi9lZTRjMjlhNi05NTY0LTRiZWUtYmVmZC03OWEwNTk3YzI5Y2EvZGhzcmwwNC0xNjA0OTgzOS0wYzBmLTQwNzctOTc3Zi0wOWE5OTJlYzRiMDcuanBnIn1dXSwiYXVkIjpbInVybjpzZXJ2aWNlOmZpbGUuZG93bmxvYWQiXX0.XIZi3LNLcPUgY_lP-4R7TJ2r6klMfpBRxT7-cMHGvic') center/cover no-repeat;z-index:-1}
     .desktop-bg::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.3)}
-    
+
     /* Desktop Icons */
     .desktop-icons-left{position:absolute;top:20px;left:20px;display:flex;flex-direction:column;gap:8px;z-index:15}
     .desktop-icons-right{position:absolute;top:20px;right:20px;display:flex;flex-direction:column;gap:8px;z-index:15}
@@ -43,7 +43,7 @@
     .desktop-icon:hover{background:rgba(255,255,255,0.15);transform:translateY(-3px) scale(1.02);backdrop-filter:blur(4px)}
     .desktop-icon .icon{font-size:36px;margin-bottom:6px;filter:drop-shadow(0 2px 4px rgba(0,0,0,0.5))}
     .desktop-icon .label{font-size:11px;text-align:center;color:white;font-weight:500;text-shadow:0 1px 2px rgba(0,0,0,0.5)}
-    
+
     /* Desktop Widgets */
     .desktop-widgets{position:absolute;bottom:80px;left:20px;display:flex;gap:12px;z-index:15}
     .widget{background:var(--bg-glass);backdrop-filter:blur(20px);border:1px solid var(--border-glass);border-radius:20px;padding:12px;min-width:120px;transition:all 0.2s}
@@ -52,14 +52,13 @@
     .widget-time{font-size:28px;font-weight:600;font-family:monospace}
     .widget-date{font-size:10px;color:var(--text-secondary);margin-top:4px}
     .calendar-day{font-size:32px;font-weight:600}
-    
+
     /* Taskbar */
     .taskbar{position:fixed;bottom:0;left:0;right:0;height:48px;background:var(--bg-glass);backdrop-filter:blur(20px);border-top:1px solid var(--border-glass);display:flex;align-items:center;justify-content:space-between;padding:0 12px;z-index:1000;transition:all 0.2s ease}
-    .taskbar:hover{height:40px}
     .start-btn{display:flex;align-items:center;gap:8px;padding:6px 16px;background:linear-gradient(135deg,var(--accent),#5a3cc9);border-radius:10px;cursor:pointer;font-weight:600;font-size:13px;transition:all 0.15s}
     .start-btn:hover{transform:scale(1.02);filter:brightness(1.05)}
     .taskbar-apps{display:flex;gap:4px;flex:1;margin:0 12px;overflow-x:auto}
-    .taskbar-app{padding:6px 14px;background:rgba(255,255,255,0.08);border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:12px;transition:all 0.15s}
+    .taskbar-app{padding:6px 14px;background:rgba(255,255,255,0.08);border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:12px;transition:all 0.15s;white-space:nowrap}
     .taskbar-app:hover{background:rgba(255,255,255,0.15);transform:translateY(-2px)}
     .taskbar-app.active{background:var(--accent)}
     .taskbar-right{display:flex;align-items:center;gap:12px}
@@ -67,13 +66,13 @@
     .taskbar-datetime:hover{background:rgba(255,255,255,0.1)}
     .taskbar-time{font-size:12px;font-weight:500}
     .taskbar-date{font-size:9px;color:var(--text-muted)}
-    
+
     /* Virtual Desktops */
     .virtual-desktops{display:flex;gap:6px;margin:0 8px}
     .desktop-switch{width:32px;height:32px;display:flex;align-items:center;justify-content:center;border-radius:8px;background:rgba(255,255,255,0.08);cursor:pointer;transition:all 0.15s;font-size:14px}
     .desktop-switch:hover{background:rgba(255,255,255,0.15);transform:translateY(-2px)}
     .desktop-switch.active{background:var(--accent)}
-    
+
     /* Start Menu */
     .start-menu{position:fixed;bottom:56px;left:12px;width:420px;background:var(--bg-glass);backdrop-filter:blur(24px);border-radius:16px;border:1px solid var(--border-glass);z-index:1001;transform:translateY(20px) scale(0.98);opacity:0;visibility:hidden;transition:all 0.2s;overflow:hidden;max-height:550px}
     .start-menu.open{transform:translateY(0) scale(1);opacity:1;visibility:visible}
@@ -89,7 +88,7 @@
     .start-app:hover{background:rgba(255,255,255,0.1);transform:translateY(-2px)}
     .start-app-icon{font-size:28px}
     .start-app-name{font-size:11px;text-align:center}
-    
+
     /* Boot Menu */
     .boot-menu{position:fixed;top:20%;left:50%;transform:translate(-50%,-30%);width:600px;max-width:90vw;background:var(--bg-glass);backdrop-filter:blur(28px);border-radius:28px;border:1px solid var(--border-glass);z-index:10000;opacity:0;visibility:hidden;transition:all 0.2s}
     .boot-menu.open{opacity:1;visibility:visible;transform:translate(-50%,0)}
@@ -103,7 +102,7 @@
     .boot-result-info{flex:1}
     .boot-result-name{font-weight:500}
     .boot-footer{padding:12px 20px;border-top:1px solid var(--border-glass);font-size:11px;color:var(--text-muted);display:flex;justify-content:space-between}
-    
+
     /* Quick Settings */
     .quick-settings{position:fixed;bottom:56px;right:12px;width:300px;background:var(--bg-glass);backdrop-filter:blur(24px);border-radius:16px;border:1px solid var(--border-glass);z-index:1002;transform:translateY(20px);opacity:0;visibility:hidden;transition:all 0.2s}
     .quick-settings.open{transform:translateY(0);opacity:1;visibility:visible}
@@ -112,7 +111,7 @@
     .quick-settings-item:hover{background:rgba(255,255,255,0.05)}
     .quick-settings-input{background:rgba(0,0,0,0.3);border:1px solid var(--border-glass);border-radius:20px;padding:6px 12px;color:white;width:140px;outline:none}
     .quick-settings-divider{height:1px;background:var(--border-glass);margin:8px 0}
-    
+
     /* Task Manager */
     .task-manager{position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);width:500px;background:var(--bg-glass);backdrop-filter:blur(24px);border-radius:20px;border:1px solid var(--border-glass);z-index:10004;display:none;flex-direction:column;max-height:70vh}
     .task-manager.open{display:flex;animation:scaleIn 0.2s}
@@ -121,12 +120,13 @@
     .task-item{display:flex;justify-content:space-between;align-items:center;padding:12px;border-bottom:1px solid var(--border-glass)}
     .task-item-name{display:flex;align-items:center;gap:12px}
     .task-item-close{background:var(--danger);border:none;border-radius:8px;padding:4px 12px;color:white;cursor:pointer}
-    
-    /* Window */
-    .window{position:absolute;min-width:400px;min-height:300px;background:rgba(18,18,26,0.95);backdrop-filter:blur(4px);border-radius:12px;border:1px solid var(--border-glass);box-shadow:0 20px 40px rgba(0,0,0,0.4);z-index:100;display:flex;flex-direction:column;overflow:hidden;animation:windowPop 0.2s ease}
+
+    /* Window — BUG FIX: added transition for minimize animation */
+    .window{position:absolute;min-width:400px;min-height:300px;background:rgba(18,18,26,0.95);backdrop-filter:blur(4px);border-radius:12px;border:1px solid var(--border-glass);box-shadow:0 20px 40px rgba(0,0,0,0.4);z-index:100;display:flex;flex-direction:column;overflow:hidden;animation:windowPop 0.2s ease;transition:transform 0.2s ease,opacity 0.2s ease}
     .window.active{z-index:200;box-shadow:0 20px 40px rgba(0,0,0,0.5),0 0 0 2px var(--accent)}
-    .window.minimized{transform:scale(0)!important;opacity:0;pointer-events:none;transition:transform 0.2s}
-    .window.maximized{top:0!important;left:0!important;width:100%!important;height:calc(100% - 48px)!important;border-radius:0;transition:all 0.2s}
+    /* BUG FIX: minimized uses transform+opacity with transition above so animation is smooth */
+    .window.minimized{transform:scale(0)!important;opacity:0!important;pointer-events:none}
+    .window.maximized{top:0!important;left:0!important;width:100%!important;height:calc(100% - 48px)!important;border-radius:0}
     .window-header{padding:12px 16px;background:rgba(25,25,35,0.95);cursor:move;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border-glass)}
     .window-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500}
     .window-controls{display:flex;gap:8px}
@@ -134,7 +134,7 @@
     .window-control:hover{background:rgba(255,255,255,0.1);transform:scale(1.05)}
     .window-control.close:hover{background:var(--danger);color:white}
     .window-content{flex:1;overflow:auto;background:rgba(10,10,15,0.95);padding:16px}
-    
+
     /* Resize Handles */
     .resize-handle{position:absolute;z-index:10}
     .resize-n{top:0;left:10px;right:10px;height:6px;cursor:n-resize}
@@ -145,7 +145,7 @@
     .resize-ne{top:0;right:0;width:10px;height:10px;cursor:ne-resize}
     .resize-sw{bottom:0;left:0;width:10px;height:10px;cursor:sw-resize}
     .resize-se{bottom:0;right:0;width:10px;height:10px;cursor:se-resize}
-    
+
     /* Game Card */
     .game-card{background:rgba(255,255,255,0.05);border-radius:16px;overflow:hidden;cursor:pointer;transition:all 0.2s ease}
     .game-card:hover{transform:translateY(-5px) scale(1.02);background:rgba(255,255,255,0.1)}
@@ -153,7 +153,7 @@
     .game-card-info{padding:12px}
     .game-card-title{font-size:15px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
     .game-card-category{font-size:11px;color:var(--text-muted);margin-top:4px}
-    
+
     /* Game Modal */
     .game-modal{position:fixed;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.85);backdrop-filter:blur(12px);z-index:20000;display:flex;align-items:center;justify-content:center;opacity:0;visibility:hidden;transition:all 0.2s}
     .game-modal.open{opacity:1;visibility:visible}
@@ -176,28 +176,28 @@
     .game-play-btn:hover{transform:translateY(-2px);filter:brightness(1.05)}
     .close-modal{position:absolute;top:16px;right:16px;background:rgba(0,0,0,0.5);border:none;border-radius:50%;width:36px;height:36px;font-size:18px;cursor:pointer;color:white;transition:all 0.15s;z-index:10}
     .close-modal:hover{background:var(--danger);transform:scale(1.05)}
-    
+
     /* Toast */
     .toast{position:fixed;bottom:60px;left:50%;transform:translateX(-50%);background:rgba(0,0,0,0.9);backdrop-filter:blur(12px);border:1px solid var(--accent);border-radius:30px;padding:10px 20px;color:white;font-size:13px;z-index:20001;opacity:0;transition:opacity 0.2s;pointer-events:none}
     .toast.show{opacity:1}
-    
+
     /* Context Menu */
     .context-menu{position:fixed;background:var(--bg-glass);backdrop-filter:blur(20px);border:1px solid var(--border-glass);border-radius:12px;padding:8px 0;min-width:200px;z-index:10001;opacity:0;visibility:hidden;transition:opacity 0.1s}
     .context-menu.visible{opacity:1;visibility:visible}
     .context-menu-item{padding:8px 16px;cursor:pointer;font-size:13px;display:flex;align-items:center;gap:12px;transition:all 0.1s}
     .context-menu-item:hover{background:rgba(255,255,255,0.1);transform:translateX(4px)}
     .context-menu-divider{height:1px;background:var(--border-glass);margin:6px 0}
-    
+
     /* Calculator Button */
     .calc-btn{background:rgba(255,255,255,0.1);border:none;border-radius:12px;padding:14px;color:white;font-size:18px;cursor:pointer;transition:all 0.1s}
     .calc-btn:hover{background:var(--accent);transform:scale(1.02)}
-    
+
     /* Scrollbar */
     ::-webkit-scrollbar{width:5px;height:5px}
     ::-webkit-scrollbar-track{background:rgba(255,255,255,0.03)}
     ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:3px}
     ::-webkit-scrollbar-thumb:hover{background:var(--accent)}
-    
+
     @media (max-width:768px){.desktop-icons-left,.desktop-icons-right{display:none}.desktop-widgets{display:none}.start-menu{width:90vw;left:5vw}.boot-menu{width:95vw}.boot-results{grid-template-columns:1fr}.window{min-width:90vw;left:5vw!important;right:5vw!important}.quick-settings{width:90vw;right:5vw}.virtual-desktops{display:none}}
   </style>
 </head>
@@ -231,14 +231,29 @@
 <!-- Taskbar -->
 <div class="taskbar" id="taskbar">
   <div class="start-btn" id="startBtn">🍥 Start</div>
-  <div class="virtual-desktops"><div class="desktop-switch" data-desktop="1">1</div><div class="desktop-switch" data-desktop="2">2</div><div class="desktop-switch" data-desktop="3">3</div></div>
+  <div class="virtual-desktops">
+    <div class="desktop-switch" data-desktop="1">1</div>
+    <div class="desktop-switch" data-desktop="2">2</div>
+    <div class="desktop-switch" data-desktop="3">3</div>
+  </div>
   <div class="taskbar-apps" id="taskbarApps"></div>
-  <div class="taskbar-right"><div class="taskbar-datetime" id="datetimeBtn"><div class="taskbar-time" id="taskbarTime">--:--</div><div class="taskbar-date" id="taskbarDate">--/--</div></div></div>
+  <div class="taskbar-right">
+    <div class="taskbar-datetime" id="datetimeBtn">
+      <div class="taskbar-time" id="taskbarTime">--:--</div>
+      <div class="taskbar-date" id="taskbarDate">--/--</div>
+    </div>
+  </div>
 </div>
 
 <!-- Start Menu -->
 <div class="start-menu" id="startMenu">
-  <div class="start-header"><div class="start-avatar">👤</div><div class="start-user-info"><div class="start-user-name" id="startUserName">Guest</div><div class="start-user-email" id="startUserEmail">guest@fanter.os</div></div></div>
+  <div class="start-header">
+    <div class="start-avatar">👤</div>
+    <div class="start-user-info">
+      <div class="start-user-name" id="startUserName">Guest</div>
+      <div class="start-user-email" id="startUserEmail">guest@fanter.os</div>
+    </div>
+  </div>
   <div class="start-search"><input type="text" id="startSearch" placeholder="Search apps..."></div>
   <div class="start-apps" id="startApps"></div>
 </div>
@@ -280,7 +295,7 @@
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // ============================================
-// FANTER OS - PART 1/2
+// FANTER OS - FIXED VERSION
 // ============================================
 
 const SUPABASE_URL = "https://gvzgnclowylrrpovdvtw.supabase.co";
@@ -301,47 +316,52 @@ let currentUser = null;
 let currentDesktop = 1;
 let resizeData = null;
 
+// BUG FIX: store bound context menu handler so it can be properly removed
+let contextMenuDismissHandler = null;
+
 const APPS = [
-  { id: 'gamehub', name: 'Game Hub', icon: '🎮', isBuiltin: true },
-  { id: 'emulators', name: 'Emulators', icon: '🕹️', isEmulator: true },
-  { id: 'calculator', name: 'Calculator', icon: '🧮', appType: 'calculator' },
-  { id: 'notes', name: 'Notes', icon: '📋', appType: 'notes' },
-  { id: 'timer', name: 'Timer', icon: '⏱️', appType: 'timer' },
-  { id: 'tasks', name: 'Tasks', icon: '✅', appType: 'tasks' },
-  { id: 'passwordgen', name: 'Password Gen', icon: '🔐', appType: 'passwordgen' },
-  { id: 'qrcode', name: 'QR Code', icon: '📱', appType: 'qrcode' },
-  { id: 'snake', name: 'Snake Game', icon: '🐍', appType: 'snake' },
-  { id: 'fortuneteller', name: 'Fortune Teller', icon: '🔮', appType: 'fortuneteller' },
-  { id: 'eightball', name: '8-Ball', icon: '🎱', appType: 'eightball' },
-  { id: 'whiteboard', name: 'Whiteboard', icon: '✏️', appType: 'whiteboard' },
-  { id: 'browser', name: 'Browser', icon: '🌐', appType: 'browser' },
-  { id: 'shop', name: 'Shop', icon: '🛒', url: 'shop.html' },
-  { id: 'settings', name: 'Settings', icon: '⚙️', url: 'settings.html' },
-  { id: 'fantarena', name: 'Fantarena', icon: '🏟️', url: 'fantarena.html' },
-  { id: 'account', name: 'Account', icon: '👤', url: 'fantaccount.html' },
-  { id: 'fanterclicker', name: 'Fanter Clicker', icon: '🍪', url: 'https://chipikipal800.github.io/Fanter-Clicker/', external: true }
+  { id: 'gamehub',       name: 'Game Hub',       icon: '🎮', isBuiltin: true },
+  { id: 'emulators',     name: 'Emulators',       icon: '🕹️', isEmulator: true },
+  { id: 'calculator',    name: 'Calculator',      icon: '🧮', appType: 'calculator' },
+  { id: 'notes',         name: 'Notes',           icon: '📋', appType: 'notes' },
+  { id: 'timer',         name: 'Timer',           icon: '⏱️', appType: 'timer' },
+  { id: 'tasks',         name: 'Tasks',           icon: '✅', appType: 'tasks' },
+  { id: 'passwordgen',   name: 'Password Gen',    icon: '🔐', appType: 'passwordgen' },
+  { id: 'qrcode',        name: 'QR Code',         icon: '📱', appType: 'qrcode' },
+  { id: 'snake',         name: 'Snake Game',      icon: '🐍', appType: 'snake' },
+  { id: 'fortuneteller', name: 'Fortune Teller',  icon: '🔮', appType: 'fortuneteller' },
+  { id: 'eightball',     name: '8-Ball',          icon: '🎱', appType: 'eightball' },
+  { id: 'whiteboard',    name: 'Whiteboard',      icon: '✏️', appType: 'whiteboard' },
+  { id: 'browser',       name: 'Browser',         icon: '🌐', appType: 'browser' },
+  { id: 'shop',          name: 'Shop',            icon: '🛒', url: 'shop.html' },
+  { id: 'settings',      name: 'Settings',        icon: '⚙️', url: 'settings.html' },
+  { id: 'fantarena',     name: 'Fantarena',       icon: '🏟️', url: 'fantarena.html' },
+  { id: 'account',       name: 'Account',         icon: '👤', url: 'fantaccount.html' },
+  { id: 'fanterclicker', name: 'Fanter Clicker',  icon: '🍪', url: 'https://chipikipal800.github.io/Fanter-Clicker/', external: true }
 ];
 
 const EMULATORS = [
   { name: 'Game Boy Advance', icon: '🎮', url: 'https://chipikipal800.github.io/MKGBA2.0/' },
-  { name: 'Nintendo NES', icon: '📺', url: 'https://chipikipal800.github.io/nes-emulator-/' },
-  { name: 'Nintendo 64', icon: '🎮', url: 'https://chipikipal800.github.io/n64-emulator/' },
-  { name: 'Sega Genesis', icon: '🌀', url: 'https://chipikipal800.github.io/Sega-Genesis-Emulator-/' },
-  { name: 'Virtual Boy', icon: '🕶️', url: 'https://chipikipal800.github.io/Virtual-boy-emulator-/' },
-  { name: 'Atari 7800', icon: '🎮', url: 'https://chipikipal800.github.io/atari7800-emulatorwroms/' },
-  { name: 'Atari 2600', icon: '🕹️', url: 'https://chipikipal800.github.io/Atari-2600-emulator-/' }
+  { name: 'Nintendo NES',     icon: '📺', url: 'https://chipikipal800.github.io/nes-emulator-/' },
+  { name: 'Nintendo 64',      icon: '🎮', url: 'https://chipikipal800.github.io/n64-emulator/' },
+  { name: 'Sega Genesis',     icon: '🌀', url: 'https://chipikipal800.github.io/Sega-Genesis-Emulator-/' },
+  { name: 'Virtual Boy',      icon: '🕶️', url: 'https://chipikipal800.github.io/Virtual-boy-emulator-/' },
+  { name: 'Atari 7800',       icon: '🎮', url: 'https://chipikipal800.github.io/atari7800-emulatorwroms/' },
+  { name: 'Atari 2600',       icon: '🕹️', url: 'https://chipikipal800.github.io/Atari-2600-emulator-/' }
 ];
 
 const DESKTOP_ICONS_LEFT = [
   { id: 'calculator', icon: '🧮', label: 'Calc' },
-  { id: 'notes', icon: '📋', label: 'Notes' },
-  { id: 'settings', icon: '⚙️', label: 'Settings' }
+  { id: 'notes',      icon: '📋', label: 'Notes' },
+  { id: 'settings',   icon: '⚙️', label: 'Settings' }
 ];
 
 const DESKTOP_ICONS_RIGHT = [
   { id: 'gamehub', icon: '🎮', label: 'Game Hub' },
-  { id: 'snake', icon: '🐍', label: 'Snake' }
+  { id: 'snake',   icon: '🐍', label: 'Snake' }
 ];
+
+// ─── Utilities ────────────────────────────────────────────────────────────────
 
 function showToast(msg) {
   const toast = document.getElementById('toast');
@@ -352,26 +372,31 @@ function showToast(msg) {
 
 function updateClock() {
   const now = new Date();
-  document.getElementById('taskbarTime').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  document.getElementById('taskbarDate').textContent = now.toLocaleDateString([], { month: 'short', day: 'numeric' });
-  document.getElementById('widgetTime').textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-  document.getElementById('widgetDate').textContent = now.toLocaleDateString([], { month: 'short', day: 'numeric' });
+  const timeStr = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+  const dateStr = now.toLocaleDateString([], { month: 'short', day: 'numeric' });
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  document.getElementById('taskbarTime').textContent = timeStr;
+  document.getElementById('taskbarDate').textContent = dateStr;
+  document.getElementById('widgetTime').textContent = timeStr;
+  document.getElementById('widgetDate').textContent = dateStr;
   document.getElementById('calendarDay').textContent = now.getDate();
-  const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
   document.getElementById('calendarMonth').textContent = months[now.getMonth()];
 }
-
 setInterval(updateClock, 1000);
+updateClock();
+
+// ─── Games Loading ─────────────────────────────────────────────────────────────
 
 async function loadGames() {
   try {
     const res = await fetch('./config/games.json');
     let text = await res.text();
-    text = text.replace(/,(\s*}\s*)\]/g, '$1]').replace(/,\s*\]/, ']');
+    // Strip trailing commas before ] or }
+    text = text.replace(/,(\s*[}\]])/g, '$1');
     GAMES_DATA = JSON.parse(text);
     console.log(`Loaded ${GAMES_DATA.length} games`);
   } catch(e) {
-    console.warn('No games.json, using fallback');
+    console.warn('No games.json, using fallback', e);
     GAMES_DATA = [
       { name: "Hollow Knight", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsLIpQXZ-qUzdIOxeFC9LAaYznn0jmMIE9WA&s", url: "https://abcatlmfao.github.io/hollow-knight2/", category: "adventure", desc: "Descend into a bug kingdom.", developer: "Team Cherry", releaseDate: "2017" },
       { name: "Cuphead", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9qSIX-nkzPX90AalYjAOofWbbOfNZUcrlyg&s", url: "https://woahhcrackers.github.io/CupheadWeb/", category: "platformer", desc: "Run and gun action.", developer: "Studio MDHR", releaseDate: "2017" }
@@ -379,54 +404,82 @@ async function loadGames() {
   }
 }
 
+// ─── Game Details Modal ────────────────────────────────────────────────────────
+
+// BUG FIX: store game objects in a Map keyed by index instead of serializing
+// into data attributes, which breaks on special characters (quotes, apostrophes)
+const gameCardMap = new Map();
+
 function showGameDetails(game) {
   const modal = document.getElementById('gameModal');
   const content = document.getElementById('gameModalContent');
   const userRating = userRatings[game.name] || 0;
-  
+
+  // Safe escaping for display text
+  const esc = (s) => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+
   content.innerHTML = `
-    <div style="position:relative;"><button class="close-modal" onclick="document.getElementById('gameModal').classList.remove('open')">✕</button>
-    <div class="game-modal-header"><img src="${game.image}"><div class="overlay"><h2>${game.name}</h2><span class="tag">${game.category}</span></div></div>
-    <div class="game-modal-body">
-      <div class="game-modal-left">
-        <div class="game-description">${game.desc || 'No description available.'}</div>
-        <div class="game-stars" id="modalStars">${[1,2,3,4,5].map(s => `<span class="game-star ${s <= userRating ? 'active' : ''}" data-star="${s}">★</span>`).join('')}</div>
-        <div class="game-info-row"><span>⏱️ Played: ${Math.floor(gamePlayTime[game.name] || 0)}h</span></div>
-        <button class="game-play-btn" id="playGameBtn">🎮 PLAY NOW</button>
+    <div style="position:relative;">
+      <button class="close-modal" id="closeGameModal">✕</button>
+      <div class="game-modal-header">
+        <img src="${esc(game.image)}" alt="${esc(game.name)}">
+        <div class="overlay">
+          <h2>${esc(game.name)}</h2>
+          <span class="tag">${esc(game.category)}</span>
+        </div>
       </div>
-      <div class="game-modal-right">
-        <div class="game-info-row"><span>Developer</span><span>${game.developer || 'Unknown'}</span></div>
-        <div class="game-info-row"><span>Release</span><span>${game.releaseDate || 'Unknown'}</span></div>
-        <div class="game-info-row"><span>Category</span><span>${game.category}</span></div>
+      <div class="game-modal-body">
+        <div class="game-modal-left">
+          <div class="game-description">${esc(game.desc || 'No description available.')}</div>
+          <div class="game-stars" id="modalStars">
+            ${[1,2,3,4,5].map(s => `<span class="game-star ${s <= userRating ? 'active' : ''}" data-star="${s}">★</span>`).join('')}
+          </div>
+          <div class="game-info-row"><span>⏱️ Played: ${Math.floor(gamePlayTime[game.name] || 0)}h</span></div>
+          <button class="game-play-btn" id="playGameBtn">🎮 PLAY NOW</button>
+        </div>
+        <div class="game-modal-right">
+          <div class="game-info-row"><span>Developer</span><span>${esc(game.developer || 'Unknown')}</span></div>
+          <div class="game-info-row"><span>Release</span><span>${esc(game.releaseDate || 'Unknown')}</span></div>
+          <div class="game-info-row"><span>Category</span><span>${esc(game.category)}</span></div>
+        </div>
       </div>
-    </div></div>
+    </div>
   `;
-  
+
   modal.classList.add('open');
-  
+
+  document.getElementById('closeGameModal').onclick = () => modal.classList.remove('open');
+
   content.querySelectorAll('.game-star').forEach(star => {
     star.addEventListener('click', () => {
       const rating = parseInt(star.dataset.star);
       userRatings[game.name] = rating;
       localStorage.setItem('userRatings', JSON.stringify(userRatings));
-      showGameDetails(game);
       showToast(`Rated ${game.name} ${rating}★`);
+      // Re-render stars in place without rebuilding entire modal
+      content.querySelectorAll('.game-star').forEach(s => {
+        s.classList.toggle('active', parseInt(s.dataset.star) <= rating);
+      });
     });
   });
-  
+
   document.getElementById('playGameBtn').onclick = () => {
-    window.location.href = game.url;
-    modal.classList.remove('open');
     gamePlayTime[game.name] = (gamePlayTime[game.name] || 0) + 0.5;
     localStorage.setItem('gamePlayTime', JSON.stringify(gamePlayTime));
+    modal.classList.remove('open');
+    window.location.href = game.url;
   };
 }
 
+// ─── Desktop Icons ────────────────────────────────────────────────────────────
+
 function renderDesktopIcons() {
-  const left = document.getElementById('desktopIconsLeft');
+  const left  = document.getElementById('desktopIconsLeft');
   const right = document.getElementById('desktopIconsRight');
-  left.innerHTML = DESKTOP_ICONS_LEFT.map(icon => `<div class="desktop-icon" data-id="${icon.id}"><div class="icon">${icon.icon}</div><div class="label">${icon.label}</div></div>`).join('');
+
+  left.innerHTML  = DESKTOP_ICONS_LEFT.map(icon  => `<div class="desktop-icon" data-id="${icon.id}"><div class="icon">${icon.icon}</div><div class="label">${icon.label}</div></div>`).join('');
   right.innerHTML = DESKTOP_ICONS_RIGHT.map(icon => `<div class="desktop-icon" data-id="${icon.id}"><div class="icon">${icon.icon}</div><div class="label">${icon.label}</div></div>`).join('');
+
   document.querySelectorAll('.desktop-icon').forEach(el => {
     el.addEventListener('dblclick', () => {
       const app = APPS.find(a => a.id === el.dataset.id);
@@ -435,6 +488,8 @@ function renderDesktopIcons() {
   });
 }
 
+// ─── Game Hub Window ──────────────────────────────────────────────────────────
+
 function createGameHubWindow() {
   const id = nextWindowId++;
   const win = document.createElement('div');
@@ -442,12 +497,23 @@ function createGameHubWindow() {
   win.id = `window-${id}`;
   win.style.cssText = `left:80px; top:60px; width:1100px; height:750px;`;
   win.innerHTML = `
-    <div class="window-header"><div class="window-title"><span>🎮</span><span>Game Hub</span></div><div class="window-controls"><button class="window-control minimize">─</button><button class="window-control maximize">□</button><button class="window-control close">✕</button></div></div>
+    <div class="window-header">
+      <div class="window-title"><span>🎮</span><span>Game Hub</span></div>
+      <div class="window-controls">
+        <button class="window-control minimize">─</button>
+        <button class="window-control maximize">□</button>
+        <button class="window-control close">✕</button>
+      </div>
+    </div>
     <div class="window-content" style="padding:20px;">
       <div style="display:flex; gap:12px; margin-bottom:20px;">
-        <input type="text" id="gameSearch-${id}" placeholder="Search games..." style="flex:2; padding:12px 16px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:30px; color:white;">
-        <select id="categorySelect-${id}" style="padding:12px 20px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:30px; color:white;">
-          <option value="all">🎮 All Games</option><option value="action">⚔️ Action</option><option value="platformer">🏃 Platformer</option><option value="adventure">🗺️ Adventure</option><option value="horror">👻 Horror</option>
+        <input type="text" id="gameSearch-${id}" placeholder="Search games..." style="flex:2; padding:12px 16px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:30px; color:white; outline:none;">
+        <select id="categorySelect-${id}" style="padding:12px 20px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:30px; color:white; outline:none;">
+          <option value="all">🎮 All Games</option>
+          <option value="action">⚔️ Action</option>
+          <option value="platformer">🏃 Platformer</option>
+          <option value="adventure">🗺️ Adventure</option>
+          <option value="horror">👻 Horror</option>
         </select>
         <button id="randomGameBtn-${id}" style="padding:12px 24px; background:var(--accent); border:none; border-radius:30px; color:white; cursor:pointer;">🎲 Random</button>
       </div>
@@ -455,65 +521,108 @@ function createGameHubWindow() {
       <div style="text-align:center; padding:20px; color:gray;">a site created by abcatlmfao · parcoil network</div>
     </div>
   `;
+
   document.body.appendChild(win);
-  windows.push({ id, element: win, app: APPS.find(a => a.id === 'gamehub'), minimized: false, maximized: false, x:80, y:60, w:1100, h:750, desktop:currentDesktop });
+  windows.push({ id, element: win, app: APPS.find(a => a.id === 'gamehub'), minimized: false, maximized: false, x:80, y:60, w:1100, h:750, desktop: currentDesktop });
   focusWindow(id);
   setupWindowEvents(win, id);
   addResizeHandles(win, id);
   updateTaskbar();
-  
-  const searchInput = document.getElementById(`gameSearch-${id}`);
+
+  const searchInput   = document.getElementById(`gameSearch-${id}`);
   const categorySelect = document.getElementById(`categorySelect-${id}`);
-  const grid = document.getElementById(`gameGrid-${id}`);
-  const randomBtn = document.getElementById(`randomGameBtn-${id}`);
-  
+  const grid          = document.getElementById(`gameGrid-${id}`);
+  const randomBtn     = document.getElementById(`randomGameBtn-${id}`);
+
   function renderGames() {
     let filtered = [...GAMES_DATA];
-    const cat = categorySelect?.value || 'all';
+    const cat  = categorySelect.value;
+    const term = searchInput.value.toLowerCase();
     if (cat !== 'all') filtered = filtered.filter(g => g.category === cat);
-    const term = searchInput?.value.toLowerCase() || '';
-    if (term) filtered = filtered.filter(g => g.name.toLowerCase().includes(term));
-    grid.innerHTML = filtered.map(game => `<div class="game-card" data-game='${JSON.stringify(game)}'><img src="${game.image}"><div class="game-card-info"><div class="game-card-title">${game.name}</div><div class="game-card-category">${game.category}</div><div style="font-size:10px; color:gray;">⏱️ ${Math.floor(gamePlayTime[game.name] || 0)}h played</div></div></div>`).join('');
+    if (term)          filtered = filtered.filter(g => g.name.toLowerCase().includes(term));
+
+    // BUG FIX: store game objects in Map instead of serializing to data attribute
+    // to avoid HTML parse errors with special characters (apostrophes, quotes)
+    gameCardMap.clear();
+    grid.innerHTML = filtered.map((game, idx) => {
+      const esc = (s) => String(s ?? '').replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
+      gameCardMap.set(idx, game);
+      return `<div class="game-card" data-game-idx="${idx}">
+        <img src="${esc(game.image)}" alt="${esc(game.name)}" onerror="this.style.background='#222'">
+        <div class="game-card-info">
+          <div class="game-card-title">${esc(game.name)}</div>
+          <div class="game-card-category">${esc(game.category)}</div>
+          <div style="font-size:10px; color:gray;">⏱️ ${Math.floor(gamePlayTime[game.name] || 0)}h played</div>
+        </div>
+      </div>`;
+    }).join('');
+
     grid.querySelectorAll('.game-card').forEach(card => {
       card.addEventListener('click', () => {
-        const game = JSON.parse(card.dataset.game);
-        showGameDetails(game);
+        // BUG FIX: retrieve game from Map instead of JSON.parse(dataset.game)
+        const game = gameCardMap.get(parseInt(card.dataset.gameIdx));
+        if (game) showGameDetails(game);
       });
     });
   }
-  if (searchInput) searchInput.addEventListener('input', renderGames);
-  if (categorySelect) categorySelect.addEventListener('change', renderGames);
-  if (randomBtn) randomBtn.addEventListener('click', () => {
-    const random = GAMES_DATA[Math.floor(Math.random() * GAMES_DATA.length)];
-    showGameDetails(random);
+
+  searchInput.addEventListener('input', renderGames);
+  categorySelect.addEventListener('change', renderGames);
+  randomBtn.addEventListener('click', () => {
+    if (!GAMES_DATA.length) return;
+    showGameDetails(GAMES_DATA[Math.floor(Math.random() * GAMES_DATA.length)]);
   });
+
   renderGames();
   return id;
 }
 
-  function createEmulatorWindow() {
+// ─── Emulator Window ──────────────────────────────────────────────────────────
+
+function createEmulatorWindow() {
   const id = nextWindowId++;
   const win = document.createElement('div');
   win.className = 'window';
   win.id = `window-${id}`;
   win.style.cssText = `left:100px; top:80px; width:600px; height:500px;`;
   win.innerHTML = `
-    <div class="window-header"><div class="window-title"><span>🕹️</span><span>Emulators</span></div><div class="window-controls"><button class="window-control minimize">─</button><button class="window-control maximize">□</button><button class="window-control close">✕</button></div></div>
+    <div class="window-header">
+      <div class="window-title"><span>🕹️</span><span>Emulators</span></div>
+      <div class="window-controls">
+        <button class="window-control minimize">─</button>
+        <button class="window-control maximize">□</button>
+        <button class="window-control close">✕</button>
+      </div>
+    </div>
     <div class="window-content" style="padding:20px;">
-      <div style="display:grid; gap:12px;">${EMULATORS.map(emu => `<div class="emulator-item" data-url="${emu.url}" style="display:flex; align-items:center; gap:16px; padding:14px; background:rgba(255,255,255,0.05); border-radius:16px; cursor:pointer;"><span style="font-size:32px;">${emu.icon}</span><div style="flex:1;"><div style="font-weight:500;">${emu.name}</div></div><span>▶</span></div>`).join('')}</div>
+      <div style="display:grid; gap:12px;">
+        ${EMULATORS.map(emu => `
+          <div class="emulator-item" data-url="${emu.url}" style="display:flex; align-items:center; gap:16px; padding:14px; background:rgba(255,255,255,0.05); border-radius:16px; cursor:pointer; transition:background 0.15s;">
+            <span style="font-size:32px;">${emu.icon}</span>
+            <div style="flex:1;"><div style="font-weight:500;">${emu.name}</div></div>
+            <span>▶</span>
+          </div>`).join('')}
+      </div>
     </div>
   `;
+
   document.body.appendChild(win);
-  windows.push({ id, element: win, app: APPS.find(a => a.id === 'emulators'), minimized: false, maximized: false, x:100, y:80, w:600, h:500, desktop:currentDesktop });
+  windows.push({ id, element: win, app: APPS.find(a => a.id === 'emulators'), minimized: false, maximized: false, x:100, y:80, w:600, h:500, desktop: currentDesktop });
   focusWindow(id);
   setupWindowEvents(win, id);
   addResizeHandles(win, id);
   updateTaskbar();
+
   win.querySelectorAll('.emulator-item').forEach(el => {
     el.addEventListener('click', () => window.open(el.dataset.url, '_blank'));
+    el.addEventListener('mouseenter', () => el.style.background = 'rgba(255,255,255,0.12)');
+    el.addEventListener('mouseleave', () => el.style.background = 'rgba(255,255,255,0.05)');
   });
+
   return id;
 }
+
+// ─── Generic App Window ───────────────────────────────────────────────────────
 
 function createAppWindow(app, x=150, y=100, w=500, h=400) {
   const id = nextWindowId++;
@@ -522,165 +631,431 @@ function createAppWindow(app, x=150, y=100, w=500, h=400) {
   win.id = `window-${id}`;
   win.style.cssText = `left:${x}px; top:${y}px; width:${w}px; height:${h}px;`;
   let content = '';
-  
+
   switch(app.appType) {
     case 'calculator':
-      content = `<div style="background:rgba(0,0,0,0.3); border-radius:16px; padding:20px; text-align:right; font-size:32px; font-family:monospace;" id="calcDisplay-${id}">0</div><div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px;">${['7','8','9','/','4','5','6','*','1','2','3','-','0','.','=','+'].map(v => `<button class="calc-btn" data-val="${v}">${v}</button>`).join('')}<button class="calc-btn" data-val="C" style="grid-column:span2; background:var(--danger);">C</button><button class="calc-btn" data-val="⌫" style="background:var(--warning);">⌫</button></div>`;
+      content = `
+        <div style="background:rgba(0,0,0,0.3); border-radius:16px; padding:20px; text-align:right; font-size:32px; font-family:monospace; margin-bottom:12px; overflow:hidden; word-break:break-all;" id="calcDisplay-${id}">0</div>
+        <div style="display:grid; grid-template-columns:repeat(4,1fr); gap:8px;">
+          ${['7','8','9','/','4','5','6','*','1','2','3','-','0','.','=','+'].map(v => `<button class="calc-btn" data-val="${v}">${v}</button>`).join('')}
+          <button class="calc-btn" data-val="C" style="grid-column:span 2; background:var(--danger);">C</button>
+          <button class="calc-btn" data-val="⌫" style="background:var(--warning);">⌫</button>
+        </div>`;
       break;
     case 'notes':
-      content = `<textarea id="notesApp-${id}" style="width:100%; height:100%; background:rgba(0,0,0,0.3); border:none; color:white; padding:12px; resize:none;" placeholder="Write your notes..."></textarea>`;
+      content = `<textarea id="notesApp-${id}" style="width:100%; height:100%; background:rgba(0,0,0,0.3); border:none; color:white; padding:12px; resize:none; outline:none; font-family:inherit; font-size:14px;" placeholder="Write your notes..."></textarea>`;
       break;
     case 'timer':
-      content = `<div style="text-align:center; padding:20px;"><div style="font-size:48px; font-family:monospace;" id="timerDisplay-${id}">25:00</div><div style="display:flex; gap:10px; justify-content:center; margin-top:20px;"><button class="calc-btn" id="timerStart-${id}">Start</button><button class="calc-btn" id="timerPause-${id}">Pause</button><button class="calc-btn" id="timerReset-${id}">Reset</button></div></div>`;
+      content = `
+        <div style="text-align:center; padding:20px;">
+          <div style="font-size:48px; font-family:monospace; margin-bottom:20px;" id="timerDisplay-${id}">25:00</div>
+          <div style="display:flex; gap:10px; justify-content:center;">
+            <button class="calc-btn" id="timerStart-${id}">Start</button>
+            <button class="calc-btn" id="timerPause-${id}">Pause</button>
+            <button class="calc-btn" id="timerReset-${id}">Reset</button>
+          </div>
+        </div>`;
       break;
     case 'tasks':
-      content = `<div style="display:flex; gap:8px; margin-bottom:16px;"><input type="text" id="taskInput-${id}" placeholder="New task..." style="flex:1; padding:10px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white;"><button class="calc-btn" id="addTask-${id}" style="padding:10px 20px;">Add</button></div><div id="taskList-${id}" style="display:flex; flex-direction:column; gap:8px;"></div>`;
+      content = `
+        <div style="display:flex; gap:8px; margin-bottom:16px;">
+          <input type="text" id="taskInput-${id}" placeholder="New task..." style="flex:1; padding:10px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white; outline:none;">
+          <button class="calc-btn" id="addTask-${id}" style="padding:10px 20px; font-size:14px;">Add</button>
+        </div>
+        <div id="taskList-${id}" style="display:flex; flex-direction:column; gap:8px;"></div>`;
       break;
     case 'passwordgen':
-      content = `<div style="text-align:center; padding:20px;"><div style="font-size:24px; font-family:monospace; background:rgba(0,0,0,0.3); padding:16px; border-radius:12px; margin-bottom:16px;" id="passwordDisplay-${id}">Click Generate</div><button class="calc-btn" id="genPassword-${id}" style="padding:12px 24px;">Generate Password</button><div style="margin-top:16px;"><label><input type="checkbox" id="includeUpper-${id}" checked> A-Z</label><label><input type="checkbox" id="includeLower-${id}" checked> a-z</label><label><input type="checkbox" id="includeNumbers-${id}" checked> 0-9</label></div></div>`;
+      content = `
+        <div style="text-align:center; padding:20px;">
+          <div style="font-size:20px; font-family:monospace; background:rgba(0,0,0,0.3); padding:16px; border-radius:12px; margin-bottom:16px; word-break:break-all;" id="passwordDisplay-${id}">Click Generate</div>
+          <button class="calc-btn" id="genPassword-${id}" style="padding:12px 24px; font-size:14px;">Generate Password</button>
+          <div style="margin-top:16px; display:flex; gap:12px; justify-content:center; flex-wrap:wrap;">
+            <label style="display:flex;align-items:center;gap:6px;"><input type="checkbox" id="includeUpper-${id}" checked> A-Z</label>
+            <label style="display:flex;align-items:center;gap:6px;"><input type="checkbox" id="includeLower-${id}" checked> a-z</label>
+            <label style="display:flex;align-items:center;gap:6px;"><input type="checkbox" id="includeNumbers-${id}" checked> 0-9</label>
+            <label style="display:flex;align-items:center;gap:6px;"><input type="checkbox" id="includeSymbols-${id}" checked> !@#</label>
+          </div>
+        </div>`;
       break;
     case 'qrcode':
-      content = `<div style="text-align:center; padding:20px;"><input type="text" id="qrText-${id}" placeholder="Enter text or URL..." style="width:100%; padding:12px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white; margin-bottom:16px;"><button class="calc-btn" id="generateQR-${id}" style="padding:12px 24px;">Generate QR Code</button><div id="qrResult-${id}" style="margin-top:20px;"></div></div>`;
+      content = `
+        <div style="text-align:center; padding:20px;">
+          <input type="text" id="qrText-${id}" placeholder="Enter text or URL..." style="width:100%; padding:12px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white; margin-bottom:16px; outline:none;">
+          <button class="calc-btn" id="generateQR-${id}" style="padding:12px 24px; font-size:14px;">Generate QR Code</button>
+          <div id="qrResult-${id}" style="margin-top:20px;"></div>
+        </div>`;
       break;
     case 'snake':
-      content = `<div style="text-align:center;"><canvas id="snakeCanvas-${id}" width="400" height="400" style="border:2px solid var(--border-glass); border-radius:12px; background:#1a1a2e;"></canvas><div style="margin-top:12px;">Score: <span id="snakeScore-${id}">0</span></div><button class="calc-btn" id="resetSnake-${id}" style="margin-top:8px;">Restart</button></div>`;
+      content = `
+        <div style="text-align:center;">
+          <canvas id="snakeCanvas-${id}" width="400" height="400" style="border:2px solid var(--border-glass); border-radius:12px; background:#1a1a2e;"></canvas>
+          <div style="margin-top:12px;">Score: <span id="snakeScore-${id}">0</span></div>
+          <button class="calc-btn" id="resetSnake-${id}" style="margin-top:8px; padding:10px 20px; font-size:14px;">Restart</button>
+        </div>`;
       break;
     case 'fortuneteller':
-      content = `<div style="text-align:center; padding:40px;"><div style="font-size:64px; margin-bottom:20px;">🔮</div><button class="calc-btn" id="getFortune-${id}" style="padding:12px 24px;">Tell My Fortune</button><div id="fortuneText-${id}" style="margin-top:20px; font-size:18px; color:var(--accent);"></div></div>`;
+      content = `
+        <div style="text-align:center; padding:40px;">
+          <div style="font-size:64px; margin-bottom:20px;">🔮</div>
+          <button class="calc-btn" id="getFortune-${id}" style="padding:12px 24px; font-size:14px;">Tell My Fortune</button>
+          <div id="fortuneText-${id}" style="margin-top:20px; font-size:18px; color:var(--accent); min-height:30px;"></div>
+        </div>`;
       break;
     case 'eightball':
-      content = `<div style="text-align:center; padding:40px;"><div style="font-size:64px; margin-bottom:20px;">🎱</div><input type="text" id="eightballQuestion-${id}" placeholder="Ask a yes/no question..." style="width:100%; padding:12px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white; margin-bottom:16px;"><button class="calc-btn" id="askEightball-${id}" style="padding:12px 24px;">Ask</button><div id="eightballAnswer-${id}" style="margin-top:20px; font-size:18px;"></div></div>`;
+      content = `
+        <div style="text-align:center; padding:40px;">
+          <div style="font-size:64px; margin-bottom:20px;">🎱</div>
+          <input type="text" id="eightballQuestion-${id}" placeholder="Ask a yes/no question..." style="width:100%; padding:12px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white; margin-bottom:16px; outline:none;">
+          <button class="calc-btn" id="askEightball-${id}" style="padding:12px 24px; font-size:14px;">Ask</button>
+          <div id="eightballAnswer-${id}" style="margin-top:20px; font-size:18px; min-height:30px;"></div>
+        </div>`;
       break;
     case 'whiteboard':
-      content = `<canvas id="whiteboard-${id}" style="width:100%; height:300px; background:white; border-radius:12px; cursor:crosshair;"></canvas><div style="display:flex; gap:8px; margin-top:12px;"><button class="calc-btn" id="clearCanvas-${id}">Clear</button><button class="calc-btn" id="saveCanvas-${id}">Save</button><input type="color" id="penColor-${id}" value="#000000"></div>`;
+      content = `
+        <canvas id="whiteboard-${id}" style="width:100%; height:300px; background:white; border-radius:12px; cursor:crosshair; display:block;"></canvas>
+        <div style="display:flex; gap:8px; margin-top:12px; align-items:center;">
+          <button class="calc-btn" id="clearCanvas-${id}" style="padding:8px 16px; font-size:13px;">Clear</button>
+          <button class="calc-btn" id="saveCanvas-${id}" style="padding:8px 16px; font-size:13px;">Save</button>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;">Color: <input type="color" id="penColor-${id}" value="#000000" style="border:none;background:none;cursor:pointer;"></label>
+          <label style="display:flex;align-items:center;gap:6px;font-size:13px;">Size: <input type="range" id="penSize-${id}" min="1" max="20" value="4" style="width:80px;"></label>
+        </div>`;
       break;
     case 'browser':
-      content = `<iframe src="https://www.google.com" style="width:100%; height:100%; border:none;"></iframe>`;
+      content = `<iframe src="https://www.google.com" style="width:100%; height:100%; border:none;" sandbox="allow-scripts allow-same-origin allow-forms allow-popups"></iframe>`;
       break;
     default:
-      content = `<div style="text-align:center; padding:40px;">${app.name} - Coming Soon!</div>`;
+      content = `<div style="text-align:center; padding:40px; color:var(--text-muted);">${app.name} — Coming Soon!</div>`;
   }
-  
-  win.innerHTML = `<div class="window-header"><div class="window-title"><span>${app.icon}</span><span>${app.name}</span></div><div class="window-controls"><button class="window-control minimize">─</button><button class="window-control maximize">□</button><button class="window-control close">✕</button></div></div><div class="window-content">${content}</div>`;
+
+  win.innerHTML = `
+    <div class="window-header">
+      <div class="window-title"><span>${app.icon}</span><span>${app.name}</span></div>
+      <div class="window-controls">
+        <button class="window-control minimize">─</button>
+        <button class="window-control maximize">□</button>
+        <button class="window-control close">✕</button>
+      </div>
+    </div>
+    <div class="window-content">${content}</div>`;
+
   document.body.appendChild(win);
-  windows.push({ id, element: win, app, minimized: false, maximized: false, x, y, w, h, desktop:currentDesktop });
+  windows.push({ id, element: win, app, minimized: false, maximized: false, x, y, w, h, desktop: currentDesktop });
   focusWindow(id);
   setupWindowEvents(win, id);
   addResizeHandles(win, id);
   updateTaskbar();
+  // BUG FIX: call initAppLogic after DOM insertion so elements exist
   initAppLogic(win, id, app);
   return id;
 }
 
+// ─── App Logic Initialisation ─────────────────────────────────────────────────
+
 function initAppLogic(win, id, app) {
+  // Calculator
   if (app.appType === 'calculator') {
     let calcExpr = '';
     const display = document.getElementById(`calcDisplay-${id}`);
     win.querySelectorAll('.calc-btn').forEach(btn => {
       btn.addEventListener('click', () => {
         const val = btn.dataset.val;
-        if (val === 'C') calcExpr = '';
-        else if (val === '⌫') calcExpr = calcExpr.slice(0,-1);
-        else if (val === '=') { try { calcExpr = eval(calcExpr).toString(); } catch(e) { calcExpr = 'Error'; } }
-        else calcExpr += val;
-        display.innerText = calcExpr || '0';
+        if (val === 'C')  { calcExpr = ''; }
+        else if (val === '⌫') { calcExpr = calcExpr.slice(0, -1); }
+        else if (val === '=') {
+          try { calcExpr = String(eval(calcExpr)); } // eslint-disable-line no-eval
+          catch { calcExpr = 'Error'; }
+        } else { calcExpr += val; }
+        display.textContent = calcExpr || '0';
       });
     });
   }
+
+  // Notes
   if (app.appType === 'notes') {
-    const saved = localStorage.getItem(`notes_${app.id}`);
     const ta = document.getElementById(`notesApp-${id}`);
+    const saved = localStorage.getItem(`notes_${app.id}`);
     if (saved) ta.value = saved;
     ta.addEventListener('input', () => localStorage.setItem(`notes_${app.id}`, ta.value));
   }
+
+  // Timer
   if (app.appType === 'timer') {
     let interval = null;
     let time = 25 * 60;
     const display = document.getElementById(`timerDisplay-${id}`);
-    function update() { const m = Math.floor(time/60), s = time%60; display.innerText = `${m.toString().padStart(2,'0')}:${s.toString().padStart(2,'0')}`; }
-    document.getElementById(`timerStart-${id}`).onclick = () => { if(interval) clearInterval(interval); interval = setInterval(() => { if(time>0) { time--; update(); } else { clearInterval(interval); showToast('Time is up!'); } }, 1000); };
-    document.getElementById(`timerPause-${id}`).onclick = () => { if(interval) clearInterval(interval); interval = null; };
-    document.getElementById(`timerReset-${id}`).onclick = () => { time = 25*60; update(); };
-    update();
+    function updateTimer() {
+      const m = Math.floor(time / 60), s = time % 60;
+      display.textContent = `${String(m).padStart(2,'0')}:${String(s).padStart(2,'0')}`;
+    }
+    document.getElementById(`timerStart-${id}`).onclick = () => {
+      if (interval) clearInterval(interval);
+      interval = setInterval(() => {
+        if (time > 0) { time--; updateTimer(); }
+        else { clearInterval(interval); interval = null; showToast('⏱️ Time is up!'); }
+      }, 1000);
+    };
+    document.getElementById(`timerPause-${id}`).onclick = () => { if (interval) { clearInterval(interval); interval = null; } };
+    document.getElementById(`timerReset-${id}`).onclick  = () => { if (interval) { clearInterval(interval); interval = null; } time = 25*60; updateTimer(); };
+    updateTimer();
   }
+
+  // Tasks
   if (app.appType === 'tasks') {
     let tasks = JSON.parse(localStorage.getItem('fanter_tasks') || '[]');
-    const list = document.getElementById(`taskList-${id}`);
+    const list  = document.getElementById(`taskList-${id}`);
     const input = document.getElementById(`taskInput-${id}`);
-    function render() {
-      list.innerHTML = tasks.map((t,i) => `<div style="display:flex; align-items:center; gap:8px; padding:8px; background:rgba(255,255,255,0.05); border-radius:8px;"><input type="checkbox" ${t.done ? 'checked' : ''} data-index="${i}"><span style="flex:1; ${t.done ? 'text-decoration:line-through; color:gray;' : ''}">${t.text}</span><button class="delete-task" data-index="${i}" style="background:none; border:none; color:var(--danger); cursor:pointer;">🗑</button></div>`).join('');
-      list.querySelectorAll('input[type="checkbox"]').forEach(cb => { cb.onchange = () => { tasks[cb.dataset.index].done = cb.checked; localStorage.setItem('fanter_tasks', JSON.stringify(tasks)); render(); }; });
-      list.querySelectorAll('.delete-task').forEach(btn => { btn.onclick = () => { tasks.splice(btn.dataset.index, 1); localStorage.setItem('fanter_tasks', JSON.stringify(tasks)); render(); }; });
+    function renderTasks() {
+      list.innerHTML = tasks.map((t, i) => `
+        <div style="display:flex; align-items:center; gap:8px; padding:8px; background:rgba(255,255,255,0.05); border-radius:8px;">
+          <input type="checkbox" ${t.done ? 'checked' : ''} data-index="${i}" style="cursor:pointer;">
+          <span style="flex:1; ${t.done ? 'text-decoration:line-through; color:gray;' : ''}">${String(t.text).replace(/</g,'&lt;')}</span>
+          <button class="delete-task" data-index="${i}" style="background:none; border:none; color:var(--danger); cursor:pointer; font-size:16px;">🗑</button>
+        </div>`).join('');
+      list.querySelectorAll('input[type="checkbox"]').forEach(cb => {
+        cb.onchange = () => { tasks[parseInt(cb.dataset.index)].done = cb.checked; localStorage.setItem('fanter_tasks', JSON.stringify(tasks)); renderTasks(); };
+      });
+      list.querySelectorAll('.delete-task').forEach(btn => {
+        btn.onclick = () => { tasks.splice(parseInt(btn.dataset.index), 1); localStorage.setItem('fanter_tasks', JSON.stringify(tasks)); renderTasks(); };
+      });
     }
-    document.getElementById(`addTask-${id}`).onclick = () => { if(input.value.trim()) { tasks.push({ text: input.value.trim(), done: false }); localStorage.setItem('fanter_tasks', JSON.stringify(tasks)); input.value = ''; render(); } };
-    render();
+    document.getElementById(`addTask-${id}`).onclick = () => {
+      const val = input.value.trim();
+      if (val) { tasks.push({ text: val, done: false }); localStorage.setItem('fanter_tasks', JSON.stringify(tasks)); input.value = ''; renderTasks(); }
+    };
+    // Also add on Enter key
+    input.addEventListener('keydown', (e) => { if (e.key === 'Enter') document.getElementById(`addTask-${id}`).click(); });
+    renderTasks();
   }
+
+  // Password Generator
   if (app.appType === 'passwordgen') {
-    const gen = () => { const chars = 'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789!@#$%^&*'; let pwd = ''; for(let i=0;i<12;i++) pwd += chars[Math.floor(Math.random()*chars.length)]; document.getElementById(`passwordDisplay-${id}`).innerText = pwd; };
+    const gen = () => {
+      let chars = '';
+      if (document.getElementById(`includeUpper-${id}`).checked)   chars += 'ABCDEFGHIJKLMNOPQRSTUVWXYZ';
+      if (document.getElementById(`includeLower-${id}`).checked)   chars += 'abcdefghijklmnopqrstuvwxyz';
+      if (document.getElementById(`includeNumbers-${id}`).checked) chars += '0123456789';
+      if (document.getElementById(`includeSymbols-${id}`).checked) chars += '!@#$%^&*()_+-=[]{}|;:,.<>?';
+      if (!chars) { showToast('Select at least one character type'); return; }
+      let pwd = '';
+      const arr = new Uint8Array(16);
+      crypto.getRandomValues(arr);
+      arr.forEach(byte => { pwd += chars[byte % chars.length]; });
+      document.getElementById(`passwordDisplay-${id}`).textContent = pwd;
+    };
     document.getElementById(`genPassword-${id}`).onclick = gen;
     gen();
   }
+
+  // QR Code
   if (app.appType === 'qrcode') {
     document.getElementById(`generateQR-${id}`).onclick = () => {
-      const text = document.getElementById(`qrText-${id}`).value;
-      if(text) document.getElementById(`qrResult-${id}`).innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(text)}">`;
+      const text = document.getElementById(`qrText-${id}`).value.trim();
+      if (text) {
+        document.getElementById(`qrResult-${id}`).innerHTML = `<img src="https://api.qrserver.com/v1/create-qr-code/?size=200x200&data=${encodeURIComponent(text)}" alt="QR Code" style="border-radius:8px;">`;
+      }
     };
   }
+
+  // Snake
   if (app.appType === 'snake') {
     const canvas = document.getElementById(`snakeCanvas-${id}`);
     const ctx = canvas.getContext('2d');
-    let snake = [{x:200,y:200}], dir = 'RIGHT', food = {x:100,y:100}, score = 0, interval = null;
-    function draw() {
-      ctx.fillStyle = '#1a1a2e'; ctx.fillRect(0,0,400,400);
-      ctx.fillStyle = 'green'; snake.forEach(seg => ctx.fillRect(seg.x,seg.y,20,20));
-      ctx.fillStyle = 'red'; ctx.fillRect(food.x,food.y,20,20);
-      document.getElementById(`snakeScore-${id}`).innerText = score;
+    const CELL = 20;
+    const COLS = canvas.width  / CELL;  // 20
+    const ROWS = canvas.height / CELL;  // 20
+    let snake, dir, food, score, gameInterval, gameOver;
+
+    function randFood() {
+      // BUG FIX: clamp food position to grid bounds
+      return {
+        x: Math.floor(Math.random() * COLS) * CELL,
+        y: Math.floor(Math.random() * ROWS) * CELL
+      };
     }
+
+    function draw() {
+      ctx.fillStyle = '#1a1a2e';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = '#4cd964';
+      snake.forEach(seg => { ctx.beginPath(); ctx.roundRect(seg.x+1, seg.y+1, CELL-2, CELL-2, 4); ctx.fill(); });
+      ctx.fillStyle = '#ff5e5e';
+      ctx.beginPath(); ctx.arc(food.x + CELL/2, food.y + CELL/2, CELL/2 - 1, 0, Math.PI*2); ctx.fill();
+      document.getElementById(`snakeScore-${id}`).textContent = score;
+    }
+
     function update() {
-      let head = {...snake[0]};
-      if(dir === 'RIGHT') head.x += 20; if(dir === 'LEFT') head.x -= 20; if(dir === 'UP') head.y -= 20; if(dir === 'DOWN') head.y += 20;
-      if(head.x === food.x && head.y === food.y) { score++; food = {x:Math.floor(Math.random()*20)*20, y:Math.floor(Math.random()*20)*20}; } else { snake.pop(); }
+      const head = { ...snake[0] };
+      if (dir === 'RIGHT') head.x += CELL;
+      if (dir === 'LEFT')  head.x -= CELL;
+      if (dir === 'UP')    head.y -= CELL;
+      if (dir === 'DOWN')  head.y += CELL;
+
+      // Wall collision
+      if (head.x < 0 || head.x >= canvas.width || head.y < 0 || head.y >= canvas.height) {
+        endGame(); return;
+      }
+      // Self collision
+      if (snake.some(s => s.x === head.x && s.y === head.y)) {
+        endGame(); return;
+      }
+
+      if (head.x === food.x && head.y === food.y) {
+        score++;
+        food = randFood();
+      } else {
+        snake.pop();
+      }
       snake.unshift(head);
-      if(head.x < 0 || head.x >= 400 || head.y < 0 || head.y >= 400 || snake.slice(1).some(s => s.x === head.x && s.y === head.y)) { clearInterval(interval); interval = null; showToast('Game Over! Score: '+score); return; }
       draw();
     }
-    function start() { if(interval) clearInterval(interval); snake = [{x:200,y:200}]; dir = 'RIGHT'; score = 0; food = {x:100,y:100}; interval = setInterval(update,150); draw(); }
-    document.addEventListener('keydown', (e) => { if(e.key === 'ArrowRight' && dir !== 'LEFT') dir = 'RIGHT'; if(e.key === 'ArrowLeft' && dir !== 'RIGHT') dir = 'LEFT'; if(e.key === 'ArrowUp' && dir !== 'DOWN') dir = 'UP'; if(e.key === 'ArrowDown' && dir !== 'UP') dir = 'DOWN'; });
+
+    function endGame() {
+      clearInterval(gameInterval);
+      gameInterval = null;
+      gameOver = true;
+      ctx.fillStyle = 'rgba(0,0,0,0.6)';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+      ctx.fillStyle = 'white';
+      ctx.font = 'bold 28px Inter, sans-serif';
+      ctx.textAlign = 'center';
+      ctx.fillText('Game Over!', canvas.width/2, canvas.height/2 - 10);
+      ctx.font = '18px Inter, sans-serif';
+      ctx.fillText(`Score: ${score}`, canvas.width/2, canvas.height/2 + 20);
+    }
+
+    function start() {
+      if (gameInterval) clearInterval(gameInterval);
+      snake = [{ x: COLS/2*CELL, y: ROWS/2*CELL }];
+      dir = 'RIGHT';
+      score = 0;
+      gameOver = false;
+      food = randFood();
+      gameInterval = setInterval(update, 150);
+      draw();
+    }
+
+    // BUG FIX: scoped key handler stored so it doesn't leak across windows
+    function snakeKeyHandler(e) {
+      if (gameOver) return;
+      if (e.key === 'ArrowRight' && dir !== 'LEFT')  { e.preventDefault(); dir = 'RIGHT'; }
+      if (e.key === 'ArrowLeft'  && dir !== 'RIGHT') { e.preventDefault(); dir = 'LEFT'; }
+      if (e.key === 'ArrowUp'    && dir !== 'DOWN')  { e.preventDefault(); dir = 'UP'; }
+      if (e.key === 'ArrowDown'  && dir !== 'UP')    { e.preventDefault(); dir = 'DOWN'; }
+    }
+    document.addEventListener('keydown', snakeKeyHandler);
+
+    // Clean up interval and listener when window closes
+    const origClose = closeWindow;
+    win._cleanup = () => {
+      if (gameInterval) clearInterval(gameInterval);
+      document.removeEventListener('keydown', snakeKeyHandler);
+    };
+
     document.getElementById(`resetSnake-${id}`).onclick = start;
     start();
   }
+
+  // Fortune Teller
   if (app.appType === 'fortuneteller') {
-    const fortunes = ["Great success awaits!", "A pleasant surprise is coming", "Adventure lies ahead", "Trust your instincts", "Happiness is around the corner"];
-    document.getElementById(`getFortune-${id}`).onclick = () => { document.getElementById(`fortuneText-${id}`).innerHTML = fortunes[Math.floor(Math.random()*fortunes.length)]; };
+    const fortunes = [
+      "Great success awaits you! 🌟",
+      "A pleasant surprise is coming your way 🎁",
+      "Adventure lies just around the corner 🗺️",
+      "Trust your instincts — they will guide you 🧭",
+      "Happiness is closer than you think 😊",
+      "A new friendship will change your life 🤝",
+      "The stars align in your favour tonight ✨"
+    ];
+    document.getElementById(`getFortune-${id}`).onclick = () => {
+      document.getElementById(`fortuneText-${id}`).textContent = fortunes[Math.floor(Math.random() * fortunes.length)];
+    };
   }
+
+  // 8-Ball
   if (app.appType === 'eightball') {
-    const answers = ["Yes", "No", "Maybe", "Ask again", "Definitely", "Probably not"];
-    document.getElementById(`askEightball-${id}`).onclick = () => { document.getElementById(`eightballAnswer-${id}`).innerHTML = `🎱 ${answers[Math.floor(Math.random()*answers.length)]}`; };
+    const answers = [
+      "🎱 Yes, definitely!",
+      "🎱 No way.",
+      "🎱 Maybe — try again.",
+      "🎱 Ask again later.",
+      "🎱 Absolutely!",
+      "🎱 Probably not.",
+      "🎱 Signs point to yes.",
+      "🎱 Don't count on it.",
+      "🎱 Most likely.",
+      "🎱 Outlook not so good."
+    ];
+    document.getElementById(`askEightball-${id}`).onclick = () => {
+      const q = document.getElementById(`eightballQuestion-${id}`).value.trim();
+      if (!q) { showToast('Ask a question first!'); return; }
+      document.getElementById(`eightballAnswer-${id}`).textContent = answers[Math.floor(Math.random() * answers.length)];
+    };
   }
+
+  // Whiteboard — BUG FIX: set canvas pixel dimensions after DOM insertion
   if (app.appType === 'whiteboard') {
     const canvas = document.getElementById(`whiteboard-${id}`);
-    const ctx = canvas.getContext('2d');
-    let drawing = false;
-    let color = document.getElementById(`penColor-${id}`).value;
-    canvas.width = canvas.clientWidth; canvas.height = 300;
-    ctx.fillStyle = 'white'; ctx.fillRect(0,0,canvas.width,canvas.height);
-    canvas.addEventListener('mousedown', () => drawing = true);
-    canvas.addEventListener('mouseup', () => drawing = false);
-    canvas.addEventListener('mousemove', (e) => {
-      if(!drawing) return;
-      const rect = canvas.getBoundingClientRect();
-      ctx.fillStyle = color;
-      ctx.fillRect(e.clientX - rect.left - 2, e.clientY - rect.top - 2, 4, 4);
-    });
-    document.getElementById(`penColor-${id}`).addEventListener('change', (e) => color = e.target.value);
-    document.getElementById(`clearCanvas-${id}`).onclick = () => { ctx.fillStyle = 'white'; ctx.fillRect(0,0,canvas.width,canvas.height); };
-    document.getElementById(`saveCanvas-${id}`).onclick = () => { const link = document.createElement('a'); link.download = 'drawing.png'; link.href = canvas.toDataURL(); link.click(); };
+    // Use setTimeout to ensure layout is complete so clientWidth is correct
+    setTimeout(() => {
+      canvas.width  = canvas.clientWidth  || 460;
+      canvas.height = canvas.clientHeight || 300;
+      const ctx = canvas.getContext('2d');
+      ctx.fillStyle = 'white';
+      ctx.fillRect(0, 0, canvas.width, canvas.height);
+
+      let drawing = false;
+      let lastX = 0, lastY = 0;
+      const getColor = () => document.getElementById(`penColor-${id}`).value;
+      const getSize  = () => parseInt(document.getElementById(`penSize-${id}`).value);
+
+      function getPos(e) {
+        const rect = canvas.getBoundingClientRect();
+        const scaleX = canvas.width  / rect.width;
+        const scaleY = canvas.height / rect.height;
+        return {
+          x: (e.clientX - rect.left) * scaleX,
+          y: (e.clientY - rect.top)  * scaleY
+        };
+      }
+
+      canvas.addEventListener('mousedown', (e) => {
+        drawing = true;
+        const pos = getPos(e);
+        lastX = pos.x; lastY = pos.y;
+      });
+      canvas.addEventListener('mousemove', (e) => {
+        if (!drawing) return;
+        const pos = getPos(e);
+        ctx.beginPath();
+        ctx.strokeStyle = getColor();
+        ctx.lineWidth = getSize();
+        ctx.lineCap = 'round';
+        ctx.moveTo(lastX, lastY);
+        ctx.lineTo(pos.x, pos.y);
+        ctx.stroke();
+        lastX = pos.x; lastY = pos.y;
+      });
+      canvas.addEventListener('mouseup',    () => { drawing = false; });
+      canvas.addEventListener('mouseleave', () => { drawing = false; });
+
+      document.getElementById(`clearCanvas-${id}`).onclick = () => {
+        ctx.fillStyle = 'white';
+        ctx.fillRect(0, 0, canvas.width, canvas.height);
+      };
+      document.getElementById(`saveCanvas-${id}`).onclick = () => {
+        const link = document.createElement('a');
+        link.download = 'drawing.png';
+        link.href = canvas.toDataURL();
+        link.click();
+      };
+    }, 50);
   }
 }
 
+// ─── Window Management ────────────────────────────────────────────────────────
+
 function addResizeHandles(win, id) {
-  const handles = ['n','s','w','e','nw','ne','sw','se'];
-  handles.forEach(dir => {
+  ['n','s','w','e','nw','ne','sw','se'].forEach(dir => {
     const handle = document.createElement('div');
     handle.className = `resize-handle resize-${dir}`;
     win.appendChild(handle);
@@ -695,239 +1070,459 @@ function addResizeHandles(win, id) {
 }
 
 function onResize(e) {
-  if(!resizeData) return;
-  const dx = e.clientX - resizeData.startX;
-  const dy = e.clientY - resizeData.startY;
+  if (!resizeData) return;
+  const dx  = e.clientX - resizeData.startX;
+  const dy  = e.clientY - resizeData.startY;
   const win = windows.find(w => w.id === resizeData.id);
-  if(!win || win.maximized) return;
-  let newW = resizeData.startW, newH = resizeData.startH, newL = resizeData.startL, newT = resizeData.startT;
-  if(resizeData.dir.includes('e')) newW = Math.max(400, resizeData.startW + dx);
-  if(resizeData.dir.includes('w')) { newW = Math.max(400, resizeData.startW - dx); newL = resizeData.startL + dx; }
-  if(resizeData.dir.includes('s')) newH = Math.max(300, resizeData.startH + dy);
-  if(resizeData.dir.includes('n')) { newH = Math.max(300, resizeData.startH - dy); newT = resizeData.startT + dy; }
-  win.element.style.width = `${newW}px`; win.element.style.height = `${newH}px`; win.element.style.left = `${newL}px`; win.element.style.top = `${newT}px`;
+  if (!win || win.maximized) return;
+  let newW = resizeData.startW, newH = resizeData.startH,
+      newL = resizeData.startL, newT = resizeData.startT;
+  if (resizeData.dir.includes('e')) newW = Math.max(400, resizeData.startW + dx);
+  if (resizeData.dir.includes('w')) { newW = Math.max(400, resizeData.startW - dx); newL = resizeData.startL + (resizeData.startW - newW); }
+  if (resizeData.dir.includes('s')) newH = Math.max(300, resizeData.startH + dy);
+  if (resizeData.dir.includes('n')) { newH = Math.max(300, resizeData.startH - dy); newT = resizeData.startT + (resizeData.startH - newH); }
+  win.element.style.width  = `${newW}px`;
+  win.element.style.height = `${newH}px`;
+  win.element.style.left   = `${newL}px`;
+  win.element.style.top    = `${newT}px`;
   win.w = newW; win.h = newH; win.x = newL; win.y = newT;
 }
 
-function stopResize() { resizeData = null; document.removeEventListener('mousemove', onResize); document.removeEventListener('mouseup', stopResize); }
+function stopResize() {
+  resizeData = null;
+  document.removeEventListener('mousemove', onResize);
+  document.removeEventListener('mouseup', stopResize);
+}
 
 function setupWindowEvents(win, id) {
-  const header = win.querySelector('.window-header');
-  const minBtn = win.querySelector('.window-control.minimize');
-  const maxBtn = win.querySelector('.window-control.maximize');
+  const header  = win.querySelector('.window-header');
+  const minBtn  = win.querySelector('.window-control.minimize');
+  const maxBtn  = win.querySelector('.window-control.maximize');
   const closeBtn = win.querySelector('.window-control.close');
+
   win.addEventListener('mousedown', () => focusWindow(id));
+
   let drag = null;
   header.addEventListener('mousedown', (e) => {
-    if(e.target.closest('.window-controls')) return;
-    drag = { x: e.clientX, y: e.clientY, left: parseInt(win.style.left), top: parseInt(win.style.top) };
+    if (e.target.closest('.window-controls')) return;
+    const winData = windows.find(w => w.id === id);
+    if (winData && winData.maximized) return;
+    drag = { x: e.clientX, y: e.clientY, left: parseInt(win.style.left) || 0, top: parseInt(win.style.top) || 0 };
     document.addEventListener('mousemove', onDrag);
     document.addEventListener('mouseup', stopDrag);
   });
-  function onDrag(e) { if(!drag) return; win.style.left = `${drag.left + (e.clientX - drag.x)}px`; win.style.top = `${drag.top + (e.clientY - drag.y)}px`; }
-  function stopDrag() { drag = null; document.removeEventListener('mousemove', onDrag); document.removeEventListener('mouseup', stopDrag); }
-  minBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleMinimize(id); });
-  maxBtn.addEventListener('click', (e) => { e.stopPropagation(); toggleMaximize(id); });
+  function onDrag(e) {
+    if (!drag) return;
+    win.style.left = `${drag.left + (e.clientX - drag.x)}px`;
+    win.style.top  = `${drag.top  + (e.clientY - drag.y)}px`;
+  }
+  function stopDrag() {
+    drag = null;
+    document.removeEventListener('mousemove', onDrag);
+    document.removeEventListener('mouseup', stopDrag);
+  }
+
+  minBtn.addEventListener('click',  (e) => { e.stopPropagation(); toggleMinimize(id); });
+  maxBtn.addEventListener('click',  (e) => { e.stopPropagation(); toggleMaximize(id); });
   closeBtn.addEventListener('click', (e) => { e.stopPropagation(); closeWindow(id); });
   header.addEventListener('dblclick', () => toggleMaximize(id));
 }
 
 function focusWindow(id) {
   activeWindowId = id;
-  windows.forEach(win => {
-    win.element.classList.remove('active');
-    if(win.id === id) { win.element.classList.add('active'); win.element.style.zIndex = 100 + windows.findIndex(w => w.id === id); }
+  // Re-sort z-indices so active window is on top
+  const sortedIds = windows.map(w => w.id).filter(wid => wid !== id);
+  sortedIds.forEach((wid, i) => {
+    const w = windows.find(w => w.id === wid);
+    if (w) { w.element.classList.remove('active'); w.element.style.zIndex = 100 + i; }
   });
+  const active = windows.find(w => w.id === id);
+  if (active) { active.element.classList.add('active'); active.element.style.zIndex = 100 + windows.length; }
   updateTaskbar();
 }
 
 function toggleMinimize(id) {
   const win = windows.find(w => w.id === id);
-  if(win) { win.minimized = !win.minimized; win.element.classList.toggle('minimized', win.minimized); if(win.minimized && activeWindowId === id) { const next = windows.find(w => !w.minimized); if(next) focusWindow(next.id); else activeWindowId = null; } else if(!win.minimized) focusWindow(id); updateTaskbar(); }
+  if (!win) return;
+  win.minimized = !win.minimized;
+  win.element.classList.toggle('minimized', win.minimized);
+
+  if (win.minimized) {
+    // BUG FIX: find next window excluding the window being minimized
+    const next = windows.find(w => w.id !== id && !w.minimized);
+    if (next) focusWindow(next.id);
+    else activeWindowId = null;
+  } else {
+    focusWindow(id);
+  }
+  updateTaskbar();
 }
 
 function toggleMaximize(id) {
   const win = windows.find(w => w.id === id);
-  if(win) {
-    if(win.maximized) {
-      win.element.classList.remove('maximized');
-      win.element.style.width = `${win.w}px`; win.element.style.height = `${win.h}px`;
-      win.element.style.left = `${win.x}px`; win.element.style.top = `${win.y}px`;
-      win.maximized = false;
-    } else {
-      win.w = parseInt(win.element.style.width); win.h = parseInt(win.element.style.height);
-      win.x = parseInt(win.element.style.left); win.y = parseInt(win.element.style.top);
-      win.element.classList.add('maximized');
-      win.maximized = true;
-    }
-    updateTaskbar();
+  if (!win) return;
+  if (win.maximized) {
+    win.element.classList.remove('maximized');
+    win.element.style.width  = `${win.w}px`;
+    win.element.style.height = `${win.h}px`;
+    win.element.style.left   = `${win.x}px`;
+    win.element.style.top    = `${win.y}px`;
+    win.maximized = false;
+  } else {
+    // Save current dimensions before maximizing
+    win.w = parseInt(win.element.style.width)  || win.w;
+    win.h = parseInt(win.element.style.height) || win.h;
+    win.x = parseInt(win.element.style.left)   || win.x;
+    win.y = parseInt(win.element.style.top)    || win.y;
+    win.element.classList.add('maximized');
+    win.maximized = true;
   }
+  updateTaskbar();
 }
 
 function closeWindow(id) {
   const win = windows.find(w => w.id === id);
-  if(win) { win.element.remove(); windows = windows.filter(w => w.id !== id); if(activeWindowId === id) { const next = windows.find(w => !w.minimized); if(next) focusWindow(next.id); else activeWindowId = null; } updateTaskbar(); }
+  if (!win) return;
+  // Run any cleanup (e.g. snake game intervals / key listeners)
+  if (win.element._cleanup) win.element._cleanup();
+  win.element.remove();
+  windows = windows.filter(w => w.id !== id);
+  if (activeWindowId === id) {
+    const next = windows.find(w => !w.minimized);
+    if (next) focusWindow(next.id);
+    else activeWindowId = null;
+  }
+  updateTaskbar();
 }
 
 function updateTaskbar() {
   const container = document.getElementById('taskbarApps');
-  container.innerHTML = windows.map(win => `<div class="taskbar-app ${activeWindowId === win.id ? 'active' : ''}" data-id="${win.id}"><span>${win.app.icon}</span><span>${win.app.name}</span></div>`).join('');
+  container.innerHTML = windows.map(win => `
+    <div class="taskbar-app ${activeWindowId === win.id ? 'active' : ''} ${win.minimized ? '' : ''}" data-id="${win.id}">
+      <span>${win.app.icon}</span><span>${win.app.name}</span>
+    </div>`).join('');
   container.querySelectorAll('.taskbar-app').forEach(el => {
-    el.addEventListener('click', () => { const id = parseInt(el.dataset.id); const win = windows.find(w => w.id === id); if(win) { if(win.minimized) toggleMinimize(id); else focusWindow(id); } });
+    el.addEventListener('click', () => {
+      const id = parseInt(el.dataset.id);
+      const win = windows.find(w => w.id === id);
+      if (!win) return;
+      if (win.minimized) {
+        toggleMinimize(id);
+      } else if (activeWindowId === id) {
+        // Click active window → minimise it
+        toggleMinimize(id);
+      } else {
+        focusWindow(id);
+      }
+    });
   });
 }
 
 function updateTaskManager() {
   const container = document.getElementById('taskManagerList');
-  container.innerHTML = windows.map(win => `<div class="task-item"><div class="task-item-name"><span>${win.app.icon}</span><span>${win.app.name}</span></div><button class="task-item-close" data-id="${win.id}">End Task</button></div>`).join('');
-  container.querySelectorAll('.task-item-close').forEach(btn => { btn.onclick = () => closeWindow(parseInt(btn.dataset.id)); });
+  if (!windows.length) {
+    container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);">No running apps</div>';
+    return;
+  }
+  container.innerHTML = windows.map(win => `
+    <div class="task-item">
+      <div class="task-item-name"><span>${win.app.icon}</span><span>${win.app.name}</span></div>
+      <button class="task-item-close" data-id="${win.id}">End Task</button>
+    </div>`).join('');
+  container.querySelectorAll('.task-item-close').forEach(btn => {
+    btn.onclick = () => { closeWindow(parseInt(btn.dataset.id)); updateTaskManager(); };
+  });
 }
 
+// ─── App Launcher ─────────────────────────────────────────────────────────────
+
 function launchApp(app) {
+  // If already open, restore / focus
   const existing = windows.find(w => w.app?.id === app.id);
-  if(existing) { if(existing.minimized) toggleMinimize(existing.id); focusWindow(existing.id); return; }
-  if(app.isBuiltin) createGameHubWindow();
-  else if(app.isEmulator) createEmulatorWindow();
-  else if(app.appType) createAppWindow(app);
-  else if(app.url) window.open(app.url, '_blank');
+  if (existing) {
+    if (existing.minimized) toggleMinimize(existing.id);
+    focusWindow(existing.id);
+    return;
+  }
+  if (app.isBuiltin)  createGameHubWindow();
+  else if (app.isEmulator) createEmulatorWindow();
+  else if (app.appType)    createAppWindow(app);
+  else if (app.url)        window.open(app.url, '_blank');
   else createAppWindow(app);
 }
 
+// ─── Start Menu ───────────────────────────────────────────────────────────────
+
 function renderStartApps(search = '') {
   const container = document.getElementById('startApps');
-  let filtered = APPS;
-  if(search) filtered = APPS.filter(a => a.name.toLowerCase().includes(search.toLowerCase()));
-  container.innerHTML = filtered.map(app => `<div class="start-app" data-app-id="${app.id}"><div class="start-app-icon">${app.icon}</div><div class="start-app-name">${app.name}</div></div>`).join('');
+  const filtered = search
+    ? APPS.filter(a => a.name.toLowerCase().includes(search.toLowerCase()))
+    : APPS;
+  container.innerHTML = filtered.map(app =>
+    `<div class="start-app" data-app-id="${app.id}">
+      <div class="start-app-icon">${app.icon}</div>
+      <div class="start-app-name">${app.name}</div>
+    </div>`).join('');
   container.querySelectorAll('.start-app').forEach(el => {
-    el.addEventListener('click', () => { const app = APPS.find(a => a.id === el.dataset.appId); if(app) launchApp(app); toggleStartMenu(); });
+    el.addEventListener('click', () => {
+      const app = APPS.find(a => a.id === el.dataset.appId);
+      if (app) launchApp(app);
+      toggleStartMenu();
+    });
   });
 }
 
 function toggleStartMenu() {
   startMenuOpen = !startMenuOpen;
   document.getElementById('startMenu').classList.toggle('open', startMenuOpen);
-  if(startMenuOpen) { document.getElementById('startSearch').focus(); renderStartApps(''); }
+  if (startMenuOpen) {
+    renderStartApps('');
+    document.getElementById('startSearch').focus();
+  }
 }
+
+// ─── Boot / Game Search Menu ──────────────────────────────────────────────────
 
 function updateBootResults(query) {
   const container = document.getElementById('bootResults');
-  let results = query ? GAMES_DATA.filter(g => g.name.toLowerCase().includes(query.toLowerCase())).slice(0,10) : GAMES_DATA.slice(0,8);
+  const results = query
+    ? GAMES_DATA.filter(g => g.name.toLowerCase().includes(query.toLowerCase())).slice(0, 10)
+    : GAMES_DATA.slice(0, 8);
   currentBootResults = results;
-  selectedBootIndex = results.length > 0 ? 0 : -1;
-  if(!results.length) { container.innerHTML = '<div style="padding:20px;text-align:center;">no games found</div>'; return; }
-  container.innerHTML = results.map((game, idx) => `<div class="boot-result ${idx === selectedBootIndex ? 'selected' : ''}" data-index="${idx}"><div class="boot-result-icon">🎮</div><div class="boot-result-info"><div class="boot-result-name">${game.name}</div><div class="boot-result-desc">${game.category}</div></div></div>`).join('');
+
+  // BUG FIX: clamp selectedBootIndex into valid range
+  if (results.length === 0) {
+    selectedBootIndex = -1;
+    container.innerHTML = '<div style="padding:20px;text-align:center;color:var(--text-muted);">No games found</div>';
+    return;
+  }
+  if (selectedBootIndex < 0 || selectedBootIndex >= results.length) selectedBootIndex = 0;
+
+  container.innerHTML = results.map((game, idx) =>
+    `<div class="boot-result ${idx === selectedBootIndex ? 'selected' : ''}" data-index="${idx}">
+      <div class="boot-result-icon">🎮</div>
+      <div class="boot-result-info">
+        <div class="boot-result-name">${String(game.name).replace(/</g,'&lt;')}</div>
+        <div style="font-size:11px;color:var(--text-muted);">${String(game.category).replace(/</g,'&lt;')}</div>
+      </div>
+    </div>`).join('');
+
   container.querySelectorAll('.boot-result').forEach(el => {
-    el.addEventListener('click', () => { const game = currentBootResults[parseInt(el.dataset.index)]; if(game) showGameDetails(game); toggleBootMenu(); });
+    el.addEventListener('click', () => {
+      const game = currentBootResults[parseInt(el.dataset.index)];
+      if (game) { showGameDetails(game); toggleBootMenu(); }
+    });
   });
+
+  // BUG FIX: scroll selected item into view
+  const selected = container.querySelector('.boot-result.selected');
+  if (selected) selected.scrollIntoView({ block: 'nearest' });
 }
 
 function toggleBootMenu() {
   bootMenuOpen = !bootMenuOpen;
   document.getElementById('bootMenu').classList.toggle('open', bootMenuOpen);
-  if(bootMenuOpen) { document.getElementById('bootSearch').focus(); updateBootResults(''); }
+  if (bootMenuOpen) {
+    selectedBootIndex = 0;
+    document.getElementById('bootSearch').value = '';
+    document.getElementById('bootSearch').focus();
+    updateBootResults('');
+  }
 }
+
+// ─── Wallpaper ────────────────────────────────────────────────────────────────
 
 function uploadWallpaper() {
   const input = document.createElement('input');
   input.type = 'file'; input.accept = 'image/*';
   input.onchange = (e) => {
     const file = e.target.files[0];
-    if(file) {
-      const reader = new FileReader();
-      reader.onload = (ev) => {
-        localStorage.setItem('fanter_wallpaper', ev.target.result);
-        document.getElementById('desktopBg').style.backgroundImage = `url(${ev.target.result})`;
-        showToast('Wallpaper changed!');
-      };
-      reader.readAsDataURL(file);
-    }
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      localStorage.setItem('fanter_wallpaper', ev.target.result);
+      applyWallpaper(ev.target.result);
+      showToast('🖼️ Wallpaper changed!');
+    };
+    reader.readAsDataURL(file);
   };
   input.click();
 }
 
+function applyWallpaper(url) {
+  document.getElementById('desktopBg').style.backgroundImage = `url(${url})`;
+  document.getElementById('desktopBg').style.backgroundSize = 'cover';
+  document.getElementById('desktopBg').style.backgroundPosition = 'center';
+}
+
+// ─── Auth ─────────────────────────────────────────────────────────────────────
+
 async function handleLogin() {
-  const email = document.getElementById('loginEmail').value;
+  const email    = document.getElementById('loginEmail').value.trim();
   const password = document.getElementById('loginPassword').value;
-  if(!email || !password) { document.getElementById('loginError').textContent = 'Enter email and password'; return; }
+  const errEl    = document.getElementById('loginError');
+  errEl.textContent = '';
+  if (!email || !password) { errEl.textContent = 'Enter email and password'; return; }
   try {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if(error) throw error;
+    if (error) throw error;
     currentUser = data.user;
     localStorage.setItem('fanter_currentUser', JSON.stringify(currentUser));
-    document.getElementById('startUserName').textContent = currentUser.email?.split('@')[0] || 'User';
+    document.getElementById('startUserName').textContent  = currentUser.email?.split('@')[0] || 'User';
     document.getElementById('startUserEmail').textContent = currentUser.email;
-    showToast(`Welcome back!`);
     document.getElementById('loginScreen').classList.remove('visible');
     document.getElementById('desktop').classList.add('visible');
+    showToast('Welcome back! 🎉');
     initDesktop();
-  } catch(err) { document.getElementById('loginError').textContent = err.message; }
+  } catch(err) {
+    errEl.textContent = err.message || 'Login failed';
+  }
 }
 
 function showRegister() { window.location.href = 'fantaccount.html'; }
 
+// ─── Desktop Init ─────────────────────────────────────────────────────────────
+
 async function initDesktop() {
   await loadGames();
+
+  // Restore saved wallpaper
+  const savedWallpaper = localStorage.getItem('fanter_wallpaper');
+  if (savedWallpaper) applyWallpaper(savedWallpaper);
+
   renderDesktopIcons();
   updateClock();
-  
+  renderStartApps();
+
+  // Start button
   document.getElementById('startBtn').onclick = toggleStartMenu;
-  document.getElementById('startSearch').oninput = (e) => renderStartApps(e.target.value);
-  document.getElementById('bootSearch').oninput = (e) => updateBootResults(e.target.value);
-  document.getElementById('bootSearch').onkeydown = (e) => {
-    if(e.key === 'ArrowDown') { e.preventDefault(); if(selectedBootIndex < currentBootResults.length - 1) { selectedBootIndex++; updateBootResults(document.getElementById('bootSearch').value); } }
-    else if(e.key === 'ArrowUp') { e.preventDefault(); if(selectedBootIndex > 0) { selectedBootIndex--; updateBootResults(document.getElementById('bootSearch').value); } }
-    else if(e.key === 'Enter') { e.preventDefault(); if(currentBootResults[selectedBootIndex]) { showGameDetails(currentBootResults[selectedBootIndex]); toggleBootMenu(); } }
-  };
-  document.getElementById('datetimeBtn').onclick = () => document.getElementById('quickSettings').classList.toggle('open');
-  document.getElementById('closeQuickSettings').onclick = () => document.getElementById('quickSettings').classList.remove('open');
-  document.getElementById('qsTaskManager').onclick = () => { updateTaskManager(); document.getElementById('taskManager').classList.add('open'); };
-  document.getElementById('qsSettings').onclick = () => window.location.href = 'settings.html';
-  document.getElementById('closeTaskManager').onclick = () => document.getElementById('taskManager').classList.remove('open');
-  document.getElementById('quickGameSearch').addEventListener('input', (e) => {
-    const term = e.target.value.toLowerCase();
-    if(term.length > 1) {
-      const results = GAMES_DATA.filter(g => g.name.toLowerCase().includes(term));
-      if(results.length) showToast(`Found ${results.length} games. Press Ctrl+K to see all`);
+
+  // Close start menu when clicking outside
+  document.addEventListener('mousedown', (e) => {
+    if (startMenuOpen && !e.target.closest('#startMenu') && !e.target.closest('#startBtn')) {
+      startMenuOpen = false;
+      document.getElementById('startMenu').classList.remove('open');
     }
   });
-  
+
+  // Start search
+  document.getElementById('startSearch').oninput = (e) => renderStartApps(e.target.value);
+
+  // Boot menu search & keyboard
+  document.getElementById('bootSearch').oninput = (e) => {
+    selectedBootIndex = 0;
+    updateBootResults(e.target.value);
+  };
+  document.getElementById('bootSearch').onkeydown = (e) => {
+    if (e.key === 'ArrowDown') {
+      e.preventDefault();
+      if (selectedBootIndex < currentBootResults.length - 1) { selectedBootIndex++; updateBootResults(document.getElementById('bootSearch').value); }
+    } else if (e.key === 'ArrowUp') {
+      e.preventDefault();
+      if (selectedBootIndex > 0) { selectedBootIndex--; updateBootResults(document.getElementById('bootSearch').value); }
+    } else if (e.key === 'Enter') {
+      e.preventDefault();
+      const game = currentBootResults[selectedBootIndex];
+      if (game) { showGameDetails(game); toggleBootMenu(); }
+    }
+  };
+
+  // Datetime / quick settings toggle
+  document.getElementById('datetimeBtn').onclick = (e) => {
+    e.stopPropagation();
+    document.getElementById('quickSettings').classList.toggle('open');
+  };
+  document.getElementById('closeQuickSettings').onclick = () => document.getElementById('quickSettings').classList.remove('open');
+
+  // Close quick settings on outside click
+  document.addEventListener('mousedown', (e) => {
+    const qs = document.getElementById('quickSettings');
+    if (qs.classList.contains('open') && !e.target.closest('#quickSettings') && !e.target.closest('#datetimeBtn')) {
+      qs.classList.remove('open');
+    }
+  });
+
+  document.getElementById('qsTaskManager').onclick = () => { updateTaskManager(); document.getElementById('taskManager').classList.add('open'); document.getElementById('quickSettings').classList.remove('open'); };
+  document.getElementById('qsSettings').onclick    = () => window.location.href = 'settings.html';
+  document.getElementById('closeTaskManager').onclick = () => document.getElementById('taskManager').classList.remove('open');
+
+  // Quick game search
+  document.getElementById('quickGameSearch').addEventListener('input', (e) => {
+    const term = e.target.value.toLowerCase();
+    if (term.length > 1) {
+      const results = GAMES_DATA.filter(g => g.name.toLowerCase().includes(term));
+      if (results.length) showToast(`Found ${results.length} game${results.length !== 1 ? 's' : ''} — press Ctrl+K`);
+    }
+  });
+
+  // Virtual desktops
   document.querySelectorAll('.desktop-switch').forEach(btn => {
     btn.onclick = () => {
       currentDesktop = parseInt(btn.dataset.desktop);
       document.querySelectorAll('.desktop-switch').forEach(b => b.classList.remove('active'));
       btn.classList.add('active');
-      windows.forEach(win => { if(win.desktop !== currentDesktop) win.element.style.display = 'none'; else win.element.style.display = 'flex'; });
+      windows.forEach(win => {
+        win.element.style.display = win.desktop === currentDesktop ? 'flex' : 'none';
+      });
+      updateTaskbar();
       showToast(`Desktop ${currentDesktop}`);
     };
   });
-  document.querySelector('.desktop-switch')?.classList.add('active');
-  
-  document.getElementById('ctxRefresh').onclick = () => location.reload();
-  document.getElementById('ctxWallpaper').onclick = uploadWallpaper;
-  document.getElementById('ctxTaskManager').onclick = () => { updateTaskManager(); document.getElementById('taskManager').classList.add('open'); };
-  document.getElementById('desktopBg').oncontextmenu = (e) => {
+  document.querySelector('.desktop-switch[data-desktop="1"]')?.classList.add('active');
+
+  // Context menu on desktop background
+  const ctxMenu = document.getElementById('contextMenu');
+  document.getElementById('desktopBg').addEventListener('contextmenu', (e) => {
     e.preventDefault();
-    const menu = document.getElementById('contextMenu');
-    menu.style.left = `${e.clientX}px`; menu.style.top = `${e.clientY}px`;
-    menu.classList.add('visible');
-    setTimeout(() => document.addEventListener('click', () => menu.classList.remove('visible'), { once: true }), 10);
-  };
-  
-  document.addEventListener('keydown', (e) => {
-    if((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); toggleBootMenu(); }
-    if(e.key === 'Escape') { if(bootMenuOpen) toggleBootMenu(); if(startMenuOpen) toggleStartMenu(); }
-    if((e.ctrlKey || e.metaKey) && e.key === 'w') { e.preventDefault(); if(activeWindowId) closeWindow(activeWindowId); }
-    if((e.ctrlKey || e.metaKey) && e.key === 'm') { e.preventDefault(); if(activeWindowId) toggleMinimize(activeWindowId); }
+    ctxMenu.style.left = `${Math.min(e.clientX, window.innerWidth - 210)}px`;
+    ctxMenu.style.top  = `${Math.min(e.clientY, window.innerHeight - 120)}px`;
+    ctxMenu.classList.add('visible');
+
+    // BUG FIX: remove previous handler if it exists, then add a new one
+    // using mousedown (not click) and a small delay so this event doesn't self-dismiss
+    if (contextMenuDismissHandler) {
+      document.removeEventListener('mousedown', contextMenuDismissHandler);
+    }
+    setTimeout(() => {
+      contextMenuDismissHandler = () => { ctxMenu.classList.remove('visible'); };
+      document.addEventListener('mousedown', contextMenuDismissHandler, { once: true });
+    }, 10);
   });
-  
+  document.getElementById('ctxRefresh').onclick     = () => location.reload();
+  document.getElementById('ctxWallpaper').onclick   = uploadWallpaper;
+  document.getElementById('ctxTaskManager').onclick = () => { updateTaskManager(); document.getElementById('taskManager').classList.add('open'); };
+
+  // Keyboard shortcuts
+  document.addEventListener('keydown', (e) => {
+    if ((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); toggleBootMenu(); }
+    if (e.key === 'Escape') {
+      if (bootMenuOpen)  toggleBootMenu();
+      if (startMenuOpen) toggleStartMenu();
+      document.getElementById('gameModal').classList.remove('open');
+    }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'w') { e.preventDefault(); if (activeWindowId !== null) closeWindow(activeWindowId); }
+    if ((e.ctrlKey || e.metaKey) && e.key === 'm') { e.preventDefault(); if (activeWindowId !== null) toggleMinimize(activeWindowId); }
+  });
+
+  // Close game modal on background click
+  document.getElementById('gameModal').addEventListener('click', (e) => {
+    if (e.target === document.getElementById('gameModal')) {
+      document.getElementById('gameModal').classList.remove('open');
+    }
+  });
+
+  // Launch game hub on startup
   setTimeout(() => {
-    const gameHub = APPS.find(a => a.id === 'gamehub');
-    if(gameHub) createGameHubWindow();
+    createGameHubWindow();
     showToast('🎉 Welcome to fanterOS! Right-click desktop for options');
   }, 500);
 }
 
+// ─── Bootstrap ────────────────────────────────────────────────────────────────
+
 document.getElementById('loginBtn').onclick = handleLogin;
+document.getElementById('loginEmail').addEventListener('keydown', (e) => { if (e.key === 'Enter') handleLogin(); });
+document.getElementById('loginPassword').addEventListener('keydown', (e) => { if (e.key === 'Enter') handleLogin(); });
 document.getElementById('showRegister').onclick = showRegister;
 document.getElementById('loginScreen').classList.add('visible');
 </script>
