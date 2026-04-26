@@ -233,7 +233,56 @@
     ::-webkit-scrollbar-thumb{background:rgba(255,255,255,0.15);border-radius:3px}
     
     @media (max-width:768px){.desktop-icons-left,.desktop-icons-right,.recent-apps-row,.sound-control{display:none}.window{min-width:90vw;left:5vw!important;right:5vw!important}}
+
+    /* drag recent apps */
+    
+    .recent-apps-row {
+    position: absolute;
+    bottom: 80px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--bg-glass);
+    backdrop-filter: blur(20px);
+    border: 1px solid var(--border-glass);
+    border-radius: 20px;
+    padding: 10px 20px;
+    z-index: 15;
+    display: flex;
+    gap: 15px;
+    white-space: nowrap;
+    cursor: grab;
+    transition: all 0.1s ease;
+}
+.recent-apps-row.dragging {
+    cursor: grabbing;
+    opacity: 0.8;
+}
+.recent-apps-row.snapping {
+    transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+}
+
+  /* dragging widgets */
+
+    .widget {
+    cursor: grab;
+    position: relative;
+}
+.widget.dragging {
+    cursor: grabbing;
+    opacity: 0.7;
+    z-index: 1000;
+}
+.widget.snapping {
+    transition: all 0.3s cubic-bezier(0.2, 0.9, 0.4, 1.1);
+}
+    
+
+    
   </style>
+
+
+
+  
 </head>
 <body>
 
@@ -600,6 +649,8 @@ let DESKTOP_ICONS_LEFT = [
 ];
 
 let DESKTOP_ICONS_RIGHT = [
+    { id: 'gamehub', icon: '🎮', label: 'Game Hub', category: 'games' },
+    { id: 'flashgames', icon: '⚡', label: 'Flash Games', category: 'games', iconUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcRyT2jnbsFTNI1TsyzRqTvixcENBsmsN8nknw&s' },
     { id: 'tetris', icon: '🧩', label: 'Tetris', category: 'games', iconUrl: 'https://tetris.wiki/images/thumb/5/52/Tetris_%28N3TWORK%29_icon.png/220px-Tetris_%28N3TWORK%29_icon.png' },
     { id: 'solitaire', icon: '🃏', label: 'Solitaire', category: 'games', iconUrl: 'https://play-lh.googleusercontent.com/1ywLh7-1RvXuE40IcxXL3vU4LhdkcopUOxJrrZjRlyZX-b_4zgXd2Hc5EyyWwmfruns' },
     { id: 'connectfour', icon: '🔴', label: 'Connect Four', category: 'games', iconUrl: 'https://m.media-amazon.com/images/I/71WIAdYrTiL.png' },
@@ -681,46 +732,99 @@ function renderDesktopIcons() {
     const leftContainer = document.getElementById('desktopIconsLeft');
     const rightContainer = document.getElementById('desktopIconsRight');
     
-    // Combine default + pinned apps
     const allLeftIcons = [...DESKTOP_ICONS_LEFT];
     const pinnedLeftIcons = pinnedApps.filter(p => p.category !== 'games').map(p => ({ id: p.id, icon: p.icon, label: p.name, category: p.category, isPinned: true, iconUrl: p.iconUrl }));
     const allRightIcons = [...DESKTOP_ICONS_RIGHT];
     const pinnedRightIcons = pinnedApps.filter(p => p.category === 'games').map(p => ({ id: p.id, icon: p.icon, label: p.name, category: p.category, isPinned: true, iconUrl: p.iconUrl }));
     
-    leftContainer.innerHTML = [...allLeftIcons, ...pinnedLeftIcons].map(icon => `
-        <div class="desktop-icon" data-id="${icon.id}" style="animation-delay:0.1s">
-            <div class="icon">${icon.iconUrl ? `<img src="${icon.iconUrl}" onerror="this.style.display='none';this.parentElement.innerHTML='${icon.icon}'">` : icon.icon}</div>
-            <div class="label">${icon.label}</div>
-            <div class="unpin-btn" data-id="${icon.id}">✕</div>
-        </div>
-    `).join('');
+    // Load saved positions
+    let savedPositions = JSON.parse(localStorage.getItem('desktopIconPositions') || '{}');
     
-    rightContainer.innerHTML = [...allRightIcons, ...pinnedRightIcons].map(icon => `
-        <div class="desktop-icon" data-id="${icon.id}" style="animation-delay:0.4s">
-            <div class="icon">${icon.iconUrl ? `<img src="${icon.iconUrl}" onerror="this.style.display='none';this.parentElement.innerHTML='${icon.icon}'">` : icon.icon}</div>
-            <div class="label">${icon.label}</div>
-            <div class="unpin-btn" data-id="${icon.id}">✕</div>
-        </div>
-    `).join('');
+    leftContainer.innerHTML = [...allLeftIcons, ...pinnedLeftIcons].map((icon, idx) => {
+        const pos = savedPositions[icon.id] || { x: 20, y: 20 + idx * 95 };
+        return `
+            <div class="desktop-icon" data-id="${icon.id}" style="left: ${pos.x}px; top: ${pos.y}px; position: absolute; animation: none;">
+                <div class="icon">${icon.iconUrl ? `<img src="${icon.iconUrl}" onerror="this.style.display='none';this.parentElement.innerHTML='${icon.icon}'">` : icon.icon}</div>
+                <div class="label">${icon.label}</div>
+                <div class="unpin-btn" data-id="${icon.id}">✕</div>
+            </div>
+        `;
+    }).join('');
     
+    rightContainer.innerHTML = [...allRightIcons, ...pinnedRightIcons].map((icon, idx) => {
+        const pos = savedPositions[icon.id] || { x: window.innerWidth - 115, y: 20 + idx * 95 };
+        return `
+            <div class="desktop-icon" data-id="${icon.id}" style="left: ${pos.x}px; top: ${pos.y}px; position: absolute; animation: none;">
+                <div class="icon">${icon.iconUrl ? `<img src="${icon.iconUrl}" onerror="this.style.display='none';this.parentElement.innerHTML='${icon.icon}'">` : icon.icon}</div>
+                <div class="label">${icon.label}</div>
+                <div class="unpin-btn" data-id="${icon.id}">✕</div>
+            </div>
+        `;
+    }).join('');
+    
+    // Make icons draggable
     document.querySelectorAll('.desktop-icon').forEach(el => {
+        let isDragging = false;
+        let dragStartX = 0, dragStartY = 0;
+        let originalLeft = 0, originalTop = 0;
+        
+        el.addEventListener('mousedown', (e) => {
+            if (e.target.classList.contains('unpin-btn')) return;
+            isDragging = true;
+            dragStartX = e.clientX;
+            dragStartY = e.clientY;
+            originalLeft = parseFloat(el.style.left);
+            originalTop = parseFloat(el.style.top);
+            el.style.zIndex = '1000';
+            el.style.opacity = '0.8';
+            e.preventDefault();
+        });
+        
+        document.addEventListener('mousemove', (e) => {
+            if (!isDragging) return;
+            const dx = e.clientX - dragStartX;
+            const dy = e.clientY - dragStartY;
+            let newLeft = originalLeft + dx;
+            let newTop = originalTop + dy;
+            newLeft = Math.max(5, Math.min(newLeft, window.innerWidth - 100));
+            newTop = Math.max(5, Math.min(newTop, window.innerHeight - 100));
+            el.style.left = `${newLeft}px`;
+            el.style.top = `${newTop}px`;
+        });
+        
+        document.addEventListener('mouseup', () => {
+            if (isDragging) {
+                isDragging = false;
+                el.style.zIndex = '';
+                el.style.opacity = '';
+                // Save position
+                const positions = JSON.parse(localStorage.getItem('desktopIconPositions') || '{}');
+                positions[el.dataset.id] = { x: parseFloat(el.style.left), y: parseFloat(el.style.top) };
+                localStorage.setItem('desktopIconPositions', JSON.stringify(positions));
+            }
+        });
+        
         el.addEventListener('click', (e) => {
             if (e.target.classList.contains('unpin-btn')) return;
-            const app = ALL_APPS.find(a => a.id === el.dataset.id);
-            if (app) launchApp(app);
-            playSound('click');
+            if (!isDragging) {
+                const app = ALL_APPS.find(a => a.id === el.dataset.id);
+                if (app) launchApp(app);
+                playSound('click');
+            }
         });
+        
         const unpinBtn = el.querySelector('.unpin-btn');
         if (unpinBtn) {
             unpinBtn.addEventListener('click', (e) => {
                 e.stopPropagation();
                 unpinAppFromDesktop(unpinBtn.dataset.id);
+                el.remove(); // Remove from dOM immediately
             });
         }
     });
 }
 
-// -------------------- WINDOW MANAGEMENT --------------------
+// -------------------- WINDOW MANAGEMENT -------------------- (brr brr patapim is cracking bro) \\
 function createGameHubWindow() {
     const id = nextWindowId++;
     const win = document.createElement('div');
@@ -1751,6 +1855,181 @@ if (!savedUser || JSON.parse(savedUser).username === 'Guest') {
 
 document.getElementById('loginBtn').onclick = handleLogin;
 document.getElementById('showRegister').onclick = showRegister;
+
+  // Make recent apps row draggable and snappable
+let isDraggingRecent = false;
+let dragStartX = 0, dragStartY = 0;
+let recentStartLeft = 0, recentStartBottom = 80;
+let recentSnapPosition = 'center'; // 'center', 'left', 'right'
+
+const recentRow = document.getElementById('recentAppsRow');
+const taskbar = document.getElementById('taskbar');
+
+function snapRecentToPosition() {
+    const taskbarRect = taskbar.getBoundingClientRect();
+    const recentRect = recentRow.getBoundingClientRect();
+    const centerX = window.innerWidth / 2 - recentRect.width / 2;
+    const leftX = 20;
+    const rightX = window.innerWidth - recentRect.width - 20;
+    
+    if (recentSnapPosition === 'center') {
+        recentRow.style.left = `${centerX}px`;
+        recentRow.style.bottom = '80px';
+        recentRow.style.transform = 'none';
+    } else if (recentSnapPosition === 'left') {
+        recentRow.style.left = `${leftX}px`;
+        recentRow.style.bottom = '80px';
+        recentRow.style.transform = 'none';
+    } else if (recentSnapPosition === 'right') {
+        recentRow.style.left = `${rightX}px`;
+        recentRow.style.bottom = '80px';
+        recentRow.style.transform = 'none';
+    }
+    localStorage.setItem('recentSnapPosition', recentSnapPosition);
+}
+
+function checkSnapPosition() {
+    const taskbarRect = taskbar.getBoundingClientRect();
+    const recentRect = recentRow.getBoundingClientRect();
+    const centerX = window.innerWidth / 2 - recentRect.width / 2;
+    const leftX = 20;
+    const rightX = window.innerWidth - recentRect.width - 20;
+    
+    const currentLeft = parseFloat(recentRow.style.left);
+    
+    // Check which position is closest
+    const distToCenter = Math.abs(currentLeft - centerX);
+    const distToLeft = Math.abs(currentLeft - leftX);
+    const distToRight = Math.abs(currentLeft - rightX);
+    
+    if (distToCenter < distToLeft && distToCenter < distToRight) {
+        recentSnapPosition = 'center';
+    } else if (distToLeft < distToCenter && distToLeft < distToRight) {
+        recentSnapPosition = 'left';
+    } else {
+        recentSnapPosition = 'right';
+    }
+    
+    recentRow.classList.add('snapping');
+    snapRecentToPosition();
+    setTimeout(() => recentRow.classList.remove('snapping'), 300);
+}
+
+recentRow.addEventListener('mousedown', (e) => {
+    if (e.target.closest('.recent-app-item')) return;
+    isDraggingRecent = true;
+    dragStartX = e.clientX;
+    dragStartY = e.clientY;
+    recentStartLeft = parseFloat(recentRow.style.left) || (window.innerWidth / 2 - recentRow.offsetWidth / 2);
+    recentRow.classList.add('dragging');
+    recentRow.style.transition = 'none';
+    e.preventDefault();
+});
+
+document.addEventListener('mousemove', (e) => {
+    if (!isDraggingRecent) return;
+    const dx = e.clientX - dragStartX;
+    let newLeft = recentStartLeft + dx;
+    newLeft = Math.max(10, Math.min(newLeft, window.innerWidth - recentRow.offsetWidth - 10));
+    recentRow.style.left = `${newLeft}px`;
+    recentRow.style.bottom = '80px';
+    recentRow.style.transform = 'none';
+});
+
+document.addEventListener('mouseup', () => {
+    if (isDraggingRecent) {
+        isDraggingRecent = false;
+        recentRow.classList.remove('dragging');
+        recentRow.style.transition = '';
+        checkSnapPosition();
+    }
+});
+
+// Load saved snap position
+const savedSnapPos = localStorage.getItem('recentSnapPosition');
+if (savedSnapPos) {
+    recentSnapPosition = savedSnapPos;
+    snapRecentToPosition();
+} else {
+    snapRecentToPosition();
+}
+
+  // Make widgets draggable
+let isDraggingWidget = false;
+let currentWidget = null;
+let widgetStartX = 0, widgetStartY = 0;
+let widgetOriginalLeft = 0, widgetOriginalTop = 0;
+let widgetPositions = JSON.parse(localStorage.getItem('widgetPositions') || '{}');
+
+function saveWidgetPositions() {
+    localStorage.setItem('widgetPositions', JSON.stringify(widgetPositions));
+}
+
+function positionWidgets() {
+    document.querySelectorAll('.widget').forEach(widget => {
+        const id = widget.id;
+        if (widgetPositions[id]) {
+            widget.style.position = 'absolute';
+            widget.style.left = `${widgetPositions[id].left}px`;
+            widget.style.top = `${widgetPositions[id].top}px`;
+            widget.style.margin = '0';
+        } else {
+            widget.style.position = 'relative';
+            widget.style.left = '';
+            widget.style.top = '';
+        }
+    });
+}
+
+document.querySelectorAll('.widget').forEach(widget => {
+    widget.addEventListener('mousedown', (e) => {
+        if (e.target.closest('.widget-title') || e.target === widget || widget.contains(e.target)) {
+            isDraggingWidget = true;
+            currentWidget = widget;
+            const rect = widget.getBoundingClientRect();
+            widgetStartX = e.clientX - rect.left;
+            widgetStartY = e.clientY - rect.top;
+            
+            if (!widget.style.position || widget.style.position !== 'absolute') {
+                const rect = widget.getBoundingClientRect();
+                widget.style.position = 'absolute';
+                widget.style.left = `${rect.left}px`;
+                widget.style.top = `${rect.top}px`;
+                widget.style.margin = '0';
+            }
+            widgetOriginalLeft = parseFloat(widget.style.left);
+            widgetOriginalTop = parseFloat(widget.style.top);
+            widget.classList.add('dragging');
+            widget.style.transition = 'none';
+            e.preventDefault();
+        }
+    });
+});
+
+document.addEventListener('mousemove', (e) => {
+    if (!isDraggingWidget || !currentWidget) return;
+    const newLeft = e.clientX - widgetStartX;
+    const newTop = e.clientY - widgetStartY;
+    currentWidget.style.left = `${Math.max(5, Math.min(newLeft, window.innerWidth - currentWidget.offsetWidth - 5))}px`;
+    currentWidget.style.top = `${Math.max(5, Math.min(newTop, window.innerHeight - 120))}px`;
+});
+
+document.addEventListener('mouseup', () => {
+    if (isDraggingWidget && currentWidget) {
+        isDraggingWidget = false;
+        currentWidget.classList.remove('dragging');
+        currentWidget.style.transition = '';
+        widgetPositions[currentWidget.id] = {
+            left: parseFloat(currentWidget.style.left),
+            top: parseFloat(currentWidget.style.top)
+        };
+        saveWidgetPositions();
+        currentWidget = null;
+        showToast('Widget position saved');
+    }
+});
+
+positionWidgets();
 </script>
 </body>
 </html>
