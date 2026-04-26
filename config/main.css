@@ -1614,3 +1614,67 @@ body {
     flex-direction: column;
   }
 }
+
+/* Recent Apps inside Taskbar */
+.taskbar-recent {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  height: 100%;
+  padding: 0 8px;
+  margin-left: 8px;
+  border-left: 1px solid var(--border-glass);
+}
+
+.recent-separator {
+  width: 1px;
+  height: 24px;
+  background: var(--border-glass);
+  margin: 0 4px;
+}
+
+.recent-apps-list {
+  display: flex;
+  gap: 6px;
+  align-items: center;
+}
+
+/* Style for recent app items inside the taskbar */
+.taskbar-recent .recent-app-item {
+  display: flex;
+  align-items: center;
+  gap: 4px;
+  padding: 4px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: all 0.2s ease;
+  background: rgba(255, 255, 255, 0.05);
+}
+
+.taskbar-recent .recent-app-item:hover {
+  background: rgba(255, 255, 255, 0.15);
+  transform: translateY(-1px);
+}
+
+.taskbar-recent .recent-app-icon {
+  font-size: 14px;
+}
+
+.taskbar-recent .recent-app-icon img {
+  width: 16px;
+  height: 16px;
+  border-radius: 4px;
+}
+
+.taskbar-recent .recent-app-name {
+  font-size: 10px;
+  max-width: 60px;
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* Hide the old floating recent apps row */
+.recent-apps-row {
+  display: none !important;
+}
