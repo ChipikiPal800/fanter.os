@@ -5,13 +5,14 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>fanterOS</title>
   <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
   <style>
     *{margin:0;padding:0;box-sizing:border-box;user-select:none;-webkit-user-select:none}
     :root{--accent:#7c5cff;--bg-glass:rgba(15,15,25,0.85);--border-glass:rgba(255,255,255,0.08);--text-primary:#f0f0ff;--text-secondary:#a0a0c0;--text-muted:#606080;--danger:#ff5e5e;--success:#4cd964;--warning:#ffcc00}
     body{font-family:'Inter',sans-serif;background:#0a0a0f;height:100vh;overflow:hidden;color:var(--text-primary)}
     
     @keyframes slideUp{0%{transform:translateY(20px);opacity:0}100%{transform:translateY(0);opacity:1}}
-    @keyframes windowPop{0%{transform:scale(0.8) translate(0,0);opacity:0}100%{transform:scale(1) translate(0,0);opacity:1}}
+    @keyframes windowPop{0%{transform:scale(0.3) translate(0,0);opacity:0}100%{transform:scale(1) translate(0,0);opacity:1}}
     @keyframes windowCloseAnim{0%{transform:scale(1);opacity:1}100%{transform:scale(0.2) translateY(100px);opacity:0}}
     @keyframes fadeIn{0%{opacity:0}100%{opacity:1}}
     
@@ -20,7 +21,7 @@
     .login-screen::before{content:'';position:absolute;top:0;left:0;width:100%;height:100%;background:rgba(0,0,0,0.6);backdrop-filter:blur(8px)}
     .login-screen.visible{opacity:1;visibility:visible}
     .login-card{position:relative;z-index:10;background:var(--bg-glass);backdrop-filter:blur(20px);border:1px solid var(--border-glass);border-radius:32px;padding:40px;width:400px;text-align:center;animation:slideUp 0.4s ease}
-    .login-logo img{width:80px;height:80px;object-fit:contain;margin-bottom:16px}
+    .login-logo img{width:80px;height:80px;object-fit:contain;margin-bottom:16px;border-radius:16px}
     .login-title{font-size:24px;font-weight:600;margin-bottom:8px}
     .login-sub{font-size:13px;color:var(--text-muted);margin-bottom:30px}
     .login-input{width:100%;padding:14px 16px;background:rgba(0,0,0,0.4);border:1px solid var(--border-glass);border-radius:16px;color:white;font-size:14px;margin-bottom:12px;outline:none}
@@ -28,6 +29,8 @@
     .login-btn{width:100%;padding:14px;background:linear-gradient(135deg,var(--accent),#5a3cc9);border:none;border-radius:16px;color:white;font-size:15px;font-weight:600;cursor:pointer;margin-top:8px}
     .login-btn:hover{transform:translateY(-2px)}
     .login-error{font-size:12px;color:var(--danger);margin-top:12px}
+    .register-link{margin-top:20px;font-size:13px;color:var(--text-muted);cursor:pointer}
+    .register-link span{color:var(--accent)}
     
     /* Desktop */
     .desktop{position:fixed;top:0;left:0;width:100%;height:100%;opacity:0;visibility:hidden;transition:opacity 0.5s ease;z-index:1}
@@ -41,9 +44,10 @@
     .desktop-icon{display:flex;flex-direction:column;align-items:center;width:85px;padding:10px 6px;border-radius:14px;cursor:pointer;transition:all 0.2s ease}
     .desktop-icon:hover{background:rgba(255,255,255,0.15);transform:translateY(-3px)}
     .desktop-icon .icon{font-size:36px;margin-bottom:6px}
+    .desktop-icon .icon img{width:36px;height:36px;border-radius:12px;object-fit:cover}
     .desktop-icon .label{font-size:11px;text-align:center;color:white;font-weight:500}
     
-    /* Widgets - hidden by default */
+    /* Widgets */
     .desktop-widgets{position:absolute;bottom:80px;left:20px;display:none;gap:12px;z-index:15}
     .desktop-widgets.visible{display:flex}
     .widget{background:var(--bg-glass);backdrop-filter:blur(20px);border:1px solid var(--border-glass);border-radius:20px;padding:12px;min-width:120px;cursor:pointer}
@@ -52,10 +56,10 @@
     .widget-time{font-size:28px;font-weight:600;font-family:monospace}
     .widget-date{font-size:10px;color:var(--text-secondary);margin-top:4px}
     .calendar-day{font-size:32px;font-weight:600}
+    .battery-level{font-size:28px;font-weight:600;font-family:monospace}
+    .battery-status{font-size:10px;color:var(--text-secondary);margin-top:4px}
     .weather-temp{font-size:24px;font-weight:600}
     .weather-condition{font-size:10px;color:var(--text-secondary)}
-    .cpu-meter{width:100%;height:4px;background:rgba(255,255,255,0.1);border-radius:2px;margin-top:8px}
-    .cpu-fill{width:0%;height:100%;background:var(--success);border-radius:2px}
     
     /* Widgets Panel */
     .widgets-panel{position:fixed;bottom:56px;right:12px;width:250px;background:var(--bg-glass);backdrop-filter:blur(24px);border-radius:16px;border:1px solid var(--border-glass);z-index:1002;transform:translateY(20px);opacity:0;visibility:hidden;transition:all 0.2s}
@@ -64,10 +68,10 @@
     .widgets-panel-item{padding:10px 16px;display:flex;justify-content:space-between;align-items:center;cursor:pointer}
     .widgets-panel-item:hover{background:rgba(255,255,255,0.05)}
     
-    /* Taskbar - NO HOVER ANIMATION */
+    /* Taskbar */
     .taskbar{position:fixed;bottom:0;left:0;right:0;height:48px;background:var(--bg-glass);backdrop-filter:blur(20px);border-top:1px solid var(--border-glass);display:flex;align-items:center;justify-content:space-between;padding:0 12px;z-index:1000}
     .start-btn{display:flex;align-items:center;gap:8px;padding:6px 16px;background:linear-gradient(135deg,var(--accent),#5a3cc9);border-radius:10px;cursor:pointer;font-weight:600;font-size:13px}
-    .start-btn img{width:24px;height:24px;object-fit:contain;border-radius:4px}
+    .start-btn img{width:24px;height:24px;object-fit:contain;border-radius:6px}
     .start-btn:hover{transform:scale(1.02)}
     .taskbar-apps{display:flex;gap:4px;flex:1;margin:0 12px;overflow-x:auto}
     .taskbar-app{padding:6px 14px;background:rgba(255,255,255,0.08);border-radius:10px;cursor:pointer;display:flex;align-items:center;gap:8px;font-size:12px}
@@ -80,18 +84,20 @@
     .taskbar-date{font-size:9px;color:var(--text-muted)}
     
     /* Start Menu */
-    .start-menu{position:fixed;bottom:56px;left:12px;width:420px;background:var(--bg-glass);backdrop-filter:blur(24px);border-radius:16px;border:1px solid var(--border-glass);z-index:1001;transform:translateY(20px) scale(0.98);opacity:0;visibility:hidden;transition:all 0.2s;overflow:hidden}
+    .start-menu{position:fixed;bottom:56px;left:12px;width:450px;background:var(--bg-glass);backdrop-filter:blur(24px);border-radius:16px;border:1px solid var(--border-glass);z-index:1001;transform:translateY(20px) scale(0.98);opacity:0;visibility:hidden;transition:all 0.2s;overflow:hidden}
     .start-menu.open{transform:translateY(0) scale(1);opacity:1;visibility:visible}
     .start-header{padding:20px;background:linear-gradient(135deg,rgba(124,92,255,0.2),rgba(124,92,255,0.05));border-bottom:1px solid var(--border-glass);display:flex;align-items:center;gap:12px}
     .start-avatar{width:48px;height:48px;background:var(--accent);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:24px}
     .start-user-info{flex:1}
     .start-user-name{font-weight:600;font-size:16px}
+    .start-user-email{font-size:11px;color:var(--text-muted)}
     .start-search{padding:12px 16px;border-bottom:1px solid var(--border-glass)}
     .start-search input{width:100%;padding:10px 14px;background:rgba(0,0,0,0.3);border:1px solid var(--border-glass);border-radius:12px;color:white;font-size:13px;outline:none}
     .start-apps{display:grid;grid-template-columns:repeat(3,1fr);gap:8px;padding:16px;max-height:350px;overflow-y:auto}
     .start-app{display:flex;flex-direction:column;align-items:center;gap:6px;padding:10px;border-radius:12px;cursor:pointer}
-    .start-app:hover{background:rgba(255,255,255,0.1)}
+    .start-app:hover{background:rgba(255,255,255,0.1);transform:translateY(-2px)}
     .start-app-icon{font-size:28px}
+    .start-app-icon img{width:28px;height:28px;border-radius:8px}
     .start-app-name{font-size:11px;text-align:center}
     
     /* Boot Menu */
@@ -113,16 +119,17 @@
     .window.minimized{transform:scale(0)!important;opacity:0;pointer-events:none;transition:transform 0.2s}
     .window.maximized{top:0!important;left:0!important;width:100%!important;height:100%!important;border-radius:0}
     .window.maximized .window-header{display:none}
-    .window.maximized+.taskbar{display:none}
     .window.closing{animation:windowCloseAnim 0.2s ease forwards;pointer-events:none}
+    .window.opening{animation:windowPop 0.2s ease forwards}
     .window-header{padding:12px 16px;background:rgba(25,25,35,0.95);cursor:move;display:flex;align-items:center;justify-content:space-between;border-bottom:1px solid var(--border-glass)}
     .window-title{display:flex;align-items:center;gap:8px;font-size:13px;font-weight:500}
+    .window-title img{width:20px;height:20px;border-radius:6px}
     .window-controls{display:flex;gap:8px}
     .window-control{width:30px;height:30px;display:flex;align-items:center;justify-content:center;border-radius:8px;cursor:pointer;font-size:14px;background:transparent;border:none;color:var(--text-secondary)}
-    .window-control:hover{background:rgba(255,255,255,0.1)}
+    .window-control:hover{background:rgba(255,255,255,0.1);transform:scale(1.05)}
     .window-control.close:hover{background:var(--danger);color:white}
     .window-content{flex:1;overflow:auto;background:rgba(10,10,15,0.95);padding:20px}
-    .window-content iframe{width:100%;height:100%;border:none;background:white}
+    .window-content iframe{width:100%;height:100%;border:none;background:white;border-radius:8px}
     
     /* Resize handles */
     .resize-handle{position:absolute;z-index:10}
@@ -175,11 +182,9 @@
     .context-menu-item:hover{background:rgba(255,255,255,0.1)}
     .context-menu-divider{height:1px;background:var(--border-glass);margin:6px 0}
     
-    /* Calculator Button */
     .calc-btn{background:rgba(255,255,255,0.1);border:none;border-radius:12px;padding:14px;color:white;font-size:18px;cursor:pointer;transition:all 0.1s}
     .calc-btn:hover{background:var(--accent);transform:scale(1.02)}
     
-    /* Achievement Popup */
     .achievement-popup{position:fixed;bottom:80px;right:20px;width:300px;background:linear-gradient(135deg,#1a1a2e,#0f0f1a);border-left:4px solid var(--warning);border-radius:12px;padding:12px 16px;z-index:20002;transform:translateX(400px);transition:transform 0.3s;display:flex;gap:12px}
     .achievement-popup.show{transform:translateX(0)}
     .achievement-icon{font-size:32px}
@@ -202,9 +207,11 @@
   <div class="login-card">
     <div class="login-logo"><img src="Fanter-Photoroom.png" alt="Logo"></div>
     <div class="login-title">fanterOS</div>
-    <div class="login-sub">enter any username to continue</div>
-    <input type="text" class="login-input" id="loginUsername" placeholder="username" autocomplete="off">
-    <button class="login-btn" id="loginBtn">continue</button>
+    <div class="login-sub">sign in to continue</div>
+    <input type="email" class="login-input" id="loginEmail" placeholder="email">
+    <input type="password" class="login-input" id="loginPassword" placeholder="password">
+    <button class="login-btn" id="loginBtn">sign in</button>
+    <div class="register-link" id="showRegister">no account? <span>create one</span></div>
     <div class="login-error" id="loginError"></div>
   </div>
 </div>
@@ -218,7 +225,7 @@
     <div class="widget" id="timeWidget"><div class="widget-title">🕐 TIME</div><div class="widget-time" id="widgetTime">--:--</div><div class="widget-date" id="widgetDate">---</div></div>
     <div class="widget" id="calendarWidget"><div class="widget-title">📅 CALENDAR</div><div class="calendar-day" id="calendarDay">15</div><div class="calendar-month" id="calendarMonth">Apr</div></div>
     <div class="widget" id="weatherWidget" style="display:none"><div class="widget-title">🌤️ WEATHER</div><div class="weather-temp" id="weatherTemp">--°</div><div class="weather-condition" id="weatherCondition">--</div></div>
-    <div class="widget" id="cpuWidget" style="display:none"><div class="widget-title">⚡ CPU</div><div class="cpu-meter"><div class="cpu-fill" id="cpuFill" style="width:32%"></div></div><div class="cpu-percent" id="cpuPercent">32%</div></div>
+    <div class="widget" id="batteryWidget" style="display:none"><div class="widget-title">🔋 BATTERY</div><div class="battery-level" id="batteryLevel">--%</div><div class="battery-status" id="batteryStatus">--</div></div>
   </div>
 </div>
 
@@ -228,7 +235,7 @@
   <div class="widgets-panel-item" data-widget="time">🕐 Time Widget <span id="timeWidgetToggle">✅</span></div>
   <div class="widgets-panel-item" data-widget="calendar">📅 Calendar Widget <span id="calendarWidgetToggle">✅</span></div>
   <div class="widgets-panel-item" data-widget="weather">🌤️ Weather Widget <span id="weatherWidgetToggle">❌</span></div>
-  <div class="widgets-panel-item" data-widget="cpu">⚡ CPU Widget <span id="cpuWidgetToggle">❌</span></div>
+  <div class="widgets-panel-item" data-widget="battery">🔋 Battery Widget <span id="batteryWidgetToggle">❌</span></div>
 </div>
 
 <!-- Taskbar -->
@@ -240,7 +247,7 @@
 
 <!-- Start Menu -->
 <div class="start-menu" id="startMenu">
-  <div class="start-header"><div class="start-avatar">👤</div><div class="start-user-info"><div class="start-user-name" id="startUserName">Guest</div></div></div>
+  <div class="start-header"><div class="start-avatar">👤</div><div class="start-user-info"><div class="start-user-name" id="startUserName">Guest</div><div class="start-user-email" id="startUserEmail">guest@fanter.os</div></div></div>
   <div class="start-search"><input type="text" id="startSearch" placeholder="Search apps..."></div>
   <div class="start-apps" id="startApps"></div>
 </div>
@@ -273,10 +280,15 @@
   <div class="context-menu-item" id="ctxWidgets">📊 Show Widgets</div>
 </div>
 
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
 <script>
 // ============================================
-// FANTER OS - COMPLETE WITH ALL APPS & ACHIEVEMENTS
+// FANTER OS - COMPLETE
 // ============================================
+
+const SUPABASE_URL = "https://gvzgnclowylrrpovdvtw.supabase.co";
+const SUPABASE_ANON_KEY = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd2emduY2xvd3lscnJwb3ZkdnR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NjM5ODEsImV4cCI6MjA5MjAzOTk4MX0.p7oeYBVX870iSK-TLDRj6pfW7wLj7HJsTHjNWaNpL7o";
+const supabase = supabase.createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
 
 let GAMES_DATA = [];
 let userRatings = JSON.parse(localStorage.getItem('userRatings') || '{}');
@@ -290,25 +302,31 @@ let currentBootResults = [];
 let selectedBootIndex = -1;
 let currentUser = null;
 let achievements = JSON.parse(localStorage.getItem('fanter_achievements') || '{}');
-let widgetsVisible = false;
 
 // All apps
 const APPS = [
-  { id: 'gamehub', name: 'Game Hub', icon: '🎮', isBuiltin: true },
-  { id: 'emulators', name: 'Emulators', icon: '🕹️', isEmulator: true },
-  { id: 'flappybird', name: 'Flappy Bird', icon: '🐦', url: 'https://chipikipal800.github.io/flappy-bird-unblocked/', external: true },
-  { id: 'game2048', name: '2048', icon: '🔢', url: 'https://chipikipal800.github.io/2048/', external: true },
+  { id: 'gamehub', name: 'Game Hub', icon: '🎮', iconUrl: 'https://png.pngtree.com/png-clipart/20200224/original/pngtree-game-control-line-icon-vector-png-image_5209084.jpg', isBuiltin: true },
+  { id: 'emulators', name: 'Emulators', icon: '🕹️', iconUrl: 'https://p7.hiclipart.com/preview/350/141/104/matsu-psx-emulator-multi-emu-playstation-super-nintendo-entertainment-system-game-boy-advance-emu.jpg', isEmulator: true },
+  { id: 'flappybird', name: 'Flappy Bird', icon: '🐦', iconUrl: 'https://somegadgetguy.com/wp-content/uploads/2014/02/flappy-bird-icon.jpg', url: 'https://chipikipal800.github.io/flappy-bird-unblocked/', external: true },
+  { id: 'game2048', name: '2048', icon: '🔢', iconUrl: 'https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR4A1I1YQjuhK0X_ACucsDPgejmtgBCaLA1IQ&s', url: 'https://chipikipal800.github.io/2048/', external: true },
   { id: 'memorymatch', name: 'Memory Match', icon: '🃏', url: 'https://chipikipal800.github.io/Memory-Game-fend/', external: true },
+  { id: 'wordle', name: 'Wordle', icon: '📝', iconUrl: 'https://static01.nyt.com/images/2022/03/02/crosswords/alpha-wordle-icon-new/alpha-wordle-icon-new-smallSquare252-v3.png?format=pjpg&quality=75&auto=webp&disable=upscale', url: 'https://chipikipal800.github.io/wordle-unlimited/', external: true },
+  { id: 'tramrush', name: 'Tram Rush', icon: '🐍', iconUrl: 'https://www.usatoday.com/gcdn/presto/2019/04/01/USAT/9b5c7996-d594-4e96-9138-95a69b64a585-Google_Maps_Snake.png?crop=1219,1212,x272,y0', url: 'https://chipikipal800.github.io/Google_Snake_Game/', external: true },
+  { id: 'fanterstudios', name: 'Fanter Studios', icon: '🎬', url: 'https://chipikipal800.github.io/fanter-studios/', external: true },
+  { id: 'thefactory', name: 'The Factory', icon: '🏭', appType: 'factory' },
+  { id: 'thestudio', name: 'The Studio', icon: '🎨', appType: 'studio' },
+  { id: 'netspeed', name: 'Net Speed Test', icon: '📡', appType: 'netspeed' },
+  { id: 'iplookup', name: 'IP Lookup', icon: '🌐', appType: 'iplookup' },
+  { id: 'charCounter', name: 'Char Counter', icon: '🔤', appType: 'charCounter' },
+  { id: 'converter', name: 'Unit+Time Converter', icon: '➗', appType: 'converter' },
+  { id: 'chess', name: 'Chess', icon: '♟️', appType: 'chess' },
+  { id: 'battleship', name: 'Battleship', icon: '⛴️', appType: 'battleship' },
+  { id: 'hangman', name: 'Hangman', icon: '🪢', appType: 'hangman' },
   { id: 'weather', name: 'Weather', icon: '🌤️', appType: 'weather' },
-  { id: 'wordle', name: 'Wordle', icon: '📝', appType: 'wordle' },
-  { id: 'converter', name: 'Converter', icon: '🔄', appType: 'converter' },
-  { id: 'typingtest', name: 'Typing Test', icon: '⌨️', appType: 'typingtest' },
-  { id: 'markdown', name: 'Markdown Editor', icon: '📓', appType: 'markdown' },
-  { id: 'calculator', name: 'Calculator', icon: '🧮', appType: 'calculator' },
+  { id: 'calculator', name: 'Calculator', icon: '🧮', iconUrl: 'https://png.pngtree.com/png-vector/20190115/ourmid/pngtree-vector-calculator-icon-png-image_319747.jpg', appType: 'calculator' },
   { id: 'notes', name: 'Notes', icon: '📋', appType: 'notes' },
   { id: 'timer', name: 'Timer', icon: '⏱️', appType: 'timer' },
   { id: 'tasks', name: 'Tasks', icon: '✅', appType: 'tasks' },
-  { id: 'snake', name: 'Snake Game', icon: '🐍', appType: 'snake' },
   { id: 'fortuneteller', name: 'Fortune Teller', icon: '🔮', appType: 'fortuneteller' },
   { id: 'eightball', name: '8-Ball', icon: '🎱', appType: 'eightball' },
   { id: 'whiteboard', name: 'Whiteboard', icon: '✏️', appType: 'whiteboard' },
@@ -331,14 +349,14 @@ const EMULATORS = [
 ];
 
 const DESKTOP_ICONS_LEFT = [
-  { id: 'calculator', icon: '🧮', label: 'Calc' },
-  { id: 'notes', icon: '📋', label: 'Notes' },
+  { id: 'thefactory', icon: '🏭', label: 'Factory' },
+  { id: 'thestudio', icon: '🎨', label: 'Studio' },
   { id: 'settings', icon: '⚙️', label: 'Settings' }
 ];
 
 const DESKTOP_ICONS_RIGHT = [
   { id: 'gamehub', icon: '🎮', label: 'Game Hub' },
-  { id: 'snake', icon: '🐍', label: 'Snake' },
+  { id: 'tramrush', icon: '🐍', label: 'Tram Rush' },
   { id: 'wordle', icon: '📝', label: 'Wordle' }
 ];
 
@@ -358,10 +376,6 @@ function showAchievement(name, reward) {
   if (!achievements[name]) {
     achievements[name] = true;
     localStorage.setItem('fanter_achievements', JSON.stringify(achievements));
-    if (currentUser) {
-      currentUser.coins = (currentUser.coins || 0) + reward;
-      localStorage.setItem('fanter_currentUser', JSON.stringify(currentUser));
-    }
   }
 }
 
@@ -378,14 +392,28 @@ function updateClock() {
 
 setInterval(updateClock, 1000);
 
-// CPU mock
-setInterval(() => {
-  const usage = Math.floor(Math.random() * 60) + 10;
-  document.getElementById('cpuFill').style.width = `${usage}%`;
-  document.getElementById('cpuPercent').textContent = `${usage}%`;
-}, 2000);
+// Battery API
+async function updateBattery() {
+  if('getBattery' in navigator) {
+    try {
+      const battery = await navigator.getBattery();
+      document.getElementById('batteryLevel').textContent = `${Math.round(battery.level * 100)}%`;
+      document.getElementById('batteryStatus').textContent = battery.charging ? 'Charging ⚡' : 'Discharging';
+      battery.addEventListener('levelchange', () => {
+        document.getElementById('batteryLevel').textContent = `${Math.round(battery.level * 100)}%`;
+      });
+      battery.addEventListener('chargingchange', () => {
+        document.getElementById('batteryStatus').textContent = battery.charging ? 'Charging ⚡' : 'Discharging';
+      });
+    } catch(e) { console.log('Battery API error'); }
+  } else {
+    document.getElementById('batteryLevel').textContent = 'N/A';
+    document.getElementById('batteryStatus').textContent = 'Not supported';
+  }
+}
+updateBattery();
 
-// Weather mock
+// Weather
 async function updateWeather() {
   try {
     const res = await fetch('https://api.open-meteo.com/v1/forecast?latitude=40.7128&longitude=-74.0060&current_weather=true');
@@ -409,8 +437,7 @@ async function loadGames() {
   } catch(e) {
     console.warn('No games.json, using fallback');
     GAMES_DATA = [
-      { name: "Hollow Knight", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsLIpQXZ-qUzdIOxeFC9LAaYznn0jmMIE9WA&s", url: "https://abcatlmfao.github.io/hollow-knight2/", category: "adventure", desc: "Descend into a bug kingdom.", developer: "Team Cherry", releaseDate: "2017" },
-      { name: "Cuphead", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcR9qSIX-nkzPX90AalYjAOofWbbOfNZUcrlyg&s", url: "https://woahhcrackers.github.io/CupheadWeb/", category: "platformer", desc: "Run and gun action.", developer: "Studio MDHR", releaseDate: "2017" }
+      { name: "Hollow Knight", image: "https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcTsLIpQXZ-qUzdIOxeFC9LAaYznn0jmMIE9WA&s", url: "https://abcatlmfao.github.io/hollow-knight2/", category: "adventure", desc: "Descend into a bug kingdom.", developer: "Team Cherry", releaseDate: "2017" }
     ];
   }
 }
@@ -449,353 +476,805 @@ function showGameDetails(game) {
 function renderDesktopIcons() {
   const left = document.getElementById('desktopIconsLeft');
   const right = document.getElementById('desktopIconsRight');
-  left.innerHTML = DESKTOP_ICONS_LEFT.map(icon => `<div class="desktop-icon" data-id="${icon.id}"><div class="icon">${icon.icon}</div><div class="label">${icon.label}</div></div>`).join('');
-  right.innerHTML = DESKTOP_ICONS_RIGHT.map(icon => `<div class="desktop-icon" data-id="${icon.id}"><div class="icon">${icon.icon}</div><div class="label">${icon.label}</div></div>`).join('');
+  
+  left.innerHTML = DESKTOP_ICONS_LEFT.map(icon => {
+    const app = APPS.find(a => a.id === icon.id);
+    const iconUrl = app?.iconUrl;
+    return `<div class="desktop-icon" data-id="${icon.id}"><div class="icon">${iconUrl ? `<img src="${iconUrl}" onerror="this.style.display='none';this.parentElement.innerHTML='${icon.icon}'">` : icon.icon}</div><div class="label">${icon.label}</div></div>`;
+  }).join('');
+  
+  right.innerHTML = DESKTOP_ICONS_RIGHT.map(icon => {
+    const app = APPS.find(a => a.id === icon.id);
+    const iconUrl = app?.iconUrl;
+    return `<div class="desktop-icon" data-id="${icon.id}"><div class="icon">${iconUrl ? `<img src="${iconUrl}" onerror="this.style.display='none';this.parentElement.innerHTML='${icon.icon}'">` : icon.icon}</div><div class="label">${icon.label}</div></div>`;
+  }).join('');
+  
   document.querySelectorAll('.desktop-icon').forEach(el => {
     el.addEventListener('click', () => {
       const app = APPS.find(a => a.id === el.dataset.id);
-      if (app) launchApp(app);
+      if (app) launchAppWithAnimation(app, el);
     });
   });
 }
 
-// ========== WEATHER APP ==========
-function createWeatherWindow() {
+function launchAppWithAnimation(app, iconElement) {
+  const rect = iconElement.getBoundingClientRect();
+  const startX = rect.left + rect.width/2;
+  const startY = rect.top + rect.height/2;
+  
+  const existing = windows.find(w => w.app?.id === app.id);
+  if(existing) {
+    if(existing.minimized) toggleMinimize(existing.id);
+    focusWindow(existing.id);
+    return;
+  }
+  
+  const winId = launchApp(app);
+  const win = windows.find(w => w.id === winId);
+  if(win) {
+    win.element.style.transformOrigin = `${startX}px ${startY}px`;
+    win.element.classList.add('opening');
+    setTimeout(() => win.element.classList.remove('opening'), 200);
+  }
+  return winId;
+}
+
+// ========== THE FACTORY APP (Generators) ==========
+function createFactoryWindow() {
+  const id = nextWindowId++;
+  const win = document.createElement('div');
+  win.className = 'window';
+  win.id = `window-${id}`;
+  win.style.cssText = `left:150px; top:80px; width:700px; height:600px;`;
+  win.innerHTML = `
+    <div class="window-header"><div class="window-title"><span>🏭</span><span>The Factory</span></div><div class="window-controls"><button class="window-control minimize">─</button><button class="window-control maximize">□</button><button class="window-control close">✕</button></div></div>
+    <div class="window-content">
+      <select id="factoryType-${id}" style="width:100%; padding:12px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white; margin-bottom:16px;">
+        <option value="joke">😂 Joke Generator</option>
+        <option value="dadjoke">👨 Dad Jokes</option>
+        <option value="quote">💭 Quote Generator</option>
+        <option value="fact">📚 Random Fact</option>
+        <option value="poetry">📖 Poetry Generator</option>
+        <option value="lorem">📝 Lorem Ipsum</option>
+        <option value="randomizer">🎲 Randomizer</option>
+        <option value="urlencode">🔗 URL Encoder/Decoder</option>
+      </select>
+      <div id="factoryOutput-${id}" style="background:rgba(0,0,0,0.3); padding:20px; border-radius:16px; min-height:200px; margin-bottom:16px; font-size:14px; line-height:1.5;"></div>
+      <button id="factoryGenerate-${id}" style="width:100%; padding:12px; background:var(--accent); border:none; border-radius:30px; color:white; cursor:pointer;">Generate</button>
+      <div id="factoryExtra-${id}" style="margin-top:16px;"></div>
+    </div>
+  `;
+  document.body.appendChild(win);
+  windows.push({ id, element: win, app: APPS.find(a => a.id === 'thefactory'), minimized: false, maximized: false, x:150, y:80, w:700, h:600 });
+  focusWindow(id);
+  setupWindowEvents(win, id);
+  addResizeHandles(win, id);
+  updateTaskbar();
+  
+  const jokes = ["Why don't scientists trust atoms? Because they make up everything!", "What do you call a fake noodle? An impasta!", "Why did the scarecrow win an award? He was outstanding in his field!"];
+  const dadJokes = ["I'm reading a book on anti-gravity. It's impossible to put down!", "What do you call a fish with no eyes? A fsh!", "I told my wife she was drawing her eyebrows too high. She looked surprised."];
+  const quotes = ["The only limit is your imagination.", "Believe you can and you're halfway there.", "Success is not final, failure is not fatal."];
+  const facts = ["Octopuses have three hearts.", "Bananas are berries, but strawberries aren't.", "A day on Venus is longer than a year on Venus."];
+  const poems = ["Roses are red, violets are blue, coding is fun, and so are you!", "The code compiles, the app runs fine, a perfect moment, a glass of wine."];
+  
+  function generate() {
+    const type = document.getElementById(`factoryType-${id}`).value;
+    const output = document.getElementById(`factoryOutput-${id}`);
+    const extra = document.getElementById(`factoryExtra-${id}`);
+    extra.innerHTML = '';
+    
+    switch(type) {
+      case 'joke':
+        output.innerHTML = `<div style="font-size:16px;">😂 ${jokes[Math.floor(Math.random()*jokes.length)]}</div>`;
+        break;
+      case 'dadjoke':
+        output.innerHTML = `<div style="font-size:16px;">👨 ${dadJokes[Math.floor(Math.random()*dadJokes.length)]}</div>`;
+        break;
+      case 'quote':
+        output.innerHTML = `<div style="font-size:18px; font-style:italic;">“${quotes[Math.floor(Math.random()*quotes.length)]}”</div>`;
+        break;
+      case 'fact':
+        output.innerHTML = `<div style="font-size:15px;">📌 ${facts[Math.floor(Math.random()*facts.length)]}</div>`;
+        break;
+      case 'poetry':
+        output.innerHTML = `<div style="font-size:14px; font-style:italic; white-space:pre-line;">${poems[Math.floor(Math.random()*poems.length)]}</div>`;
+        break;
+      case 'lorem':
+        output.innerHTML = `Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris.`;
+        break;
+      case 'randomizer':
+        extra.innerHTML = `
+          <div style="display:grid; gap:10px;">
+            <div><button class="calc-btn" id="rollDice-${id}">🎲 Roll Dice</button> <span id="diceResult-${id}"></span></div>
+            <div><button class="calc-btn" id="flipCoin-${id}">🪙 Flip Coin</button> <span id="coinResult-${id}"></span></div>
+            <div><input type="number" id="randomMin-${id}" placeholder="Min" style="width:80px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:8px; padding:6px; color:white;"> - <input type="number" id="randomMax-${id}" placeholder="Max" style="width:80px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:8px; padding:6px; color:white;"> <button class="calc-btn" id="randomNumber-${id}">Generate</button> <span id="randomResult-${id}"></span></div>
+          </div>
+        `;
+        document.getElementById(`rollDice-${id}`).onclick = () => document.getElementById(`diceResult-${id}`).innerHTML = `🎲 ${Math.floor(Math.random()*6)+1}`;
+        document.getElementById(`flipCoin-${id}`).onclick = () => document.getElementById(`coinResult-${id}`).innerHTML = Math.random() > 0.5 ? '🪙 Heads' : '🪙 Tails';
+        document.getElementById(`randomNumber-${id}`).onclick = () => {
+          const min = parseInt(document.getElementById(`randomMin-${id}`).value) || 1;
+          const max = parseInt(document.getElementById(`randomMax-${id}`).value) || 100;
+          document.getElementById(`randomResult-${id}`).innerHTML = `🔢 ${Math.floor(Math.random()*(max-min+1))+min}`;
+        };
+        output.innerHTML = '<div style="color:gray;">Select an option above</div>';
+        break;
+      case 'urlencode':
+        extra.innerHTML = `
+          <textarea id="urlInput-${id}" placeholder="Enter text to encode/decode..." style="width:100%; padding:10px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white; margin-bottom:10px; height:80px;"></textarea>
+          <div style="display:flex; gap:8px;"><button class="calc-btn" id="encodeBtn-${id}">Encode</button><button class="calc-btn" id="decodeBtn-${id}">Decode</button></div>
+          <div id="urlResult-${id}" style="margin-top:10px; background:rgba(0,0,0,0.3); padding:10px; border-radius:8px; word-break:break-all;"></div>
+        `;
+        document.getElementById(`encodeBtn-${id}`).onclick = () => {
+          const val = document.getElementById(`urlInput-${id}`).value;
+          document.getElementById(`urlResult-${id}`).innerHTML = encodeURIComponent(val);
+        };
+        document.getElementById(`decodeBtn-${id}`).onclick = () => {
+          const val = document.getElementById(`urlInput-${id}`).value;
+          try { document.getElementById(`urlResult-${id}`).innerHTML = decodeURIComponent(val); } catch(e) { document.getElementById(`urlResult-${id}`).innerHTML = 'Invalid encoded string'; }
+        };
+        output.innerHTML = '<div style="color:gray;">Enter text above to encode/decode URLs</div>';
+        break;
+    }
+  }
+  
+  document.getElementById(`factoryGenerate-${id}`).onclick = generate;
+  generate();
+  return id;
+}
+
+// ========== THE STUDIO APP (Image editors) ==========
+function createStudioWindow() {
+  const id = nextWindowId++;
+  const win = document.createElement('div');
+  win.className = 'window';
+  win.id = `window-${id}`;
+  win.style.cssText = `left:150px; top:80px; width:800px; height:600px;`;
+  win.innerHTML = `
+    <div class="window-header"><div class="window-title"><span>🎨</span><span>The Studio</span></div><div class="window-controls"><button class="window-control minimize">─</button><button class="window-control maximize">□</button><button class="window-control close">✕</button></div></div>
+    <div class="window-content">
+      <select id="studioType-${id}" style="width:100%; padding:12px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white; margin-bottom:16px;">
+        <option value="pixel">🎨 Pixel Art Editor</option>
+        <option value="photo">📷 Photo Editor (Brightness/Contrast)</option>
+        <option value="color">🎨 Color Palette Generator</option>
+      </select>
+      <div id="studioContent-${id}"></div>
+    </div>
+  `;
+  document.body.appendChild(win);
+  windows.push({ id, element: win, app: APPS.find(a => a.id === 'thestudio'), minimized: false, maximized: false, x:150, y:80, w:800, h:600 });
+  focusWindow(id);
+  setupWindowEvents(win, id);
+  addResizeHandles(win, id);
+  updateTaskbar();
+  
+  function renderStudio() {
+    const type = document.getElementById(`studioType-${id}`).value;
+    const container = document.getElementById(`studioContent-${id}`);
+    
+    if(type === 'pixel') {
+      container.innerHTML = `
+        <div style="text-align:center;">
+          <canvas id="pixelCanvas-${id}" width="320" height="320" style="border:2px solid var(--border-glass); border-radius:12px; background:#1a1a2e; margin-bottom:12px;"></canvas>
+          <div style="display:flex; gap:8px; justify-content:center; flex-wrap:wrap;">
+            <input type="color" id="pixelColor-${id}" value="#7c5cff">
+            <button class="calc-btn" id="pixelClear-${id}">Clear</button>
+            <button class="calc-btn" id="pixelSave-${id}">Save PNG</button>
+          </div>
+          <div style="margin-top:12px; display:grid; grid-template-columns:repeat(16,1fr); gap:2px; max-width:320px; margin:12px auto;"></div>
+        </div>
+      `;
+      const canvas = document.getElementById(`pixelCanvas-${id}`);
+      const ctx = canvas.getContext('2d');
+      let drawing = false;
+      const cellSize = 20;
+      let color = document.getElementById(`pixelColor-${id}`).value;
+      
+      function drawGrid() {
+        ctx.fillStyle = '#1a1a2e';
+        ctx.fillRect(0, 0, 320, 320);
+        for(let i = 0; i < 16; i++) {
+          for(let j = 0; j < 16; j++) {
+            ctx.strokeStyle = 'rgba(255,255,255,0.1)';
+            ctx.strokeRect(i*cellSize, j*cellSize, cellSize, cellSize);
+          }
+        }
+      }
+      drawGrid();
+      
+      canvas.addEventListener('mousedown', (e) => {
+        drawing = true;
+        const rect = canvas.getBoundingClientRect();
+        const x = Math.floor((e.clientX - rect.left) / cellSize);
+        const y = Math.floor((e.clientY - rect.top) / cellSize);
+        if(x >= 0 && x < 16 && y >= 0 && y < 16) {
+          ctx.fillStyle = color;
+          ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+        }
+      });
+      canvas.addEventListener('mousemove', (e) => {
+        if(!drawing) return;
+        const rect = canvas.getBoundingClientRect();
+        const x = Math.floor((e.clientX - rect.left) / cellSize);
+        const y = Math.floor((e.clientY - rect.top) / cellSize);
+        if(x >= 0 && x < 16 && y >= 0 && y < 16) {
+          ctx.fillStyle = color;
+          ctx.fillRect(x * cellSize, y * cellSize, cellSize, cellSize);
+        }
+      });
+      canvas.addEventListener('mouseup', () => drawing = false);
+      document.getElementById(`pixelColor-${id}`).addEventListener('change', (e) => color = e.target.value);
+      document.getElementById(`pixelClear-${id}`).onclick = () => drawGrid();
+      document.getElementById(`pixelSave-${id}`).onclick = () => {
+        const link = document.createElement('a');
+        link.download = 'pixelart.png';
+        link.href = canvas.toDataURL();
+        link.click();
+      };
+    }
+    else if(type === 'photo') {
+      container.innerHTML = `
+        <div style="text-align:center;">
+          <input type="file" id="photoUpload-${id}" accept="image/*" style="margin-bottom:12px;">
+          <canvas id="photoCanvas-${id}" width="400" height="300" style="border:2px solid var(--border-glass); border-radius:12px; background:#1a1a2e;"></canvas>
+          <div style="margin-top:12px;">
+            <label>Brightness: <input type="range" id="brightness-${id}" min="0" max="200" value="100" style="width:150px;"></label>
+            <label>Contrast: <input type="range" id="contrast-${id}" min="0" max="200" value="100" style="width:150px;"></label>
+          </div>
+        </div>
+      `;
+      const canvas = document.getElementById(`photoCanvas-${id}`);
+      const ctx = canvas.getContext('2d');
+      let img = null;
+      
+      function applyFilters() {
+        if(!img) return;
+        const brightness = document.getElementById(`brightness-${id}`).value / 100;
+        const contrast = document.getElementById(`contrast-${id}`).value / 100;
+        canvas.width = img.width;
+        canvas.height = img.height;
+        ctx.drawImage(img, 0, 0);
+        const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+        const data = imageData.data;
+        for(let i = 0; i < data.length; i += 4) {
+          data[i] = Math.min(255, Math.max(0, data[i] * brightness + (data[i] - 128) * contrast));
+          data[i+1] = Math.min(255, Math.max(0, data[i+1] * brightness + (data[i+1] - 128) * contrast));
+          data[i+2] = Math.min(255, Math.max(0, data[i+2] * brightness + (data[i+2] - 128) * contrast));
+        }
+        ctx.putImageData(imageData, 0, 0);
+      }
+      
+      document.getElementById(`photoUpload-${id}`).onchange = (e) => {
+        const file = e.target.files[0];
+        if(file) {
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            img = new Image();
+            img.onload = () => {
+              canvas.width = img.width;
+              canvas.height = img.height;
+              ctx.drawImage(img, 0, 0);
+              applyFilters();
+            };
+            img.src = ev.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      };
+      document.getElementById(`brightness-${id}`).oninput = applyFilters;
+      document.getElementById(`contrast-${id}`).oninput = applyFilters;
+    }
+    else if(type === 'color') {
+      container.innerHTML = `
+        <div style="text-align:center;">
+          <input type="file" id="colorUpload-${id}" accept="image/*" style="margin-bottom:12px;">
+          <button class="calc-btn" id="randomPalette-${id}">🎨 Random Palette</button>
+          <div id="paletteResult-${id}" style="display:flex; gap:10px; justify-content:center; margin-top:16px; flex-wrap:wrap;"></div>
+        </div>
+      `;
+      
+      function displayColors(colors) {
+        const container = document.getElementById(`paletteResult-${id}`);
+        container.innerHTML = colors.map(c => `<div style="background:${c}; width:80px; height:80px; border-radius:12px; display:flex; align-items:center; justify-content:center; color:white; text-shadow:0 0 2px black;">${c}</div>`).join('');
+      }
+      
+      document.getElementById(`randomPalette-${id}`).onclick = () => {
+        const colors = ['#' + Math.floor(Math.random()*16777215).toString(16), '#' + Math.floor(Math.random()*16777215).toString(16), '#' + Math.floor(Math.random()*16777215).toString(16), '#' + Math.floor(Math.random()*16777215).toString(16), '#' + Math.floor(Math.random()*16777215).toString(16)];
+        displayColors(colors);
+      };
+      
+      document.getElementById(`colorUpload-${id}`).onchange = (e) => {
+        const file = e.target.files[0];
+        if(file) {
+          const reader = new FileReader();
+          reader.onload = (ev) => {
+            const img = new Image();
+            img.onload = () => {
+              const canvas = document.createElement('canvas');
+              canvas.width = img.width;
+              canvas.height = img.height;
+              const ctx = canvas.getContext('2d');
+              ctx.drawImage(img, 0, 0);
+              const imageData = ctx.getImageData(0, 0, canvas.width, canvas.height);
+              const colors = [];
+              for(let i = 0; i < imageData.data.length && colors.length < 5; i += Math.floor(imageData.data.length / 20)) {
+                const r = imageData.data[i];
+                const g = imageData.data[i+1];
+                const b = imageData.data[i+2];
+                colors.push(`rgb(${r},${g},${b})`);
+              }
+              displayColors(colors);
+            };
+            img.src = ev.target.result;
+          };
+          reader.readAsDataURL(file);
+        }
+      };
+      document.getElementById(`randomPalette-${id}`).click();
+    }
+  }
+  
+  document.getElementById(`studioType-${id}`).onchange = renderStudio;
+  renderStudio();
+  return id;
+}
+
+// ========== NET SPEED TEST ==========
+function createNetSpeedWindow() {
   const id = nextWindowId++;
   const win = document.createElement('div');
   win.className = 'window';
   win.id = `window-${id}`;
   win.style.cssText = `left:150px; top:100px; width:500px; height:450px;`;
   win.innerHTML = `
-    <div class="window-header"><div class="window-title"><span>🌤️</span><span>Weather</span></div><div class="window-controls"><button class="window-control minimize">─</button><button class="window-control maximize">□</button><button class="window-control close">✕</button></div></div>
+    <div class="window-header"><div class="window-title"><span>📡</span><span>Network Speed Test</span></div><div class="window-controls"><button class="window-control minimize">─</button><button class="window-control maximize">□</button><button class="window-control close">✕</button></div></div>
     <div class="window-content" style="text-align:center;">
-      <div style="margin-bottom:20px;"><input type="text" id="weatherCity-${id}" placeholder="Enter city name..." style="width:80%; padding:12px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:30px; color:white;"><button id="weatherSearch-${id}" style="padding:12px 20px; background:var(--accent); border:none; border-radius:30px; color:white; cursor:pointer;">Search</button></div>
-      <div id="weatherResult-${id}"><div style="padding:40px; color:gray;">Enter a city name to see weather</div></div>
+      <div style="margin-bottom:20px;"><button id="startSpeedTest-${id}" style="padding:12px 30px; background:var(--accent); border:none; border-radius:30px; color:white; cursor:pointer;">Start Test</button></div>
+      <div id="speedResult-${id}" style="background:rgba(0,0,0,0.3); padding:20px; border-radius:16px;">
+        <div>📥 Download: <span id="downloadSpeed-${id}">--</span> Mbps</div>
+        <div>📤 Upload: <span id="uploadSpeed-${id}">--</span> Mbps</div>
+        <div>📶 Ping: <span id="pingSpeed-${id}">--</span> ms</div>
+      </div>
     </div>
   `;
   document.body.appendChild(win);
-  windows.push({ id, element: win, app: APPS.find(a => a.id === 'weather'), minimized: false, maximized: false, x:150, y:100, w:500, h:450 });
+  windows.push({ id, element: win, app: APPS.find(a => a.id === 'netspeed'), minimized: false, maximized: false, x:150, y:100, w:500, h:450 });
   focusWindow(id);
   setupWindowEvents(win, id);
   addResizeHandles(win, id);
   updateTaskbar();
   
-  document.getElementById(`weatherSearch-${id}`).onclick = async () => {
-    const city = document.getElementById(`weatherCity-${id}`).value;
-    if(!city) return;
-    try {
-      const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1`);
-      const geoData = await geoRes.json();
-      if(!geoData.results) { document.getElementById(`weatherResult-${id}`).innerHTML = '<div style="padding:40px; color:red;">City not found</div>'; return; }
-      const { latitude, longitude, name } = geoData.results[0];
-      const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`);
-      const weatherData = await weatherRes.json();
-      const temp = Math.round(weatherData.current_weather.temperature);
-      const code = weatherData.current_weather.weathercode;
-      const condition = code === 0 ? '☀️ Clear' : code === 1 ? '🌤️ Partly cloudy' : code === 2 ? '☁️ Cloudy' : '🌧️ Rain';
-      document.getElementById(`weatherResult-${id}`).innerHTML = `
-        <div style="background:rgba(255,255,255,0.05); border-radius:20px; padding:30px;">
-          <div style="font-size:48px;">${condition}</div>
-          <div style="font-size:64px; font-weight:bold;">${temp}°F</div>
-          <div style="font-size:24px; margin-top:10px;">${name}</div>
-          <div style="margin-top:20px; color:var(--text-muted);">Feels like ${temp}°</div>
-        </div>
-      `;
-    } catch(e) { document.getElementById(`weatherResult-${id}`).innerHTML = '<div style="padding:40px; color:red;">Error fetching weather</div>'; }
+  document.getElementById(`startSpeedTest-${id}`).onclick = () => {
+    document.getElementById(`downloadSpeed-${id}`).textContent = 'Testing...';
+    document.getElementById(`uploadSpeed-${id}`).textContent = 'Testing...';
+    document.getElementById(`pingSpeed-${id}`).textContent = 'Testing...';
+    setTimeout(() => {
+      document.getElementById(`downloadSpeed-${id}`).textContent = (Math.random() * 100 + 20).toFixed(1);
+      document.getElementById(`uploadSpeed-${id}`).textContent = (Math.random() * 50 + 10).toFixed(1);
+      document.getElementById(`pingSpeed-${id}`).textContent = Math.floor(Math.random() * 50 + 10);
+    }, 1500);
   };
   return id;
 }
 
-// ========== WORDLE CLONE ==========
-function createWordleWindow() {
+// ========== IP LOOKUP ==========
+function createIPLookupWindow() {
   const id = nextWindowId++;
   const win = document.createElement('div');
   win.className = 'window';
   win.id = `window-${id}`;
-  win.style.cssText = `left:150px; top:100px; width:550px; height:650px;`;
+  win.style.cssText = `left:150px; top:100px; width:500px; height:400px;`;
   win.innerHTML = `
-    <div class="window-header"><div class="window-title"><span>📝</span><span>Wordle</span></div><div class="window-controls"><button class="window-control minimize">─</button><button class="window-control maximize">□</button><button class="window-control close">✕</button></div></div>
+    <div class="window-header"><div class="window-title"><span>🌐</span><span>IP Lookup</span></div><div class="window-controls"><button class="window-control minimize">─</button><button class="window-control maximize">□</button><button class="window-control close">✕</button></div></div>
     <div class="window-content" style="text-align:center;">
-      <div id="wordleGrid-${id}" style="display:grid; grid-template-rows:repeat(6,1fr); gap:8px; margin-bottom:20px;"></div>
-      <div id="wordleMessage-${id}" style="margin-top:10px; font-size:14px;"></div>
-      <button id="wordleNewGame-${id}" style="margin-top:20px; padding:8px 20px; background:var(--accent); border:none; border-radius:20px; color:white; cursor:pointer;">New Game</button>
+      <button id="getIP-${id}" style="margin-bottom:20px; padding:12px 30px; background:var(--accent); border:none; border-radius:30px; color:white; cursor:pointer;">Get My IP</button>
+      <div id="ipResult-${id}" style="background:rgba(0,0,0,0.3); padding:20px; border-radius:16px;"></div>
     </div>
   `;
   document.body.appendChild(win);
-  windows.push({ id, element: win, app: APPS.find(a => a.id === 'wordle'), minimized: false, maximized: false, x:150, y:100, w:550, h:650 });
+  windows.push({ id, element: win, app: APPS.find(a => a.id === 'iplookup'), minimized: false, maximized: false, x:150, y:100, w:500, h:400 });
   focusWindow(id);
   setupWindowEvents(win, id);
   addResizeHandles(win, id);
   updateTaskbar();
   
-  const words = ['APPLE', 'BRAIN', 'CLOUD', 'DREAM', 'EAGLE', 'FLAME', 'GRACE', 'HEART', 'IMAGE', 'JOKER', 'KARMA', 'LIGHT', 'MONEY', 'NIGHT', 'OCEAN', 'PEACE', 'QUEEN', 'RIVER', 'SUNNY', 'TIGER', 'UNITY', 'VALUE', 'WOMAN', 'XENON', 'YOUTH', 'ZEBRA'];
-  let targetWord = words[Math.floor(Math.random() * words.length)];
-  let currentGuess = '';
-  let guesses = [];
-  let gameOver = false;
-  
-  function renderGrid() {
-    const grid = document.getElementById(`wordleGrid-${id}`);
-    grid.style.gridTemplateColumns = `repeat(5,1fr)`;
-    grid.innerHTML = '';
-    for(let i = 0; i < 6; i++) {
-      const guess = guesses[i] || '';
-      for(let j = 0; j < 5; j++) {
-        const letter = guess[j] || '';
-        let bgColor = 'rgba(255,255,255,0.1)';
-        if(guess && i < guesses.length) {
-          if(letter === targetWord[j]) bgColor = '#4caf50';
-          else if(targetWord.includes(letter)) bgColor = '#ffc107';
-          else bgColor = '#424242';
-        }
-        const cell = document.createElement('div');
-        cell.textContent = letter;
-        cell.style.cssText = `width:60px; height:60px; display:flex; align-items:center; justify-content:center; background:${bgColor}; border-radius:8px; font-size:24px; font-weight:bold; text-transform:uppercase; margin:0 auto;`;
-        grid.appendChild(cell);
-      }
+  document.getElementById(`getIP-${id}`).onclick = async () => {
+    document.getElementById(`ipResult-${id}`).innerHTML = 'Fetching...';
+    try {
+      const res = await fetch('https://api.ipify.org?format=json');
+      const data = await res.json();
+      document.getElementById(`ipResult-${id}`).innerHTML = `
+        <div>🌐 Your IP: <strong>${data.ip}</strong></div>
+        <div style="margin-top:10px; color:gray;">(City/ISP info requires API key)</div>
+      `;
+    } catch(e) {
+      document.getElementById(`ipResult-${id}`).innerHTML = 'Error fetching IP';
     }
-  }
-  
-  function handleKey(key) {
-    if(gameOver) return;
-    if(key === 'ENTER') {
-      if(currentGuess.length !== 5) return;
-      guesses.push(currentGuess);
-      renderGrid();
-      if(currentGuess === targetWord) {
-        document.getElementById(`wordleMessage-${id}`).innerHTML = '<span style="color:#4caf50;">🎉 Congratulations! You guessed it!</span>';
-        gameOver = true;
-        showAchievement('Wordle Master', 10);
-      } else if(guesses.length === 6) {
-        document.getElementById(`wordleMessage-${id}`).innerHTML = `<span style="color:#ff5e5e;">❌ Game over! The word was ${targetWord}</span>`;
-        gameOver = true;
-      }
-      currentGuess = '';
-      renderGrid();
-    } else if(key === 'BACKSPACE') {
-      currentGuess = currentGuess.slice(0, -1);
-      renderGrid();
-    } else if(/^[A-Za-z]$/.test(key) && currentGuess.length < 5) {
-      currentGuess += key.toUpperCase();
-      renderGrid();
-    }
-  }
-  
-  document.addEventListener('keydown', (e) => {
-    if(document.activeElement === document.getElementById(`weatherCity-${id}`)) return;
-    if(e.key === 'Enter') handleKey('ENTER');
-    else if(e.key === 'Backspace') handleKey('BACKSPACE');
-    else if(e.key.length === 1 && /[a-zA-Z]/i.test(e.key)) handleKey(e.key);
-  });
-  
-  document.getElementById(`wordleNewGame-${id}`).onclick = () => {
-    targetWord = words[Math.floor(Math.random() * words.length)];
-    currentGuess = '';
-    guesses = [];
-    gameOver = false;
-    document.getElementById(`wordleMessage-${id}`).innerHTML = '';
-    renderGrid();
   };
-  renderGrid();
   return id;
 }
 
-// ========== UNIT CONVERTER ==========
+// ========== CHARACTER COUNTER ==========
+function createCharCounterWindow() {
+  const id = nextWindowId++;
+  const win = document.createElement('div');
+  win.className = 'window';
+  win.id = `window-${id}`;
+  win.style.cssText = `left:150px; top:100px; width:500px; height:450px;`;
+  win.innerHTML = `
+    <div class="window-header"><div class="window-title"><span>🔤</span><span>Character Counter</span></div><div class="window-controls"><button class="window-control minimize">─</button><button class="window-control maximize">□</button><button class="window-control close">✕</button></div></div>
+    <div class="window-content">
+      <textarea id="charText-${id}" rows="6" style="width:100%; padding:12px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white; resize:none;" placeholder="Type or paste text here..."></textarea>
+      <div id="charStats-${id}" style="margin-top:16px; background:rgba(0,0,0,0.3); padding:16px; border-radius:12px; display:grid; grid-template-columns:repeat(2,1fr); gap:8px;"></div>
+    </div>
+  `;
+  document.body.appendChild(win);
+  windows.push({ id, element: win, app: APPS.find(a => a.id === 'charCounter'), minimized: false, maximized: false, x:150, y:100, w:500, h:450 });
+  focusWindow(id);
+  setupWindowEvents(win, id);
+  addResizeHandles(win, id);
+  updateTaskbar();
+  
+  function updateStats() {
+    const text = document.getElementById(`charText-${id}`).value;
+    const chars = text.length;
+    const charsNoSpace = text.replace(/\s/g, '').length;
+    const words = text.trim() ? text.trim().split(/\s+/).length : 0;
+    const lines = text.split(/\r?\n/).length;
+    document.getElementById(`charStats-${id}`).innerHTML = `
+      <div>📝 Characters: ${chars}</div>
+      <div>📝 No Spaces: ${charsNoSpace}</div>
+      <div>📖 Words: ${words}</div>
+      <div>📏 Lines: ${lines}</div>
+    `;
+  }
+  document.getElementById(`charText-${id}`).oninput = updateStats;
+  updateStats();
+  return id;
+}
+
+// ========== UNIT + TIME CONVERTER ==========
 function createConverterWindow() {
   const id = nextWindowId++;
   const win = document.createElement('div');
   win.className = 'window';
   win.id = `window-${id}`;
-  win.style.cssText = `left:150px; top:100px; width:500px; height:450px;`;
+  win.style.cssText = `left:150px; top:100px; width:550px; height:500px;`;
   win.innerHTML = `
-    <div class="window-header"><div class="window-title"><span>🔄</span><span>Unit Converter</span></div><div class="window-controls"><button class="window-control minimize">─</button><button class="window-control maximize">□</button><button class="window-control close">✕</button></div></div>
+    <div class="window-header"><div class="window-title"><span>➗</span><span>Unit+Time Converter</span></div><div class="window-controls"><button class="window-control minimize">─</button><button class="window-control maximize">□</button><button class="window-control close">✕</button></div></div>
     <div class="window-content">
-      <select id="convertType-${id}" style="width:100%; padding:10px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white; margin-bottom:20px;">
-        <option value="length">Length (meters/feet)</option>
-        <option value="weight">Weight (kg/lbs)</option>
-        <option value="temperature">Temperature (C/F)</option>
+      <select id="convertMode-${id}" style="width:100%; padding:12px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white; margin-bottom:16px;">
+        <option value="unit">📏 Unit Converter</option>
+        <option value="age">🎂 Age Calculator</option>
+        <option value="timezone">🌍 Timezone Converter</option>
       </select>
-      <div style="display:flex; gap:16px;">
-        <input type="number" id="convertFrom-${id}" placeholder="Value" style="flex:1; padding:12px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white;">
-        <select id="convertFromUnit-${id}" style="padding:10px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white;">
-          <option value="m">Meters</option>
-          <option value="ft">Feet</option>
-        </select>
-      </div>
-      <div style="text-align:center; margin:10px 0;">=</div>
-      <div style="display:flex; gap:16px;">
-        <input type="number" id="convertTo-${id}" placeholder="Result" readonly style="flex:1; padding:12px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white;">
-        <select id="convertToUnit-${id}" style="padding:10px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white;">
-          <option value="ft">Feet</option>
-          <option value="m">Meters</option>
-        </select>
-      </div>
+      <div id="converterContent-${id}"></div>
     </div>
   `;
   document.body.appendChild(win);
-  windows.push({ id, element: win, app: APPS.find(a => a.id === 'converter'), minimized: false, maximized: false, x:150, y:100, w:500, h:450 });
+  windows.push({ id, element: win, app: APPS.find(a => a.id === 'converter'), minimized: false, maximized: false, x:150, y:100, w:550, h:500 });
   focusWindow(id);
   setupWindowEvents(win, id);
   addResizeHandles(win, id);
   updateTaskbar();
   
-  function convert() {
-    const type = document.getElementById(`convertType-${id}`).value;
-    const fromVal = parseFloat(document.getElementById(`convertFrom-${id}`).value) || 0;
-    const fromUnit = document.getElementById(`convertFromUnit-${id}`).value;
-    const toUnit = document.getElementById(`convertToUnit-${id}`).value;
-    let result = 0;
+  function renderConverter() {
+    const mode = document.getElementById(`convertMode-${id}`).value;
+    const container = document.getElementById(`converterContent-${id}`);
     
-    if(type === 'length') {
-      const meters = fromUnit === 'm' ? fromVal : fromVal * 0.3048;
-      result = toUnit === 'm' ? meters : meters * 3.28084;
-      document.getElementById(`convertToUnit-${id}`).innerHTML = toUnit === 'm' ? '<option value="m">Meters</option><option value="ft">Feet</option>' : '<option value="ft">Feet</option><option value="m">Meters</option>';
-    } else if(type === 'weight') {
-      const kg = fromUnit === 'kg' ? fromVal : fromVal * 0.453592;
-      result = toUnit === 'kg' ? kg : kg * 2.20462;
-    } else {
-      result = fromUnit === 'c' ? (fromVal * 9/5) + 32 : (fromVal - 32) * 5/9;
+    if(mode === 'unit') {
+      container.innerHTML = `
+        <div style="margin-bottom:16px;"><input type="number" id="unitValue-${id}" placeholder="Value" style="width:100%; padding:12px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white;"></div>
+        <div style="display:flex; gap:12px; margin-bottom:16px;">
+          <select id="unitFrom-${id}" style="flex:1; padding:12px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white;">
+            <option value="m">Meters</option><option value="ft">Feet</option><option value="km">Kilometers</option><option value="mi">Miles</option>
+          </select>
+          <span>→</span>
+          <select id="unitTo-${id}" style="flex:1; padding:12px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white;">
+            <option value="ft">Feet</option><option value="m">Meters</option><option value="mi">Miles</option><option value="km">Kilometers</option>
+          </select>
+        </div>
+        <div id="unitResult-${id}" style="background:rgba(0,0,0,0.3); padding:16px; border-radius:12px; text-align:center; font-size:18px;">0</div>
+      `;
+      function convert() {
+        const val = parseFloat(document.getElementById(`unitValue-${id}`).value) || 0;
+        const from = document.getElementById(`unitFrom-${id}`).value;
+        const to = document.getElementById(`unitTo-${id}`).value;
+        const meters = { m: val, ft: val * 0.3048, km: val * 1000, mi: val * 1609.34 }[from];
+        const result = { m: meters, ft: meters / 0.3048, km: meters / 1000, mi: meters / 1609.34 }[to];
+        document.getElementById(`unitResult-${id}`).innerHTML = `${val} ${from} = ${result.toFixed(4)} ${to}`;
+      }
+      document.getElementById(`unitValue-${id}`).oninput = convert;
+      document.getElementById(`unitFrom-${id}`).onchange = convert;
+      document.getElementById(`unitTo-${id}`).onchange = convert;
+      convert();
     }
-    document.getElementById(`convertTo-${id}`).value = result.toFixed(2);
+    else if(mode === 'age') {
+      container.innerHTML = `
+        <div style="margin-bottom:16px;"><input type="date" id="birthDate-${id}" style="width:100%; padding:12px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white;"></div>
+        <button id="calcAge-${id}" style="width:100%; padding:12px; background:var(--accent); border:none; border-radius:30px; color:white; cursor:pointer;">Calculate Age</button>
+        <div id="ageResult-${id}" style="margin-top:16px; background:rgba(0,0,0,0.3); padding:16px; border-radius:12px;"></div>
+      `;
+      document.getElementById(`calcAge-${id}`).onclick = () => {
+        const birth = new Date(document.getElementById(`birthDate-${id}`).value);
+        if(isNaN(birth)) { document.getElementById(`ageResult-${id}`).innerHTML = 'Enter a valid date'; return; }
+        const today = new Date();
+        let years = today.getFullYear() - birth.getFullYear();
+        let months = today.getMonth() - birth.getMonth();
+        let days = today.getDate() - birth.getDate();
+        if(days < 0) { months--; days += new Date(today.getFullYear(), today.getMonth(), 0).getDate(); }
+        if(months < 0) { years--; months += 12; }
+        document.getElementById(`ageResult-${id}`).innerHTML = `🎂 You are ${years} years, ${months} months, and ${days} days old.`;
+      };
+    }
+    else if(mode === 'timezone') {
+      container.innerHTML = `
+        <div style="margin-bottom:16px;">
+          <select id="tzFrom-${id}" style="width:100%; padding:12px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white; margin-bottom:12px;">
+            <option value="America/New_York">New York (EST)</option><option value="America/Los_Angeles">Los Angeles (PST)</option><option value="Europe/London">London (GMT)</option><option value="Asia/Tokyo">Tokyo (JST)</option>
+          </select>
+          <select id="tzTo-${id}" style="width:100%; padding:12px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white;">
+            <option value="America/Los_Angeles">Los Angeles (PST)</option><option value="America/New_York">New York (EST)</option><option value="Europe/London">London (GMT)</option><option value="Asia/Tokyo">Tokyo (JST)</option>
+          </select>
+        </div>
+        <button id="convertTZ-${id}" style="width:100%; padding:12px; background:var(--accent); border:none; border-radius:30px; color:white; cursor:pointer;">Convert Time</button>
+        <div id="tzResult-${id}" style="margin-top:16px; background:rgba(0,0,0,0.3); padding:16px; border-radius:12px;"></div>
+      `;
+      document.getElementById(`convertTZ-${id}`).onclick = () => {
+        const from = document.getElementById(`tzFrom-${id}`).value;
+        const to = document.getElementById(`tzTo-${id}`).value;
+        const now = new Date();
+        const options = { timeZone: to, hour: '2-digit', minute: '2-digit', hour12: true };
+        const toTime = new Intl.DateTimeFormat('en-US', options).format(now);
+        document.getElementById(`tzResult-${id}`).innerHTML = `🕐 Current time in ${to.split('/')[1]}: ${toTime}`;
+      };
+    }
   }
   
-  document.getElementById(`convertType-${id}`).onchange = () => {
-    const type = document.getElementById(`convertType-${id}`).value;
-    const fromSelect = document.getElementById(`convertFromUnit-${id}`);
-    const toSelect = document.getElementById(`convertToUnit-${id}`);
-    if(type === 'length') {
-      fromSelect.innerHTML = '<option value="m">Meters</option><option value="ft">Feet</option>';
-      toSelect.innerHTML = '<option value="ft">Feet</option><option value="m">Meters</option>';
-    } else if(type === 'weight') {
-      fromSelect.innerHTML = '<option value="kg">Kilograms</option><option value="lb">Pounds</option>';
-      toSelect.innerHTML = '<option value="lb">Pounds</option><option value="kg">Kilograms</option>';
-    } else {
-      fromSelect.innerHTML = '<option value="c">Celsius</option><option value="f">Fahrenheit</option>';
-      toSelect.innerHTML = '<option value="f">Fahrenheit</option><option value="c">Celsius</option>';
-    }
-    convert();
-  };
-  document.getElementById(`convertFrom-${id}`).oninput = convert;
-  document.getElementById(`convertFromUnit-${id}`).onchange = convert;
-  document.getElementById(`convertToUnit-${id}`).onchange = convert;
-  convert();
+  document.getElementById(`convertMode-${id}`).onchange = renderConverter;
+  renderConverter();
   return id;
 }
 
-// ========== TYPING TEST ==========
-function createTypingTestWindow() {
+// ========== CHESS ==========
+function createChessWindow() {
   const id = nextWindowId++;
   const win = document.createElement('div');
   win.className = 'window';
   win.id = `window-${id}`;
-  win.style.cssText = `left:150px; top:100px; width:600px; height:500px;`;
+  win.style.cssText = `left:150px; top:100px; width:550px; height:600px;`;
   win.innerHTML = `
-    <div class="window-header"><div class="window-title"><span>⌨️</span><span>Typing Test</span></div><div class="window-controls"><button class="window-control minimize">─</button><button class="window-control maximize">□</button><button class="window-control close">✕</button></div></div>
+    <div class="window-header"><div class="window-title"><span>♟️</span><span>Chess</span></div><div class="window-controls"><button class="window-control minimize">─</button><button class="window-control maximize">□</button><button class="window-control close">✕</button></div></div>
     <div class="window-content" style="text-align:center;">
-      <div style="margin-bottom:10px;">Time: <span id="typingTimer-${id}">0</span>s | WPM: <span id="typingWpm-${id}">0</span> | Accuracy: <span id="typingAccuracy-${id}">100</span>%</div>
-      <div id="typingText-${id}" style="background:rgba(0,0,0,0.3); padding:20px; border-radius:16px; margin-bottom:16px; font-size:18px; line-height:1.5; text-align:left;"></div>
-      <textarea id="typingInput-${id}" rows="3" style="width:100%; padding:12px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white; resize:none;" placeholder="Type here..." disabled></textarea>
-      <button id="typingStart-${id}" style="margin-top:16px; padding:10px 24px; background:var(--accent); border:none; border-radius:30px; color:white; cursor:pointer;">Start Test</button>
+      <iframe src="https://lichess.org/embed?theme=auto&bg=dark" style="width:100%; height:500px; border:none; border-radius:12px;"></iframe>
+      <div style="margin-top:12px; font-size:12px; color:gray;">Play chess online</div>
     </div>
   `;
   document.body.appendChild(win);
-  windows.push({ id, element: win, app: APPS.find(a => a.id === 'typingtest'), minimized: false, maximized: false, x:150, y:100, w:600, h:500 });
+  windows.push({ id, element: win, app: APPS.find(a => a.id === 'chess'), minimized: false, maximized: false, x:150, y:100, w:550, h:600 });
+  focusWindow(id);
+  setupWindowEvents(win, id);
+  addResizeHandles(win, id);
+  updateTaskbar();
+  return id;
+}
+
+// ========== BATTLESHIP ==========
+function createBattleshipWindow() {
+  const id = nextWindowId++;
+  const win = document.createElement('div');
+  win.className = 'window';
+  win.id = `window-${id}`;
+  win.style.cssText = `left:150px; top:100px; width:700px; height:550px;`;
+  win.innerHTML = `
+    <div class="window-header"><div class="window-title"><span>⛴️</span><span>Battleship</span></div><div class="window-controls"><button class="window-control minimize">─</button><button class="window-control maximize">□</button><button class="window-control close">✕</button></div></div>
+    <div class="window-content">
+      <div style="display:flex; gap:20px; justify-content:center;">
+        <div><div style="text-align:center; margin-bottom:8px;">Your Board</div><canvas id="playerBoard-${id}" width="250" height="250" style="border:2px solid var(--border-glass); border-radius:8px;"></canvas></div>
+        <div><div style="text-align:center; margin-bottom:8px;">Enemy Board</div><canvas id="enemyBoard-${id}" width="250" height="250" style="border:2px solid var(--border-glass); border-radius:8px;"></canvas></div>
+      </div>
+      <div id="battleshipStatus-${id}" style="text-align:center; margin-top:16px; background:rgba(0,0,0,0.3); padding:12px; border-radius:12px;"></div>
+      <button id="resetBattleship-${id}" style="margin-top:12px; width:100%; padding:10px; background:var(--accent); border:none; border-radius:30px; color:white; cursor:pointer;">New Game</button>
+    </div>
+  `;
+  document.body.appendChild(win);
+  windows.push({ id, element: win, app: APPS.find(a => a.id === 'battleship'), minimized: false, maximized: false, x:150, y:100, w:700, h:550 });
   focusWindow(id);
   setupWindowEvents(win, id);
   addResizeHandles(win, id);
   updateTaskbar();
   
-  const sentences = [
-    "The quick brown fox jumps over the lazy dog.",
-    "Practice makes perfect when learning to type quickly.",
-    "A journey of a thousand miles begins with a single step.",
-    "Technology is best when it brings people together.",
-    "The only limit to our realization of tomorrow is our doubts of today."
-  ];
-  let currentText = '';
-  let startTime = null;
-  let timerInterval = null;
-  let testActive = false;
+  const size = 10;
+  let playerBoard = Array(size).fill().map(() => Array(size).fill(null));
+  let enemyBoard = Array(size).fill().map(() => Array(size).fill(null));
+  let playerShots = Array(size).fill().map(() => Array(size).fill(false));
+  let enemyShots = Array(size).fill().map(() => Array(size).fill(false));
+  let gameActive = true;
+  let currentTurn = 'player';
   
-  function startTest() {
-    currentText = sentences[Math.floor(Math.random() * sentences.length)];
-    document.getElementById(`typingText-${id}`).innerHTML = currentText;
-    document.getElementById(`typingInput-${id}`).value = '';
-    document.getElementById(`typingInput-${id}`).disabled = false;
-    document.getElementById(`typingInput-${id}`).focus();
-    document.getElementById(`typingTimer-${id}`).textContent = '0';
-    document.getElementById(`typingWpm-${id}`).textContent = '0';
-    document.getElementById(`typingAccuracy-${id}`).textContent = '100';
-    startTime = Date.now();
-    testActive = true;
-    if(timerInterval) clearInterval(timerInterval);
-    timerInterval = setInterval(() => {
-      if(testActive) {
-        const elapsed = Math.floor((Date.now() - startTime) / 1000);
-        document.getElementById(`typingTimer-${id}`).textContent = elapsed;
-        const typed = document.getElementById(`typingInput-${id}`).value;
-        let correct = 0;
-        for(let i = 0; i < Math.min(typed.length, currentText.length); i++) {
-          if(typed[i] === currentText[i]) correct++;
-        }
-        const accuracy = typed.length > 0 ? (correct / typed.length) * 100 : 100;
-        document.getElementById(`typingAccuracy-${id}`).textContent = Math.round(accuracy);
-        const minutes = elapsed / 60;
-        const wordsTyped = typed.split(' ').length;
-        const wpm = minutes > 0 ? Math.round(wordsTyped / minutes) : 0;
-        document.getElementById(`typingWpm-${id}`).textContent = wpm;
-        if(typed.length >= currentText.length) {
-          clearInterval(timerInterval);
-          testActive = false;
-          document.getElementById(`typingInput-${id}`).disabled = true;
-          showAchievement('Typing Master', 15);
-          showToast(`✅ Test complete! ${wpm} WPM, ${Math.round(accuracy)}% accuracy`);
+  function initBoards() {
+    playerBoard = Array(size).fill().map(() => Array(size).fill(null));
+    enemyBoard = Array(size).fill().map(() => Array(size).fill(null));
+    playerShots = Array(size).fill().map(() => Array(size).fill(false));
+    enemyShots = Array(size).fill().map(() => Array(size).fill(false));
+    gameActive = true;
+    currentTurn = 'player';
+    placeRandomShips(playerBoard);
+    placeRandomShips(enemyBoard);
+    draw();
+  }
+  
+  function placeRandomShips(board) {
+    const ships = [5,4,3,3,2];
+    for(let ship of ships) {
+      let placed = false;
+      while(!placed) {
+        const horizontal = Math.random() > 0.5;
+        const row = Math.floor(Math.random() * size);
+        const col = Math.floor(Math.random() * size);
+        if(horizontal && col + ship <= size) {
+          let valid = true;
+          for(let i = 0; i < ship; i++) if(board[row][col+i] !== null) valid = false;
+          if(valid) for(let i = 0; i < ship; i++) board[row][col+i] = 'ship';
+          placed = valid;
+        } else if(!horizontal && row + ship <= size) {
+          let valid = true;
+          for(let i = 0; i < ship; i++) if(board[row+i][col] !== null) valid = false;
+          if(valid) for(let i = 0; i < ship; i++) board[row+i][col] = 'ship';
+          placed = valid;
         }
       }
-    }, 100);
+    }
   }
   
-  document.getElementById(`typingStart-${id}`).onclick = startTest;
+  function draw() {
+    const playerCanvas = document.getElementById(`playerBoard-${id}`);
+    const enemyCanvas = document.getElementById(`enemyBoard-${id}`);
+    drawBoard(playerCanvas, playerBoard, true);
+    drawBoard(enemyCanvas, enemyBoard, false);
+  }
+  
+  function drawBoard(canvas, board, showShips) {
+    const ctx = canvas.getContext('2d');
+    const cellSize = canvas.width / size;
+    for(let i = 0; i < size; i++) {
+      for(let j = 0; j < size; j++) {
+        if(showShips && board[i][j] === 'ship') ctx.fillStyle = '#4caf50';
+        else if(board[i][j] === 'hit') ctx.fillStyle = '#ff4444';
+        else if(board[i][j] === 'miss') ctx.fillStyle = '#424242';
+        else ctx.fillStyle = '#1a1a2e';
+        ctx.fillRect(j*cellSize, i*cellSize, cellSize, cellSize);
+        ctx.strokeStyle = '#333';
+        ctx.strokeRect(j*cellSize, i*cellSize, cellSize, cellSize);
+      }
+    }
+  }
+  
+  function checkWin(board) {
+    for(let i = 0; i < size; i++) {
+      for(let j = 0; j < size; j++) {
+        if(board[i][j] === 'ship') return false;
+      }
+    }
+    return true;
+  }
+  
+  function playerMove(row, col) {
+    if(!gameActive || currentTurn !== 'player' || playerShots[row][col]) return;
+    playerShots[row][col] = true;
+    if(enemyBoard[row][col] === 'ship') {
+      enemyBoard[row][col] = 'hit';
+      document.getElementById(`battleshipStatus-${id}`).innerHTML = '🎯 Hit! Your turn again!';
+      draw();
+      if(checkWin(enemyBoard)) {
+        document.getElementById(`battleshipStatus-${id}`).innerHTML = '🎉 You win! Congratulations! 🎉';
+        gameActive = false;
+        showAchievement('Battleship Commander', 15);
+      }
+    } else {
+      enemyBoard[row][col] = 'miss';
+      document.getElementById(`battleshipStatus-${id}`).innerHTML = '💧 Miss! Enemy turn...';
+      draw();
+      currentTurn = 'enemy';
+      setTimeout(enemyMove, 800);
+    }
+  }
+  
+  function enemyMove() {
+    if(!gameActive || currentTurn !== 'enemy') return;
+    let row, col;
+    do { row = Math.floor(Math.random() * size); col = Math.floor(Math.random() * size); } while(enemyShots[row][col]);
+    enemyShots[row][col] = true;
+    if(playerBoard[row][col] === 'ship') {
+      playerBoard[row][col] = 'hit';
+      document.getElementById(`battleshipStatus-${id}`).innerHTML = '💥 Enemy hit your ship!';
+      draw();
+      if(checkWin(playerBoard)) {
+        document.getElementById(`battleshipStatus-${id}`).innerHTML = '😔 Game Over! Enemy wins.';
+        gameActive = false;
+      } else { currentTurn = 'enemy'; setTimeout(enemyMove, 800); }
+    } else {
+      playerBoard[row][col] = 'miss';
+      document.getElementById(`battleshipStatus-${id}`).innerHTML = '✨ Enemy missed! Your turn.';
+      draw();
+      currentTurn = 'player';
+    }
+  }
+  
+  const enemyCanvas = document.getElementById(`enemyBoard-${id}`);
+  enemyCanvas.addEventListener('click', (e) => {
+    const rect = enemyCanvas.getBoundingClientRect();
+    const cellSize = 250 / size;
+    const col = Math.floor((e.clientX - rect.left) / cellSize);
+    const row = Math.floor((e.clientY - rect.top) / cellSize);
+    if(row >= 0 && row < size && col >= 0 && col < size) playerMove(row, col);
+  });
+  
+  document.getElementById(`resetBattleship-${id}`).onclick = () => { initBoards(); document.getElementById(`battleshipStatus-${id}`).innerHTML = 'New game! Place your shots.'; };
+  initBoards();
   return id;
 }
 
-// ========== MARKDOWN EDITOR ==========
-function createMarkdownWindow() {
+// ========== HANGMAN ==========
+function createHangmanWindow() {
   const id = nextWindowId++;
   const win = document.createElement('div');
   win.className = 'window';
   win.id = `window-${id}`;
-  win.style.cssText = `left:150px; top:100px; width:900px; height:600px;`;
+  win.style.cssText = `left:150px; top:100px; width:550px; height:500px;`;
   win.innerHTML = `
-    <div class="window-header"><div class="window-title"><span>📓</span><span>Markdown Editor</span></div><div class="window-controls"><button class="window-control minimize">─</button><button class="window-control maximize">□</button><button class="window-control close">✕</button></div></div>
-    <div class="window-content" style="display:flex; gap:16px; padding:16px;">
-      <textarea id="markdownInput-${id}" placeholder="# Write your markdown here&#10;&#10;## Subheading&#10;&#10;This is **bold** and *italic*&#10;&#10;- List item 1&#10;- List item 2" style="flex:1; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white; padding:12px; resize:none; font-family:monospace;"></textarea>
-      <div id="markdownPreview-${id}" style="flex:1; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; padding:12px; overflow-y:auto;"></div>
+    <div class="window-header"><div class="window-title"><span>🪢</span><span>Hangman</span></div><div class="window-controls"><button class="window-control minimize">─</button><button class="window-control maximize">□</button><button class="window-control close">✕</button></div></div>
+    <div class="window-content" style="text-align:center;">
+      <div id="hangmanWord-${id}" style="font-size:32px; letter-spacing:8px; font-family:monospace; margin:20px 0;"></div>
+      <div id="hangmanGuesses-${id}" style="margin:10px 0; color:gray;">Wrong guesses: </div>
+      <div id="hangmanMessage-${id}" style="margin:10px 0;"></div>
+      <div id="hangmanKeyboard-${id}" style="display:grid; grid-template-columns:repeat(7,1fr); gap:8px; max-width:400px; margin:20px auto;"></div>
+      <button id="hangmanReset-${id}" style="padding:10px 20px; background:var(--accent); border:none; border-radius:30px; color:white; cursor:pointer;">New Game</button>
     </div>
   `;
   document.body.appendChild(win);
-  windows.push({ id, element: win, app: APPS.find(a => a.id === 'markdown'), minimized: false, maximized: false, x:150, y:100, w:900, h:600 });
+  windows.push({ id, element: win, app: APPS.find(a => a.id === 'hangman'), minimized: false, maximized: false, x:150, y:100, w:550, h:500 });
   focusWindow(id);
   setupWindowEvents(win, id);
   addResizeHandles(win, id);
   updateTaskbar();
   
-  function renderPreview() {
-    const text = document.getElementById(`markdownInput-${id}`).value;
-    let html = text
-      .replace(/^# (.*$)/gm, '<h1>$1</h1>')
-      .replace(/^## (.*$)/gm, '<h2>$1</h2>')
-      .replace(/^### (.*$)/gm, '<h3>$1</h3>')
-      .replace(/\*\*(.*?)\*\*/g, '<strong>$1</strong>')
-      .replace(/\*(.*?)\*/g, '<em>$1</em>')
-      .replace(/^- (.*$)/gm, '<li>$1</li>')
-      .replace(/\n\n/g, '</p><p>');
-    html = '<p>' + html + '</p>';
-    html = html.replace(/<li>/g, '<ul><li>').replace(/<\/li>/g, '</li></ul>').replace(/<\/ul><ul>/g, '');
-    document.getElementById(`markdownPreview-${id}`).innerHTML = html;
+  const words = ['PYTHON', 'JAVASCRIPT', 'HANGMAN', 'COMPUTER', 'PROGRAMMING', 'DEVELOPER', 'FANTER', 'OS', 'DESKTOP', 'WINDOW', 'GITHUB', 'SUPABASE'];
+  let currentWord = '';
+  let guessed = [];
+  let wrongGuesses = 0;
+  
+  function initGame() {
+    currentWord = words[Math.floor(Math.random() * words.length)];
+    guessed = [];
+    wrongGuesses = 0;
+    render();
   }
-  document.getElementById(`markdownInput-${id}`).oninput = renderPreview;
-  renderPreview();
+  
+  function render() {
+    const displayWord = currentWord.split('').map(l => guessed.includes(l) ? l : '_').join(' ');
+    document.getElementById(`hangmanWord-${id}`).innerHTML = displayWord;
+    document.getElementById(`hangmanGuesses-${id}`).innerHTML = `Wrong guesses (${wrongGuesses}/6): ${guessed.filter(l => !currentWord.includes(l)).join(', ')}`;
+    document.getElementById(`hangmanMessage-${id}`).innerHTML = wrongGuesses >= 6 ? '💀 Game Over! You lose.' : (displayWord.replace(/ /g, '') === currentWord ? '🎉 Congratulations! You win!' : '');
+    
+    const keyboard = document.getElementById(`hangmanKeyboard-${id}`);
+    const letters = 'ABCDEFGHIJKLMNOPQRSTUVWXYZ'.split('');
+    keyboard.innerHTML = letters.map(l => `<button class="calc-btn" data-letter="${l}" style="padding:8px; ${guessed.includes(l) ? 'opacity:0.5;' : ''}" ${guessed.includes(l) || wrongGuesses >= 6 || displayWord.replace(/ /g, '') === currentWord ? 'disabled' : ''}>${l}</button>`).join('');
+    keyboard.querySelectorAll('button').forEach(btn => {
+      btn.onclick = () => {
+        const letter = btn.dataset.letter;
+        if(guessed.includes(letter)) return;
+        guessed.push(letter);
+        if(!currentWord.includes(letter)) wrongGuesses++;
+        render();
+        if(wrongGuesses >= 6) showAchievement('Hangman Loser', 5);
+        if(displayWord.replace(/ /g, '') === currentWord) showAchievement('Hangman Master', 15);
+      };
+    });
+  }
+  
+  document.getElementById(`hangmanReset-${id}`).onclick = initGame;
+  initGame();
   return id;
 }
 
@@ -886,7 +1365,7 @@ function createExternalWindow(app, x=150, y=100, w=900, h=650) {
   win.id = `window-${id}`;
   win.style.cssText = `left:${x}px; top:${y}px; width:${w}px; height:${h}px;`;
   win.innerHTML = `
-    <div class="window-header"><div class="window-title"><span>${app.icon}</span><span>${app.name}</span></div><div class="window-controls"><button class="window-control minimize">─</button><button class="window-control maximize">□</button><button class="window-control close">✕</button></div></div>
+    <div class="window-header"><div class="window-title"><span><img src="${app.iconUrl || ''}" style="width:20px;height:20px;border-radius:6px;" onerror="this.style.display='none';this.parentElement.innerHTML='${app.icon}'"></span><span>${app.name}</span></div><div class="window-controls"><button class="window-control minimize">─</button><button class="window-control maximize">□</button><button class="window-control close">✕</button></div></div>
     <div class="window-content"><iframe src="${app.url}" style="width:100%; height:100%; border:none;"></iframe></div>
   `;
   document.body.appendChild(win);
@@ -899,11 +1378,16 @@ function createExternalWindow(app, x=150, y=100, w=900, h=650) {
 }
 
 function createAppWindow(app, x=150, y=100, w=500, h=400) {
-  if(app.appType === 'weather') return createWeatherWindow();
-  if(app.appType === 'wordle') return createWordleWindow();
-  if(app.appType === 'converter') return createConverterWindow();
-  if(app.appType === 'typingtest') return createTypingTestWindow();
-  if(app.appType === 'markdown') return createMarkdownWindow();
+  if(app.id === 'thefactory') return createFactoryWindow();
+  if(app.id === 'thestudio') return createStudioWindow();
+  if(app.id === 'netspeed') return createNetSpeedWindow();
+  if(app.id === 'iplookup') return createIPLookupWindow();
+  if(app.id === 'charCounter') return createCharCounterWindow();
+  if(app.id === 'converter') return createConverterWindow();
+  if(app.id === 'chess') return createChessWindow();
+  if(app.id === 'battleship') return createBattleshipWindow();
+  if(app.id === 'hangman') return createHangmanWindow();
+  if(app.id === 'weather') return createWeatherWindow();
   
   const id = nextWindowId++;
   const win = document.createElement('div');
@@ -931,12 +1415,6 @@ function createAppWindow(app, x=150, y=100, w=500, h=400) {
     case 'tasks':
       content = `<div style="display:flex; gap:8px; margin-bottom:16px;"><input type="text" id="taskInput-${id}" placeholder="New task..." style="flex:1; padding:10px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white;"><button class="calc-btn" id="addTask-${id}">Add</button></div><div id="taskList-${id}" style="display:flex; flex-direction:column; gap:8px;"></div>`;
       break;
-    case 'snake':
-      content = `
-        <div style="text-align:center;"><canvas id="snakeCanvas-${id}" width="400" height="400" style="border:2px solid var(--border-glass); border-radius:12px; background:#1a1a2e;"></canvas>
-        <div style="margin-top:12px;">Score: <span id="snakeScore-${id}">0</span></div>
-        <button class="calc-btn" id="resetSnake-${id}" style="margin-top:8px;">Restart</button></div>`;
-      break;
     case 'fortuneteller':
       content = `<div style="text-align:center; padding:40px;"><div style="font-size:64px; margin-bottom:20px;">🔮</div><button class="calc-btn" id="getFortune-${id}">Tell My Fortune</button><div id="fortuneText-${id}" style="margin-top:20px; font-size:18px; color:var(--accent);"></div></div>`;
       break;
@@ -950,11 +1428,14 @@ function createAppWindow(app, x=150, y=100, w=500, h=400) {
     case 'browser':
       content = `<iframe src="https://www.google.com" style="width:100%; height:100%; border:none;"></iframe>`;
       break;
+    case 'weather':
+      content = `<div><input type="text" id="weatherCity-${id}" placeholder="Enter city..." style="width:100%; padding:12px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white; margin-bottom:12px;"><button id="weatherGet-${id}" style="width:100%; padding:12px; background:var(--accent); border:none; border-radius:30px; color:white; cursor:pointer;">Get Weather</button><div id="weatherResult-${id}" style="margin-top:16px; background:rgba(0,0,0,0.3); padding:16px; border-radius:12px;"></div></div>`;
+      break;
     default:
       content = `<div style="text-align:center; padding:40px;">${app.name} - Coming Soon!</div>`;
   }
   
-  win.innerHTML = `<div class="window-header"><div class="window-title"><span>${app.icon}</span><span>${app.name}</span></div><div class="window-controls"><button class="window-control minimize">─</button><button class="window-control maximize">□</button><button class="window-control close">✕</button></div></div><div class="window-content">${content}</div>`;
+  win.innerHTML = `<div class="window-header"><div class="window-title"><span><img src="${app.iconUrl || ''}" style="width:20px;height:20px;border-radius:6px;" onerror="this.style.display='none';this.parentElement.innerHTML='${app.icon}'"></span><span>${app.name}</span></div><div class="window-controls"><button class="window-control minimize">─</button><button class="window-control maximize">□</button><button class="window-control close">✕</button></div></div><div class="window-content">${content}</div>`;
   document.body.appendChild(win);
   windows.push({ id, element: win, app, minimized: false, maximized: false, x, y, w, h });
   focusWindow(id);
@@ -1004,29 +1485,6 @@ function createAppWindow(app, x=150, y=100, w=500, h=400) {
     document.getElementById(`addTask-${id}`).onclick = () => { if(input.value.trim()) { tasks.push({ text: input.value.trim(), done: false }); localStorage.setItem('fanter_tasks', JSON.stringify(tasks)); input.value = ''; render(); } };
     render();
   }
-  if(app.appType === 'snake') {
-    const canvas = document.getElementById(`snakeCanvas-${id}`);
-    const ctx = canvas.getContext('2d');
-    let snake = [{x:200,y:200}], dir = 'RIGHT', food = {x:100,y:100}, score = 0, interval = null;
-    function draw() {
-      ctx.fillStyle = '#1a1a2e'; ctx.fillRect(0,0,400,400);
-      ctx.fillStyle = 'green'; snake.forEach(seg => ctx.fillRect(seg.x,seg.y,20,20));
-      ctx.fillStyle = 'red'; ctx.fillRect(food.x,food.y,20,20);
-      document.getElementById(`snakeScore-${id}`).innerText = score;
-    }
-    function update() {
-      let head = {...snake[0]};
-      if(dir === 'RIGHT') head.x += 20; if(dir === 'LEFT') head.x -= 20; if(dir === 'UP') head.y -= 20; if(dir === 'DOWN') head.y += 20;
-      if(head.x === food.x && head.y === food.y) { score++; food = {x:Math.floor(Math.random()*20)*20, y:Math.floor(Math.random()*20)*20}; } else { snake.pop(); }
-      snake.unshift(head);
-      if(head.x < 0 || head.x >= 400 || head.y < 0 || head.y >= 400 || snake.slice(1).some(s => s.x === head.x && s.y === head.y)) { clearInterval(interval); interval = null; showToast('Game Over! Score: '+score); return; }
-      draw();
-    }
-    function start() { if(interval) clearInterval(interval); snake = [{x:200,y:200}]; dir = 'RIGHT'; score = 0; food = {x:100,y:100}; interval = setInterval(update,150); draw(); }
-    document.addEventListener('keydown', (e) => { if(e.key === 'ArrowRight' && dir !== 'LEFT') dir = 'RIGHT'; if(e.key === 'ArrowLeft' && dir !== 'RIGHT') dir = 'LEFT'; if(e.key === 'ArrowUp' && dir !== 'DOWN') dir = 'UP'; if(e.key === 'ArrowDown' && dir !== 'UP') dir = 'DOWN'; });
-    document.getElementById(`resetSnake-${id}`).onclick = start;
-    start();
-  }
   if(app.appType === 'fortuneteller') {
     const fortunes = ["Great success awaits!", "A pleasant surprise is coming", "Adventure lies ahead", "Trust your instincts", "Happiness is around the corner"];
     document.getElementById(`getFortune-${id}`).onclick = () => { document.getElementById(`fortuneText-${id}`).innerHTML = fortunes[Math.floor(Math.random()*fortunes.length)]; };
@@ -1054,6 +1512,56 @@ function createAppWindow(app, x=150, y=100, w=500, h=400) {
     document.getElementById(`clearCanvas-${id}`).onclick = () => { ctx.fillStyle = 'white'; ctx.fillRect(0,0,canvas.width,canvas.height); };
     document.getElementById(`saveCanvas-${id}`).onclick = () => { const link = document.createElement('a'); link.download = 'drawing.png'; link.href = canvas.toDataURL(); link.click(); };
   }
+  if(app.appType === 'weather') {
+    document.getElementById(`weatherGet-${id}`).onclick = async () => {
+      const city = document.getElementById(`weatherCity-${id}`).value;
+      if(!city) return;
+      try {
+        const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1`);
+        const geoData = await geoRes.json();
+        if(!geoData.results) { document.getElementById(`weatherResult-${id}`).innerHTML = 'City not found'; return; }
+        const { latitude, longitude, name } = geoData.results[0];
+        const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`);
+        const weatherData = await weatherRes.json();
+        const temp = Math.round(weatherData.current_weather.temperature);
+        document.getElementById(`weatherResult-${id}`).innerHTML = `<div style="text-align:center;"><div style="font-size:48px;">${temp}°F</div><div>${name}</div></div>`;
+      } catch(e) { document.getElementById(`weatherResult-${id}`).innerHTML = 'Error fetching weather'; }
+    };
+  }
+  return id;
+}
+
+function createWeatherWindow() {
+  const id = nextWindowId++;
+  const win = document.createElement('div');
+  win.className = 'window';
+  win.id = `window-${id}`;
+  win.style.cssText = `left:150px; top:100px; width:500px; height:450px;`;
+  win.innerHTML = `
+    <div class="window-header"><div class="window-title"><span>🌤️</span><span>Weather</span></div><div class="window-controls"><button class="window-control minimize">─</button><button class="window-control maximize">□</button><button class="window-control close">✕</button></div></div>
+    <div class="window-content"><div><input type="text" id="weatherCity-${id}" placeholder="Enter city..." style="width:100%; padding:12px; background:rgba(0,0,0,0.3); border:1px solid var(--border-glass); border-radius:12px; color:white; margin-bottom:12px;"><button id="weatherGet-${id}" style="width:100%; padding:12px; background:var(--accent); border:none; border-radius:30px; color:white; cursor:pointer;">Get Weather</button><div id="weatherResult-${id}" style="margin-top:16px; background:rgba(0,0,0,0.3); padding:16px; border-radius:12px;"></div></div></div>
+  `;
+  document.body.appendChild(win);
+  windows.push({ id, element: win, app: APPS.find(a => a.id === 'weather'), minimized: false, maximized: false, x:150, y:100, w:500, h:450 });
+  focusWindow(id);
+  setupWindowEvents(win, id);
+  addResizeHandles(win, id);
+  updateTaskbar();
+  
+  document.getElementById(`weatherGet-${id}`).onclick = async () => {
+    const city = document.getElementById(`weatherCity-${id}`).value;
+    if(!city) return;
+    try {
+      const geoRes = await fetch(`https://geocoding-api.open-meteo.com/v1/search?name=${encodeURIComponent(city)}&count=1`);
+      const geoData = await geoRes.json();
+      if(!geoData.results) { document.getElementById(`weatherResult-${id}`).innerHTML = 'City not found'; return; }
+      const { latitude, longitude, name } = geoData.results[0];
+      const weatherRes = await fetch(`https://api.open-meteo.com/v1/forecast?latitude=${latitude}&longitude=${longitude}&current_weather=true`);
+      const weatherData = await weatherRes.json();
+      const temp = Math.round(weatherData.current_weather.temperature);
+      document.getElementById(`weatherResult-${id}`).innerHTML = `<div style="text-align:center;"><div style="font-size:48px;">${temp}°F</div><div>${name}</div></div>`;
+    } catch(e) { document.getElementById(`weatherResult-${id}`).innerHTML = 'Error fetching weather'; }
+  };
   return id;
 }
 
@@ -1170,21 +1678,21 @@ function updateTaskbar() {
 
 function launchApp(app) {
   const existing = windows.find(w => w.app?.id === app.id);
-  if(existing) { if(existing.minimized) toggleMinimize(existing.id); focusWindow(existing.id); return; }
-  if(app.isBuiltin) createGameHubWindow();
-  else if(app.isEmulator) createEmulatorWindow();
-  else if(app.appType) createAppWindow(app);
-  else if(app.external || app.url) createExternalWindow(app);
-  else createAppWindow(app);
+  if(existing) { if(existing.minimized) toggleMinimize(existing.id); focusWindow(existing.id); return existing.id; }
+  if(app.isBuiltin) return createGameHubWindow();
+  else if(app.isEmulator) return createEmulatorWindow();
+  else if(app.appType) return createAppWindow(app);
+  else if(app.external || app.url) return createExternalWindow(app);
+  else return createAppWindow(app);
 }
 
 function renderStartApps(search = '') {
   const container = document.getElementById('startApps');
   let filtered = APPS;
   if(search) filtered = APPS.filter(a => a.name.toLowerCase().includes(search.toLowerCase()));
-  container.innerHTML = filtered.map(app => `<div class="start-app" data-app-id="${app.id}"><div class="start-app-icon">${app.icon}</div><div class="start-app-name">${app.name}</div></div>`).join('');
+  container.innerHTML = filtered.map(app => `<div class="start-app" data-app-id="${app.id}"><div class="start-app-icon"><img src="${app.iconUrl || ''}" style="width:28px;height:28px;border-radius:8px;" onerror="this.style.display='none';this.parentElement.innerHTML='${app.icon}'"></div><div class="start-app-name">${app.name}</div></div>`).join('');
   container.querySelectorAll('.start-app').forEach(el => {
-    el.addEventListener('click', () => { const app = APPS.find(a => a.id === el.dataset.appId); if(app) launchApp(app); toggleStartMenu(); });
+    el.addEventListener('click', () => { const app = APPS.find(a => a.id === el.dataset.appId); if(app) launchAppWithAnimation(app, el); toggleStartMenu(); });
   });
 }
 
@@ -1230,21 +1738,29 @@ function uploadWallpaper() {
   input.click();
 }
 
-function handleLogin() {
-  const username = document.getElementById('loginUsername').value.trim();
-  if(!username) {
-    document.getElementById('loginError').textContent = 'Enter a username';
+async function handleLogin() {
+  const email = document.getElementById('loginEmail').value;
+  const password = document.getElementById('loginPassword').value;
+  if(!email || !password) {
+    document.getElementById('loginError').textContent = 'Enter email and password';
     return;
   }
-  currentUser = { id: 'user_' + Date.now(), username: username, displayName: username, coins: 0 };
-  localStorage.setItem('fanter_currentUser', JSON.stringify(currentUser));
-  document.getElementById('startUserName').textContent = username;
-  showToast(`Welcome, ${username}!`);
-  document.getElementById('loginScreen').classList.remove('visible');
-  document.getElementById('desktop').classList.add('visible');
-  initDesktop();
-  showAchievement('Welcome Aboard', 3);
+  try {
+    const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+    if(error) throw error;
+    currentUser = data.user;
+    localStorage.setItem('fanter_currentUser', JSON.stringify(currentUser));
+    document.getElementById('startUserName').textContent = currentUser.email?.split('@')[0] || 'User';
+    document.getElementById('startUserEmail').textContent = currentUser.email;
+    showToast(`Welcome back!`);
+    document.getElementById('loginScreen').classList.remove('visible');
+    document.getElementById('desktop').classList.add('visible');
+    initDesktop();
+    showAchievement('Welcome Aboard', 3);
+  } catch(err) { document.getElementById('loginError').textContent = err.message; }
 }
+
+function showRegister() { window.location.href = 'fantaccount.html'; }
 
 async function initDesktop() {
   await loadGames();
@@ -1280,16 +1796,15 @@ async function initDesktop() {
     });
   });
   
-  // Load saved widget states
   const widgetsDiv = document.getElementById('desktopWidgets');
   widgetsDiv.classList.add('visible');
-  ['time', 'calendar', 'weather', 'cpu'].forEach(w => {
+  ['time', 'calendar', 'weather', 'battery'].forEach(w => {
     const saved = localStorage.getItem(`widget_${w}`);
     const el = document.getElementById(`${w}Widget`);
     if(el && saved === 'false') el.style.display = 'none';
     else if(el && saved === 'true') el.style.display = 'block';
     else if(el && w === 'weather') el.style.display = 'none';
-    else if(el && w === 'cpu') el.style.display = 'none';
+    else if(el && w === 'battery') el.style.display = 'none';
   });
   
   document.getElementById('ctxRefresh').onclick = () => location.reload();
@@ -1307,16 +1822,21 @@ async function initDesktop() {
   };
   
   document.addEventListener('keydown', (e) => {
+    if(e.key === 'Escape' && activeWindowId) {
+      const win = windows.find(w => w.id === activeWindowId);
+      if(win?.maximized) toggleMaximize(activeWindowId);
+    }
     if((e.ctrlKey || e.metaKey) && e.key === 'k') { e.preventDefault(); toggleBootMenu(); }
     if(e.key === 'Escape') { if(bootMenuOpen) toggleBootMenu(); if(startMenuOpen) toggleStartMenu(); }
     if((e.ctrlKey || e.metaKey) && e.key === 'w') { e.preventDefault(); if(activeWindowId) closeWindowWithAnimation(activeWindowId); }
     if((e.ctrlKey || e.metaKey) && e.key === 'm') { e.preventDefault(); if(activeWindowId) toggleMinimize(activeWindowId); }
   });
   
-  showToast('🎉 Welcome to fanterOS! Right-click desktop for options');
+  showToast('🎉 Welcome to fanterOS! Right-click desktop for sum options :3');
 }
 
 document.getElementById('loginBtn').onclick = handleLogin;
+document.getElementById('showRegister').onclick = showRegister;
 document.getElementById('loginScreen').classList.add('visible');
 </script>
 </body>
