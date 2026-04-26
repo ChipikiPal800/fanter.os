@@ -680,7 +680,7 @@ const ALL_APPS = [
     { id: 'timer', name: 'Timer', icon: '⏱️', category: 'tools', appType: 'timer' },
     { id: 'tasks', name: 'Tasks', icon: '✅', category: 'tools', appType: 'tasks' },
     { id: 'whiteboard', name: 'Whiteboard', icon: '✏️', category: 'creative', appType: 'whiteboard' },
-    { id: 'browser', name: 'Browser', icon: '🌐', category: 'tools', appType: 'browser' },
+   { id: 'browser', name: 'Browser', icon: '🌐', category: 'tools', appType: 'browser', url: 'https://chipikipal800.github.io/Fanter-search/' },
     { id: 'settings', name: 'Settings', icon: '⚙️', category: 'system', url: 'settings.html' },
     { id: 'shop', name: 'Shop', icon: '🛒', category: 'system', url: 'shop.html' },
     { id: 'fantarena', name: 'Fantarena', icon: '🏟️', category: 'social', url: 'fantarena.html' },
@@ -1411,13 +1411,20 @@ function createBrowserWindow() {
     const win = document.createElement('div');
     win.className = 'window';
     win.id = `window-${id}`;
-    win.style.cssText = `left:150px; top:100px; width:900px; height:650px;`;
+    win.style.cssText = `left:150px; top:100px; width:1000px; height:700px;`;
     win.innerHTML = `
-        <div class="window-header"><div class="window-title"><span>🌐</span><span>Browser</span></div><div class="window-controls"><button class="window-control minimize">─</button><button class="window-control maximize">□</button><button class="window-control close">✕</button></div></div>
-        <div class="window-content"><iframe src="https://www.google.com" style="width:100%; height:100%; border:none;"></iframe></div>
+        <div class="window-header">
+            <div class="window-title"><span>🌐</span><span>Browser</span></div>
+            <div class="window-controls">
+                <button class="window-control minimize">─</button>
+                <button class="window-control maximize">□</button>
+                <button class="window-control close">✕</button>
+            </div>
+        </div>
+        <div class="window-content"><iframe src="https://chipikipal800.github.io/Fanter-search/" style="width:100%; height:100%; border:none;"></iframe></div>
     `;
     document.body.appendChild(win);
-    windows.push({ id, element: win, app: { id: 'browser', name: 'Browser', icon: '🌐' }, minimized: false, maximized: false, x:150, y:100, w:900, h:650 });
+    windows.push({ id, element: win, app: { id: 'browser', name: 'Browser', icon: '🌐', url: 'https://chipikipal800.github.io/Fanter-search/' }, minimized: false, maximized: false, x:150, y:100, w:1000, h:700 });
     focusWindow(id);
     setupWindowEvents(win, id);
     addResizeHandles(win, id);
