@@ -80,7 +80,7 @@ function initFanterOS() {
         { id: 'whiteboard', name: 'Whiteboard', icon: '✏️', category: 'creative', appType: 'whiteboard' },
         { id: 'settings', name: 'Settings', icon: '⚙️', iconUrl: window.ICON_URLS.settings, category: 'system', url: 'settings.html' },
         { id: 'shop', name: 'Shop', icon: '🛒', category: 'system', url: 'shop.html' },
-        { id: 'account', name: 'Account', icon: '👤', category: 'system', url: 'fantaccount.html' }
+        { id: 'account', name: 'Account', icon: '👤', category: 'system', url: 'fantaccount.html' },
         { id: 'stealth', name: 'Stealth', icon: '🕵️', category: 'tools', appType: 'stealth' }
     ];
 
