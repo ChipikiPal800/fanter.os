@@ -866,12 +866,14 @@ function initFanterOS() {
             <div class="window-content" style="padding:16px;">
                 <div style="display:grid; gap:10px;">
                     <div class="emulator-item" data-url="https://chipikipal800.github.io/MKGBA2.0/"><span>🎮</span><div><div>Game Boy Advance</div></div><span>▶</span></div>
-                    <div class="emulator-item" data-url="https://chipikipal800.github.io/nes-emulator-/"><span>📺</span><div><div>Nintendo NES</div></div><span>▶</span></div>
+                    <div class="emulator-item" data-url="https://chipikipal800.github.io/nes-emulator-/"><span>📺</span><div><div>NES</div></div><span>▶</span></div>
                     <div class="emulator-item" data-url="https://chipikipal800.github.io/n64-emulator/"><span>🎮</span><div><div>Nintendo 64</div></div><span>▶</span></div>
                     <div class="emulator-item" data-url="https://chipikipal800.github.io/Sega-Genesis-Emulator-/"><span>🌀</span><div><div>Sega Genesis</div></div><span>▶</span></div>
                     <div class="emulator-item" data-url="https://chipikipal800.github.io/Virtual-boy-emulator-/"><span>🕶️</span><div><div>Virtual Boy</div></div><span>▶</span></div>
                     <div class="emulator-item" data-url="https://chipikipal800.github.io/atari7800-emulatorwroms/"><span>🎮</span><div><div>Atari 7800</div></div><span>▶</span></div>
                     <div class="emulator-item" data-url="https://chipikipal800.github.io/Atari-2600-emulator-/"><span>🕹️</span><div><div>Atari 2600</div></div><span>▶</span></div>
+                    <div class="emulator-item" data-url="https://chipikipal800.github.io/Snes-emulator-html/"><span>⚡</span><div><div>SNES</div></div><span>▶</span></div>
+                    <div class="emulator-item" data-url="https://chipikipal800.github.io/Gameboy-color-emulator-//"><span>🎨</span><div><div>Game Boy Color</div></div><span>▶</span></div>
                 </div>
             </div>
         `;
