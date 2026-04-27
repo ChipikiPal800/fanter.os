@@ -2106,64 +2106,71 @@ function initSupabase() {
 initSupabase();
 
 async function handleLogin() {
-    const username = document.getElementById('loginUsername').value;
-    const password = document.getElementById('loginPassword').value;
+    const username = document.getElementById('loginUsername').value.trim();
     const errorEl = document.getElementById('loginError');
     
-    if (!username || !password) {
-        if (errorEl) errorEl.textContent = 'Enter username and password';
+    if (!username) {
+        if (errorEl) errorEl.textContent = 'Enter a username';
         return;
     }
-    if (!supabaseClient) {
-        if (errorEl) errorEl.textContent = 'Supabase connecting... try again';
-        return;
-    }
-    try {
-        const { data: profile, error: profileError } = await supabaseClient.from('profiles').select('id, email').eq('username', username).single();
-        if (profileError || !profile) {
-            if (errorEl) errorEl.textContent = 'User not found';
-            return;
+    
+    // Create user object
+    const currentUser = {
+        id: 'user_' + Date.now() + '_' + Math.random().toString(36).slice(2, 8),
+        username: username,
+        email: username + '@fanter.os',
+        coins: 100,
+        favorites: [],
+        playedGames: [],
+        stats: {
+            gamesPlayed: 0,
+            favoritesCount: 0,
+            ratingsGiven: 0
         }
-        const { data, error } = await supabaseClient.auth.signInWithPassword({ email: profile.email, password: password });
-        if (error) throw error;
-        
-        const currentUser = data.user;
-        currentUser.username = username;
-        localStorage.setItem('fanter_currentUser', JSON.stringify(currentUser));
-        
-        const userNameEl = document.getElementById('startUserName');
-        const userEmailEl = document.getElementById('startUserEmail');
-        if (userNameEl) userNameEl.textContent = username;
-        if (userEmailEl) userEmailEl.textContent = profile.email;
-        
-        const loginScreen = document.getElementById('loginScreen');
-        const desktop = document.getElementById('desktop');
-        const fadeOverlay = document.getElementById('fadeOverlay');
-        
+    };
+    
+    // Save to localStorage
+    localStorage.setItem('fanter_currentUser', JSON.stringify(currentUser));
+    
+    // Also save to users list for potential friend features
+    let users = JSON.parse(localStorage.getItem('fanter_users') || '[]');
+    const existingUser = users.find(u => u.username === username);
+    if (!existingUser) {
+        users.push(currentUser);
+        localStorage.setItem('fanter_users', JSON.stringify(users));
+    }
+    
+    // Update UI
+    const userNameEl = document.getElementById('startUserName');
+    const userEmailEl = document.getElementById('startUserEmail');
+    if (userNameEl) userNameEl.textContent = username;
+    if (userEmailEl) userEmailEl.textContent = username + '@fanter.os';
+    
+    // Show login screen fade out
+    const loginScreen = document.getElementById('loginScreen');
+    const desktop = document.getElementById('desktop');
+    const fadeOverlay = document.getElementById('fadeOverlay');
+    
+    if (loginScreen) {
+        loginScreen.style.transition = 'opacity 0.5s ease';
+        loginScreen.style.opacity = '0';
+    }
+    
+    setTimeout(() => {
         if (loginScreen) {
-            loginScreen.style.transition = 'opacity 0.5s ease';
-            loginScreen.style.opacity = '0';
+            loginScreen.classList.remove('visible');
+            loginScreen.style.display = 'none';
         }
-        
+        if (fadeOverlay) fadeOverlay.classList.add('active');
         setTimeout(() => {
-            if (loginScreen) {
-                loginScreen.classList.remove('visible');
-                loginScreen.style.display = 'none';
+            if (desktop) {
+                desktop.style.display = 'block';
+                desktop.classList.add('visible');
             }
-            if (fadeOverlay) fadeOverlay.classList.add('active');
-            setTimeout(() => {
-                if (desktop) {
-                    desktop.style.display = 'block';
-                    desktop.classList.add('visible');
-                }
-                if (fadeOverlay) fadeOverlay.classList.remove('active');
-                showToast(`Welcome back, ${username}!`);
-                showAchievement('Welcome Aboard', 3);
-                initDesktop();
-            }, 2000);
-        }, 500);
-    } catch(err) {
-        const errorEl = document.getElementById('loginError');
-        if (errorEl) errorEl.textContent = err.message;
-    }
+            if (fadeOverlay) fadeOverlay.classList.remove('active');
+            showToast(`Welcome back, ${username}!`);
+            showAchievement('Welcome Aboard', 3);
+            initDesktop();
+        }, 2000);
+    }, 500);
 }
