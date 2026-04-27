@@ -2002,6 +2002,11 @@ if (loginUsername) {
                 if (window.currentBootResults[window.selectedBootIndex]) { 
                     showGameDetails(window.currentBootResults[window.selectedBootIndex]); 
                     toggleBootMenu(); 
+
+                    const bottomClock = document.getElementById('bottomClock');
+                     if (bottomClock) {
+                          bottomClock.onclick = () => document.getElementById('widgetsPanel').classList.toggle('open');
+                    }
                 }
             }
         };
