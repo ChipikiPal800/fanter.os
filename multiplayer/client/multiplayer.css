@@ -1,0 +1,212 @@
+/* multiplayer/client/multiplayer.css */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    background: linear-gradient(135deg, #0a0f1e 0%, #0c1222 100%);
+    font-family: 'DM Sans', sans-serif;
+    min-height: 100vh;
+    padding: 2rem;
+}
+
+.multiplayer-container {
+    max-width: 1200px;
+    margin: 0 auto;
+}
+
+.header {
+    text-align: center;
+    margin-bottom: 2rem;
+}
+
+.header h1 {
+    font-size: 2.6rem;
+    background: linear-gradient(135deg, #f5e6b2, #ffcc66, #ffaa33);
+    background-clip: text;
+    -webkit-background-clip: text;
+    color: transparent;
+    letter-spacing: 2px;
+}
+
+.header p {
+    color: #8e9bbe;
+    font-size: 0.9rem;
+    margin-top: 0.5rem;
+}
+
+.main-content {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 2rem;
+}
+
+.active-games, .host-game {
+    background: rgba(15, 15, 25, 0.85);
+    backdrop-filter: blur(20px);
+    border: 1px solid rgba(255, 255, 255, 0.12);
+    border-radius: 20px;
+    padding: 1.5rem;
+}
+
+.active-games h2, .host-game h2 {
+    color: #ffcc66;
+    font-size: 1.2rem;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+    padding-bottom: 0.5rem;
+}
+
+.rooms-list {
+    min-height: 200px;
+}
+
+.room-card {
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 204, 102, 0.3);
+    border-radius: 12px;
+    padding: 1rem;
+    margin-bottom: 0.8rem;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.room-card:hover {
+    background: rgba(124, 92, 255, 0.2);
+    border-color: #ffcc66;
+    transform: translateY(-2px);
+}
+
+.room-game {
+    font-weight: 700;
+    color: #f5e6c4;
+    font-size: 1rem;
+}
+
+.room-host {
+    font-size: 0.8rem;
+    color: #a0a0c0;
+    margin-top: 0.3rem;
+}
+
+.room-players {
+    font-size: 0.7rem;
+    color: #4cd964;
+    margin-top: 0.3rem;
+}
+
+.game-select {
+    width: 100%;
+    padding: 0.8rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 204, 102, 0.3);
+    border-radius: 12px;
+    color: white;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+}
+
+.host-btn, .join-btn {
+    width: 100%;
+    padding: 0.8rem;
+    background: linear-gradient(135deg, #7c5cff, #5a3cc9);
+    border: none;
+    border-radius: 30px;
+    color: white;
+    font-weight: 600;
+    cursor: pointer;
+    transition: all 0.2s;
+}
+
+.host-btn:hover, .join-btn:hover {
+    transform: translateY(-2px);
+    box-shadow: 0 0 15px rgba(124, 92, 255, 0.4);
+}
+
+.modal {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    background: rgba(0, 0, 0, 0.8);
+    backdrop-filter: blur(8px);
+    z-index: 1000;
+    justify-content: center;
+    align-items: center;
+}
+
+.modal.show {
+    display: flex;
+}
+
+.modal-content {
+    background: rgba(15, 15, 25, 0.95);
+    border: 1px solid rgba(255, 204, 102, 0.3);
+    border-radius: 20px;
+    padding: 2rem;
+    width: min(400px, 90%);
+    text-align: center;
+}
+
+.modal-content h2 {
+    color: #ffcc66;
+    margin-bottom: 1rem;
+}
+
+.modal-content input {
+    width: 100%;
+    padding: 0.8rem;
+    background: rgba(0, 0, 0, 0.3);
+    border: 1px solid rgba(255, 204, 102, 0.3);
+    border-radius: 12px;
+    color: white;
+    font-size: 1rem;
+    margin-bottom: 1rem;
+    text-align: center;
+    letter-spacing: 2px;
+}
+
+.close {
+    float: right;
+    font-size: 1.5rem;
+    cursor: pointer;
+    color: #a0a0c0;
+}
+
+.close:hover {
+    color: #ff5e5e;
+}
+
+.status {
+    margin-top: 1rem;
+    padding: 0.5rem;
+    text-align: center;
+    color: #a0a0c0;
+    font-size: 0.8rem;
+}
+
+.loading {
+    text-align: center;
+    padding: 2rem;
+    color: #a0a0c0;
+}
+
+.no-rooms {
+    text-align: center;
+    padding: 2rem;
+    color: #606080;
+}
+
+@media (max-width: 768px) {
+    .main-content {
+        grid-template-columns: 1fr;
+    }
+    
+    body {
+        padding: 1rem;
+    }
+}
