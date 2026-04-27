@@ -1758,3 +1758,5 @@ input:checked + .slider:before {
     background: rgba(124, 92, 255, 0.3);
     transform: translateY(-1px);
 }
+
+
