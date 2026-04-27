@@ -873,7 +873,12 @@ function initFanterOS() {
                     <div class="emulator-item" data-url="https://chipikipal800.github.io/atari7800-emulatorwroms/"><span>🎮</span><div><div>Atari 7800</div></div><span>▶</span></div>
                     <div class="emulator-item" data-url="https://chipikipal800.github.io/Atari-2600-emulator-/"><span>🕹️</span><div><div>Atari 2600</div></div><span>▶</span></div>
                     <div class="emulator-item" data-url="https://chipikipal800.github.io/Snes-emulator-html/"><span>⚡</span><div><div>SNES</div></div><span>▶</span></div>
-                    <div class="emulator-item" data-url="https://chipikipal800.github.io/Gameboy-color-emulator-//"><span>🎨</span><div><div>Game Boy Color</div></div><span>▶</span></div>
+                    <div class="emulator-item" data-url="https://chipikipal800.github.io/Gameboy-color-emulator-/"><span>🎨</span><div><div>Game Boy Color</div></div><span>▶</span></div>
+                     <div class="emulator-item" data-url="https://chipikipal800.github.io/Sega-Master-System-Emulator-/"><span>🕹️</span><div><div>Sega Master System</div></div><span>▶</span></div>
+                      <div class="emulator-item" data-url="https://chipikipal800.github.io/Sega-32X-Champion-Collection/"><span>👑</span><div><div>Sega 32x Champions Collection</div></div><span>▶</span></div>
+                      <div class="emulator-item" data-url="https://chipikipal800.github.io/game-boy-emulator/"><span>🎮</span><div><div>Game Boy</div></div><span>▶</span></div>
+                      <div class="emulator-item" data-url="https://chipikipal800.github.io/pokemon-rom-hack-dump/"><span>🐁</span><div><div>Pokemon Dump</div></div><span>▶</span></div>
+                      <div class="emulator-item" data-url="https://chipikipal800.github.io/marioromhack-dump/"><span>🍄</span><div><div>Mario Dump</div></div><span>▶</span></div>
                 </div>
             </div>
         `;
