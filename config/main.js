@@ -162,25 +162,31 @@ function initFanterOS() {
         });
     }
 
-    function updateClock() {
-        const now = new Date();
-        const timeEl = document.getElementById('taskbarTime');
-        const dateEl = document.getElementById('taskbarDate');
-        const widgetTimeEl = document.getElementById('widgetTime');
-        const widgetDateEl = document.getElementById('widgetDate');
-        const calendarDayEl = document.getElementById('calendarDay');
-        const calendarMonthEl = document.getElementById('calendarMonth');
-        
-        if (timeEl) timeEl.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        if (dateEl) dateEl.textContent = now.toLocaleDateString([], { month: 'short', day: 'numeric' });
-        if (widgetTimeEl) widgetTimeEl.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
-        if (widgetDateEl) widgetDateEl.textContent = now.toLocaleDateString([], { month: 'short', day: 'numeric' });
-        if (calendarDayEl) calendarDayEl.textContent = now.getDate();
-        if (calendarMonthEl) {
-            const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
-            calendarMonthEl.textContent = months[now.getMonth()];
-        }
+   function updateClock() {
+    const now = new Date();
+    const timeEl = document.getElementById('taskbarTime');
+    const dateEl = document.getElementById('taskbarDate');
+    const widgetTimeEl = document.getElementById('widgetTime');
+    const widgetDateEl = document.getElementById('widgetDate');
+    const calendarDayEl = document.getElementById('calendarDay');
+    const calendarMonthEl = document.getElementById('calendarMonth');
+    
+    if (timeEl) timeEl.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    if (dateEl) dateEl.textContent = now.toLocaleDateString([], { month: 'short', day: 'numeric' });
+    if (widgetTimeEl) widgetTimeEl.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' });
+    if (widgetDateEl) widgetDateEl.textContent = now.toLocaleDateString([], { month: 'short', day: 'numeric' });
+    if (calendarDayEl) calendarDayEl.textContent = now.getDate();
+    if (calendarMonthEl) {
+        const months = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+        calendarMonthEl.textContent = months[now.getMonth()];
     }
+    
+    // ===== ADD BOTTOM CLOCK HERE (inside the function, before the closing bracket) =====
+    const bottomClockTime = document.getElementById('bottomClockTime');
+    const bottomClockDate = document.getElementById('bottomClockDate');
+    if (bottomClockTime) bottomClockTime.textContent = now.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit', second: '2-digit' });
+    if (bottomClockDate) bottomClockDate.textContent = now.toLocaleDateString([], { month: 'short', day: 'numeric' });
+}
 
     async function updateBattery() {
         if ('getBattery' in navigator) {
