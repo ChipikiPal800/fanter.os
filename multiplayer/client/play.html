@@ -1,0 +1,144 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Netplay Game | fanterOS</title>
+    <script src="https://cdn.socket.io/4.6.1/socket.io.min.js"></script>
+    <script src="streaming.js"></script>
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body {
+            background: #0a0a0f;
+            font-family: 'DM Sans', sans-serif;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+        }
+        .game-container {
+            background: rgba(15, 15, 25, 0.95);
+            backdrop-filter: blur(20px);
+            border: 1px solid rgba(124, 92, 255, 0.3);
+            border-radius: 20px;
+            padding: 20px;
+            text-align: center;
+        }
+        #gameCanvas, #gameStream {
+            width: 100%;
+            max-width: 800px;
+            background: #000;
+            border-radius: 12px;
+            border: 2px solid #7c5cff;
+        }
+        .info {
+            margin-top: 15px;
+            color: #a0a0c0;
+            font-size: 12px;
+        }
+        .status {
+            margin-top: 10px;
+            color: #4cd964;
+            font-size: 14px;
+        }
+        button {
+            background: linear-gradient(135deg, #7c5cff, #5a3cc9);
+            border: none;
+            border-radius: 30px;
+            padding: 8px 20px;
+            color: white;
+            cursor: pointer;
+            margin-top: 15px;
+        }
+        .controls-info {
+            margin-top: 15px;
+            color: #ffcc66;
+            font-size: 11px;
+        }
+    </style>
+</head>
+<body>
+    <div class="game-container">
+        <h2 style="color:#ffcc66; margin-bottom:15px;" id="gameTitle">Loading...</h2>
+        
+        <!-- Host sees emulator canvas, Guest sees video stream -->
+        <canvas id="gameCanvas" style="display:none;"></canvas>
+        <video id="gameStream" style="display:none;" autoplay muted playsinline></video>
+        
+        <div class="controls-info">
+            🎮 Controls: Arrow Keys | A/B/X/Y | Q/W (L/R) | Enter/Shift (Start/Select)
+        </div>
+        <div class="status" id="status">Connecting...</div>
+        <button id="exitBtn" onclick="window.close()">Exit Game</button>
+    </div>
+
+    <script>
+        const urlParams = new URLSearchParams(window.location.search);
+        const isHost = urlParams.get('host') === 'true';
+        const roomId = urlParams.get('room');
+        const gameName = urlParams.get('game');
+        const gameCore = urlParams.get('core');
+        const romUrl = urlParams.get('rom');
+        
+        const SERVER_URL = 'https://fanter-netplay.containers.snapdeploy.dev';
+        
+        document.getElementById('gameTitle').textContent = `${gameName} - ${isHost ? 'Host' : 'Guest'}`;
+        
+        async function init() {
+            if (isHost) {
+                // Host: Load emulator and capture stream
+                document.getElementById('gameCanvas').style.display = 'block';
+                await loadEmulator(romUrl, gameName, gameCore);
+                
+                // Start streaming
+                const stream = new NetplayStream(SERVER_URL, roomId, true, gameName, gameCore, romUrl);
+                stream.onControllerInput((input) => {
+                    // Inject controller input into emulator
+                    if (window.EJS_emulator && window.EJS_emulator.gameManager) {
+                        const code = getKeyCode(input);
+                        if (code !== undefined) {
+                            window.EJS_emulator.gameManager.simulateInput(0, code, input.pressed ? 1 : 0);
+                        }
+                    }
+                });
+                await stream.start();
+                document.getElementById('status').textContent = 'Hosting game - waiting for players...';
+            } else {
+                // Guest: Watch stream
+                document.getElementById('gameStream').style.display = 'block';
+                const stream = new NetplayStream(SERVER_URL, roomId, false, gameName, gameCore, romUrl);
+                stream.onStreamStarted(() => {
+                    document.getElementById('status').textContent = 'Connected! Watching host\'s game.';
+                });
+                await stream.start();
+                document.getElementById('status').textContent = 'Connected! Waiting for host to start...';
+            }
+        }
+        
+        async function loadEmulator(romUrl, gameName, core) {
+            return new Promise((resolve) => {
+                const script = document.createElement('script');
+                script.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
+                script.onload = () => {
+                    window.EJS_player = '#gameCanvas';
+                    window.EJS_core = core;
+                    window.EJS_gameName = gameName;
+                    window.EJS_gameUrl = romUrl;
+                    window.EJS_startOnLoaded = true;
+                    window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
+                    setTimeout(resolve, 2000);
+                };
+                document.body.appendChild(script);
+            });
+        }
+        
+        function getKeyCode(input) {
+            const mapping = { up: 4, down: 5, left: 6, right: 7, a: 8, b: 0, x: 9, y: 1, l: 10, r: 11, start: 3, select: 2 };
+            return mapping[Object.keys(input)[0]];
+        }
+        
+        init();
+    </script>
+</body>
+</html>
