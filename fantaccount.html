@@ -2,468 +2,1197 @@
 <html lang="en">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>fanter | account</title>
-  <link rel="stylesheet" href="config/main.css" />
-  <script src="config/theme-loader.js"></script>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no" />
+  <title>fanterOS — Account</title>
+  <link href="https://fonts.googleapis.com/css2?family=Syne:wght@400;700;800&family=DM+Sans:ital,wght@0,400;0,500;0,600;1,400&display=swap" rel="stylesheet">
   <style>
-    .account-container { max-width: 1000px; margin: 100px auto; padding: 30px; background: rgba(20, 30, 50, 0.8); border-radius: 20px; border: 1px solid rgba(45, 90, 227, 0.4); }
-    .account-tabs { display: flex; gap: 10px; margin-bottom: 30px; border-bottom: 1px solid rgba(255,255,255,0.1); padding-bottom: 10px; flex-wrap: wrap; }
-    .account-tab { background: none; border: none; color: rgba(255,255,255,0.6); padding: 10px 20px; cursor: pointer; font-size: 16px; transition: all 0.3s ease; border-radius: 8px; }
-    .account-tab:hover { background: rgba(255,255,255,0.05); }
-    .account-tab.active { color: #ffcc00; background: rgba(255,204,0,0.1); border-bottom: 2px solid #ffcc00; }
-    .account-tab-content { display: none; }
-    .account-tab-content.active { display: block; }
-    .account-form { display: flex; flex-direction: column; gap: 15px; text-align: left; max-width: 400px; margin: 0 auto; }
-    .account-form input { padding: 12px; border-radius: 10px; border: 1px solid rgba(45, 90, 227, 0.4); background: rgba(0,0,0,0.3); color: white; font-size: 14px; }
-    .account-form input:focus { outline: none; border-color: #ffcc00; }
-    .profile-info { text-align: center; margin-bottom: 20px; }
-    .profile-avatar { width: 100px; height: 100px; background: linear-gradient(135deg, #2d5ae3, #ffcc00); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 48px; margin: 0 auto 15px; font-weight: bold; }
-    .profile-stats { display: flex; justify-content: center; gap: 30px; margin: 20px 0; flex-wrap: wrap; }
-    .stat { text-align: center; }
-    .stat-number { font-size: 24px; font-weight: bold; color: #ffcc00; }
-    .stat-label { font-size: 12px; color: rgba(255,255,255,0.6); }
-    .message { padding: 10px; border-radius: 8px; margin-top: 15px; text-align: center; font-size: 14px; }
-    .message.error { background: rgba(255,0,0,0.2); color: #ff6666; }
-    .message.success { background: rgba(0,255,0,0.2); color: #66ff66; }
-    .settings-btn { background: rgba(45, 90, 227, 0.3); border: 1px solid rgba(45, 90, 227, 0.5); color: white; padding: 12px 24px; border-radius: 8px; cursor: pointer; font-size: 14px; transition: all 0.3s ease; width: 100%; }
-    .settings-btn:hover { background: rgba(45, 90, 227, 0.5); transform: translateY(-2px); }
-    .logout-btn { background: rgba(220, 50, 50, 0.2); border-color: rgba(220, 50, 50, 0.5); }
-    .logout-btn:hover { background: rgba(220, 50, 50, 0.4); }
-    .divider { height: 1px; background: rgba(255,255,255,0.1); margin: 20px 0; }
-    .sync-status { display: inline-block; padding: 4px 10px; border-radius: 20px; font-size: 11px; margin-left: 10px; }
-    .sync-status.online { background: rgba(0,255,0,0.2); color: #00ff88; }
-    .sync-status.offline { background: rgba(255,165,0,0.2); color: #ffa500; }
-    .guest-message { text-align: center; padding: 40px; }
-    .leaderboard-filters { display: flex; gap: 10px; margin-bottom: 20px; flex-wrap: wrap; }
-    .filter-btn { background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); color: rgba(255,255,255,0.7); padding: 8px 16px; border-radius: 20px; cursor: pointer; font-size: 14px; transition: all 0.3s ease; }
-    .filter-btn.active { background: rgba(255,204,0,0.2); border-color: #ffcc00; color: #ffcc00; }
-    .leaderboard-list { display: flex; flex-direction: column; gap: 10px; }
-    .leaderboard-item { display: flex; align-items: center; gap: 15px; padding: 15px; background: rgba(255,255,255,0.03); border-radius: 12px; border: 1px solid rgba(255,255,255,0.05); transition: all 0.3s ease; cursor: pointer; }
-    .leaderboard-item:hover { background: rgba(255,255,255,0.08); transform: translateX(5px); }
-    .leaderboard-item.current-user { background: rgba(255,204,0,0.1); border-color: #ffcc00; }
-    .rank { font-size: 20px; font-weight: bold; min-width: 40px; color: rgba(255,255,255,0.5); }
-    .rank.top-1 { color: #ffcc00; }
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      background: linear-gradient(135deg, #0a0f1e 0%, #0c1222 100%);
+      font-family: 'DM Sans', system-ui, -apple-system, sans-serif;
+      min-height: 100vh;
+      padding: 2rem 1.5rem;
+    }
+
+    /* Header */
+    .header {
+      text-align: center;
+      margin-bottom: 2rem;
+    }
+    .header h1 {
+      font-size: 2.6rem;
+      background: linear-gradient(135deg, #f5e6b2, #ffcc66, #ffaa33);
+      background-clip: text;
+      -webkit-background-clip: text;
+      color: transparent;
+      letter-spacing: 2px;
+      margin-bottom: 0.3rem;
+    }
+    .header p {
+      color: #8e9bbe;
+      font-size: 0.9rem;
+    }
+
+    /* Back button */
+    .back-btn {
+      position: fixed;
+      top: 20px;
+      left: 20px;
+      background: rgba(124, 92, 255, 0.2);
+      border: 1px solid rgba(124, 92, 255, 0.3);
+      border-radius: 30px;
+      padding: 8px 20px;
+      color: #ffdd99;
+      font-size: 13px;
+      cursor: pointer;
+      transition: all 0.2s;
+      z-index: 100;
+      text-decoration: none;
+      display: inline-block;
+    }
+    .back-btn:hover {
+      background: rgba(124, 92, 255, 0.3);
+      transform: translateY(-2px);
+    }
+
+    /* Main Container */
+    .account-container {
+      max-width: 1000px;
+      margin: 0 auto;
+      background: rgba(15, 15, 25, 0.85);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 28px;
+      padding: 28px;
+      box-shadow: 0 8px 25px rgba(0, 0, 0, 0.3);
+    }
+
+    /* Tabs */
+    .account-tabs {
+      display: flex;
+      gap: 8px;
+      margin-bottom: 28px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+      padding-bottom: 12px;
+      flex-wrap: wrap;
+    }
+    .account-tab {
+      background: none;
+      border: none;
+      color: var(--text-secondary, #a0a0c0);
+      padding: 8px 20px;
+      cursor: pointer;
+      font-size: 14px;
+      font-weight: 500;
+      transition: all 0.2s;
+      border-radius: 30px;
+      font-family: 'DM Sans', sans-serif;
+    }
+    .account-tab:hover {
+      background: rgba(124, 92, 255, 0.15);
+      color: #ffdd99;
+    }
+    .account-tab.active {
+      color: #ffcc66;
+      background: rgba(124, 92, 255, 0.2);
+    }
+
+    /* Tab Content */
+    .account-tab-content {
+      display: none;
+      animation: fadeIn 0.3s ease;
+    }
+    .account-tab-content.active {
+      display: block;
+    }
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(10px); }
+      to { opacity: 1; transform: translateY(0); }
+    }
+
+    /* Profile */
+    .profile-info {
+      text-align: center;
+      margin-bottom: 24px;
+    }
+    .profile-avatar {
+      width: 100px;
+      height: 100px;
+      background: linear-gradient(135deg, #7c5cff, #ffcc66);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 48px;
+      font-weight: bold;
+      margin: 0 auto 16px;
+      box-shadow: 0 8px 20px rgba(124, 92, 255, 0.3);
+    }
+    .profile-name {
+      font-size: 24px;
+      font-weight: 700;
+      color: #f5e6c4;
+      margin-bottom: 4px;
+    }
+    .profile-username {
+      color: #a0a0c0;
+      font-size: 13px;
+      margin-bottom: 12px;
+    }
+    .profile-coins {
+      font-size: 28px;
+      font-weight: bold;
+      color: #ffcc66;
+      display: inline-flex;
+      align-items: center;
+      gap: 6px;
+      background: rgba(0,0,0,0.3);
+      padding: 6px 16px;
+      border-radius: 40px;
+    }
+    .sync-status {
+      display: inline-block;
+      padding: 4px 12px;
+      border-radius: 30px;
+      font-size: 11px;
+      margin-left: 10px;
+      background: rgba(0,0,0,0.3);
+    }
+    .sync-status.online { background: rgba(76, 217, 100, 0.2); color: #4cd964; }
+    .sync-status.offline { background: rgba(255, 165, 0, 0.2); color: #ffa500; }
+
+    /* Stats Grid */
+    .profile-stats {
+      display: flex;
+      justify-content: center;
+      gap: 40px;
+      margin: 24px 0;
+      flex-wrap: wrap;
+    }
+    .stat {
+      text-align: center;
+      background: rgba(0, 0, 0, 0.3);
+      padding: 12px 24px;
+      border-radius: 20px;
+      min-width: 100px;
+    }
+    .stat-number {
+      font-size: 28px;
+      font-weight: bold;
+      color: #ffcc66;
+      font-family: monospace;
+    }
+    .stat-label {
+      font-size: 11px;
+      color: #a0a0c0;
+      margin-top: 4px;
+    }
+
+    /* Game Tags */
+    .profile-games-section {
+      margin-top: 24px;
+    }
+    .profile-games-section h3 {
+      font-size: 14px;
+      margin-bottom: 12px;
+      color: #ffcc66;
+      letter-spacing: 1px;
+    }
+    .profile-game-tag {
+      display: inline-block;
+      background: rgba(124, 92, 255, 0.2);
+      border: 1px solid rgba(124, 92, 255, 0.3);
+      padding: 6px 14px;
+      border-radius: 30px;
+      font-size: 12px;
+      margin: 4px;
+      transition: all 0.2s;
+    }
+    .profile-game-tag.favorite {
+      background: rgba(255, 204, 102, 0.15);
+      border-color: rgba(255, 204, 102, 0.4);
+      color: #ffdd99;
+    }
+
+    /* Forms */
+    .account-form {
+      display: flex;
+      flex-direction: column;
+      gap: 16px;
+      max-width: 400px;
+      margin: 0 auto;
+    }
+    .account-form input {
+      padding: 12px 16px;
+      background: rgba(0, 0, 0, 0.3);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 30px;
+      color: white;
+      font-size: 14px;
+      outline: none;
+      transition: all 0.2s;
+    }
+    .account-form input:focus {
+      border-color: #ffcc66;
+      box-shadow: 0 0 10px rgba(255, 204, 102, 0.2);
+    }
+    .account-form button {
+      background: linear-gradient(135deg, #7c5cff, #5a3cc9);
+      border: none;
+      border-radius: 30px;
+      padding: 12px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .account-form button:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(124, 92, 255, 0.4);
+    }
+
+    /* Buttons */
+    .settings-btn {
+      background: linear-gradient(135deg, #7c5cff, #5a3cc9);
+      border: none;
+      border-radius: 30px;
+      padding: 10px 24px;
+      color: white;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.2s;
+      font-size: 14px;
+    }
+    .settings-btn:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 5px 15px rgba(124, 92, 255, 0.4);
+    }
+    .logout-btn {
+      background: rgba(220, 50, 50, 0.2);
+      border: 1px solid rgba(220, 50, 50, 0.3);
+    }
+    .logout-btn:hover {
+      background: rgba(220, 50, 50, 0.4);
+      box-shadow: 0 5px 15px rgba(220, 50, 50, 0.3);
+    }
+
+    /* Messages */
+    .message {
+      padding: 10px;
+      border-radius: 30px;
+      margin-top: 10px;
+      text-align: center;
+      font-size: 13px;
+    }
+    .message.error {
+      background: rgba(255, 0, 0, 0.15);
+      color: #ff6666;
+      border: 1px solid rgba(255, 0, 0, 0.3);
+    }
+    .message.success {
+      background: rgba(76, 217, 100, 0.15);
+      color: #4cd964;
+      border: 1px solid rgba(76, 217, 100, 0.3);
+    }
+
+    /* Divider */
+    .divider {
+      height: 1px;
+      background: rgba(255, 255, 255, 0.08);
+      margin: 24px 0;
+    }
+
+    /* Leaderboard */
+    .leaderboard-filters {
+      display: flex;
+      gap: 12px;
+      margin-bottom: 20px;
+      flex-wrap: wrap;
+    }
+    .filter-btn {
+      background: rgba(255, 255, 255, 0.05);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 30px;
+      padding: 8px 20px;
+      color: rgba(255, 255, 255, 0.7);
+      cursor: pointer;
+      font-size: 13px;
+      transition: all 0.2s;
+    }
+    .filter-btn:hover {
+      background: rgba(255, 255, 255, 0.1);
+    }
+    .filter-btn.active {
+      background: rgba(124, 92, 255, 0.3);
+      border-color: #7c5cff;
+      color: #ffcc66;
+    }
+    .leaderboard-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+      max-height: 500px;
+      overflow-y: auto;
+    }
+    .leaderboard-item {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      padding: 12px 16px;
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 16px;
+      transition: all 0.2s;
+    }
+    .leaderboard-item.current-user {
+      background: rgba(124, 92, 255, 0.15);
+      border-color: rgba(124, 92, 255, 0.3);
+    }
+    .rank {
+      font-size: 20px;
+      font-weight: bold;
+      min-width: 45px;
+      color: #a0a0c0;
+    }
+    .rank.top-1 { color: #ffcc66; text-shadow: 0 0 5px rgba(255,204,102,0.5); }
     .rank.top-2 { color: #c0c0c0; }
     .rank.top-3 { color: #cd7f32; }
-    .user-avatar { width: 40px; height: 40px; background: linear-gradient(135deg, #2d5ae3, #ffcc00); border-radius: 50%; display: flex; align-items: center; justify-content: center; font-size: 18px; font-weight: bold; }
-    .user-info { flex: 1; }
-    .user-name { font-size: 16px; font-weight: bold; }
-    .user-username { font-size: 12px; color: rgba(255,255,255,0.5); }
-    .user-score { font-size: 20px; font-weight: bold; color: #ffcc00; margin-right: 10px; }
-    .user-coins { display: flex; align-items: center; gap: 5px; color: #ffcc00; font-size: 14px; }
-    .profile-games-section { margin-top: 25px; text-align: left; }
-    .profile-games-section h3 { font-size: 16px; margin-bottom: 10px; color: #ffcc00; font-family: 'Orbitron', monospace; }
-    .profile-game-tag { display: inline-block; background: rgba(45, 90, 227, 0.3); padding: 4px 12px; border-radius: 20px; font-size: 12px; margin: 3px; }
-    .profile-game-tag.favorite { background: rgba(255, 204, 0, 0.2); color: #ffcc00; }
-    .ach-group { background: rgba(255,255,255,0.03); border: 1px solid rgba(255,255,255,0.07); border-radius: 16px; margin-bottom: 20px; overflow: hidden; }
-    .ach-group-header { padding: 15px 20px; background: rgba(0,0,0,0.2); display: flex; justify-content: space-between; align-items: center; cursor: pointer; user-select: none; }
-    .ach-group-header:hover { background: rgba(0,0,0,0.3); }
-    .ach-group-body { padding: 15px 20px; display: flex; flex-direction: column; gap: 10px; }
-    .ach-item { display: flex; align-items: center; gap: 12px; padding: 10px; border-radius: 12px; border-left: 3px solid rgba(255,255,255,0.1); background: rgba(255,255,255,0.03); transition: all 0.2s ease; }
-    .ach-item.unlocked { background: rgba(255,204,0,0.08); border-left-color: #ffcc00; }
-    .ach-item-icon { font-size: 28px; min-width: 40px; text-align: center; }
-    .ach-item-info { flex: 1; }
-    .ach-item-name { font-size: 13px; font-weight: bold; color: white; }
-    .ach-item-desc { font-size: 11px; color: rgba(255,255,255,0.5); margin-top: 2px; }
-    .ach-progress-bar-wrap { height: 3px; background: rgba(255,255,255,0.1); border-radius: 3px; margin-top: 6px; overflow: hidden; }
-    .ach-progress-bar-fill { height: 100%; border-radius: 3px; transition: width 0.4s ease; }
-    .ach-item-coins { font-size: 11px; color: #ffcc00; white-space: nowrap; }
+    .user-avatar {
+      width: 40px;
+      height: 40px;
+      background: linear-gradient(135deg, #7c5cff, #ffcc66);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-weight: bold;
+    }
+    .user-info {
+      flex: 1;
+    }
+    .user-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #f5e6c4;
+    }
+    .user-username {
+      font-size: 11px;
+      color: #a0a0c0;
+    }
+    .user-score {
+      font-size: 18px;
+      font-weight: bold;
+      color: #ffcc66;
+    }
+
+    /* Achievements */
+    .ach-group {
+      background: rgba(0, 0, 0, 0.2);
+      border: 1px solid rgba(255, 255, 255, 0.05);
+      border-radius: 20px;
+      margin-bottom: 16px;
+      overflow: hidden;
+    }
+    .ach-group-header {
+      padding: 14px 20px;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+    .ach-group-header:hover {
+      background: rgba(124, 92, 255, 0.05);
+    }
+    .ach-group-body {
+      padding: 0 20px 20px 20px;
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+    }
+    .ach-item {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      padding: 12px;
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 14px;
+      transition: all 0.2s;
+    }
+    .ach-item.unlocked {
+      background: rgba(255, 204, 102, 0.08);
+      border-left: 3px solid #ffcc66;
+    }
+    .ach-item-icon {
+      font-size: 32px;
+      min-width: 50px;
+      text-align: center;
+    }
+    .ach-item-info {
+      flex: 1;
+    }
+    .ach-item-name {
+      font-size: 14px;
+      font-weight: 600;
+      color: #f5e6c4;
+    }
+    .ach-item-desc {
+      font-size: 11px;
+      color: #a0a0c0;
+      margin-top: 2px;
+    }
+    .ach-progress-bar-wrap {
+      height: 4px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 2px;
+      margin-top: 8px;
+      overflow: hidden;
+    }
+    .ach-progress-bar-fill {
+      height: 100%;
+      border-radius: 2px;
+      transition: width 0.3s ease;
+    }
+    .ach-item-coins {
+      font-size: 12px;
+      color: #ffcc66;
+      white-space: nowrap;
+    }
+
+    /* Guest message */
+    .guest-message {
+      text-align: center;
+      padding: 40px 20px;
+      color: #a0a0c0;
+    }
+
+    /* Scrollbar */
+    ::-webkit-scrollbar {
+      width: 6px;
+      height: 6px;
+    }
+    ::-webkit-scrollbar-track {
+      background: rgba(255, 255, 255, 0.03);
+      border-radius: 3px;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 3px;
+    }
+
+    @media (max-width: 640px) {
+      body {
+        padding: 1rem;
+      }
+      .account-container {
+        padding: 20px;
+      }
+      .profile-stats {
+        gap: 15px;
+      }
+      .stat {
+        padding: 8px 16px;
+        min-width: 70px;
+      }
+      .stat-number {
+        font-size: 20px;
+      }
+      .account-tab {
+        padding: 6px 14px;
+        font-size: 12px;
+      }
+    }
   </style>
 </head>
 <body>
-  <div class="account-btn-container">
-    <button class="account-btn" id="accountBtn" onclick="window.location.href='fantaccount.html'">
-      <span class="account-icon">👤</span>
-      <span class="account-name" id="accountName">Guest</span>
-    </button>
+
+<a href="index.html" class="back-btn">← Back to OS</a>
+
+<div class="header">
+  <h1>⚡ ACCOUNT</h1>
+  <p>manage your fanterOS profile</p>
+</div>
+
+<div class="account-container">
+  <div class="account-tabs">
+    <button class="account-tab active" data-tab="profile">👤 Profile</button>
+    <button class="account-tab" data-tab="achievements">🏆 Achievements</button>
+    <button class="account-tab" data-tab="leaderboard">📊 Leaderboard</button>
+    <button class="account-tab" data-tab="login">🔐 Login</button>
+    <button class="account-tab" data-tab="register">📝 Register</button>
   </div>
 
-  <div class="center">
-    <h1>account.</h1>
-    <p>manage your fanter profile</p>
-    <button class="settings-btn" onclick="window.location.href='index.html'" style="width:auto;padding:8px 16px;">← back</button>
+  <div id="profileTab" class="account-tab-content active"><div id="profileContent"><div class="guest-message">Loading profile...</div></div></div>
+  <div id="achievementsTab" class="account-tab-content"><div id="achievementsContent"><div class="guest-message">Loading achievements...</div></div></div>
+  <div id="leaderboardTab" class="account-tab-content"><div id="leaderboardContent"><div class="guest-message">Loading leaderboard...</div></div></div>
+
+  <div id="loginTab" class="account-tab-content">
+    <form id="loginForm" class="account-form">
+      <input type="email" id="loginEmail" placeholder="Email address" required>
+      <input type="password" id="loginPassword" placeholder="Password" required>
+      <button type="submit">Login</button>
+      <div id="loginMessage" class="message"></div>
+    </form>
+    <div class="divider"></div>
+    <button onclick="continueWithLocalStorage()" class="settings-btn" style="width:100%;">Continue as Guest with Local Save</button>
   </div>
 
-  <div class="account-container">
-    <div class="account-tabs">
-      <button class="account-tab active" data-tab="profile">my profile</button>
-      <button class="account-tab" data-tab="achievements">🏆 achievements</button>
-      <button class="account-tab" data-tab="leaderboard">🏅 leaderboard</button>
-      <button class="account-tab" data-tab="login">login</button>
-      <button class="account-tab" data-tab="register">register</button>
-    </div>
-
-    <div id="profileTab" class="account-tab-content active"><div id="profileContent"><div class="guest-message">loading profile...</div></div></div>
-    <div id="achievementsTab" class="account-tab-content"><div id="achievementsContent"><div class="guest-message">loading achievements...</div></div></div>
-    <div id="leaderboardTab" class="account-tab-content"><div id="leaderboardContent"><div class="leaderboard-filters"><button class="filter-btn active" data-filter="coins">💰 Coins</button><button class="filter-btn" data-filter="achievements">🏆 Achievements</button></div><div id="leaderboardList" class="leaderboard-list"><div class="guest-message">loading leaderboard...</div></div></div></div>
-
-    <div id="loginTab" class="account-tab-content">
-      <form id="loginForm" class="account-form">
-        <input type="email" id="loginEmail" placeholder="email" required>
-        <input type="password" id="loginPassword" placeholder="password" required>
-        <button type="submit" class="settings-btn">login</button>
-        <div id="loginMessage" class="message"></div>
-      </form>
-      <div style="text-align:center;margin-top:20px;"><p style="opacity:0.7;font-size:14px;">or</p><button onclick="continueWithLocalStorage()" class="settings-btn" style="margin-top:10px;">continue with local save</button></div>
-    </div>
-
-    <div id="registerTab" class="account-tab-content">
-      <form id="registerForm" class="account-form">
-        <input type="text" id="regUsername" placeholder="username" required>
-        <input type="email" id="regEmail" placeholder="email" required>
-        <input type="text" id="regDisplayName" placeholder="display name (optional)">
-        <input type="password" id="regPassword" placeholder="password" required>
-        <input type="password" id="regConfirmPassword" placeholder="confirm password" required>
-        <button type="submit" class="settings-btn">register</button>
-        <div id="registerMessage" class="message"></div>
-      </form>
-    </div>
+  <div id="registerTab" class="account-tab-content">
+    <form id="registerForm" class="account-form">
+      <input type="text" id="regUsername" placeholder="Username" required>
+      <input type="email" id="regEmail" placeholder="Email" required>
+      <input type="text" id="regDisplayName" placeholder="Display name (optional)">
+      <input type="password" id="regPassword" placeholder="Password" required>
+      <input type="password" id="regConfirmPassword" placeholder="Confirm password" required>
+      <button type="submit">Create Account</button>
+      <div id="registerMessage" class="message"></div>
+    </form>
   </div>
+</div>
 
-  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-  <script>
-    // ===== SUPABASE CLIENT =====
-    window.supabase = supabase.createClient("https://gvzgnclowylrrpovdvtw.supabase.co", "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd2emduY2xvd3lscnJwb3ZkdnR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NjM5ODEsImV4cCI6MjA5MjAzOTk4MX0.p7oeYBVX870iSK-TLDRj6pfW7wLj7HJsTHjNWaNpL7o");
-    console.log('✅ Supabase ready!');
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script>
+  // ===== SUPABASE =====
+  const supabase = window.supabase.createClient(
+    "https://gvzgnclowylrrpovdvtw.supabase.co",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6Imd2emduY2xvd3lscnJwb3ZkdnR3Iiwicm9sZSI6ImFub24iLCJpYXQiOjE3NzY0NjM5ODEsImV4cCI6MjA5MjAzOTk4MX0.p7oeYBVX870iSK-TLDRj6pfW7wLj7HJsTHjNWaNpL7o"
+  );
 
-    // ===== ALL ACHIEVEMENTS (63 TOTAL) =====
-    const ALL_ACHIEVEMENTS = [
-      { id: 1, name: "Welcome Aboard", desc: "Create an account", icon: "🎉", coins: 3, req: "register", required: 1 },
-      { id: 2, name: "First Impression", desc: "Rate your first game", icon: "⭐", coins: 3, req: "ratingsGiven", required: 1 },
-      { id: 3, name: "Hearted", desc: "Favorite your first game", icon: "💖", coins: 3, req: "favoritesCount", required: 1 },
-      { id: 4, name: "Let's Play", desc: "Play your first game", icon: "🎮", coins: 3, req: "gamesPlayed", required: 1 },
-      { id: 5, name: "Getting There", desc: "Rate 10 games", icon: "📈", coins: 3, req: "ratingsGiven", required: 10 },
-      { id: 6, name: "Small Collection", desc: "Favorite 10 games", icon: "📦", coins: 3, req: "favoritesCount", required: 10 },
-      { id: 7, name: "Ten Played", desc: "Play 10 games", icon: "🔟", coins: 3, req: "gamesPlayed", required: 10 },
-      { id: 8, name: "Opinionated", desc: "Rate 25 games", icon: "🗣️", coins: 3, req: "ratingsGiven", required: 25 },
-      { id: 9, name: "Devoted Fan", desc: "Favorite 25 games", icon: "💝", coins: 3, req: "favoritesCount", required: 25 },
-      { id: 10, name: "Newbie+", desc: "Play 25 games", icon: "🌟", coins: 3, req: "gamesPlayed", required: 25 },
-      { id: 11, name: "Half Century", desc: "Rate 50 games", icon: "🏅", coins: 5, req: "ratingsGiven", required: 50 },
-      { id: 12, name: "Big Fan", desc: "Favorite 50 games", icon: "❤️", coins: 5, req: "favoritesCount", required: 50 },
-      { id: 13, name: "Frequent Flyer", desc: "Play 50 games", icon: "✈️", coins: 5, req: "gamesPlayed", required: 50 },
-      { id: 14, name: "Century", desc: "Rate 100 games", icon: "💯", coins: 5, req: "ratingsGiven", required: 100 },
-      { id: 15, name: "Super Fan", desc: "Favorite 75 games", icon: "🌠", coins: 5, req: "favoritesCount", required: 75 },
-      { id: 16, name: "Dedicated", desc: "Play 100 games", icon: "🏆", coins: 5, req: "gamesPlayed", required: 100 },
-      { id: 17, name: "Critic", desc: "Rate 150 games", icon: "✍️", coins: 5, req: "ratingsGiven", required: 150 },
-      { id: 18, name: "Fanter so Fun", desc: "Favorite 100 games", icon: "🗃️", coins: 5, req: "favoritesCount", required: 100 },
-      { id: 19, name: "Marathoner", desc: "Play 150 games", icon: "🏃", coins: 5, req: "gamesPlayed", required: 150 },
-      { id: 20, name: "Beginner+", desc: "Play 200 games", icon: "⬆️", coins: 5, req: "gamesPlayed", required: 200 },
-      { id: 21, name: "Century Approaching", desc: "Rate 100 games", icon: "📊", coins: 10, req: "ratingsGiven", required: 100 },
-      { id: 22, name: "Collection Growing", desc: "Favorite 100 games", icon: "📈", coins: 10, req: "favoritesCount", required: 100 },
-      { id: 23, name: "Marathon", desc: "Play 50 games", icon: "🏃", coins: 10, req: "gamesPlayed", required: 50 },
-      { id: 24, name: "Weekly Warrior", desc: "5 day login streak", icon: "⚔️", coins: 10, req: "loginStreak", required: 5 },
-      { id: 25, name: "One Session Wonder", desc: "Play 10 games in one session", icon: "⚡", coins: 10, req: "gamesInSession", required: 10 },
-      { id: 26, name: "Double Time", desc: "Rate 150 games", icon: "⏱️", coins: 10, req: "ratingsGiven", required: 150 },
-      { id: 27, name: "Dedicated Fan", desc: "Favorite 150 games", icon: "💪", coins: 10, req: "favoritesCount", required: 150 },
-      { id: 28, name: "Fifty More", desc: "Play 75 games", icon: "🎲", coins: 10, req: "gamesPlayed", required: 75 },
-      { id: 29, name: "Genre Explorer", desc: "Play 10 different genres", icon: "🗺️", coins: 10, req: "genresPlayed", required: 10 },
-      { id: 30, name: "Climbing+", desc: "Complete all Climbing", icon: "⛰️", coins: 10, req: "categoryComplete", required: "climbing" },
-      { id: 31, name: "Two Hundred Ratings", desc: "Rate 200 games", icon: "🏆", coins: 17.5, req: "ratingsGiven", required: 200 },
-      { id: 32, name: "Two Hundred Favorites", desc: "Favorite 200 games", icon: "💎", coins: 17.5, req: "favoritesCount", required: 200 },
-      { id: 33, name: "Century Player", desc: "Play 100 games", icon: "🎖️", coins: 17.5, req: "gamesPlayed", required: 100 },
-      { id: 34, name: "Monthly Master", desc: "15 day login streak", icon: "📆", coins: 17.5, req: "loginStreak", required: 15 },
-      { id: 35, name: "Streak Master", desc: "10 day login streak", icon: "🔥", coins: 17.5, req: "loginStreak", required: 10 },
-      { id: 36, name: "Perfect Balance", desc: "Rate 10 games 1★ and 10 games 5★", icon: "⚖️", coins: 17.5, req: "balancedRatings", required: 10 },
-      { id: 37, name: "Pure Taste", desc: "10 favorites all 5★ rated", icon: "✨", coins: 17.5, req: "pureFavorites", required: 10 },
-      { id: 38, name: "Hidden Gem Hunter", desc: "Favorite a game with <10 ratings", icon: "💎", coins: 17.5, req: "hiddenGem", required: 1 },
-      { id: 39, name: "Trend Setter", desc: "Be among first 10 to rate a game", icon: "👑", coins: 17.5, req: "firstRater", required: 1 },
-      { id: 40, name: "Difficult+", desc: "Complete all Difficult", icon: "💀", coins: 17.5, req: "categoryComplete", required: "difficult" },
-      { id: 41, name: "Centurion", desc: "Rate 100 games", icon: "🏅", coins: 25, req: "ratingsGiven", required: 100 },
-      { id: 42, name: "Collector's Edition", desc: "Favorite 100 games", icon: "📀", coins: 25, req: "favoritesCount", required: 100 },
-      { id: 43, name: "Gaming Devotee", desc: "Play 150 games", icon: "🎮", coins: 25, req: "gamesPlayed", required: 150 },
-      { id: 44, name: "Yearly Legend", desc: "50 day login streak", icon: "📅", coins: 25, req: "loginStreak", required: 50 },
-      { id: 45, name: "Iron Will", desc: "14 day login streak", icon: "⚙️", coins: 25, req: "loginStreak", required: 14 },
-      { id: 46, name: "The Decider", desc: "Rating on 100+ games", icon: "⚖️", coins: 25, req: "ratingsGiven", required: 100 },
-      { id: 47, name: "Completionist", desc: "Complete all lower categories", icon: "🏆", coins: 25, req: "allLowerCategories", required: true },
-      { id: 48, name: "Elite Rater", desc: "Avg rating within 0.5 of global", icon: "⭐", coins: 25, req: "eliteRater", required: 1 },
-      { id: 49, name: "Community Choice", desc: "Review liked by 10+ users", icon: "💬", coins: 25, req: "likesReceived", required: 10 },
-      { id: 50, name: "Elite+", desc: "Complete all Elite", icon: "👑", coins: 25, req: "categoryComplete", required: "elite" },
-      { id: 51, name: "The Owner's Gift", desc: "Given by abcatlmfao", icon: "🎁", coins: 50, req: "secret", required: 1 },
-      { id: 52, name: "Konami Code", desc: "↑↑↓↓←→←→BA", icon: "🎮", coins: 50, req: "secret", required: 1 },
-      { id: 53, name: "The Chosen One", desc: "Find all secret names", icon: "👑", coins: 50, req: "secret", required: 1 },
-      { id: 54, name: "Alt+F4", desc: "Leave within 10 seconds", icon: "💀", coins: 50, req: "secret", required: 1 },
-      { id: 55, name: "Mentally Insane", desc: "Idle for 60 minutes", icon: "🤪", coins: 50, req: "secret", required: 1 },
-      { id: 56, name: "Indecisive", desc: "Change theme 10+ times", icon: "🎨", coins: 50, req: "secret", required: 1 },
-      { id: 57, name: "Big Back", desc: "Play a food game", icon: "🍔", coins: 50, req: "secret", required: 1 },
-      { id: 58, name: "OG Fanter", desc: "Early access member", icon: "🦖", coins: 50, req: "secret", required: 1 },
-      { id: 59, name: "Addicted", desc: "Play one game 50 times", icon: "🎮", coins: 50, req: "secret", required: 1 },
-      { id: 60, name: "Committed", desc: "Play one game 100 times", icon: "💪", coins: 50, req: "secret", required: 1 },
-      { id: 61, name: "Top 1 Unemployed", desc: "50 hours active", icon: "🛋️", coins: 50, req: "secret", required: 1 },
-      { id: 62, name: "Loyal Customer", desc: "Rate every game", icon: "⭐", coins: 50, req: "secret", required: 1 },
-      { id: 63, name: "System Failure", desc: "Trigger crash screen", icon: "💻", coins: 50, req: "secret", required: 1 }
-    ];
+  // ===== ALL ACHIEVEMENTS (63 TOTAL) =====
+  const ALL_ACHIEVEMENTS = [
+    { id: 1, name: "Welcome Aboard", desc: "Create an account", icon: "🎉", coins: 3, req: "register", required: 1 },
+    { id: 2, name: "First Impression", desc: "Rate your first game", icon: "⭐", coins: 3, req: "ratingsGiven", required: 1 },
+    { id: 3, name: "Hearted", desc: "Favorite your first game", icon: "💖", coins: 3, req: "favoritesCount", required: 1 },
+    { id: 4, name: "Let's Play", desc: "Play your first game", icon: "🎮", coins: 3, req: "gamesPlayed", required: 1 },
+    { id: 5, name: "Getting There", desc: "Rate 10 games", icon: "📈", coins: 3, req: "ratingsGiven", required: 10 },
+    { id: 6, name: "Small Collection", desc: "Favorite 10 games", icon: "📦", coins: 3, req: "favoritesCount", required: 10 },
+    { id: 7, name: "Ten Played", desc: "Play 10 games", icon: "🔟", coins: 3, req: "gamesPlayed", required: 10 },
+    { id: 8, name: "Opinionated", desc: "Rate 25 games", icon: "🗣️", coins: 3, req: "ratingsGiven", required: 25 },
+    { id: 9, name: "Devoted Fan", desc: "Favorite 25 games", icon: "💝", coins: 3, req: "favoritesCount", required: 25 },
+    { id: 10, name: "Newbie+", desc: "Play 25 games", icon: "🌟", coins: 3, req: "gamesPlayed", required: 25 },
+    { id: 11, name: "Half Century", desc: "Rate 50 games", icon: "🏅", coins: 5, req: "ratingsGiven", required: 50 },
+    { id: 12, name: "Big Fan", desc: "Favorite 50 games", icon: "❤️", coins: 5, req: "favoritesCount", required: 50 },
+    { id: 13, name: "Frequent Flyer", desc: "Play 50 games", icon: "✈️", coins: 5, req: "gamesPlayed", required: 50 },
+    { id: 14, name: "Century", desc: "Rate 100 games", icon: "💯", coins: 5, req: "ratingsGiven", required: 100 },
+    { id: 15, name: "Super Fan", desc: "Favorite 75 games", icon: "🌠", coins: 5, req: "favoritesCount", required: 75 },
+    { id: 16, name: "Dedicated", desc: "Play 100 games", icon: "🏆", coins: 5, req: "gamesPlayed", required: 100 },
+    { id: 17, name: "Critic", desc: "Rate 150 games", icon: "✍️", coins: 5, req: "ratingsGiven", required: 150 },
+    { id: 18, name: "Fanter so Fun", desc: "Favorite 100 games", icon: "🗃️", coins: 5, req: "favoritesCount", required: 100 },
+    { id: 19, name: "Marathoner", desc: "Play 150 games", icon: "🏃", coins: 5, req: "gamesPlayed", required: 150 },
+    { id: 20, name: "Beginner+", desc: "Play 200 games", icon: "⬆️", coins: 5, req: "gamesPlayed", required: 200 },
+    { id: 21, name: "Century Approaching", desc: "Rate 100 games", icon: "📊", coins: 10, req: "ratingsGiven", required: 100 },
+    { id: 22, name: "Collection Growing", desc: "Favorite 100 games", icon: "📈", coins: 10, req: "favoritesCount", required: 100 },
+    { id: 23, name: "Marathon", desc: "Play 50 games", icon: "🏃", coins: 10, req: "gamesPlayed", required: 50 },
+    { id: 24, name: "Weekly Warrior", desc: "5 day login streak", icon: "⚔️", coins: 10, req: "loginStreak", required: 5 },
+    { id: 25, name: "One Session Wonder", desc: "Play 10 games in one session", icon: "⚡", coins: 10, req: "gamesInSession", required: 10 },
+    { id: 26, name: "Double Time", desc: "Rate 150 games", icon: "⏱️", coins: 10, req: "ratingsGiven", required: 150 },
+    { id: 27, name: "Dedicated Fan", desc: "Favorite 150 games", icon: "💪", coins: 10, req: "favoritesCount", required: 150 },
+    { id: 28, name: "Fifty More", desc: "Play 75 games", icon: "🎲", coins: 10, req: "gamesPlayed", required: 75 },
+    { id: 29, name: "Genre Explorer", desc: "Play 10 different genres", icon: "🗺️", coins: 10, req: "genresPlayed", required: 10 },
+    { id: 30, name: "Climbing+", desc: "Complete all Climbing", icon: "⛰️", coins: 10, req: "categoryComplete", required: "climbing" },
+    { id: 31, name: "Two Hundred Ratings", desc: "Rate 200 games", icon: "🏆", coins: 17.5, req: "ratingsGiven", required: 200 },
+    { id: 32, name: "Two Hundred Favorites", desc: "Favorite 200 games", icon: "💎", coins: 17.5, req: "favoritesCount", required: 200 },
+    { id: 33, name: "Century Player", desc: "Play 100 games", icon: "🎖️", coins: 17.5, req: "gamesPlayed", required: 100 },
+    { id: 34, name: "Monthly Master", desc: "15 day login streak", icon: "📆", coins: 17.5, req: "loginStreak", required: 15 },
+    { id: 35, name: "Streak Master", desc: "10 day login streak", icon: "🔥", coins: 17.5, req: "loginStreak", required: 10 },
+    { id: 36, name: "Perfect Balance", desc: "Rate 10 games 1★ and 10 games 5★", icon: "⚖️", coins: 17.5, req: "balancedRatings", required: 10 },
+    { id: 37, name: "Pure Taste", desc: "10 favorites all 5★ rated", icon: "✨", coins: 17.5, req: "pureFavorites", required: 10 },
+    { id: 38, name: "Hidden Gem Hunter", desc: "Favorite a game with <10 ratings", icon: "💎", coins: 17.5, req: "hiddenGem", required: 1 },
+    { id: 39, name: "Trend Setter", desc: "Be among first 10 to rate a game", icon: "👑", coins: 17.5, req: "firstRater", required: 1 },
+    { id: 40, name: "Difficult+", desc: "Complete all Difficult", icon: "💀", coins: 17.5, req: "categoryComplete", required: "difficult" },
+    { id: 41, name: "Centurion", desc: "Rate 100 games", icon: "🏅", coins: 25, req: "ratingsGiven", required: 100 },
+    { id: 42, name: "Collector's Edition", desc: "Favorite 100 games", icon: "📀", coins: 25, req: "favoritesCount", required: 100 },
+    { id: 43, name: "Gaming Devotee", desc: "Play 150 games", icon: "🎮", coins: 25, req: "gamesPlayed", required: 150 },
+    { id: 44, name: "Yearly Legend", desc: "50 day login streak", icon: "📅", coins: 25, req: "loginStreak", required: 50 },
+    { id: 45, name: "Iron Will", desc: "14 day login streak", icon: "⚙️", coins: 25, req: "loginStreak", required: 14 },
+    { id: 46, name: "The Decider", desc: "Rating on 100+ games", icon: "⚖️", coins: 25, req: "ratingsGiven", required: 100 },
+    { id: 47, name: "Completionist", desc: "Complete all lower categories", icon: "🏆", coins: 25, req: "allLowerCategories", required: true },
+    { id: 48, name: "Elite Rater", desc: "Avg rating within 0.5 of global", icon: "⭐", coins: 25, req: "eliteRater", required: 1 },
+    { id: 49, name: "Community Choice", desc: "Review liked by 10+ users", icon: "💬", coins: 25, req: "likesReceived", required: 10 },
+    { id: 50, name: "Elite+", desc: "Complete all Elite", icon: "👑", coins: 25, req: "categoryComplete", required: "elite" },
+    { id: 51, name: "The Owner's Gift", desc: "Given by abcatlmfao", icon: "🎁", coins: 50, req: "secret", required: 1 },
+    { id: 52, name: "Konami Code", desc: "↑↑↓↓←→←→BA", icon: "🎮", coins: 50, req: "secret", required: 1 },
+    { id: 53, name: "The Chosen One", desc: "Find all secret names", icon: "👑", coins: 50, req: "secret", required: 1 },
+    { id: 54, name: "Alt+F4", desc: "Leave within 10 seconds", icon: "💀", coins: 50, req: "secret", required: 1 },
+    { id: 55, name: "Mentally Insane", desc: "Idle for 60 minutes", icon: "🤪", coins: 50, req: "secret", required: 1 },
+    { id: 56, name: "Indecisive", desc: "Change theme 10+ times", icon: "🎨", coins: 50, req: "secret", required: 1 },
+    { id: 57, name: "Big Back", desc: "Play a food game", icon: "🍔", coins: 50, req: "secret", required: 1 },
+    { id: 58, name: "OG Fanter", desc: "Early access member", icon: "🦖", coins: 50, req: "secret", required: 1 },
+    { id: 59, name: "Addicted", desc: "Play one game 50 times", icon: "🎮", coins: 50, req: "secret", required: 1 },
+    { id: 60, name: "Committed", desc: "Play one game 100 times", icon: "💪", coins: 50, req: "secret", required: 1 },
+    { id: 61, name: "Top 1 Unemployed", desc: "50 hours active", icon: "🛋️", coins: 50, req: "secret", required: 1 },
+    { id: 62, name: "Loyal Customer", desc: "Rate every game", icon: "⭐", coins: 50, req: "secret", required: 1 },
+    { id: 63, name: "System Failure", desc: "Trigger crash screen", icon: "💻", coins: 50, req: "secret", required: 1 }
+  ];
 
-    // ===== STATE =====
-    let currentUser = null;
-    let localUser = null;
-    let syncStatus = 'offline';
-    let currentFilter = 'coins';
-    let userAchievements = {};
+  // ===== STATE =====
+  let currentUser = null;
+  let localUser = null;
+  let syncStatus = 'offline';
+  let currentFilter = 'coins';
+  let userAchievements = {};
 
-    // ===== ACHIEVEMENT HELPERS =====
-    function unlockAchievement(achievementId) {
-      if (userAchievements[achievementId]) return;
+  // ===== ACHIEVEMENT HELPERS =====
+  function unlockAchievement(achievementId) {
+    if (userAchievements[achievementId]) return false;
+    
+    userAchievements[achievementId] = true;
+    localStorage.setItem('fanter_achievements', JSON.stringify(userAchievements));
+    
+    const ach = ALL_ACHIEVEMENTS.find(a => a.id === achievementId);
+    if (ach && localUser) {
+      localUser.coins = (localUser.coins || 0) + ach.coins;
+      localStorage.setItem('fanter_currentUser', JSON.stringify(localUser));
+      showAchievementNotification(ach);
       
-      userAchievements[achievementId] = true;
-      localStorage.setItem('fanter_achievements', JSON.stringify(userAchievements));
-      
-      const ach = ALL_ACHIEVEMENTS.find(a => a.id === achievementId);
-      if (ach) {
-        if (localUser) {
-          localUser.coins = (localUser.coins || 0) + ach.coins;
-          localStorage.setItem('fanter_currentUser', JSON.stringify(localUser));
-        }
-        showAchievementNotification(ach);
-      }
-      
-      // Sync to Supabase if online
-      if (syncStatus === 'online' && currentUser) {
-        window.supabase.from('user_achievements').upsert({
-          user_id: currentUser.id,
-          achievement_id: achievementId,
-          unlocked_at: new Date()
-        }).then(() => console.log('✅ Achievement synced to Supabase'));
-      }
-    }
-
-    function showAchievementNotification(ach) {
-      const popup = document.createElement('div');
-      popup.style.cssText = `position:fixed;bottom:30px;right:30px;background:linear-gradient(135deg,rgba(0,0,0,0.95),rgba(30,20,50,0.95));backdrop-filter:blur(15px);border-left:4px solid #ffcc00;border-radius:12px;padding:15px 25px;min-width:280px;z-index:10001;transform:translateX(400px);transition:transform 0.4s;box-shadow:0 10px 30px rgba(0,0,0,0.3);`;
-      popup.innerHTML = `<span style="font-size:32px;margin-right:15px;">${ach.icon}</span><div style="display:inline-block;"><div style="font-family:Orbitron;font-size:14px;font-weight:bold;color:#ffcc00;">ACHIEVEMENT UNLOCKED!</div><div style="font-size:15px;color:white;">${ach.name}</div><div style="color:#ffcc00;font-size:12px;">+${ach.coins} 🪙</div></div>`;
-      document.body.appendChild(popup);
-      setTimeout(() => popup.style.transform = 'translateX(0)', 10);
-      setTimeout(() => { popup.style.transform = 'translateX(400px)'; setTimeout(() => popup.remove(), 400); }, 4000);
-    }
-
-    // ===== INIT =====
-    async function init() {
-      console.log('Starting init...');
-      
-      if (!localStorage.getItem('fanter_currentUser')) {
-        const guestUser = { id: 'guest_' + Date.now(), username: 'Guest', displayName: 'Guest', coins: 300, stats: { gamesPlayed: 0, ratingsGiven: 0, favoritesCount: 0 }, favorites: [], playedGames: [] };
-        localStorage.setItem('fanter_currentUser', JSON.stringify(guestUser));
-      }
-
-      if (window.supabase && typeof window.supabase.from === 'function') {
-        try {
-          console.log('Supabase found, checking session...');
-          const { data: { session } } = await window.supabase.auth.getSession();
-          if (session) { 
-            currentUser = session.user; 
-            syncStatus = 'online'; 
-            await loadSupabaseData();
-            // Unlock Welcome Aboard achievement on login
-            unlockAchievement(1);
-          } else { 
-            loadLocalData(); 
-          }
-        } catch (e) { 
-          console.log('Supabase error, using localStorage:', e.message); 
-          loadLocalData(); 
-        }
-      } else { 
-        console.log('Supabase not available, using localStorage'); 
-        loadLocalData(); 
-      }
-
-      setupTabs();
-      setupLeaderboardFilters();
-      updateUI();
-      renderCurrentTab();
-      console.log('Init complete. User:', localUser?.displayName, 'Status:', syncStatus);
-    }
-
-    function loadLocalData() {
-      localUser = JSON.parse(localStorage.getItem('fanter_currentUser') || 'null');
-      userAchievements = JSON.parse(localStorage.getItem('fanter_achievements') || '{}');
-      syncStatus = 'offline';
-    }
-
-    async function loadSupabaseData() {
-      try {
-        const { data: profile } = await window.supabase.from('profiles').select('*').eq('id', currentUser.id).single();
-        if (profile) { 
-          localUser = { 
-            id: profile.id, 
-            username: profile.username, 
-            displayName: profile.display_name, 
-            email: profile.email, 
-            coins: profile.coins || 300, 
-            stats: { gamesPlayed: profile.games_played || 0, ratingsGiven: 0, favoritesCount: 0 }, 
-            favorites: [], 
-            playedGames: [] 
-          };
-          // SAVE TO LOCALSTORAGE FOR OTHER PAGES
-          localStorage.setItem('fanter_currentUser', JSON.stringify(localUser));
-        }
-        const { data: achievements } = await window.supabase.from('user_achievements').select('achievement_id').eq('user_id', currentUser.id);
-        userAchievements = {};
-        achievements?.forEach(a => { userAchievements[a.achievement_id] = true; });
-        localStorage.setItem('fanter_achievements', JSON.stringify(userAchievements));
-      } catch (error) { 
-        console.error('Error loading Supabase data:', error); 
-        loadLocalData(); 
-      }
-    }
-
-    // ===== AUTH =====
-    async function handleLogin(email, password) {
-      if (!window.supabase) { showMessage('loginMessage', 'Supabase not available', 'error'); return; }
-      try {
-        const { data, error } = await window.supabase.auth.signInWithPassword({ email, password });
-        if (error) throw error;
-        currentUser = data.user; 
-        syncStatus = 'online'; 
-        await loadSupabaseData();
-        
-        // SAVE TO LOCALSTORAGE
+      // Update stats if needed
+      if (localUser.stats) {
+        localUser.stats.achievementsUnlocked = Object.keys(userAchievements).length;
         localStorage.setItem('fanter_currentUser', JSON.stringify(localUser));
-        
-        // UNLOCK ACHIEVEMENT
-        unlockAchievement(1);
-        
-        showMessage('loginMessage', 'Login successful!', 'success');
-        setTimeout(() => window.location.reload(), 500);
-      } catch (error) { showMessage('loginMessage', error.message, 'error'); }
+      }
     }
-
-    async function handleRegister(username, email, displayName, password) {
-      if (!window.supabase) { showMessage('registerMessage', 'Supabase not available', 'error'); return; }
-      try {
-        const localUsers = JSON.parse(localStorage.getItem('fanter_users') || '[]');
-        if (localUsers.find(u => u.username && u.username.toLowerCase() === username.toLowerCase())) { showMessage('registerMessage', '❌ Username already taken!', 'error'); return; }
-        const { data: existingUser } = await window.supabase.from('profiles').select('username').ilike('username', username).single();
-        if (existingUser) { showMessage('registerMessage', '❌ Username already taken!', 'error'); return; }
-        const { data, error } = await window.supabase.auth.signUp({ email, password, options: { data: { username, display_name: displayName || username } } });
-        if (error) throw error;
-        if (data.user) { 
-          await window.supabase.from('profiles').insert({ id: data.user.id, username: username, display_name: displayName || username, email: email, coins: 300, achievement_points: 0, achievements_unlocked: 0 }); 
-        }
-        
-        // SAVE TO LOCALSTORAGE
-        localUser = { id: data.user.id, username: username, displayName: displayName || username, email: email, coins: 300, stats: { gamesPlayed: 0, ratingsGiven: 0, favoritesCount: 0 }, favorites: [], playedGames: [] };
-        localStorage.setItem('fanter_currentUser', JSON.stringify(localUser));
-        
-        // UNLOCK ACHIEVEMENT
-        unlockAchievement(1);
-        
-        showMessage('registerMessage', '✅ Account created! Logging you in...', 'success');
-        setTimeout(async () => { await handleLogin(email, password); }, 1000);
-      } catch (error) { showMessage('registerMessage', error.message, 'error'); }
+    
+    // Sync to Supabase if online
+    if (syncStatus === 'online' && currentUser) {
+      supabase.from('user_achievements').upsert({
+        user_id: currentUser.id,
+        achievement_id: achievementId,
+        unlocked_at: new Date()
+      }).then(() => console.log('✅ Achievement synced'));
     }
+    
+    return true;
+  }
 
-    async function handleLogout() {
-      if (window.supabase && window.supabase.auth) { try { await window.supabase.auth.signOut(); } catch (e) {} }
-      currentUser = null; localUser = null; syncStatus = 'offline';
-      localStorage.removeItem('fanter_currentUser'); localStorage.removeItem('fanter_achievements');
-      const guestUser = { id: 'guest_' + Date.now(), username: 'Guest', displayName: 'Guest', coins: 300, stats: { gamesPlayed: 0, ratingsGiven: 0, favoritesCount: 0 }, favorites: [], playedGames: [] };
+  function showAchievementNotification(ach) {
+    const popup = document.createElement('div');
+    popup.style.cssText = `position:fixed;bottom:80px;right:20px;background:linear-gradient(135deg,rgba(15,15,25,0.98),rgba(30,20,50,0.98));backdrop-filter:blur(15px);border-left:4px solid #ffcc66;border-radius:16px;padding:14px 22px;min-width:280px;z-index:10001;transform:translateX(400px);transition:transform 0.4s cubic-bezier(0.68,-0.55,0.265,1.55);box-shadow:0 10px 30px rgba(0,0,0,0.5);`;
+    popup.innerHTML = `
+      <div style="display:flex;align-items:center;gap:15px;">
+        <span style="font-size:36px;">${ach.icon}</span>
+        <div>
+          <div style="font-family:'Syne';font-size:11px;color:#ffcc66;letter-spacing:1px;">ACHIEVEMENT UNLOCKED!</div>
+          <div style="font-size:15px;font-weight:bold;color:white;">${ach.name}</div>
+          <div style="color:#ffcc66;font-size:12px;margin-top:3px;">+${ach.coins} 🪙</div>
+        </div>
+      </div>
+    `;
+    document.body.appendChild(popup);
+    setTimeout(() => popup.style.transform = 'translateX(0)', 10);
+    setTimeout(() => {
+      popup.style.transform = 'translateX(400px)';
+      setTimeout(() => popup.remove(), 400);
+    }, 4000);
+  }
+
+  // ===== INIT =====
+  async function init() {
+    // Ensure guest user exists
+    if (!localStorage.getItem('fanter_currentUser')) {
+      const guestUser = { 
+        id: 'guest_' + Date.now(), 
+        username: 'Guest', 
+        displayName: 'Guest', 
+        coins: 300, 
+        stats: { gamesPlayed: 0, ratingsGiven: 0, favoritesCount: 0, achievementsUnlocked: 0 },
+        favorites: [], 
+        playedGames: [] 
+      };
       localStorage.setItem('fanter_currentUser', JSON.stringify(guestUser));
-      localUser = guestUser; updateUI(); switchTab('profile');
     }
 
-    function continueWithLocalStorage() { loadLocalData(); updateUI(); switchTab('profile'); }
-
-    // ===== RENDER PROFILE =====
-    function renderProfile() {
-      const container = document.getElementById('profileContent');
-      const user = localUser;
-      if (!user) { container.innerHTML = `<div class="guest-message"><p>you're browsing as a guest</p><button onclick="switchTab('register')" class="settings-btn" style="width:auto;padding:10px 30px;margin-top:15px;">create account</button></div>`; return; }
-      const displayName = user.displayName || user.username || 'User';
-      const username = user.username || displayName.toLowerCase();
-      const coins = user.coins || 300;
-      const stats = user.stats || { gamesPlayed: 0, ratingsGiven: 0, favoritesCount: 0 };
-      const favorites = user.favorites || [];
-      const playedGames = user.playedGames || [];
-      const unlockedCount = Object.keys(userAchievements).length;
-      const statusDot = syncStatus === 'online' ? '🟢' : '🟠';
-      const statusText = syncStatus === 'online' ? 'Supabase' : 'Local';
-      container.innerHTML = `<div class="profile-info"><div class="profile-avatar">${displayName[0].toUpperCase()}</div><h2>${displayName} <span class="sync-status ${syncStatus}">${statusDot} ${statusText}</span></h2><p style="opacity:0.7;">@${username}</p><div style="font-size:20px;font-weight:bold;color:#ffcc00;margin-top:8px;">🪙 ${Math.floor(coins * 100) / 100}</div></div><div class="profile-stats"><div class="stat"><div class="stat-number">${stats.gamesPlayed || 0}</div><div class="stat-label">Games</div></div><div class="stat"><div class="stat-number">${stats.ratingsGiven || 0}</div><div class="stat-label">Ratings</div></div><div class="stat"><div class="stat-number">${favorites.length}</div><div class="stat-label">Favorites</div></div><div class="stat"><div class="stat-number">${unlockedCount}</div><div class="stat-label">Achievements</div></div></div>${playedGames.length > 0 ? `<div class="profile-games-section"><h3>🎮 Recently Played</h3><div>${playedGames.slice(0,6).map(g => `<span class="profile-game-tag">${g}</span>`).join('')}</div></div>` : ''}${favorites.length > 0 ? `<div class="profile-games-section"><h3>⭐ Favorites</h3><div>${favorites.slice(0,8).map(g => `<span class="profile-game-tag favorite">${g}</span>`).join('')}</div></div>` : ''}<div class="divider"></div><div style="display:flex;gap:10px;flex-wrap:wrap;"><button class="settings-btn" onclick="switchTab('achievements')">view achievements</button><button class="settings-btn logout-btn" onclick="handleLogout()">${currentUser ? 'Logout' : 'Clear'}</button></div>`;
+    // Check Supabase session
+    try {
+      const { data: { session } } = await supabase.auth.getSession();
+      if (session) {
+        currentUser = session.user;
+        syncStatus = 'online';
+        await loadSupabaseData();
+        // Unlock Welcome Aboard achievement on login
+        if (!userAchievements[1]) unlockAchievement(1);
+      } else {
+        loadLocalData();
+      }
+    } catch (e) {
+      console.log('Supabase error, using localStorage:', e.message);
+      loadLocalData();
     }
 
-    // ===== RENDER ACHIEVEMENTS =====
-    function renderAchievements() {
-      const container = document.getElementById('achievementsContent');
-      if (!localUser) { container.innerHTML = `<div class="guest-message"><p>please log in to view achievements</p><button onclick="switchTab('login')" class="settings-btn" style="width:auto;padding:10px 30px;margin-top:15px;">log in</button></div>`; return; }
-      const stats = localUser.stats || { gamesPlayed: 0, ratingsGiven: 0, favoritesCount: 0 };
-      const unlockedCount = Object.keys(userAchievements).length;
-      const totalCount = ALL_ACHIEVEMENTS.length;
-      const pct = Math.round((unlockedCount / totalCount) * 100);
-      const newbie = ALL_ACHIEVEMENTS.filter(a => a.id >= 1 && a.id <= 10);
-      const beginner = ALL_ACHIEVEMENTS.filter(a => a.id >= 11 && a.id <= 20);
-      const climbing = ALL_ACHIEVEMENTS.filter(a => a.id >= 21 && a.id <= 30);
-      const difficult = ALL_ACHIEVEMENTS.filter(a => a.id >= 31 && a.id <= 40);
-      const elite = ALL_ACHIEVEMENTS.filter(a => a.id >= 41 && a.id <= 50);
-      const secrets = ALL_ACHIEVEMENTS.filter(a => a.id >= 51 && a.id <= 63);
+    setupTabs();
+    setupLeaderboardFilters();
+    updateUI();
+    renderCurrentTab();
+  }
 
-      function getProgress(a) { if (userAchievements[a.id]) return { done: true, current: a.required, pct: 100 }; if (a.req === 'secret' || a.req === 'register') return { done: false, current: 0, pct: 0 }; const val = stats[a.req] || 0; return { done: false, current: Math.min(val, a.required), pct: Math.min(100, Math.round((val / a.required) * 100)) }; }
-      function renderGroup(title, icon, color, achievements, startOpen) {
-        const groupUnlocked = achievements.filter(a => userAchievements[a.id]).length;
-        const groupPct = Math.round((groupUnlocked / achievements.length) * 100);
-        const groupId = 'ach-group-' + title.replace(/\s+/g, '-');
-        const items = achievements.map(a => { const p = getProgress(a); const isHidden = a.req === 'secret' && !p.done; return `<div class="ach-item ${p.done ? 'unlocked' : ''}"><div class="ach-item-icon" style="${!p.done ? 'filter:grayscale(0.6);opacity:0.7;' : ''}">${isHidden ? '❓' : a.icon}</div><div class="ach-item-info"><div class="ach-item-name">${isHidden ? '???' : a.name}</div><div class="ach-item-desc">${isHidden ? 'hidden — keep playing to discover' : a.desc}</div>${p.done ? '<div style="font-size:10px;color:#ffcc00;margin-top:3px;">✓ unlocked</div>' : ''}${!p.done && !isHidden ? `<div class="ach-progress-bar-wrap"><div class="ach-progress-bar-fill" style="width:${p.pct}%;background:${color};"></div></div><div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:3px;">${p.current} / ${a.required}</div>` : ''}</div><div class="ach-item-coins">+${a.coins} 🪙</div></div>`; }).join('');
-        return `<div class="ach-group"><div class="ach-group-header" onclick="var b=document.getElementById('${groupId}');b.style.display=b.style.display==='none'?'flex':'none';this.querySelector('.ach-arrow').textContent=b.style.display==='none'?'▼':'▲';"><div style="display:flex;align-items:center;gap:10px;"><span style="font-size:22px;">${icon}</span><span style="font-size:15px;font-weight:bold;color:white;font-family:'Orbitron',monospace;">${title}</span></div><div style="display:flex;align-items:center;gap:15px;"><div style="text-align:right;"><div style="font-size:12px;color:${color};">${groupUnlocked}/${achievements.length}</div><div style="width:80px;height:4px;background:rgba(255,255,255,0.1);border-radius:2px;margin-top:4px;overflow:hidden;"><div style="height:100%;width:${groupPct}%;background:${color};border-radius:2px;"></div></div></div><span class="ach-arrow" style="color:rgba(255,255,255,0.5);font-size:12px;">${startOpen ? '▲' : '▼'}</span></div></div><div class="ach-group-body" id="${groupId}" style="display:${startOpen ? 'flex' : 'none'};flex-direction:column;gap:10px;">${items}</div></div>`;
+  function loadLocalData() {
+    localUser = JSON.parse(localStorage.getItem('fanter_currentUser') || 'null');
+    userAchievements = JSON.parse(localStorage.getItem('fanter_achievements') || '{}');
+    syncStatus = 'offline';
+  }
+
+  async function loadSupabaseData() {
+    try {
+      const { data: profile } = await supabase.from('profiles').select('*').eq('id', currentUser.id).single();
+      if (profile) {
+        localUser = { 
+          id: profile.id, 
+          username: profile.username, 
+          displayName: profile.display_name || profile.username, 
+          email: profile.email, 
+          coins: profile.coins || 300, 
+          stats: { 
+            gamesPlayed: profile.games_played || 0, 
+            ratingsGiven: 0, 
+            favoritesCount: 0,
+            achievementsUnlocked: 0
+          }, 
+          favorites: [], 
+          playedGames: [] 
+        };
+        localStorage.setItem('fanter_currentUser', JSON.stringify(localUser));
       }
-
-      container.innerHTML = `<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;margin-bottom:25px;"><div><div style="font-size:13px;color:rgba(255,255,255,0.5);margin-bottom:6px;">overall progress</div><div style="width:260px;height:8px;background:rgba(255,255,255,0.1);border-radius:4px;overflow:hidden;"><div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#ffcc00,#ffaa00);border-radius:4px;transition:width 0.4s ease;"></div></div><div style="font-size:11px;color:rgba(255,255,255,0.4);margin-top:4px;">${unlockedCount} of ${totalCount} unlocked (${pct}%)</div></div><div style="background:rgba(255,204,0,0.15);border:1px solid rgba(255,204,0,0.3);border-radius:30px;padding:10px 20px;text-align:center;"><div style="font-size:28px;font-weight:bold;color:#ffcc00;font-family:'Orbitron',monospace;">${unlockedCount}</div><div style="font-size:11px;color:rgba(255,255,255,0.5);">achievements</div></div></div>${renderGroup('Newbie', '🌱', '#00ff88', newbie, true)}${renderGroup('Beginner', '📈', '#2d5ae3', beginner, false)}${renderGroup('Climbing', '⛰️', '#ff8800', climbing, false)}${renderGroup('Difficult', '💀', '#ff4444', difficult, false)}${renderGroup('Elite', '👑', '#ffcc00', elite, false)}${renderGroup('Secrets', '🔮', '#aa44ff', secrets, false)}`;
+      const { data: achievements } = await supabase.from('user_achievements').select('achievement_id').eq('user_id', currentUser.id);
+      userAchievements = {};
+      achievements?.forEach(a => { userAchievements[a.achievement_id] = true; });
+      localStorage.setItem('fanter_achievements', JSON.stringify(userAchievements));
+    } catch (error) { 
+      console.error('Error loading Supabase data:', error); 
+      loadLocalData(); 
     }
+  }
 
-    // ===== RENDER LEADERBOARD =====
-    async function renderLeaderboard() {
-      const container = document.getElementById('leaderboardList');
-      container.innerHTML = '<div class="guest-message">loading leaderboard...</div>';
-      let players = [];
+  // ===== AUTH =====
+  async function handleLogin(email, password) {
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({ email, password });
+      if (error) throw error;
+      currentUser = data.user;
+      syncStatus = 'online';
+      await loadSupabaseData();
+      unlockAchievement(1);
+      showMessage('loginMessage', '✅ Login successful!', 'success');
+      setTimeout(() => window.location.reload(), 500);
+    } catch (error) {
+      showMessage('loginMessage', error.message, 'error');
+    }
+  }
 
-      if (window.supabase && typeof window.supabase.from === 'function') {
-        try {
-          console.log('Fetching leaderboard from Supabase...');
-          const orderCol = currentFilter === 'coins' ? 'coins' : 'achievement_points';
-          const { data, error } = await window.supabase.from('profiles').select('id, username, display_name, coins, achievement_points').order(orderCol, { ascending: false }).limit(50);
-          
-          if (!error && data && data.length > 0) {
-            console.log('✅ Loaded', data.length, 'users from Supabase');
-            players = data.map(p => ({ id: p.id, displayName: p.display_name || p.username || 'Unknown', username: p.username || 'unknown', coins: p.coins || 0, achievementsCount: p.achievement_points || 0, isLocal: false }));
-          } else { console.log('No Supabase users found'); }
-        } catch (e) { console.warn('Supabase error:', e.message); }
+  async function handleRegister(username, email, displayName, password) {
+    try {
+      // Check if username exists
+      const { data: existingUser } = await supabase.from('profiles').select('username').ilike('username', username).single();
+      if (existingUser) {
+        showMessage('registerMessage', '❌ Username already taken!', 'error');
+        return;
       }
-
-      if (players.length === 0) {
-        console.log('Falling back to localStorage...');
-        const localUsers = JSON.parse(localStorage.getItem('fanter_users') || '[]');
-        players = localUsers.map(u => ({ id: u.id, displayName: u.displayName || u.username || 'User', username: u.username || 'user', coins: u.coins || 0, achievementsCount: Object.keys(JSON.parse(localStorage.getItem('fanter_achievements') || '{}')).length, isLocal: true }));
-        if (localUser && !players.find(p => p.id === localUser.id)) { players.push({ id: localUser.id, displayName: localUser.displayName || localUser.username || 'You', username: localUser.username || 'you', coins: localUser.coins || 0, achievementsCount: Object.keys(userAchievements).length, isLocal: true }); }
-        players.sort((a, b) => currentFilter === 'coins' ? b.coins - a.coins : b.achievementsCount - a.achievementsCount);
+      
+      const { data, error } = await supabase.auth.signUp({ 
+        email, 
+        password, 
+        options: { data: { username, display_name: displayName || username } } 
+      });
+      if (error) throw error;
+      
+      if (data.user) {
+        await supabase.from('profiles').insert({ 
+          id: data.user.id, 
+          username: username, 
+          display_name: displayName || username, 
+          email: email, 
+          coins: 300, 
+          achievement_points: 0, 
+          achievements_unlocked: 0 
+        });
       }
+      
+      localUser = { 
+        id: data.user.id, 
+        username: username, 
+        displayName: displayName || username, 
+        email: email, 
+        coins: 300, 
+        stats: { gamesPlayed: 0, ratingsGiven: 0, favoritesCount: 0, achievementsUnlocked: 0 },
+        favorites: [], 
+        playedGames: [] 
+      };
+      localStorage.setItem('fanter_currentUser', JSON.stringify(localUser));
+      
+      unlockAchievement(1);
+      showMessage('registerMessage', '✅ Account created! Logging you in...', 'success');
+      setTimeout(async () => { await handleLogin(email, password); }, 1000);
+    } catch (error) {
+      showMessage('registerMessage', error.message, 'error');
+    }
+  }
 
-      if (players.length === 0) { container.innerHTML = '<div class="guest-message">no players yet — be the first!</div>'; return; }
+  async function handleLogout() {
+    try { await supabase.auth.signOut(); } catch(e) {}
+    currentUser = null;
+    localUser = null;
+    syncStatus = 'offline';
+    localStorage.removeItem('fanter_currentUser');
+    localStorage.removeItem('fanter_achievements');
+    const guestUser = { 
+      id: 'guest_' + Date.now(), 
+      username: 'Guest', 
+      displayName: 'Guest', 
+      coins: 300, 
+      stats: { gamesPlayed: 0, ratingsGiven: 0, favoritesCount: 0, achievementsUnlocked: 0 },
+      favorites: [], 
+      playedGames: [] 
+    };
+    localStorage.setItem('fanter_currentUser', JSON.stringify(guestUser));
+    localUser = guestUser;
+    updateUI();
+    switchTab('profile');
+    renderCurrentTab();
+  }
 
-      const rankIcons = ['🥇', '🥈', '🥉'];
-      const currentUserId = localUser ? localUser.id : (currentUser ? currentUser.id : null);
+  function continueWithLocalStorage() {
+    loadLocalData();
+    updateUI();
+    switchTab('profile');
+    renderCurrentTab();
+  }
 
-      container.innerHTML = players.map((player, idx) => {
-        const rank = idx + 1;
-        const rankDisplay = rank <= 3 ? rankIcons[rank - 1] : `#${rank}`;
-        const isMe = (currentUserId && player.id === currentUserId) || (currentUser && player.id === currentUser.id);
-        const scoreValue = currentFilter === 'coins' ? `🪙 ${Math.floor(player.coins * 100) / 100}` : `🏆 ${player.achievementsCount || 0}`;
-        return `<div class="leaderboard-item ${isMe ? 'current-user' : ''}"><div class="rank ${rank===1?'top-1':rank===2?'top-2':rank===3?'top-3':''}">${rankDisplay}</div><div class="user-avatar">${(player.displayName || 'U')[0].toUpperCase()}</div><div class="user-info"><div class="user-name">${player.displayName} ${isMe ? '<span style="font-size:11px;color:#ffcc00;">(you)</span>' : ''}</div><div class="user-username">@${player.username}${player.isLocal ? ' · local' : ''}</div></div><div class="user-score">${scoreValue}</div></div>`;
+  // ===== RENDER PROFILE =====
+  function renderProfile() {
+    const container = document.getElementById('profileContent');
+    if (!localUser || localUser.username === 'Guest') {
+      container.innerHTML = `
+        <div class="guest-message">
+          <p>👋 You're browsing as a guest</p>
+          <p style="font-size:12px;margin-top:8px;">Create an account to save your progress across devices!</p>
+          <button onclick="switchTab('register')" class="settings-btn" style="margin-top:20px;">Create Account</button>
+        </div>
+      `;
+      return;
+    }
+    
+    const displayName = localUser.displayName || localUser.username;
+    const username = localUser.username;
+    const coins = localUser.coins || 300;
+    const stats = localUser.stats || { gamesPlayed: 0, ratingsGiven: 0, favoritesCount: 0 };
+    const favorites = localUser.favorites || [];
+    const playedGames = localUser.playedGames || [];
+    const unlockedCount = Object.keys(userAchievements).length;
+    const statusDot = syncStatus === 'online' ? '🟢' : '🟠';
+    const statusText = syncStatus === 'online' ? 'Synced' : 'Local Only';
+    
+    container.innerHTML = `
+      <div class="profile-info">
+        <div class="profile-avatar">${displayName[0].toUpperCase()}</div>
+        <div class="profile-name">${escapeHtml(displayName)} <span class="sync-status ${syncStatus}">${statusDot} ${statusText}</span></div>
+        <div class="profile-username">@${escapeHtml(username)}</div>
+        <div class="profile-coins">🪙 ${Math.floor(coins * 100) / 100}</div>
+      </div>
+      <div class="profile-stats">
+        <div class="stat"><div class="stat-number">${stats.gamesPlayed || 0}</div><div class="stat-label">Played</div></div>
+        <div class="stat"><div class="stat-number">${stats.ratingsGiven || 0}</div><div class="stat-label">Ratings</div></div>
+        <div class="stat"><div class="stat-number">${favorites.length}</div><div class="stat-label">Favorites</div></div>
+        <div class="stat"><div class="stat-number">${unlockedCount}</div><div class="stat-label">Achievements</div></div>
+      </div>
+      ${playedGames.length > 0 ? `
+        <div class="profile-games-section">
+          <h3>🎮 Recently Played</h3>
+          <div>${playedGames.slice(0,8).map(g => `<span class="profile-game-tag">${escapeHtml(g)}</span>`).join('')}</div>
+        </div>
+      ` : ''}
+      ${favorites.length > 0 ? `
+        <div class="profile-games-section">
+          <h3>⭐ Favorites</h3>
+          <div>${favorites.slice(0,10).map(g => `<span class="profile-game-tag favorite">${escapeHtml(g)}</span>`).join('')}</div>
+        </div>
+      ` : ''}
+      <div class="divider"></div>
+      <div style="display:flex;gap:12px;flex-wrap:wrap;">
+        <button class="settings-btn" onclick="switchTab('achievements')">🏆 View Achievements</button>
+        <button class="settings-btn logout-btn" onclick="handleLogout()">🚪 ${currentUser ? 'Logout' : 'Clear Guest Data'}</button>
+      </div>
+    `;
+  }
+
+  // ===== RENDER ACHIEVEMENTS =====
+  function renderAchievements() {
+    const container = document.getElementById('achievementsContent');
+    if (!localUser) {
+      container.innerHTML = `<div class="guest-message"><p>Please log in to view achievements</p><button onclick="switchTab('login')" class="settings-btn" style="margin-top:15px;">Log In</button></div>`;
+      return;
+    }
+    
+    const stats = localUser.stats || { gamesPlayed: 0, ratingsGiven: 0, favoritesCount: 0 };
+    const unlockedCount = Object.keys(userAchievements).length;
+    const totalCount = ALL_ACHIEVEMENTS.length;
+    const pct = Math.round((unlockedCount / totalCount) * 100);
+    
+    const newbie = ALL_ACHIEVEMENTS.filter(a => a.id >= 1 && a.id <= 10);
+    const beginner = ALL_ACHIEVEMENTS.filter(a => a.id >= 11 && a.id <= 20);
+    const climbing = ALL_ACHIEVEMENTS.filter(a => a.id >= 21 && a.id <= 30);
+    const difficult = ALL_ACHIEVEMENTS.filter(a => a.id >= 31 && a.id <= 40);
+    const elite = ALL_ACHIEVEMENTS.filter(a => a.id >= 41 && a.id <= 50);
+    const secrets = ALL_ACHIEVEMENTS.filter(a => a.id >= 51);
+    
+    function getProgress(a) {
+      if (userAchievements[a.id]) return { done: true, current: a.required, pct: 100 };
+      if (a.req === 'secret' || a.req === 'register') return { done: false, current: 0, pct: 0 };
+      const val = stats[a.req] || 0;
+      return { done: false, current: Math.min(val, a.required), pct: Math.min(100, Math.round((val / a.required) * 100)) };
+    }
+    
+    function renderGroup(title, icon, color, achievements, startOpen) {
+      const groupUnlocked = achievements.filter(a => userAchievements[a.id]).length;
+      const groupPct = Math.round((groupUnlocked / achievements.length) * 100);
+      const groupId = 'ach-group-' + title.replace(/\s+/g, '-');
+      const items = achievements.map(a => {
+        const p = getProgress(a);
+        const isHidden = a.req === 'secret' && !p.done;
+        return `
+          <div class="ach-item ${p.done ? 'unlocked' : ''}">
+            <div class="ach-item-icon" style="${!p.done ? 'filter:grayscale(0.5);opacity:0.7;' : ''}">${isHidden ? '❓' : a.icon}</div>
+            <div class="ach-item-info">
+              <div class="ach-item-name">${isHidden ? '???' : a.name}</div>
+              <div class="ach-item-desc">${isHidden ? 'Hidden — keep playing to discover' : a.desc}</div>
+              ${p.done ? '<div style="font-size:10px;color:#ffcc66;margin-top:4px;">✓ Unlocked</div>' : ''}
+              ${!p.done && !isHidden ? `
+                <div class="ach-progress-bar-wrap"><div class="ach-progress-bar-fill" style="width:${p.pct}%;background:${color};"></div></div>
+                <div style="font-size:10px;color:rgba(255,255,255,0.4);margin-top:4px;">${p.current} / ${a.required}</div>
+              ` : ''}
+            </div>
+            <div class="ach-item-coins">+${a.coins} 🪙</div>
+          </div>
+        `;
       }).join('');
       
-      console.log('✅ Leaderboard rendered with', players.length, 'players');
+      return `
+        <div class="ach-group">
+          <div class="ach-group-header" onclick="toggleAchievementGroup('${groupId}')">
+            <div style="display:flex;align-items:center;gap:12px;">
+              <span style="font-size:24px;">${icon}</span>
+              <span style="font-weight:bold;color:white;">${title}</span>
+            </div>
+            <div style="display:flex;align-items:center;gap:12px;">
+              <div style="text-align:right;">
+                <div style="font-size:11px;color:${color};">${groupUnlocked}/${achievements.length}</div>
+                <div style="width:80px;height:3px;background:rgba(255,255,255,0.1);border-radius:2px;margin-top:4px;overflow:hidden;">
+                  <div style="height:100%;width:${groupPct}%;background:${color};"></div>
+                </div>
+              </div>
+              <span id="${groupId}-arrow" style="color:rgba(255,255,255,0.5);font-size:12px;">${startOpen ? '▲' : '▼'}</span>
+            </div>
+          </div>
+          <div id="${groupId}" class="ach-group-body" style="display:${startOpen ? 'flex' : 'none'};">${items}</div>
+        </div>
+      `;
+    }
+    
+    container.innerHTML = `
+      <div style="margin-bottom:28px;">
+        <div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:15px;margin-bottom:20px;">
+          <div>
+            <div style="font-size:12px;color:#a0a0c0;margin-bottom:6px;">Overall Progress</div>
+            <div style="width:260px;height:6px;background:rgba(255,255,255,0.1);border-radius:3px;overflow:hidden;">
+              <div style="height:100%;width:${pct}%;background:linear-gradient(90deg,#7c5cff,#ffcc66);border-radius:3px;"></div>
+            </div>
+            <div style="font-size:11px;color:#a0a0c0;margin-top:4px;">${unlockedCount} of ${totalCount} unlocked (${pct}%)</div>
+          </div>
+          <div style="background:rgba(124,92,255,0.15);border:1px solid rgba(124,92,255,0.3);border-radius:30px;padding:8px 20px;text-align:center;">
+            <div style="font-size:28px;font-weight:bold;color:#7c5cff;">${unlockedCount}</div>
+            <div style="font-size:11px;color:#a0a0c0;">achievements</div>
+          </div>
+        </div>
+      </div>
+      ${renderGroup('Newbie', '🌱', '#4cd964', newbie, true)}
+      ${renderGroup('Beginner', '📈', '#2d5ae3', beginner, false)}
+      ${renderGroup('Climbing', '⛰️', '#ff8800', climbing, false)}
+      ${renderGroup('Difficult', '💀', '#ff4444', difficult, false)}
+      ${renderGroup('Elite', '👑', '#ffcc66', elite, false)}
+      ${renderGroup('Secrets', '🔮', '#aa44ff', secrets, false)}
+    `;
+  }
+  
+  window.toggleAchievementGroup = function(groupId) {
+    const body = document.getElementById(groupId);
+    const arrow = document.getElementById(groupId + '-arrow');
+    if (body && arrow) {
+      if (body.style.display === 'none' || body.style.display === '') {
+        body.style.display = 'flex';
+        arrow.textContent = '▲';
+      } else {
+        body.style.display = 'none';
+        arrow.textContent = '▼';
+      }
+    }
+  };
+
+  // ===== RENDER LEADERBOARD =====
+  async function renderLeaderboard() {
+    const container = document.getElementById('leaderboardList');
+    container.innerHTML = '<div class="guest-message">Loading leaderboard...</div>';
+    let players = [];
+
+    try {
+      const orderCol = currentFilter === 'coins' ? 'coins' : 'achievement_points';
+      const { data, error } = await supabase.from('profiles').select('id, username, display_name, coins, achievement_points').order(orderCol, { ascending: false }).limit(50);
+      if (!error && data && data.length > 0) {
+        players = data.map(p => ({ 
+          id: p.id, 
+          displayName: p.display_name || p.username || 'Unknown', 
+          username: p.username || 'unknown', 
+          coins: p.coins || 0, 
+          achievementsCount: p.achievement_points || 0,
+          isLocal: false 
+        }));
+      }
+    } catch (e) { console.warn('Supabase error:', e.message); }
+
+    if (players.length === 0) {
+      const localUsers = JSON.parse(localStorage.getItem('fanter_users') || '[]');
+      players = localUsers.map(u => ({ 
+        id: u.id, 
+        displayName: u.displayName || u.username || 'User', 
+        username: u.username || 'user', 
+        coins: u.coins || 0, 
+        achievementsCount: Object.keys(JSON.parse(localStorage.getItem('fanter_achievements') || '{}')).length,
+        isLocal: true 
+      }));
+      if (localUser && !players.find(p => p.id === localUser.id)) {
+        players.push({ 
+          id: localUser.id, 
+          displayName: localUser.displayName || localUser.username || 'You', 
+          username: localUser.username || 'you', 
+          coins: localUser.coins || 0, 
+          achievementsCount: Object.keys(userAchievements).length,
+          isLocal: true 
+        });
+      }
+      players.sort((a, b) => currentFilter === 'coins' ? b.coins - a.coins : b.achievementsCount - a.achievementsCount);
     }
 
-    // ===== UI HELPERS =====
-    function setupTabs() { document.querySelectorAll('.account-tab').forEach(tab => tab.addEventListener('click', () => switchTab(tab.getAttribute('data-tab')))); document.getElementById('loginForm')?.addEventListener('submit', async (e) => { e.preventDefault(); await handleLogin(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value); }); document.getElementById('registerForm')?.addEventListener('submit', async (e) => { e.preventDefault(); const pw = document.getElementById('regPassword').value; if (pw !== document.getElementById('regConfirmPassword').value) { showMessage('registerMessage', 'Passwords do not match', 'error'); return; } await handleRegister(document.getElementById('regUsername').value, document.getElementById('regEmail').value, document.getElementById('regDisplayName').value, pw); }); }
-    function setupLeaderboardFilters() { document.querySelectorAll('.filter-btn').forEach(btn => btn.addEventListener('click', () => { document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active')); btn.classList.add('active'); currentFilter = btn.getAttribute('data-filter'); renderLeaderboard(); })); }
-    function switchTab(tabName) { document.querySelectorAll('.account-tab').forEach(t => t.classList.toggle('active', t.getAttribute('data-tab') === tabName)); document.querySelectorAll('.account-tab-content').forEach(c => c.classList.toggle('active', c.id === `${tabName}Tab`)); renderCurrentTab(); }
-    function renderCurrentTab() { const active = document.querySelector('.account-tab-content.active'); if (!active) return; if (active.id === 'profileTab') renderProfile(); else if (active.id === 'achievementsTab') renderAchievements(); else if (active.id === 'leaderboardTab') renderLeaderboard(); }
-    function updateUI() { const nameEl = document.getElementById('accountName'); const user = localUser; if (user) { nameEl.textContent = user.displayName || user.username || 'User'; document.querySelectorAll('.account-tab').forEach(t => { const tabName = t.getAttribute('data-tab'); if (tabName === 'login' || tabName === 'register') { t.style.display = (user.username === 'Guest') ? 'block' : 'none'; } }); } else { nameEl.textContent = 'Guest'; document.querySelectorAll('.account-tab').forEach(t => t.style.display = 'block'); } }
-    function showMessage(elId, msg, type) { const el = document.getElementById(elId); if (el) { el.textContent = msg; el.className = `message ${type}`; } }
+    if (players.length === 0) {
+      container.innerHTML = '<div class="guest-message">No players yet — be the first!</div>';
+      return;
+    }
 
-    window.switchTab = switchTab;
-    window.handleLogout = handleLogout;
-    window.continueWithLocalStorage = continueWithLocalStorage;
+    const rankIcons = ['🥇', '🥈', '🥉'];
+    const currentUserId = localUser ? localUser.id : (currentUser ? currentUser.id : null);
 
-    init();
-  </script>
+    container.innerHTML = players.slice(0, 100).map((player, idx) => {
+      const rank = idx + 1;
+      const rankDisplay = rank <= 3 ? rankIcons[rank - 1] : `#${rank}`;
+      const isMe = currentUserId && player.id === currentUserId;
+      const scoreValue = currentFilter === 'coins' ? `🪙 ${Math.floor(player.coins * 100) / 100}` : `🏆 ${player.achievementsCount || 0}`;
+      return `
+        <div class="leaderboard-item ${isMe ? 'current-user' : ''}">
+          <div class="rank ${rank===1?'top-1':rank===2?'top-2':rank===3?'top-3':''}">${rankDisplay}</div>
+          <div class="user-avatar">${(player.displayName || 'U')[0].toUpperCase()}</div>
+          <div class="user-info">
+            <div class="user-name">${escapeHtml(player.displayName)} ${isMe ? '<span style="font-size:11px;color:#ffcc66;">(you)</span>' : ''}</div>
+            <div class="user-username">@${escapeHtml(player.username)}${player.isLocal ? ' · local' : ''}</div>
+          </div>
+          <div class="user-score">${scoreValue}</div>
+        </div>
+      `;
+    }).join('');
+  }
+
+  // ===== UI HELPERS =====
+  function setupTabs() {
+    document.querySelectorAll('.account-tab').forEach(tab => {
+      tab.addEventListener('click', () => switchTab(tab.getAttribute('data-tab')));
+    });
+    document.getElementById('loginForm')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      await handleLogin(document.getElementById('loginEmail').value, document.getElementById('loginPassword').value);
+    });
+    document.getElementById('registerForm')?.addEventListener('submit', async (e) => {
+      e.preventDefault();
+      const pw = document.getElementById('regPassword').value;
+      if (pw !== document.getElementById('regConfirmPassword').value) {
+        showMessage('registerMessage', 'Passwords do not match', 'error');
+        return;
+      }
+      await handleRegister(
+        document.getElementById('regUsername').value,
+        document.getElementById('regEmail').value,
+        document.getElementById('regDisplayName').value,
+        pw
+      );
+    });
+  }
+
+  function setupLeaderboardFilters() {
+    document.querySelectorAll('.filter-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.filter-btn').forEach(b => b.classList.remove('active'));
+        btn.classList.add('active');
+        currentFilter = btn.getAttribute('data-filter');
+        renderLeaderboard();
+      });
+    });
+  }
+
+  function switchTab(tabName) {
+    document.querySelectorAll('.account-tab').forEach(t => {
+      t.classList.toggle('active', t.getAttribute('data-tab') === tabName);
+    });
+    document.querySelectorAll('.account-tab-content').forEach(c => {
+      c.classList.toggle('active', c.id === `${tabName}Tab`);
+    });
+    renderCurrentTab();
+  }
+
+  function renderCurrentTab() {
+    const active = document.querySelector('.account-tab-content.active');
+    if (!active) return;
+    if (active.id === 'profileTab') renderProfile();
+    else if (active.id === 'achievementsTab') renderAchievements();
+    else if (active.id === 'leaderboardTab') renderLeaderboard();
+  }
+
+  function updateUI() {
+    const nameEl = document.getElementById('accountName');
+    if (nameEl && localUser) {
+      nameEl.textContent = localUser.displayName || localUser.username || 'User';
+    }
+    document.querySelectorAll('.account-tab').forEach(t => {
+      const tabName = t.getAttribute('data-tab');
+      if (tabName === 'login' || tabName === 'register') {
+        t.style.display = (localUser && localUser.username === 'Guest') ? 'block' : 'none';
+      }
+    });
+  }
+
+  function showMessage(elId, msg, type) {
+    const el = document.getElementById(elId);
+    if (el) {
+      el.textContent = msg;
+      el.className = `message ${type}`;
+    }
+  }
+
+  function escapeHtml(str) {
+    if (!str) return '';
+    return str.replace(/[&<>]/g, function(m) {
+      if (m === '&') return '&amp;';
+      if (m === '<') return '&lt;';
+      if (m === '>') return '&gt;';
+      return m;
+    });
+  }
+
+  // Make functions available globally
+  window.switchTab = switchTab;
+  window.handleLogout = handleLogout;
+  window.continueWithLocalStorage = continueWithLocalStorage;
+  window.toggleAchievementGroup = toggleAchievementGroup;
+
+  // Start
+  init();
+</script>
 </body>
 </html>
