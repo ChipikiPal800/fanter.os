@@ -1,5 +1,5 @@
 // multiplayer/client/multiplayer.js
-const NETPLAY_SERVER = 'https://fanter-netplay.onrender.com/';
+const NETPLAY_SERVER = 'https://fanter-netplay.onrender.com';
 
 let socket = null;
 let currentUser = JSON.parse(localStorage.getItem('fanter_currentUser') || '{"username":"Guest"}');
@@ -214,17 +214,17 @@ function escapeHtml(str) {
     });
 }
 
-// ===== GAME LIST - Add your ROMs here =====
-// Format: "Display Name|emulator_core|ROM_URL"
+// ===== GAME LIST - Updated with test GB ROM =====
 const gameList = [
-    { display: "🎲 Mario Party 3", core: "n64", rom: "https://example.com/mario-party-3.n64" },
-    { display: "🏎️ Mario Kart 64", core: "n64", rom: "https://chipikipal800.github.io/MarioKart64-1/" },
-    { display: "👊 Super Smash Bros", core: "n64", rom: "https://example.com/smash-bros.n64" },
-    { display: "⚡ Pokémon Stadium", core: "n64", rom: "drive.usercontent.google.com/download?id=1TuKmXD8qWW9xQ2R3Tl-eaAHHUw2a9ox_&export=download" },
-    { display: "🏁 Diddy Kong Racing", core: "n64", rom: "https://example.com/diddy-kong-racing.n64" },
-    { display: "⭐ Super Mario 64", core: "n64", rom: "https://example.com/sm64.n64" },
-    { display: "🗡️ Zelda Ocarina of Time", core: "n64", rom: "https://example.com/zelda-oot.n64" },
-    { display: "🦊 Star Fox 64", core: "n64", rom: "https://example.com/starfox-64.n64" }
+    { display: "🎮 Test Game Boy ROM", core: "gb", rom: "https://drive.usercontent.google.com/download?id=1Fz8tHIKaf0MCPEQQbZ2SFdhyU3cIfgRp&export=download" },
+    { display: "🎲 Mario Party 3", core: "n64", rom: "https://drive.usercontent.google.com/download?id=YOUR_MP3_FILE_ID&export=download" },
+    { display: "🏎️ Mario Kart 64", core: "n64", rom: "https://drive.usercontent.google.com/download?id=YOUR_MK64_FILE_ID&export=download" },
+    { display: "👊 Super Smash Bros", core: "n64", rom: "https://drive.usercontent.google.com/download?id=YOUR_SSB_FILE_ID&export=download" },
+    { display: "⚡ Pokémon Stadium", core: "n64", rom: "https://drive.usercontent.google.com/download?id=YOUR_PS_FILE_ID&export=download" },
+    { display: "🏁 Diddy Kong Racing", core: "n64", rom: "https://drive.usercontent.google.com/download?id=YOUR_DKR_FILE_ID&export=download" },
+    { display: "⭐ Super Mario 64", core: "n64", rom: "https://drive.usercontent.google.com/download?id=YOUR_SM64_FILE_ID&export=download" },
+    { display: "🗡️ Zelda Ocarina of Time", core: "n64", rom: "https://drive.usercontent.google.com/download?id=YOUR_ZELDA_FILE_ID&export=download" },
+    { display: "🦊 Star Fox 64", core: "n64", rom: "https://drive.usercontent.google.com/download?id=YOUR_STARFOX_FILE_ID&export=download" }
 ];
 
 function populateGameSelect() {
