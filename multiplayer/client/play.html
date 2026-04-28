@@ -198,16 +198,24 @@
                             clearInterval(checkEmulator);
                             clearTimeout(romLoadTimeout);
                             console.log('✅ Emulator ready');
-                            statusEl.innerHTML = '✅ Emulator ready! Game loading...';
-                            statusEl.className = 'status';
+                            statusEl.innerHTML = '✅ Emulator ready! Loading ROM...';
+                            
+                            // 🔥 CRITICAL: Manually trigger ROM load
+                            if (window.EJS_emulator.gameManager.loadROM) {
+                                window.EJS_emulator.gameManager.loadROM(romUrl);
+                            }
                             
                             // Try to start the game
-                            if (window.EJS_emulator.gameManager.start) {
-                                window.EJS_emulator.gameManager.start();
-                            }
+                            setTimeout(() => {
+                                if (window.EJS_emulator.gameManager.start) {
+                                    window.EJS_emulator.gameManager.start();
+                                }
+                                statusEl.innerHTML = '✅ Game should be loading...';
+                                statusEl.className = 'status';
+                            }, 1000);
+                            
                             resolve();
                         } else if (attempts > 40) {
-                            // After 20 seconds (40 * 500ms), give up
                             clearInterval(checkEmulator);
                             clearTimeout(romLoadTimeout);
                             console.warn('⚠️ Emulator not ready after timeout');
