@@ -2,14 +2,16 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Emulator Test</title>
+    <title>Emulator Test - Fixed</title>
     <style>
         body { background: #0a0a0f; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: monospace; color: white; }
         .container { text-align: center; }
         canvas { border: 2px solid #7c5cff; border-radius: 12px; background: #000; width: 640px; height: 480px; }
-        button { background: #7c5cff; border: none; padding: 10px 20px; color: white; margin-top: 20px; cursor: pointer; border-radius: 8px; }
         .status { margin-top: 10px; color: #4cd964; }
         .error { color: #ff5e5e; }
+        .loading { color: #ffcc66; }
+        button { background: #7c5cff; border: none; padding: 10px 20px; color: white; margin: 10px; cursor: pointer; border-radius: 8px; }
+        .btn-group { display: flex; gap: 10px; justify-content: center; }
     </style>
 </head>
 <body>
@@ -17,59 +19,108 @@
         <h2>EmulatorJS Test</h2>
         <canvas id="gameCanvas"></canvas>
         <div class="status" id="status">Initializing...</div>
-        <button onclick="loadROM()">Load ROM</button>
+        <div class="btn-group">
+            <button onclick="loadROMWithFetch()">Load ROM (Fetch)</button>
+            <button onclick="loadROMWithGameData()">Load ROM (GameData)</button>
+        </div>
     </div>
 
     <script>
         // Public test ROM that definitely works
         const TEST_ROM_URL = 'https://raw.githubusercontent.com/ianatha/bgb-test-roms/master/tetris.gb';
         
+        // Configure EmulatorJS - CRITICAL: Set startOnLoaded to false so we control when it starts
         window.EJS_player = '#gameCanvas';
         window.EJS_core = 'gb';
         window.EJS_gameName = 'Tetris';
-        window.EJS_gameUrl = TEST_ROM_URL;
+        window.EJS_gameUrl = TEST_ROM_URL;  // Set the URL directly
         window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
-        window.EJS_DEBUG_XX = true;
+        window.EJS_DEBUG_XX = true;          // Bypasses GamepadHandler error [citation:6]
         window.EJS_ignoreGamepad = true;
         window.EJS_WebGL2 = false;
         window.EJS_recanvas = true;
         window.EJS_video = 'webgl1';
-        window.EJS_startOnLoaded = true;
+        window.EJS_startOnLoaded = false;     // Don't auto-start, we'll trigger it manually
+        window.EJS_defaultOptions = { 'virtual-gamepad': true };
         
         let emulatorReady = false;
         
-        function loadROM() {
-            if (emulatorReady && window.EJS_emulator && window.EJS_emulator.gameManager) {
-                document.getElementById('status').textContent = 'Loading ROM...';
-                if (window.EJS_emulator.gameManager.loadROM) {
-                    window.EJS_emulator.gameManager.loadROM(TEST_ROM_URL);
+        // Method 1: Use fetch to get the ROM as a blob
+        async function loadROMWithFetch() {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = 'Fetching ROM...';
+            statusEl.className = 'loading';
+            
+            try {
+                const response = await fetch(TEST_ROM_URL);
+                const blob = await response.blob();
+                const url = URL.createObjectURL(blob);
+                
+                statusEl.textContent = 'ROM fetched, loading into emulator...';
+                
+                if (window.EJS_emulator && window.EJS_emulator.gameManager) {
+                    window.EJS_emulator.gameManager.loadROM(url);
+                    setTimeout(() => {
+                        if (window.EJS_emulator.gameManager.start) {
+                            window.EJS_emulator.gameManager.start();
+                        }
+                        statusEl.textContent = '✅ Game should be running!';
+                        statusEl.className = 'status';
+                    }, 1000);
+                } else {
+                    statusEl.textContent = 'Emulator not ready yet!';
+                    statusEl.className = 'error';
                 }
+            } catch (e) {
+                console.error('Fetch error:', e);
+                statusEl.textContent = 'Fetch failed: ' + e.message;
+                statusEl.className = 'error';
+            }
+        }
+        
+        // Method 2: Let EmulatorJS load it directly via gameUrl (simpler)
+        function loadROMWithGameData() {
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = 'Loading ROM via gameUrl...';
+            
+            if (window.EJS_emulator && window.EJS_emulator.gameManager) {
+                // Reload the emulator with the game URL
+                window.EJS_gameUrl = TEST_ROM_URL;
+                window.EJS_emulator.gameManager.loadROM(TEST_ROM_URL);
                 setTimeout(() => {
                     if (window.EJS_emulator.gameManager.start) {
                         window.EJS_emulator.gameManager.start();
                     }
+                    statusEl.textContent = '✅ Game should be running!';
+                    statusEl.className = 'status';
                 }, 1000);
             } else {
-                document.getElementById('status').textContent = 'Emulator not ready yet! Wait a few seconds.';
+                statusEl.textContent = 'Emulator not ready yet!';
+                statusEl.className = 'error';
             }
         }
         
+        // Load EmulatorJS
         const script = document.createElement('script');
         script.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
         script.onload = () => {
-            document.getElementById('status').textContent = 'Emulator loaded, waiting for ready...';
+            const statusEl = document.getElementById('status');
+            statusEl.textContent = 'Emulator loaded, waiting for ready...';
+            
             let attempts = 0;
             const checkInterval = setInterval(() => {
                 attempts++;
                 if (window.EJS_emulator && window.EJS_emulator.gameManager) {
                     clearInterval(checkInterval);
                     emulatorReady = true;
-                    document.getElementById('status').textContent = '✅ Emulator ready! Click "Load ROM"';
-                    document.getElementById('status').className = 'status';
-                } else if (attempts > 40) {
+                    statusEl.textContent = '✅ Emulator ready! Click a button to load ROM';
+                    statusEl.className = 'status';
+                    console.log('Emulator ready, gameManager available');
+                } else if (attempts > 60) {
                     clearInterval(checkInterval);
-                    document.getElementById('status').textContent = '❌ Emulator failed to initialize';
-                    document.getElementById('status').className = 'error';
+                    statusEl.textContent = '❌ Emulator failed to initialize - check console (F12)';
+                    statusEl.className = 'error';
+                    console.error('Emulator did not initialize after 30 seconds');
                 }
             }, 500);
         };
