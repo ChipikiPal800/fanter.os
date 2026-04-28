@@ -81,7 +81,8 @@
         const gameCore = urlParams.get('core');
         const romUrl = urlParams.get('rom');
         
-       const SERVER_URL = 'https://fanter-netplay.onrender.com';
+        // Use your Render server URL here
+        const SERVER_URL = 'https://fanter-netplay.onrender.com';
         
         document.getElementById('gameTitle').textContent = `${gameName} - ${isHost ? 'Host' : 'Guest'}`;
         
@@ -118,16 +119,55 @@
         
         async function loadEmulator(romUrl, gameName, core) {
             return new Promise((resolve) => {
+                // Clear any existing emulator elements
+                const oldCanvas = document.getElementById('gameCanvas');
+                if (oldCanvas) {
+                    const oldScript = document.querySelector('script[src*="emulatorjs"]');
+                    if (oldScript) oldScript.remove();
+                }
+                
+                // EmulatorJS configuration
+                window.EJS_player = '#gameCanvas';
+                window.EJS_core = core;
+                window.EJS_gameName = gameName;
+                window.EJS_gameUrl = romUrl;
+                window.EJS_startOnLoaded = true;
+                window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';  // ✅ CDN path
+                
+                // Fixes for black screen and audio issues
+                window.EJS_DEBUG_XX = true;
+                window.EJS_ignoreGamepad = true;
+                window.EJS_WebGL2 = false;
+                window.EJS_recanvas = true;
+                window.EJS_video = 'webgl1';
+                window.EJS_audio_sampling_rate = 44100;
+                window.EJS_audio_latency = 256;
+                
+                window.EJS_buttons = {
+                    playPause: false, restart: true, mute: false, settings: true,
+                    fullscreen: true, saveState: true, loadState: true
+                };
+                
+                // Load EmulatorJS loader script from CDN
                 const script = document.createElement('script');
                 script.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
                 script.onload = () => {
-                    window.EJS_player = '#gameCanvas';
-                    window.EJS_core = core;
-                    window.EJS_gameName = gameName;
-                    window.EJS_gameUrl = romUrl;
-                    window.EJS_startOnLoaded = true;
-                    window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
-                    setTimeout(resolve, 2000);
+                    console.log('✅ EmulatorJS loader loaded');
+                    // Wait for emulator to initialize
+                    setTimeout(() => {
+                        if (window.EJS_emulator) {
+                            console.log('✅ Emulator ready');
+                            resolve();
+                        } else {
+                            console.log('⏳ Waiting for emulator...');
+                            setTimeout(resolve, 3000);
+                        }
+                    }, 2000);
+                };
+                script.onerror = () => {
+                    console.error('❌ Failed to load EmulatorJS');
+                    document.getElementById('status').textContent = 'Failed to load emulator';
+                    resolve();
                 };
                 document.body.appendChild(script);
             });
@@ -135,9 +175,24 @@
         
         function getKeyCode(input) {
             const mapping = { up: 4, down: 5, left: 6, right: 7, a: 8, b: 0, x: 9, y: 1, l: 10, r: 11, start: 3, select: 2 };
-            return mapping[Object.keys(input)[0]];
+            const key = Object.keys(input)[0];
+            return mapping[key];
         }
         
+        // Test if ROM URL is accessible (optional)
+        async function testRomUrl(url) {
+            try {
+                const response = await fetch(url, { method: 'HEAD' });
+                console.log(`ROM URL status: ${response.status} ${response.ok ? '✅' : '❌'}`);
+                if (!response.ok) {
+                    document.getElementById('status').textContent = `⚠️ ROM not accessible (${response.status})`;
+                }
+            } catch (e) {
+                console.error('ROM fetch error:', e);
+            }
+        }
+        
+        // Start the game
         init();
     </script>
 </body>
