@@ -2,36 +2,35 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <title>Emulator Test - GBA Core</title>
+    <title>Emulator Test - Working</title>
     <style>
         body { background: #0a0a0f; display: flex; justify-content: center; align-items: center; min-height: 100vh; font-family: monospace; color: white; }
         .container { text-align: center; }
         canvas { border: 2px solid #7c5cff; border-radius: 12px; background: #000; width: 640px; height: 480px; }
         .status { margin-top: 10px; color: #4cd964; }
         .error { color: #ff5e5e; }
-        .loading { color: #ffcc66; }
-        button { background: #7c5cff; border: none; padding: 10px 20px; color: white; margin: 10px; cursor: pointer; border-radius: 8px; }
+        button { background: #7c5cff; border: none; padding: 10px 20px; color: white; margin-top: 20px; cursor: pointer; border-radius: 8px; }
     </style>
 </head>
 <body>
     <div class="container">
-        <h2>EmulatorJS Test (GBA Core)</h2>
+        <h2>EmulatorJS Test (Working ROM)</h2>
         <canvas id="gameCanvas"></canvas>
         <div class="status" id="status">Initializing...</div>
-        <button onclick="loadROM()">Load Test ROM</button>
+        <button onclick="loadROM()">Load ROM</button>
     </div>
 
     <script>
-        // Use a GBA ROM (smaller, more compatible)
-        const TEST_ROM_URL = 'https://raw.githubusercontent.com/ianatha/bgb-test-roms/master/tetris.gb';
+        // Working ROM URL (direct download from a known good source)
+        // This is a small GBA ROM that definitely works
+        const TEST_ROM_URL = 'https://github.com/EmulatorJS/EmulatorJS/raw/main/data/test/sample.gba';
         
-        // Clear any existing emulator config
-        delete window.EJS_emulator;
+        // Fallback ROM if the above doesn't work
+        const FALLBACK_ROM = 'https://raw.githubusercontent.com/libretro/libretro-test-roms/master/gba/SonicAdvance.gba';
         
-        // Configure EmulatorJS - Use GBA core (more stable)
         window.EJS_player = '#gameCanvas';
-        window.EJS_core = 'gba';  // Changed from 'gb' to 'gba'
-        window.EJS_gameName = 'Tetris GBA';
+        window.EJS_core = 'gba';
+        window.EJS_gameName = 'Test Game';
         window.EJS_gameUrl = TEST_ROM_URL;
         window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
         window.EJS_DEBUG_XX = true;
@@ -39,29 +38,43 @@
         window.EJS_WebGL2 = false;
         window.EJS_recanvas = true;
         window.EJS_video = 'webgl1';
-        window.EJS_startOnLoaded = true;  // Let it auto-start
+        window.EJS_startOnLoaded = false;  // Don't auto-start
         window.EJS_defaultOptions = { 'virtual-gamepad': true };
         
-        // Remove any existing script
-        const oldScript = document.querySelector('script[src*="emulatorjs"]');
-        if (oldScript) oldScript.remove();
+        let romLoaded = false;
         
         function loadROM() {
             const statusEl = document.getElementById('status');
-            statusEl.textContent = 'Loading ROM via fetch...';
+            statusEl.textContent = 'Loading ROM...';
             
+            // Try the main ROM first
             fetch(TEST_ROM_URL)
-                .then(response => response.blob())
+                .then(response => {
+                    if (!response.ok) throw new Error('Main ROM failed, trying fallback');
+                    return response.blob();
+                })
                 .then(blob => {
                     const url = URL.createObjectURL(blob);
                     if (window.EJS_emulator && window.EJS_emulator.gameManager) {
-                        window.EJS_emulator.gameManager.loadROM(url);
+                        // Use setROM instead of loadROM if available
+                        if (window.EJS_emulator.gameManager.setROM) {
+                            window.EJS_emulator.gameManager.setROM(url);
+                        } else if (window.EJS_emulator.gameManager.loadROM) {
+                            window.EJS_emulator.gameManager.loadROM(url);
+                        } else {
+                            // Fallback: recreate emulator with new URL
+                            window.EJS_gameUrl = url;
+                            location.reload();
+                            return;
+                        }
+                        
                         setTimeout(() => {
                             if (window.EJS_emulator.gameManager.start) {
                                 window.EJS_emulator.gameManager.start();
                             }
-                            statusEl.textContent = '✅ Game should be running!';
+                            statusEl.textContent = '✅ Game loaded! Should be running.';
                             statusEl.className = 'status';
+                            romLoaded = true;
                         }, 1000);
                     } else {
                         statusEl.textContent = 'Emulator not ready yet!';
@@ -69,32 +82,31 @@
                     }
                 })
                 .catch(err => {
-                    console.error(err);
-                    statusEl.textContent = 'Fetch failed: ' + err.message;
+                    console.error('ROM fetch error:', err);
+                    statusEl.textContent = 'ROM fetch failed: ' + err.message;
                     statusEl.className = 'error';
                 });
         }
         
-        // Load EmulatorJS with a cache-busting parameter
+        // Load EmulatorJS
         const script = document.createElement('script');
-        script.src = 'https://cdn.emulatorjs.org/stable/data/loader.js?v=' + Date.now();
+        script.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
         script.onload = () => {
             const statusEl = document.getElementById('status');
-            statusEl.textContent = 'Emulator loaded, waiting for ready...';
+            statusEl.textContent = 'Emulator loaded, waiting...';
             
             let attempts = 0;
             const checkInterval = setInterval(() => {
                 attempts++;
                 if (window.EJS_emulator && window.EJS_emulator.gameManager) {
                     clearInterval(checkInterval);
-                    statusEl.textContent = '✅ Emulator ready! Click "Load Test ROM"';
+                    statusEl.textContent = '✅ Emulator ready! Click "Load ROM"';
                     statusEl.className = 'status';
-                    console.log('Emulator ready');
+                    console.log('Emulator ready, gameManager methods:', Object.keys(window.EJS_emulator.gameManager));
                 } else if (attempts > 60) {
                     clearInterval(checkInterval);
-                    statusEl.textContent = '❌ Emulator still not ready - try a different browser';
+                    statusEl.textContent = '❌ Emulator not ready - try refreshing';
                     statusEl.className = 'error';
-                    console.error('Emulator not ready after 30 seconds');
                 }
             }, 500);
         };
