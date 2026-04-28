@@ -2,153 +2,67 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
-    <title>GBA Emulator - Aladdin</title>
+    <title>IodineGBA - Aladdin Test</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-        body {
-            background: #0a0a0f;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            min-height: 100vh;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
-            padding: 20px;
-        }
-        .emulator-container {
-            width: 100%;
-            max-width: 900px;
-            background: #1a1a2e;
-            border-radius: 16px;
-            padding: 16px;
-            box-shadow: 0 10px 30px rgba(0,0,0,0.5);
-        }
-        .emulator-header {
-            text-align: center;
-            margin-bottom: 16px;
-            color: #ffcc66;
-        }
-        #gameCanvas {
-            width: 100% !important;
-            height: auto !important;
-            background: #000;
-            border-radius: 8px;
-            aspect-ratio: 4/3;
-            display: block !important;
-        }
-        .status {
-            text-align: center;
-            margin-top: 12px;
-            color: #4cd964;
-            font-size: 14px;
-        }
-        .controls-info {
-            text-align: center;
-            margin-top: 12px;
-            color: #888;
-            font-size: 11px;
-        }
-        /* Force EmulatorJS menu to be visible */
-        .ejs_menu_bar, .ejs_control_bar, [class*="ejs_"] {
-            display: block !important;
-            visibility: visible !important;
-        }
+        body { background: #0a0a0f; display: flex; justify-content: center; align-items: center; min-height: 100vh; margin: 0; }
+        canvas { border: 2px solid #7c5cff; border-radius: 12px; box-shadow: 0 0 20px rgba(124,92,255,0.3); }
+        .info { text-align: center; margin-top: 20px; color: #a0a0c0; font-family: monospace; }
     </style>
 </head>
 <body>
-    <div class="emulator-container">
-        <div class="emulator-header">
-            <h2>🎮 Aladdin (GBA)</h2>
-        </div>
-        <canvas id="gameCanvas" width="800" height="600" style="width:800px;height:600px;"></canvas>
-        <div class="status" id="status">Loading emulator...</div>
-        <div class="controls-info">
-            Controls: Arrow Keys | Z = A | X = B | A = L | S = R | Enter = Start
+    <div>
+        <canvas id="gameCanvas" width="240" height="160" style="width: 100%; max-width: 480px; height: auto; image-rendering: crisp-edges;"></canvas>
+        <div class="info">
+            ✅ IodineGBA loaded | Aladdin (GBA)
         </div>
     </div>
 
+    <script src="https://chipikipal800.github.io/MKGBA2.0/IodineGBA/core/Emulator.js"></script>
     <script>
+        // ROM URL (Aladdin)
         const ROM_URL = 'https://chipikipal800.github.io/MKGBA2.0/Binaries/aladdin.gba';
+        // BIOS file (required for GBA emulation)
+        const BIOS_URL = 'https://chipikipal800.github.io/MKGBA2.0/IodineGBA/bios/gba_bios.bin';
+
+        let emulator = new GameBoyAdvanceEmulator();
         
-        // Clean up
-        if (window.EJS_emulator) {
-            try { window.EJS_emulator.destroy(); } catch(e) {}
-            window.EJS_emulator = null;
-        }
-        
-        const existingScripts = document.querySelectorAll('script[src*="emulatorjs"]');
-        existingScripts.forEach(script => script.remove());
-        
-        // Configure EmulatorJS
-        window.EJS_player = '#gameCanvas';
-        window.EJS_core = 'gba';
-        window.EJS_gameName = 'Aladdin';
-        window.EJS_gameUrl = ROM_URL;
-        window.EJS_pathtodata = 'https://cdn.emulatorjs.org/stable/data/';
-        
-        // Critical fixes
-        window.EJS_DEBUG_XX = true;
-        window.EJS_ignoreGamepad = true;
-        window.EJS_WebGL2 = false;
-        window.EJS_recanvas = true;
-        window.EJS_video = 'webgl1';
-        window.EJS_software = false;
-        
-        // Audio settings
-        window.EJS_audio_sampling_rate = 44100;
-        window.EJS_audio_latency = 256;
-        
-        // Force menu visibility
-        window.EJS_buttons = {
-            playPause: true,
-            restart: true,
-            mute: true,
-            settings: true,
-            fullscreen: true,
-            saveState: true,
-            loadState: true
-        };
-        
-        window.EJS_startOnLoaded = true;
-        
-        // Force canvas size
-        window.EJS_canvas_size = [800, 600];
-        
-        const script = document.createElement('script');
-        script.src = 'https://cdn.emulatorjs.org/stable/data/loader.js';
-        script.onload = () => {
-            const statusEl = document.getElementById('status');
-            statusEl.textContent = '✅ Emulator loaded! Game should be visible.';
-            statusEl.style.color = '#4cd964';
+        // Fetch BIOS and ROM, then start emulator
+        Promise.all([
+            fetch(BIOS_URL).then(res => res.arrayBuffer()),
+            fetch(ROM_URL).then(res => res.arrayBuffer())
+        ]).then(([biosData, romData]) => {
+            // Convert to Uint8Array (IodineGBA expects this format)
+            const bios = new Uint8Array(biosData);
+            const rom = new Uint8Array(romData);
             
-            // Force canvas redraw after 2 seconds
-            setTimeout(() => {
-                const canvas = document.getElementById('gameCanvas');
-                if (canvas) {
-                    const ctx = canvas.getContext('2d');
-                    if (ctx) {
-                        ctx.fillStyle = '#000';
-                        ctx.fillRect(0, 0, canvas.width, canvas.height);
-                    }
+            // Attach BIOS and ROM
+            emulator.attachBIOS(bios);
+            emulator.attachROM(rom);
+            
+            // Set up graphics output
+            const canvas = document.getElementById('gameCanvas');
+            const ctx = canvas.getContext('2d');
+            const imageData = ctx.createImageData(240, 160);
+            
+            emulator.attachGraphicsFrameHandler((frameBuffer) => {
+                // frameBuffer is an array of RGB values (R,G,B per pixel)
+                for (let i = 0; i < 240 * 160; i++) {
+                    imageData.data[i * 4] = frameBuffer[i * 3];     // R
+                    imageData.data[i * 4 + 1] = frameBuffer[i * 3 + 1]; // G
+                    imageData.data[i * 4 + 2] = frameBuffer[i * 3 + 2]; // B
+                    imageData.data[i * 4 + 3] = 255; // Alpha
                 }
-            }, 2000);
-        };
-        script.onerror = () => {
-            const statusEl = document.getElementById('status');
-            statusEl.textContent = '❌ Failed to load EmulatorJS';
-            statusEl.style.color = '#ff5e5e';
-        };
-        document.body.appendChild(script);
-        
-        // Load CSS
-        const link = document.createElement('link');
-        link.rel = 'stylesheet';
-        link.href = 'https://cdn.emulatorjs.org/stable/data/emulator.min.css';
-        document.head.appendChild(link);
+                ctx.putImageData(imageData, 0, 0);
+            });
+            
+            // Start the emulator
+            emulator.play();
+            
+            console.log('✅ IodineGBA emulator started!');
+        }).catch(error => {
+            console.error('Failed to load ROM or BIOS:', error);
+            document.querySelector('.info').innerHTML = '❌ Failed to load ROM or BIOS. Check console.';
+        });
     </script>
 </body>
 </html>
