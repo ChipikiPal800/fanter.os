@@ -290,7 +290,7 @@
   })();
 </script>
 
-  <!-- LUCID MODE - Desktop Dreams -->
+<!-- LUCID MODE - Desktop Dreams (Fixed for multiple .desktop-bg) -->
 <script>
 (function() {
   // Lucid Mode Configuration
@@ -306,16 +306,21 @@
   const IDLE_THRESHOLD = 300000; // 5 minutes in milliseconds
   const DREAM_DURATION = 30000; // Dreams last 30 seconds
   
-  // Get elements
+  // Get elements - handle multiple .desktop-bg
+  function getDesktopBg() {
+    const bgElements = document.querySelectorAll('.desktop-bg');
+    return bgElements.length > 0 ? bgElements[0] : null;
+  }
+  
   const desktop = document.getElementById('desktop');
-  const desktopBg = document.getElementById('desktopBg');
   const widgets = document.querySelectorAll('.widget');
   const icons = document.querySelectorAll('.desktop-icons-left, .desktop-icons-right');
   
-  // Save original wallpaper
+  // Save original wallpaper from the active .desktop-bg
   function saveOriginalWallpaper() {
+    const desktopBg = getDesktopBg();
     if (desktopBg) {
-      originalWallpaper = desktopBg.style.backgroundImage || '';
+      originalWallpaper = desktopBg.style.backgroundImage || desktopBg.style.background || '';
     }
   }
   
@@ -342,7 +347,8 @@
       desktop.classList.add('lucid-mode');
     }
     
-    // Slow breathing color shift on wallpaper
+    // Slow breathing color shift on wallpaper (target the active .desktop-bg)
+    const desktopBg = getDesktopBg();
     if (desktopBg) {
       let hue = 0;
       dreamWallpaperInterval = setInterval(() => {
@@ -353,35 +359,37 @@
     }
     
     // Float icons (add CSS animation)
-    const style = document.createElement('style');
-    style.id = 'lucidModeStyle';
-    style.textContent = `
-      .lucid-mode .desktop-icons-left i, 
-      .lucid-mode .desktop-icons-right i,
-      .lucid-mode .desktop-icon {
-        animation: floatIcon ${2 + Math.random() * 2}s infinite ease-in-out;
-      }
-      @keyframes floatIcon {
-        0%, 100% { transform: translateY(0px); }
-        50% { transform: translateY(-8px); }
-      }
-      .lucid-mode .widget {
-        animation: widgetPulse 3s infinite ease-in-out;
-      }
-      @keyframes widgetPulse {
-        0%, 100% { opacity: 1; transform: scale(1); }
-        50% { opacity: 0.8; transform: scale(1.02); }
-      }
-      .lucid-mode .taskbar {
-        animation: taskbarGlitch 4s infinite;
-      }
-      @keyframes taskbarGlitch {
-        0%, 90%, 100% { filter: none; }
-        92% { filter: hue-rotate(10deg) brightness(1.2); transform: skewX(-2deg); }
-        95% { filter: hue-rotate(-10deg) brightness(0.9); transform: skewX(2deg); }
-      }
-    `;
-    document.head.appendChild(style);
+    if (!document.getElementById('lucidModeStyle')) {
+      const style = document.createElement('style');
+      style.id = 'lucidModeStyle';
+      style.textContent = `
+        .lucid-mode .desktop-icons-left i, 
+        .lucid-mode .desktop-icons-right i,
+        .lucid-mode .desktop-icon {
+          animation: floatIcon ${2 + Math.random() * 2}s infinite ease-in-out;
+        }
+        @keyframes floatIcon {
+          0%, 100% { transform: translateY(0px); }
+          50% { transform: translateY(-8px); }
+        }
+        .lucid-mode .widget {
+          animation: widgetPulse 3s infinite ease-in-out;
+        }
+        @keyframes widgetPulse {
+          0%, 100% { opacity: 1; transform: scale(1); }
+          50% { opacity: 0.8; transform: scale(1.02); }
+        }
+        .lucid-mode .taskbar {
+          animation: taskbarGlitch 4s infinite;
+        }
+        @keyframes taskbarGlitch {
+          0%, 90%, 100% { filter: none; }
+          92% { filter: hue-rotate(10deg) brightness(1.2); transform: skewX(-2deg); }
+          95% { filter: hue-rotate(-10deg) brightness(0.9); transform: skewX(2deg); }
+        }
+      `;
+      document.head.appendChild(style);
+    }
     
     // Random glitch effects on widgets
     lucidInterval = setInterval(() => {
@@ -437,13 +445,17 @@
       lucidInterval = null;
     }
     
-    // Reset wallpaper
-    if (desktopBg) {
-      desktopBg.style.filter = '';
-      desktopBg.style.backgroundImage = originalWallpaper;
-    }
+    // Reset wallpaper on all .desktop-bg elements
+    const allDesktopBgs = document.querySelectorAll('.desktop-bg');
+    allDesktopBgs.forEach(bg => {
+      bg.style.filter = '';
+      if (originalWallpaper) {
+        bg.style.backgroundImage = originalWallpaper;
+        bg.style.background = originalWallpaper;
+      }
+    });
     
-    // Remove glitch styles
+    // Remove glitch styles (keep the style element but don't remove completely to avoid re-adding)
     const style = document.getElementById('lucidModeStyle');
     if (style) style.remove();
     
@@ -477,7 +489,6 @@
     if (dreamCount === 50 && !localStorage.getItem('dream_counter_unlocked')) {
       localStorage.setItem('dream_counter_unlocked', 'true');
       showDreamToast('🌙 Unlocked: Dream Counter Widget!', 5000);
-      // Add dream counter to widgets if you have a widget system
       addDreamCounterWidget();
     }
   }
