@@ -38,7 +38,7 @@ there's a full desktop environment with windows you can drag and resize. the tas
 
 the game hub has over five thousand roms across ten consoles. we also have webports of modern indie games like hollow knight, inscryption, celeste, cuphead, buckshot roulette, and more are being added all the time.
 
-fantarena is our chat app. it has channels, direct messages, groups, voice messages, profiles, levels, coins, a shop, and daily rewards. it's like discord but it runs inside fanteros and works at school.
+fantarena is our chat app. it has channels, direct messages, groups, voice messages, profiles, levels, coins, a shop, and daily rewards. it's like discord but it runs inside fanteros and works at school. probably??
 
 fanter search is a proxy that lets you visit blocked websites. it works by fetching the site on our server and rewriting everything so your school filter can't block it.
 
@@ -52,7 +52,7 @@ how to use it
 
 just go to the website. that's it. you don't need to install anything. you don't need to sign up if you just want to play games, but making an account lets you save your progress and earn achievements and coins.
 
-if you want to host your own version, you can fork the repo and deploy it to github pages. everything is client side so it costs nothing to run.
+if you want to host your own version, you can fork the repo and deploy it to github pages.
 
 please star this repo if you use it. it helps more people find it and keeps me working on it.
 
@@ -63,28 +63,6 @@ feedback and requests
 got a game you want to see added? found a bug? want to suggest a feature? use this google form to let me know. i read every response.
 
 https://forms.gle/L5yK6P8x3skb2qhTA 
-
-============================================================================
-
-
-
-credits and thanks
-
-this project took months of work. most of the roms came from superjoe999957's vault. most emulators are powered by emulatorjs. the proxy uses some clever tricks that i figured out after way too much debugging.
-
-aukak/bog - webports
-
-burnedpopcorn - webport of pizza tower
-
-gays studio - webports
-
-breadbb - webports
-
-reeyuki - webports
-
-definitely others, im sorry i forgot your username. also, im pretty sure all of these webports were used without me asking, all i did was fork the repo and host it on the site, so if you'd like your port or game off of the site, please like make a submission in the form or ask me on fantarena. (was that good self promo?)
-
-if you use fanteros, please star the repo. it actually helps a lot.
 
 ============================================================================
 
