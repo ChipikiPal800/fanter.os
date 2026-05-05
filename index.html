@@ -290,7 +290,7 @@
   })();
 </script>
 
-<!-- LUCID MODE - Desktop Dreams (Fixed for multiple .desktop-bg) -->
+<!-- LUCID MODE -->
 <script>
 (function() {
   // Lucid Mode Configuration
@@ -454,8 +454,7 @@
         bg.style.background = originalWallpaper;
       }
     });
-    
-    // Remove glitch styles (keep the style element but don't remove completely to avoid re-adding)
+  
     const style = document.getElementById('lucidModeStyle');
     if (style) style.remove();
     
@@ -571,7 +570,7 @@
     setTimeout(addDreamCounterWidget, 1000);
   }
   
-  // Manual trigger for testing (press D three times)
+  // Manual trigger for testing 
   let dPressCount = 0;
   let dPressTimer;
   document.addEventListener('keydown', (e) => {
@@ -583,7 +582,7 @@
       if (dPressCount === 3) {
         dPressCount = 0;
         enterLucidMode();
-        showDreamToast('🔮 Manual Lucid Mode');
+        showDreamToast('Manual Lucid Mode');
       }
     }
   });
