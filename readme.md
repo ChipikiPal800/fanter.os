@@ -1,7 +1,6 @@
 fanter.os
 
-the browser operating system (looks like one, is not a real operating system) for unblocked games, chat, proxies, and way more than any other site gives you
-
+the browser operating system (looks like one, is not a real operating system) for unblocked games, chat, and way more than any other site gives you (probably)
 ===========================================================================
 
 what is this?
